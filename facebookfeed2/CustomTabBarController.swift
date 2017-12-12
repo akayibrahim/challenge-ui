@@ -15,7 +15,7 @@ class CustomTabBarController: UITabBarController {
         
         let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let navigationController = UINavigationController(rootViewController: feedController)
-        navigationController.title = "News Feed"
+        navigationController.title = "Challenges Feed"
         navigationController.tabBarItem.image = UIImage(named: "news_feed_icon")
         
         let friendRequestsController = FriendRequestsController()
@@ -29,7 +29,7 @@ class CustomTabBarController: UITabBarController {
         messengerNavigationController.tabBarItem.image = UIImage(named: "add_icon")
         
         let notificationsNavController = UINavigationController(rootViewController: UIViewController())
-        notificationsNavController.title = "Notifications"
+        notificationsNavController.title = "Your Challenges"
         notificationsNavController.tabBarItem.image = UIImage(named: "globe_icon")
         
         let moreNavController = UINavigationController(rootViewController: UIViewController())

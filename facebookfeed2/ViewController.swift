@@ -20,6 +20,10 @@ class Post: SafeJsonObject {
     var chlDate: String?
     var untilDate: String?
     var type: String?
+    var challengerImageName: String?
+    var vsImageName : String?
+    var worldImageName: String?
+    var joinButton: String?
     
     var location: Location?
     
@@ -160,7 +164,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             let rect = NSString(string: statusText).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
             
-            let knownHeight: CGFloat = 8 + 44 + 4 + 4 + 200 + 8 + 24 + 8 + 44
+            let knownHeight: CGFloat = 8 + 44 + 4 + 4 + 120 + 8 + 24 + 8 + 44
             
             return CGSize(width: view.frame.width, height: rect.height + knownHeight + 24)
         }
@@ -272,7 +276,7 @@ class FeedCell: UICollectionViewCell {
         didSet {
             if let type = post?.type {
                 if type == "self" {
-                    setupViewsForSelf()
+                    setupViewsNew()
                 }
                 if type == "private" {
                     setupViewsForPrivate()
@@ -285,10 +289,12 @@ class FeedCell: UICollectionViewCell {
             
             if let name = post?.name {
             
-                let attributedText = NSMutableAttributedString(string: "\(name) has challenge", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
-                /**
+                // let attributedText = NSMutableAttributedString(string: "\(name) has challenge", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
+                
+                let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
+                
                 if let city = post?.location?.city, let state = post?.location?.state {
-                    attributedText.append(NSAttributedString(string: "\n\(city), \(state)  •  ", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 8), NSForegroundColorAttributeName:
+                    attributedText.append(NSAttributedString(string: "\n 1 hr - \(city), \(state)  •  ", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 8), NSForegroundColorAttributeName:
                         UIColor.rgb(155, green: 161, blue: 161)]))
                     
                     let paragraphStyle = NSMutableParagraphStyle()
@@ -302,7 +308,8 @@ class FeedCell: UICollectionViewCell {
                     attributedText.append(NSAttributedString(attachment: attachment))
                     
                     
-                }*/
+                }
+                /**
                 if let chlDate = post?.chlDate, let untilDate = post?.untilDate {
                     attributedText.append(NSAttributedString(string: "\nBetween \(chlDate) - \(untilDate)", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 10), NSForegroundColorAttributeName:
                         UIColor.rgb(155, green: 161, blue: 161)]))
@@ -312,7 +319,7 @@ class FeedCell: UICollectionViewCell {
                     
                     attributedText.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, attributedText.string.characters.count))
                     
-                }
+                }*/
                 
                 nameLabel.attributedText = attributedText
                 
@@ -324,6 +331,22 @@ class FeedCell: UICollectionViewCell {
             
             if let profileImagename = post?.profileImageName {
                 profileImageView.image = UIImage(named: profileImagename)
+            }
+            
+            if let challengerImageName = post?.challengerImageName {
+                challengerImageView.image = UIImage(named: challengerImageName)
+            }
+            
+            if let worldImageName = post?.worldImageName {
+                worldImageView.image = UIImage(named: worldImageName)
+            }
+            
+            if let untilDate = post?.untilDate {
+                untilDateLabel.text = "UNTIL \(untilDate)"
+            }
+            
+            if let vsImageName = post?.vsImageName {
+                vsImageView.image = UIImage(named: vsImageName)
             }
             
             if let statusImageName = post?.statusImageName {
@@ -404,6 +427,118 @@ class FeedCell: UICollectionViewCell {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         
         return button
+    }
+    
+    let challengerImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 4.0
+        imageView.layer.masksToBounds = true
+        //imageView.isUserInteractionEnabled = true
+        //imageView.backgroundColor=UIColor.red
+        return imageView
+    }()
+    
+    let vsImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        //imageView.layer.masksToBounds = true
+        //imageView.isUserInteractionEnabled = true
+        //imageView.backgroundColor=UIColor.blue
+        imageView.semanticContentAttribute = .forceRightToLeft
+        return imageView
+    }()
+    
+    let worldImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 4.0
+        imageView.layer.masksToBounds = true
+        //imageView.isUserInteractionEnabled = true
+        //imageView.backgroundColor=UIColor.yellow
+        return imageView
+    }()
+    
+    let view: UIView = {
+        let view = UIView()
+        //view.backgroundColor=UIColor.gray
+        return view
+    }()
+    
+    let middleView: UIView = {
+        let view = UIView()
+        view.backgroundColor=UIColor.white
+        return view
+    }()
+    
+    let untilDateLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 12)
+        label.textAlignment = .center
+        label.textColor = UIColor.black
+        // label.backgroundColor=UIColor.red
+        return label
+    }()
+    
+    let joinButton = FeedCell.buttonForTitle("Join", imageName: "Join")
+    
+    func setupViewsNew() {
+        backgroundColor = UIColor.white
+        
+        addSubview(nameLabel)
+        addSubview(profileImageView)
+        addSubview(statusTextView)
+        addSubview(view)
+        
+        view.addSubview(challengerImageView)
+        view.addSubview(middleView)
+        view.addSubview(worldImageView)
+        
+        middleView.addSubview(vsImageView)
+        
+        addSubview(untilDateLabel)
+        addSubview(joinButton)
+        addSubview(likesCommentsLabel)
+        addSubview(dividerLineView)
+        
+        addSubview(likeButton)
+        addSubview(commentButton)
+        addSubview(shareButton)
+        
+        statusImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedCell.animate as (FeedCell) -> () -> ())))
+        
+        addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", views: profileImageView, nameLabel)
+        
+        addConstraintsWithFormat("H:|-4-[v0]-4-|", views: statusTextView)
+        
+        addConstraintsWithFormat("H:|-4-[v0]-4-|", views: view)
+        
+        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: challengerImageView, middleView, worldImageView)
+        
+        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: vsImageView)
+        
+        addConstraintsWithFormat("H:|-4-[v0]-4-|", views: untilDateLabel)
+        
+        addConstraintsWithFormat("H:|-4-[v0]|", views: joinButton)
+        
+        addConstraintsWithFormat("H:|-12-[v0]|", views: likesCommentsLabel)
+        
+        addConstraintsWithFormat("H:|-12-[v0]-12-|", views: dividerLineView)
+        
+        //button constraints
+        addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", views: likeButton, commentButton, shareButton)
+        
+        addConstraintsWithFormat("V:|-8-[v0(36)]-4-[v1]-4-[v2(120)][v3(10)]-8-[v4(10)]-8-[v5(10)]-8-[v6(0.4)][v7(44)]|", views: profileImageView, statusTextView, view, untilDateLabel, joinButton, likesCommentsLabel, dividerLineView, likeButton)
+        
+        addConstraintsWithFormat("V:|-8-[v0]", views: nameLabel)
+        view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: challengerImageView)
+        view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: middleView)
+        view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: worldImageView)
+        
+        middleView.addConstraintsWithFormat("V:|-5-[v0(35)]", views: vsImageView)
+        
+        addConstraintsWithFormat("V:[v0(44)]|", views: commentButton)
+        addConstraintsWithFormat("V:[v0(44)]|", views: shareButton)
     }
     
     func setupViewsForSelf() {

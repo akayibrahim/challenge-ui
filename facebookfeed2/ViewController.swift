@@ -24,6 +24,8 @@ class Post: SafeJsonObject {
     var vsImageName : String?
     var worldImageName: String?
     var joinButton: String?
+    var subjectImageName: String?
+    var subject: String?
     
     var location: Location?
     
@@ -164,7 +166,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             let rect = NSString(string: statusText).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
             
-            let knownHeight: CGFloat = 8 + 44 + 4 + 4 + 120 + 8 + 24 + 8 + 44
+            let knownHeight: CGFloat = 8 + 44 + 4 + 4 + 110 + 8 + 24 + 8 + 44
             
             return CGSize(width: view.frame.width, height: rect.height + knownHeight + 24)
         }
@@ -349,6 +351,14 @@ class FeedCell: UICollectionViewCell {
                 vsImageView.image = UIImage(named: vsImageName)
             }
             
+            if let subjectImageName = post?.subjectImageName {
+                subjectImageView.image = UIImage(named: subjectImageName)
+            }
+            
+            if let subject = post?.subject {
+                subjectLabel.text = subject
+            }
+            
             if let statusImageName = post?.statusImageName {
                 statusImageView.image = UIImage(named: statusImageName)
             }
@@ -459,6 +469,16 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }()
     
+    let subjectImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 4.0
+        imageView.layer.masksToBounds = true
+        //imageView.isUserInteractionEnabled = true
+        //imageView.backgroundColor=UIColor.yellow
+        return imageView
+    }()
+    
     let view: UIView = {
         let view = UIView()
         //view.backgroundColor=UIColor.gray
@@ -473,7 +493,16 @@ class FeedCell: UICollectionViewCell {
     
     let untilDateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 12)
+        label.font = UIFont.boldSystemFont(ofSize: 10)
+        label.textAlignment = .center
+        label.textColor = UIColor.gray
+        // label.backgroundColor=UIColor.red
+        return label
+    }()
+    
+    let subjectLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 8)
         label.textAlignment = .center
         label.textColor = UIColor.black
         // label.backgroundColor=UIColor.red
@@ -495,6 +524,8 @@ class FeedCell: UICollectionViewCell {
         view.addSubview(worldImageView)
         
         middleView.addSubview(vsImageView)
+        middleView.addSubview(subjectLabel)
+        middleView.addSubview(subjectImageView)
         
         addSubview(untilDateLabel)
         addSubview(joinButton)
@@ -515,11 +546,13 @@ class FeedCell: UICollectionViewCell {
         
         view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: challengerImageView, middleView, worldImageView)
         
-        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: vsImageView)
+        middleView.addConstraintsWithFormat("H:|-12-[v0]-8-|", views: vsImageView)
+        middleView.addConstraintsWithFormat("H:|-2-[v0]-40-|", views: subjectLabel)
+        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: subjectImageView)
         
         addConstraintsWithFormat("H:|-4-[v0]-4-|", views: untilDateLabel)
         
-        addConstraintsWithFormat("H:|-4-[v0]|", views: joinButton)
+        addConstraintsWithFormat("H:|[v0]|", views: joinButton)
         
         addConstraintsWithFormat("H:|-12-[v0]|", views: likesCommentsLabel)
         
@@ -528,14 +561,14 @@ class FeedCell: UICollectionViewCell {
         //button constraints
         addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", views: likeButton, commentButton, shareButton)
         
-        addConstraintsWithFormat("V:|-8-[v0(36)]-4-[v1]-4-[v2(120)][v3(10)]-8-[v4(10)]-8-[v5(10)]-8-[v6(0.4)][v7(44)]|", views: profileImageView, statusTextView, view, untilDateLabel, joinButton, likesCommentsLabel, dividerLineView, likeButton)
+        addConstraintsWithFormat("V:|-8-[v0(36)]-4-[v1]-4-[v2(110)][v3]-8-[v4(10)]-8-[v5(10)]-8-[v6(0.4)][v7(44)]|", views: profileImageView, statusTextView, view, untilDateLabel, joinButton, likesCommentsLabel, dividerLineView, likeButton)
         
         addConstraintsWithFormat("V:|-8-[v0]", views: nameLabel)
         view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: challengerImageView)
         view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: middleView)
         view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: worldImageView)
         
-        middleView.addConstraintsWithFormat("V:|-5-[v0(35)]", views: vsImageView)
+        middleView.addConstraintsWithFormat("V:|-10-[v0(25)]-5-[v1][v2(40)]-10-|", views: vsImageView, subjectLabel, subjectImageView)
         
         addConstraintsWithFormat("V:[v0(44)]|", views: commentButton)
         addConstraintsWithFormat("V:[v0(44)]|", views: shareButton)

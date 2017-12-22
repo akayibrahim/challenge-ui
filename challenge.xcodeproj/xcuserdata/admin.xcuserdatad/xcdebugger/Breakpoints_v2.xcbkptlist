@@ -31,8 +31,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "452"
             endingLineNumber = "452"
-            landmarkName = "FeedCell"
-            landmarkType = "3">
+            landmarkName = "vsImageView"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -47,8 +47,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "468"
             endingLineNumber = "468"
-            landmarkName = "setupViewsNew()"
-            landmarkType = "7">
+            landmarkName = "worldImageView"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -63,8 +63,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "465"
             endingLineNumber = "465"
-            landmarkName = "setupViewsNew()"
-            landmarkType = "7">
+            landmarkName = "worldImageView"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

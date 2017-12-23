@@ -44,7 +44,7 @@
 		C7A85F271C78C137007E9A00 = {
 			isa = PBXGroup;
 			children = (
-				C7A85F321C78C137007E9A00 /* facebookfeed2 */,
+				C7A85F321C78C137007E9A00 /* challenge */,
 				C7A85F311C78C137007E9A00 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -57,7 +57,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C7A85F321C78C137007E9A00 /* facebookfeed2 */ = {
+		C7A85F321C78C137007E9A00 /* challenge */ = {
 			isa = PBXGroup;
 			children = (
 				C7A85F331C78C137007E9A00 /* AppDelegate.swift */,
@@ -70,6 +70,7 @@
 				C780A7B11C88C582007023FD /* single_post.json */,
 				C780A7B31C88CEFB007023FD /* all_posts.json */,
 			);
+			name = challenge;
 			path = facebookfeed2;
 			sourceTree = "<group>";
 		};
@@ -203,7 +204,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Challenge;
@@ -243,12 +244,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Challenge;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
+				VALIDATE_PRODUCT = NO;
 			};
 			name = Release;
 		};

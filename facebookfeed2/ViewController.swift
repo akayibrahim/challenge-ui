@@ -411,7 +411,7 @@ class FeedCell: UICollectionViewCell {
     
     let likesCommentsLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 10)
         label.textColor = UIColor.rgb(155, green: 161, blue: 171)
         return label
     }()
@@ -544,7 +544,7 @@ class FeedCell: UICollectionViewCell {
         
         addConstraintsWithFormat("H:|-4-[v0]-4-|", views: view)
         
-        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: challengerImageView, middleView, worldImageView)
+        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(90)]-12-|", views: challengerImageView, middleView, worldImageView)
         
         middleView.addConstraintsWithFormat("H:|-12-[v0]-8-|", views: vsImageView)
         middleView.addConstraintsWithFormat("H:|-2-[v0]-40-|", views: subjectLabel)

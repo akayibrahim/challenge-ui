@@ -102,7 +102,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0720;
-				ORGANIZATIONNAME = letsbuildthatapp;
+				ORGANIZATIONNAME = challenge;
 				TargetAttributes = {
 					C7A85F2F1C78C137007E9A00 = {
 						CreatedOnToolsVersion = 7.2;

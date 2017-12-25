@@ -26,6 +26,7 @@ class Post: SafeJsonObject {
     var joinButton: String?
     var subjectImageName: String?
     var subject: String?
+    var secondChallengerImageName: String?
     
     var location: Location?
     
@@ -166,7 +167,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             let rect = NSString(string: statusText).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
             
-            let knownHeight: CGFloat = 8 + 44 + 4 + 4 + 110 + 8 + 24 + 8 + 44
+            let knownHeight: CGFloat = 8 + 36 + 4 + 4 + 100 + 8 + 15 + 1.5 + 44
             
             return CGSize(width: view.frame.width, height: rect.height + knownHeight + 24)
         }
@@ -278,13 +279,13 @@ class FeedCell: UICollectionViewCell {
         didSet {
             if let type = post?.type {
                 if type == "self" {
-                    setupViewsNew()
+                    setupViewsSelf()
                 }
-                if type == "private" {
-                    setupViewsForPrivate()
+                if type == "versus" {
+                    setupViewsVersus()
                 }
-                if type == "public" {
-                    setupViewsForPublic()
+                if type == "join" {
+                    setupViewsJoin("0")
                 }
             }
             
@@ -355,18 +356,21 @@ class FeedCell: UICollectionViewCell {
                 subjectImageView.image = UIImage(named: subjectImageName)
             }
             
-            if let subject = post?.subject {
-                subjectLabel.text = subject
-            }
-            
             if let statusImageName = post?.statusImageName {
                 statusImageView.image = UIImage(named: statusImageName)
             }
             
-            if let numLikes = post?.numLikes, let numComments = post?.numComments {
-                likesCommentsLabel.text = "\(numLikes) Likes  \(numComments) Comments"
+            if let numLikes = post?.numLikes {
+                likesLabel.text = "+\(numLikes)"
             }
             
+            if let numComments = post?.numComments {
+                commentsLabel.text = "+\(numComments)"
+            }
+            
+            if let secondChallengerImageName = post?.secondChallengerImageName {
+                secondChallengerImageView.image = UIImage(named: secondChallengerImageName)
+            }
         }
     }
     
@@ -382,9 +386,6 @@ class FeedCell: UICollectionViewCell {
     let nameLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
-        
-        
-        
         return label
     }()
     
@@ -409,10 +410,17 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }()
     
-    let likesCommentsLabel: UILabel = {
+    let likesLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 10)
-        label.textColor = UIColor.rgb(155, green: 161, blue: 171)
+        label.font = UIFont.systemFont(ofSize: 5)
+        label.textColor = UIColor.black
+        return label
+    }()
+    
+    let commentsLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 5)
+        label.textColor = UIColor.black
         return label
     }()
     
@@ -466,6 +474,16 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }()
     
+    let secondChallengerImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 4.0
+        imageView.layer.masksToBounds = true
+        //imageView.isUserInteractionEnabled = true
+        //imageView.backgroundColor=UIColor.red
+        return imageView
+    }()
+    
     let vsImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -508,6 +526,18 @@ class FeedCell: UICollectionViewCell {
         return view
     }()
     
+    let likeView: UIView = {
+        let view = UIView()
+        view.backgroundColor=UIColor.white
+        return view
+    }()
+    
+    let commentView: UIView = {
+        let view = UIView()
+        view.backgroundColor=UIColor.white
+        return view
+    }()
+    
     let untilDateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 10)
@@ -517,20 +547,56 @@ class FeedCell: UICollectionViewCell {
         return label
     }()
     
-    let subjectLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 8)
-        label.textAlignment = .center
-        label.textColor = UIColor.black
-        // label.backgroundColor=UIColor.red
-        return label
-    }()
-    
     let joinButton = FeedCell.buttonForTitleWithBorder("Join", imageName: "Join")
     
-    func setupViewsNew() {
-        backgroundColor = UIColor.white
+    func setupViewsJoin(_ peopleCount: String) {
+        shareAddViews()
+        addSubview(joinButton)
+        shareHorizantalViews()
+        addConstraintsWithFormat("H:|-135-[v0]-135-|", views: joinButton)
+        addConstraintsWithFormat("V:|-8-[v0(36)]-4-[v1]-4-[v2(100)]-2-[v3]-8-[v4(15)][v5(0.4)][v6(44)]|", views: profileImageView, statusTextView, view, untilDateLabel, joinButton,  dividerLineView, likeView)
+        shareVerticalViews()
+    
+        middleView.addSubview(subjectImageView)
+        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: subjectImageView)
+        middleView.addConstraintsWithFormat("V:|-10-[v0(25)]-5-[v1(40)]-10-|", views: vsImageView, subjectImageView)
         
+        view.addSubview(worldImageView)
+        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(90)]-12-|", views: challengerImageView, middleView, worldImageView)
+        view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: worldImageView)
+    }
+    
+    func setupViewsSelf() {
+        shareAddViews()
+        shareHorizantalViews()
+        addConstraintsWithFormat("V:|-8-[v0(36)]-4-[v1]-4-[v2(100)]-2-[v3]-8-[v4(0.4)][v5(44)]|", views: profileImageView, statusTextView, view, untilDateLabel, dividerLineView, likeView)
+        shareVerticalViews()
+        middleView.addConstraintsWithFormat("V:|-10-[v0(25)]|", views: vsImageView)
+        
+        subjectImageView.contentMode = .scaleAspectFill
+        view.addSubview(subjectImageView)
+        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: challengerImageView, middleView, subjectImageView)
+        view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: subjectImageView)
+    }
+    
+    func setupViewsVersus() {
+        shareAddViews()
+        shareHorizantalViews()
+        addConstraintsWithFormat("V:|-8-[v0(36)]-4-[v1]-4-[v2(100)]-2-[v3]-8-[v4(0.4)][v5(44)]|", views: profileImageView, statusTextView, view, untilDateLabel, dividerLineView, likeView)
+        shareVerticalViews()
+        
+        middleView.addSubview(subjectImageView)
+        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: subjectImageView)
+        middleView.addConstraintsWithFormat("V:|-10-[v0(25)]-5-[v1(40)]-10-|", views: vsImageView, subjectImageView)
+        
+        view.addSubview(secondChallengerImageView)
+        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: challengerImageView, middleView, secondChallengerImageView)
+        view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: secondChallengerImageView)
+    }
+    
+    func shareAddViews() {
+        backgroundColor = UIColor.white
+
         addSubview(nameLabel)
         addSubview(profileImageView)
         addSubview(statusTextView)
@@ -538,168 +604,57 @@ class FeedCell: UICollectionViewCell {
         
         view.addSubview(challengerImageView)
         view.addSubview(middleView)
-        view.addSubview(worldImageView)
         
         middleView.addSubview(vsImageView)
-        // middleView.addSubview(subjectLabel)
-        middleView.addSubview(subjectImageView)
         
         addSubview(untilDateLabel)
-        addSubview(joinButton)
-        addSubview(likesCommentsLabel)
         addSubview(dividerLineView)
         
-        addSubview(likeButton)
-        addSubview(commentButton)
+        addSubview(likeView)
+        addSubview(commentView)
         addSubview(shareButton)
         
+        likeView.addSubview(likeButton)
+        likeView.addSubview(likesLabel)
+        
+        commentView.addSubview(commentButton)
+        commentView.addSubview(commentsLabel)
+    }
+    
+    func shareHorizantalViews() {
         statusImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedCell.animate as (FeedCell) -> () -> ())))
-        
         addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", views: profileImageView, nameLabel)
-        
         addConstraintsWithFormat("H:|-4-[v0]-4-|", views: statusTextView)
-        
         addConstraintsWithFormat("H:|-4-[v0]-4-|", views: view)
         
-        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(90)]-12-|", views: challengerImageView, middleView, worldImageView)
-        
         middleView.addConstraintsWithFormat("H:|-12-[v0]-8-|", views: vsImageView)
-        // middleView.addConstraintsWithFormat("H:|-2-[v0]-40-|", views: subjectLabel)
-        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: subjectImageView)
-        
         addConstraintsWithFormat("H:|-4-[v0]-4-|", views: untilDateLabel)
-        
-        addConstraintsWithFormat("H:|-135-[v0]-135-|", views: joinButton)
-        
-        addConstraintsWithFormat("H:|-12-[v0]|", views: likesCommentsLabel)
-        
         addConstraintsWithFormat("H:|-12-[v0]-12-|", views: dividerLineView)
         
-        //button constraints
-        addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", views: likeButton, commentButton, shareButton)
+        likeView.addConstraintsWithFormat("H:|[v0]|", views: likeButton)
+        likeView.addConstraintsWithFormat("H:|-24-[v0]|", views: likesLabel)
+        commentView.addConstraintsWithFormat("H:|[v0]|", views: commentButton)
+        commentView.addConstraintsWithFormat("H:|-13-[v0]|", views: commentsLabel)
         
-        addConstraintsWithFormat("V:|-8-[v0(36)]-4-[v1]-4-[v2(110)][v3]-8-[v4(15)]-8-[v5(10)]-8-[v6(0.4)][v7(44)]|", views: profileImageView, statusTextView, view, untilDateLabel, joinButton, likesCommentsLabel, dividerLineView, likeButton)
-        
+        addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", views: likeView, commentView, shareButton)
+    }
+    
+    func shareVerticalViews() {
         addConstraintsWithFormat("V:|-8-[v0]", views: nameLabel)
         view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: challengerImageView)
         view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: middleView)
-        view.addConstraintsWithFormat("V:|-10-[v0(100)]", views: worldImageView)
         
-        middleView.addConstraintsWithFormat("V:|-10-[v0(25)]-5-[v2(50)]-10-|", views: vsImageView, subjectLabel, subjectImageView)
+        likeView.addConstraintsWithFormat("V:|[v0]|", views: likeButton)
+        likeView.addConstraintsWithFormat("V:|-5-[v0]-15-|", views: likesLabel)
+        commentView.addConstraintsWithFormat("V:|[v0]|", views: commentButton)
+        commentView.addConstraintsWithFormat("V:|-5-[v0]-24-|", views: commentsLabel)
         
-        addConstraintsWithFormat("V:[v0(44)]|", views: commentButton)
+        addConstraintsWithFormat("V:[v0(44)]|", views: commentView)
         addConstraintsWithFormat("V:[v0(44)]|", views: shareButton)
+        
     }
-    
-    func setupViewsForSelf() {
-        backgroundColor = UIColor.white
-        
-        addSubview(nameLabel)
-        addSubview(profileImageView)
-        addSubview(statusTextView)
-        addSubview(statusImageView)
-        addSubview(likesCommentsLabel)
-        addSubview(dividerLineView)
-        
-        addSubview(shareButton)
-        
-        statusImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedCell.animate as (FeedCell) -> () -> ())))
-        
-        addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", views: profileImageView, nameLabel)
-        
-        addConstraintsWithFormat("H:|-4-[v0]-4-|", views: statusTextView)
-        
-        addConstraintsWithFormat("H:|-4-[v0]|", views: statusImageView)
-        
-        addConstraintsWithFormat("H:|-12-[v0]|", views: likesCommentsLabel)
-        
-        addConstraintsWithFormat("H:|-12-[v0]-12-|", views: dividerLineView)
 
-        //button constraints
-        addConstraintsWithFormat("H:|[v0]|", views: shareButton)
-        
-        addConstraintsWithFormat("V:|-12-[v0]", views: nameLabel)
-        
-        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1]-4-[v2(200)]-8-[v3(24)]-8-[v4(0.4)][v5(44)]|", views: profileImageView, statusTextView, statusImageView, likesCommentsLabel, dividerLineView, shareButton)
-    }
-    
-    func setupViewsForPrivate() {
-        backgroundColor = UIColor.white
-        
-        addSubview(nameLabel)
-        addSubview(profileImageView)
-        addSubview(statusTextView)
-        addSubview(statusImageView)
-        addSubview(likesCommentsLabel)
-        addSubview(dividerLineView)
-        
-        addSubview(likeButton)
-        addSubview(commentButton)
-        addSubview(shareButton)
-        
-        statusImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedCell.animate as (FeedCell) -> () -> ())))
-        
-        addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", views: profileImageView, nameLabel)
-        
-        addConstraintsWithFormat("H:|-4-[v0]-4-|", views: statusTextView)
-        
-        addConstraintsWithFormat("H:|[v0]|", views: statusImageView)
-        
-        addConstraintsWithFormat("H:|-12-[v0]|", views: likesCommentsLabel)
-        
-        addConstraintsWithFormat("H:|-12-[v0]-12-|", views: dividerLineView)
-        
-        //button constraints
-        addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", views: likeButton, commentButton, shareButton)
-        
-        addConstraintsWithFormat("V:|-12-[v0]", views: nameLabel)
-        
-        
-        
-        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1]-4-[v2(200)]-8-[v3(24)]-8-[v4(0.4)][v5(44)]|", views: profileImageView, statusTextView, statusImageView, likesCommentsLabel, dividerLineView, likeButton)
-        
-        addConstraintsWithFormat("V:[v0(44)]|", views: commentButton)
-        addConstraintsWithFormat("V:[v0(44)]|", views: shareButton)
-    }
-    
-    func setupViewsForPublic() {
-        backgroundColor = UIColor.white
-        
-        addSubview(nameLabel)
-        addSubview(profileImageView)
-        addSubview(statusTextView)
-        addSubview(statusImageView)
-        addSubview(likesCommentsLabel)
-        addSubview(dividerLineView)
-        
-        addSubview(likeButton)
-        addSubview(commentButton)
-        addSubview(shareButton)
-        
-        statusImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedCell.animate as (FeedCell) -> () -> ())))
-        
-        addConstraintsWithFormat("H:|-8-[v0(44)]-8-[v1]|", views: profileImageView, nameLabel)
-        
-        addConstraintsWithFormat("H:|-4-[v0]-4-|", views: statusTextView)
-        
-        addConstraintsWithFormat("H:|[v0]|", views: statusImageView)
-        
-        addConstraintsWithFormat("H:|-12-[v0]|", views: likesCommentsLabel)
-        
-        addConstraintsWithFormat("H:|-12-[v0]-12-|", views: dividerLineView)
-        
-        //button constraints
-        addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", views: likeButton, commentButton, shareButton)
-        
-        addConstraintsWithFormat("V:|-12-[v0]", views: nameLabel)
-        
-        
-        
-        addConstraintsWithFormat("V:|-8-[v0(44)]-4-[v1]-4-[v2(200)]-8-[v3(24)]-8-[v4(0.4)][v5(44)]|", views: profileImageView, statusTextView, statusImageView, likesCommentsLabel, dividerLineView, likeButton)
-        
-        addConstraintsWithFormat("V:[v0(44)]|", views: commentButton)
-        addConstraintsWithFormat("V:[v0(44)]|", views: shareButton)
-    }
+
 }
 
 extension UIColor {

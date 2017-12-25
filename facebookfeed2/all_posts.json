@@ -5,7 +5,7 @@
               "location": {
                     "city": "San Francisco",
                     "state": "CA"
-              },
+                    },
               "profileImageName": "zuckprofile",
               "statusText": "I should lose 3 pounds?",
               "statusImageName": "zuckdog",
@@ -20,14 +20,14 @@
               "vsImageName" : "vs",
               "subjectImageName" : "loseWeight",
               "subject" : "RUN",
-              "type": "self"
+              "type": "join"
               },
               {
               "name": "Steve Jobs",
               "location": {
                     "city": "Cupertino",
                     "state": "CA"
-              },
+                    },
               "profileImageName": "steve_profile",
               "statusText": "Iphone will sell twice?",
               "statusImageName": "steve_status",
@@ -35,22 +35,36 @@
               "numComments": 222,
               "chlDate": "20/10/2017",
               "untilDate": "03/11/2017",
-              "type": "private"
+              "challengerImageName" : "steve_profile",
+              "worldImageName" : "worldImage",
+              "untilDate" : "29.12.2017",
+              "vsImageName" : "vs",
+              "subjectImageName" : "readBook",
+              "subject" : "RUN",
+              "type": "self"
               },
               {
               "name": "Mahatma Gandhi",
               "location": {
                     "city": "Porbandar",
                     "state": "India"
-              },
+                    },
               "profileImageName": "gandhi_profile",
               "statusText": "Goodness will win one day?",
               "statusImageName": "gandhi_status",
               "numLikes": 333,
               "numComments": 444,
+              "information": "some information text",
               "chlDate": "20/10/2017",
               "untilDate": "03/11/2017",
-              "type": "public"
+              "challengerImageName" : "gandhi_profile",
+              "worldImageName" : "worldImage",
+              "untilDate" : "29.12.2017",
+              "vsImageName" : "vs",
+              "subjectImageName" : "tennis",
+              "subject" : "RUN",
+              "secondChallengerImageName" : "steve_profile",
+              "type": "versus"
               }
     ]
 }

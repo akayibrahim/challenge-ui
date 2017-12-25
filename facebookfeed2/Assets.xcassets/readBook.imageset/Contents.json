@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "loseWeight.jpg",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "readBook.png",
       "scale" : "2x"
     },
     {

@@ -20,6 +20,11 @@
               "vsImageName" : "vs",
               "subjectImageName" : "loseWeight",
               "subject" : "RUN",
+              "secondChallengerImageName" : "steve_profile",
+              "firstPeopleImage" : "steve_profile",
+              "secondPeopleImage" : "gandhi_profile",
+              "thirdPeopleImage" : "zuckprofile",
+              "morePeopleImage" : "more_icon",
               "type": "join"
               },
               {
@@ -64,6 +69,16 @@
               "subjectImageName" : "tennis",
               "subject" : "RUN",
               "secondChallengerImageName" : "steve_profile",
+              "secondChallengerImageName" : "steve_profile",
+              "firstPeopleImage" : "steve_profile",
+              "secondPeopleImage" : "gandhi_profile",
+              "thirdPeopleImage" : "zuckprofile",
+              "morePeopleImage" : "more_icon",
+              "secondChallengerImageName" : "steve_profile",
+              "firstChlrPeopleImage" : "steve_profile",
+              "secondChlrPeopleImage" : "gandhi_profile",
+              "thirdChlrPeopleImage" : "zuckprofile",
+              "moreChlrPeopleImage" : "more_icon",
               "type": "versus"
               }
     ]

@@ -2,84 +2,55 @@
     "posts": [
               {
               "name": "Mark Zuckerberg",
-              "location": {
-                    "city": "San Francisco",
-                    "state": "CA"
-                    },
               "profileImageName": "zuckprofile",
-              "statusText": "I should lose 3 pounds?",
-              "statusImageName": "zuckdog",
-              "numLikes": 150,
-              "numComments": 300,
-              "information": "some information text",
+              "thinksAboutChallenge": "I should lose 3 pounds?",
+              "countOfLike": 150,
+              "countOfComments": 300,
               "chlDate": "20/10/2017",
               "untilDate": "03/11/2017",
               "challengerImageName" : "zuckprofile",
-              "worldImageName" : "worldImage",
               "untilDate" : "29.12.2017",
-              "vsImageName" : "vs",
-              "subjectImageName" : "loseWeight",
-              "subject" : "RUN",
+              "subject" : "loseWeight",
               "secondChallengerImageName" : "steve_profile",
               "firstPeopleImage" : "steve_profile",
               "secondPeopleImage" : "gandhi_profile",
               "thirdPeopleImage" : "zuckprofile",
-              "morePeopleImage" : "more_icon",
-              "type": "join"
+              "type": "PUBLIC"
               },
               {
               "name": "Steve Jobs",
-              "location": {
-                    "city": "Cupertino",
-                    "state": "CA"
-                    },
               "profileImageName": "steve_profile",
-              "statusText": "Iphone will sell twice?",
-              "statusImageName": "steve_status",
-              "numLikes": 111,
-              "numComments": 222,
+              "thinksAboutChallenge": "Iphone will sell twice?",
+              "countOfLike": 111,
+              "countOfComments": 222,
               "chlDate": "20/10/2017",
               "untilDate": "03/11/2017",
               "challengerImageName" : "steve_profile",
-              "worldImageName" : "worldImage",
               "untilDate" : "29.12.2017",
-              "vsImageName" : "vs",
-              "subjectImageName" : "readBook",
-              "subject" : "RUN",
-              "type": "self"
+              "subject" : "readBook",
+              "type": "SELF"
               },
               {
               "name": "Mahatma Gandhi",
-              "location": {
-                    "city": "Porbandar",
-                    "state": "India"
-                    },
               "profileImageName": "gandhi_profile",
-              "statusText": "Goodness will win one day?",
-              "statusImageName": "gandhi_status",
-              "numLikes": 333,
-              "numComments": 444,
-              "information": "some information text",
+              "thinksAboutChallenge": "Goodness will win one day?",
+              "countOfLike": 333,
+              "countOfComments": 444,
               "chlDate": "20/10/2017",
               "untilDate": "03/11/2017",
               "challengerImageName" : "gandhi_profile",
-              "worldImageName" : "worldImage",
               "untilDate" : "29.12.2017",
-              "vsImageName" : "vs",
-              "subjectImageName" : "tennis",
-              "subject" : "RUN",
+              "subject" : "tennis",
               "secondChallengerImageName" : "steve_profile",
               "secondChallengerImageName" : "steve_profile",
               "firstPeopleImage" : "steve_profile",
               "secondPeopleImage" : "gandhi_profile",
               "thirdPeopleImage" : "zuckprofile",
-              "morePeopleImage" : "more_icon",
               "secondChallengerImageName" : "steve_profile",
               "firstChlrPeopleImage" : "steve_profile",
               "secondChlrPeopleImage" : "gandhi_profile",
               "thirdChlrPeopleImage" : "zuckprofile",
-              "moreChlrPeopleImage" : "more_icon",
-              "type": "versus"
+              "type": "PRIVATE"
               }
     ]
 }

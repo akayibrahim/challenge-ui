@@ -109,11 +109,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
             
-            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 10)], context: nil)
             
-            let knownHeight: CGFloat = 8 + 36 + 4 + 4 + 100 + 8 + 15 + 1.5 + 44
+            let knownHeight: CGFloat = 8 + 20 + 4 + 150 + 1 + 1 + 1 + 4 + 25 + 4
             
-            return CGSize(width: view.frame.width, height: rect.height + knownHeight + 24)
+            return CGSize(width: view.frame.width, height: rect.height + knownHeight + 12)
         }
         
         return CGSize(width: view.frame.width, height: 500)
@@ -253,11 +253,8 @@ class FeedCell: UICollectionViewCell {
             if let subject = post?.subject {
                 subjectImageView.image = UIImage(named: subject)
             }
-            if let countOfLike = post?.countOfLike {
-                countOfLikeLabel.text = "+\(countOfLike)"
-            }
-            if let countOfComments = post?.countOfComments {
-                countOfCommentsLabel.text = "+\(countOfComments)"
+            if let countOfComments = post?.countOfComments, let countOfLike = post?.countOfLike {
+                countOfLikeAndCommentLabel.text = "\(countOfLike) Likes \(countOfComments) Comments"
             }
             if let secondChallengerImageName = post?.secondChallengerImageName {
                 secondChallengerImageView.image = UIImage(named: secondChallengerImageName)
@@ -284,6 +281,8 @@ class FeedCell: UICollectionViewCell {
                 thirdChlrPeopleImageView.image = UIImage(named: thirdChlrPeopleImage)
             }
             moreChlrPeopleImageView.image = UIImage(named: "more_icon")
+            leftSupportImageView.image = UIImage(named: "leftSupport")
+            rightSupportImageView.image = UIImage(named: "rightSupport")
         }
     }
     
@@ -300,13 +299,13 @@ class FeedCell: UICollectionViewCell {
         shareAddViews()
         middleView.addSubview(joinButton)
         shareHorizantalViews()
-        addConstraintsWithFormat("V:|-8-[v0(20)]-4-[v1(110)]-4-[v2(0.4)][v3(44)]|", views: profileImageView, view,  dividerLineView, likeView)
+        addConstraintsWithFormat("V:|-8-[v0(20)]-4-[v1(150)]-1-[v2]-1-[v3(1)]-4-[v4(25)]-4-|", views: profileImageView, view, thinksAboutChallengeView, dividerLineView, likeButton)
         shareVerticalViews()
         firstChallenger()
         middleView.addSubview(subjectImageView)
-        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: subjectImageView)
-        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: joinButton)
-        middleView.addConstraintsWithFormat("V:|-10-[v0(20)]-5-[v1(40)]-5-[v2(15)]-4-|", views: vsImageView, subjectImageView, joinButton)
+        middleView.addConstraintsWithFormat("H:|-10-[v0(70)]-10-|", views: subjectImageView)
+        middleView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: joinButton)
+        middleView.addConstraintsWithFormat("V:|-15-[v0(30)]-5-[v1(50)]-5-[v2(20)]-3-|", views: vsImageView, subjectImageView, joinButton)
         
         if peopleCount == "0" {
             challengeToWorld()
@@ -314,25 +313,25 @@ class FeedCell: UICollectionViewCell {
             // it is versus actuallly, so for one people it can not be join chl
         } else if peopleCount == "2" {
             challengeToTwoPeople()
-            view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: challengerImageView, middleView, peopleView)
+            view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: challengerImageView, middleView, peopleView)
         } else if peopleCount == "3" {
             challengeToThreePeople()
-            view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(90)]-12-|", views: challengerImageView, middleView, peopleView)
+            view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: challengerImageView, middleView, peopleView)
         } else if peopleCount == "4" {
             challengeToMorePeople()
-            view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(90)]-12-|", views: challengerImageView, middleView, peopleView)
+            view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: challengerImageView, middleView, peopleView)
         }
     }
     
     func setupViewsSelf() {
         shareAddViews()
         shareHorizantalViews()
-        addConstraintsWithFormat("V:|-8-[v0(20)]-4-[v1(110)]-4-[v2(0.4)][v3(44)]|", views: profileImageView, view, dividerLineView, likeView)
+        addConstraintsWithFormat("V:|-8-[v0(20)]-4-[v1(150)]-1-[v2]-1-[v3(1)]-4-[v4(25)]-4-|", views: profileImageView, view, thinksAboutChallengeView, dividerLineView, likeButton)
         shareVerticalViews()
         firstChallenger()
         middleView.addSubview(goalView)
-        middleView.addConstraintsWithFormat("V:|-10-[v0(20)]-5-[v1(40)]-23-|", views: vsImageView, goalView)
-        middleView.addConstraintsWithFormat("H:|-12-[v0]-8-|", views: goalView)
+        middleView.addConstraintsWithFormat("V:|-15-[v0(30)]-5-[v1(50)]-28-|", views: vsImageView, goalView)
+        middleView.addConstraintsWithFormat("H:|-10-[v0(70)]-10-|", views: goalView)
         goalView.addSubview(goalLabel)
         goalView.addSubview(goalValueLabel)
         goalView.addConstraintsWithFormat("H:|-13-[v0]-11-|", views: goalLabel)
@@ -342,135 +341,139 @@ class FeedCell: UICollectionViewCell {
         
         subjectImageView.contentMode = .scaleAspectFill
         view.addSubview(subjectImageView)
-        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: challengerImageView, middleView, subjectImageView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: subjectImageView)
+        view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: challengerImageView, middleView, subjectImageView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: subjectImageView)
     }
     
     func setupViewsVersus(_ peopleCount: String) {
         shareAddViews()
-        addSubview(supportButton)
-        addSubview(supportChlrButton)
         shareHorizantalViews()
-        addConstraintsWithFormat("H:|-35-[v0(50)]-120-[v1(50)]-35-|", views: supportButton, supportChlrButton)
-        addConstraintsWithFormat("V:|-8-[v0(20)]-4-[v1(110)]-4-[v2(15)][v3(0.4)][v4(44)]|", views: profileImageView, view, supportButton, dividerLineView, likeView)
+        addConstraintsWithFormat("V:|-8-[v0(20)]-4-[v1(150)]-1-[v2]-1-[v3(1)]-4-[v4(25)]-4-|", views: profileImageView, view, thinksAboutChallengeView, dividerLineView, likeButton)
         shareVerticalViews()
-        addConstraintsWithFormat("V:[v0(15)]-44.4-|", views: supportChlrButton)
         
         middleView.addSubview(subjectImageView)
-        middleView.addConstraintsWithFormat("H:|-8-[v0]-8-|", views: subjectImageView)
-        middleView.addConstraintsWithFormat("V:|-10-[v0(20)]-5-[v1(40)]-23-|", views: vsImageView, subjectImageView)
+        middleView.addSubview(leftSupportImageView)
+        middleView.addSubview(supportButton)
+        supportButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 6)
+        supportButton.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
+        middleView.addSubview(rightSupportImageView)
+        middleView.addConstraintsWithFormat("H:|-10-[v0(70)]-10-|", views: subjectImageView)
+        middleView.addConstraintsWithFormat("H:|-5-[v0(20)]-3-[v1(30)]-2-[v2(20)]-5-|", views: leftSupportImageView, supportButton, rightSupportImageView)
+        middleView.addConstraintsWithFormat("V:|-15-[v0(30)]-5-[v1(50)]-5-[v2(20)]-3-|", views: vsImageView, subjectImageView, leftSupportImageView)
+        middleView.addConstraintsWithFormat("V:[v0(20)]-3-|", views: supportButton)
+        middleView.addConstraintsWithFormat("V:[v0(20)]-3-|", views: rightSupportImageView)
         
         if peopleCount == "1" {
             firstChallenger()
             secondChallenger()
-            view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: challengerImageView, middleView, secondChallengerImageView)
+            view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: challengerImageView, middleView, secondChallengerImageView)
         } else if peopleCount == "2" {
             challengeFromTwoPeople()
             challengeToTwoPeople()
-            view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(75)]-12-|", views: chlrPeopleView, middleView, peopleView)
+            view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: chlrPeopleView, middleView, peopleView)
         } else if peopleCount == "3" {
             challengeFromThreePeople()
             challengeToThreePeople()
-            view.addConstraintsWithFormat("H:|-12-[v0(90)]-15-[v1(75)]-30-[v2(90)]-12-|", views: chlrPeopleView, middleView, peopleView)
+            view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: chlrPeopleView, middleView, peopleView)
         } else if peopleCount == "4" {
             challengeFromMorePeople()
             challengeToMorePeople()
-            view.addConstraintsWithFormat("H:|-12-[v0(90)]-15-[v1(75)]-30-[v2(90)]-12-|", views: chlrPeopleView, middleView, peopleView)
+            view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: chlrPeopleView, middleView, peopleView)
         }
     }
     
     func secondChallenger() {
         view.addSubview(secondChallengerImageView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: secondChallengerImageView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: secondChallengerImageView)
     }
     
     func firstChallenger() {
         view.addSubview(challengerImageView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: challengerImageView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: challengerImageView)
     }
     
     func challengeToWorld() {
         view.addSubview(worldImageView)
-        view.addConstraintsWithFormat("H:|-12-[v0(75)]-30-[v1(75)]-30-[v2(90)]-12-|", views: challengerImageView, middleView, worldImageView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: worldImageView)
+        view.addConstraintsWithFormat("H:|-5-[v0(90)]-20-[v1(90)]-20-[v2(90)]-5-|", views: challengerImageView, middleView, worldImageView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: worldImageView)
     }
     
     func challengeToTwoPeople() {
         view.addSubview(peopleView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: peopleView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: peopleView)
         
         peopleView.addSubview(firstPeopleImageView)
-        peopleView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: firstPeopleImageView)
+        peopleView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: firstPeopleImageView)
         peopleView.addSubview(secondPeopleImageView)
-        peopleView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: secondPeopleImageView)
-        peopleView.addConstraintsWithFormat("V:|-5-[v0(43)]-5-[v1(43)]-5-|", views: firstPeopleImageView, secondPeopleImageView)
+        peopleView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: secondPeopleImageView)
+        peopleView.addConstraintsWithFormat("V:|[v0(69)]-2-[v1(69)]|", views: firstPeopleImageView, secondPeopleImageView)
     }
     
     func challengeToThreePeople() {
         view.addSubview(peopleView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: peopleView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: peopleView)
         
         peopleView.addSubview(firstPeopleImageView)
         peopleView.addSubview(thirdPeopleImageView)
-        peopleView.addConstraintsWithFormat("H:|-10-[v0(32)]-2-[v1(32)]-10-|", views: firstPeopleImageView, thirdPeopleImageView)
+        peopleView.addConstraintsWithFormat("H:|-5-[v0(37)]-2-[v1(37)]-5-|", views: firstPeopleImageView, thirdPeopleImageView)
         peopleView.addSubview(secondPeopleImageView)
-        peopleView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: secondPeopleImageView)
-        peopleView.addConstraintsWithFormat("V:|-5-[v0(43)]-5-[v1(43)]-5-|", views: firstPeopleImageView, secondPeopleImageView)
-        peopleView.addConstraintsWithFormat("V:|-5-[v0(43)]|", views: thirdPeopleImageView)
+        peopleView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: secondPeopleImageView)
+        peopleView.addConstraintsWithFormat("V:|[v0(69)]-2-[v1(69)]|", views: firstPeopleImageView, secondPeopleImageView)
+        peopleView.addConstraintsWithFormat("V:|[v0(69)]|", views: thirdPeopleImageView)
     }
     
     func challengeToMorePeople() {
         view.addSubview(peopleView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: peopleView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: peopleView)
         
         peopleView.addSubview(firstPeopleImageView)
         peopleView.addSubview(thirdPeopleImageView)
-        peopleView.addConstraintsWithFormat("H:|-10-[v0(32)]-2-[v1(32)]-10-|", views: firstPeopleImageView, thirdPeopleImageView)
+        peopleView.addConstraintsWithFormat("H:|-5-[v0(37)]-2-[v1(37)]-5-|", views: firstPeopleImageView, thirdPeopleImageView)
         peopleView.addSubview(secondPeopleImageView)
         peopleView.addSubview(morePeopleImageView)
-        peopleView.addConstraintsWithFormat("H:|-10-[v0(32)]-2-[v1(32)]-10-|", views: secondPeopleImageView, morePeopleImageView)
-        peopleView.addConstraintsWithFormat("V:|-5-[v0(43)]-5-[v1(43)]-5-|", views: firstPeopleImageView, secondPeopleImageView)
-        peopleView.addConstraintsWithFormat("V:|-5-[v0(43)]|", views: thirdPeopleImageView)
-        peopleView.addConstraintsWithFormat("V:[v0(43)]-5-|", views: morePeopleImageView)
+        peopleView.addConstraintsWithFormat("H:|-5-[v0(37)]-2-[v1(37)]-5-|", views: secondPeopleImageView, morePeopleImageView)
+        peopleView.addConstraintsWithFormat("V:|[v0(69)]-2-[v1(69)]|", views: firstPeopleImageView, secondPeopleImageView)
+        peopleView.addConstraintsWithFormat("V:|[v0(69)]|", views: thirdPeopleImageView)
+        peopleView.addConstraintsWithFormat("V:[v0(69)]|", views: morePeopleImageView)
     }
     
     func challengeFromTwoPeople() {
         view.addSubview(chlrPeopleView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: chlrPeopleView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: chlrPeopleView)
         
         chlrPeopleView.addSubview(firstChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: firstChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: firstChlrPeopleImageView)
         chlrPeopleView.addSubview(secondChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: secondChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("V:|-5-[v0(43)]-5-[v1(43)]-5-|", views: firstChlrPeopleImageView, secondChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: secondChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("V:|[v0(69)]-2-[v1(69)]|", views: firstChlrPeopleImageView, secondChlrPeopleImageView)
     }
     
     func challengeFromThreePeople() {
         view.addSubview(chlrPeopleView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: chlrPeopleView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: chlrPeopleView)
         
         chlrPeopleView.addSubview(firstChlrPeopleImageView)
         chlrPeopleView.addSubview(thirdChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("H:|-10-[v0(32)]-2-[v1(32)]-10-|", views: firstChlrPeopleImageView, thirdChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("H:|-5-[v0(37)]-2-[v1(37)]-5-|", views: firstChlrPeopleImageView, thirdChlrPeopleImageView)
         chlrPeopleView.addSubview(secondChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: secondChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("V:|-5-[v0(43)]-5-[v1(43)]-5-|", views: firstChlrPeopleImageView, secondChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("V:|-5-[v0(43)]|", views: thirdChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: secondChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("V:|[v0(69)]-2-[v1(69)]|", views: firstChlrPeopleImageView, secondChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("V:|[v0(69)]|", views: thirdChlrPeopleImageView)
     }
     
     func challengeFromMorePeople() {
         view.addSubview(chlrPeopleView)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: chlrPeopleView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: chlrPeopleView)
         
         chlrPeopleView.addSubview(firstChlrPeopleImageView)
         chlrPeopleView.addSubview(thirdChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("H:|-10-[v0(32)]-2-[v1(32)]-10-|", views: firstChlrPeopleImageView, thirdChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("H:|-5-[v0(37)]-2-[v1(37)]-5-|", views: firstChlrPeopleImageView, thirdChlrPeopleImageView)
         chlrPeopleView.addSubview(secondChlrPeopleImageView)
         chlrPeopleView.addSubview(moreChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("H:|-10-[v0(32)]-2-[v1(32)]-10-|", views: secondChlrPeopleImageView, moreChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("V:|-5-[v0(43)]-5-[v1(43)]-5-|", views: firstChlrPeopleImageView, secondChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("V:|-5-[v0(43)]|", views: thirdChlrPeopleImageView)
-        chlrPeopleView.addConstraintsWithFormat("V:[v0(43)]-5-|", views: moreChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("H:|-5-[v0(37)]-2-[v1(37)]-5-|", views: secondChlrPeopleImageView, moreChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("V:|[v0(69)]-2-[v1(69)]|", views: firstChlrPeopleImageView, secondChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("V:|[v0(69)]|", views: thirdChlrPeopleImageView)
+        chlrPeopleView.addConstraintsWithFormat("V:[v0(69)]|", views: moreChlrPeopleImageView)
     }
     
     func shareAddViews() {
@@ -478,7 +481,7 @@ class FeedCell: UICollectionViewCell {
 
         addSubview(nameLabel)
         addSubview(profileImageView)
-        // addSubview(thinksAboutChallengeView)
+        addSubview(thinksAboutChallengeView)
         addSubview(view)
         
         view.addSubview(middleView)
@@ -488,46 +491,32 @@ class FeedCell: UICollectionViewCell {
         addSubview(untilDateLabel)
         addSubview(dividerLineView)
         
-        addSubview(likeView)
-        addSubview(commentView)
+        addSubview(likeButton)
+        addSubview(commentButton)
         addSubview(shareButton)
-        
-        likeView.addSubview(likeButton)
-        likeView.addSubview(countOfLikeLabel)
-        
-        commentView.addSubview(commentButton)
-        commentView.addSubview(countOfCommentsLabel)
+        addSubview(countOfLikeAndCommentLabel)
     }
     
     func shareHorizantalViews() {
         statusImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedCell.animate as (FeedCell) -> () -> ())))
         addConstraintsWithFormat("H:|-8-[v0(20)]-8-[v1][v2]-8-|", views: profileImageView, nameLabel, untilDateLabel)
-        // addConstraintsWithFormat("H:|-4-[v0]-4-|", views: thinksAboutChallengeView)
-        addConstraintsWithFormat("H:|-4-[v0]-4-|", views: view)
+        addConstraintsWithFormat("H:|-4-[v0]-4-|", views: thinksAboutChallengeView)
+        addConstraintsWithFormat("H:|[v0]|", views: view)
         
         middleView.addConstraintsWithFormat("H:|-12-[v0]-8-|", views: vsImageView)
         addConstraintsWithFormat("H:|-12-[v0]-12-|", views: dividerLineView)
         
-        likeView.addConstraintsWithFormat("H:|[v0]|", views: likeButton)
-        likeView.addConstraintsWithFormat("H:|-24-[v0]|", views: countOfLikeLabel)
-        commentView.addConstraintsWithFormat("H:|[v0]|", views: commentButton)
-        commentView.addConstraintsWithFormat("H:|-13-[v0]|", views: countOfCommentsLabel)
-        
-        addConstraintsWithFormat("H:|[v0(v2)][v1(v2)][v2]|", views: likeView, commentView, shareButton)
+        addConstraintsWithFormat("H:|-4-[v0(30)]-2-[v1(30)]-2-[v2(30)][v3]-5-|", views: likeButton, commentButton, shareButton, countOfLikeAndCommentLabel)
     }
     
     func shareVerticalViews() {
         addConstraintsWithFormat("V:|-10-[v0]", views: nameLabel)
         addConstraintsWithFormat("V:|-14-[v0]", views: untilDateLabel)
-        view.addConstraintsWithFormat("V:|-4-[v0(100)]-4-|", views: middleView)
+        view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: middleView)
         
-        likeView.addConstraintsWithFormat("V:|[v0]|", views: likeButton)
-        likeView.addConstraintsWithFormat("V:|-5-[v0]-15-|", views: countOfLikeLabel)
-        commentView.addConstraintsWithFormat("V:|[v0]|", views: commentButton)
-        commentView.addConstraintsWithFormat("V:|-5-[v0]-24-|", views: countOfCommentsLabel)
-        
-        addConstraintsWithFormat("V:[v0(44)]|", views: commentView)
-        addConstraintsWithFormat("V:[v0(44)]|", views: shareButton)
+        addConstraintsWithFormat("V:[v0(25)]-4-|", views: commentButton)
+        addConstraintsWithFormat("V:[v0(25)]-4-|", views: shareButton)
+        addConstraintsWithFormat("V:[v0(25)]-4-|", views: countOfLikeAndCommentLabel)
         
     }
     
@@ -546,8 +535,11 @@ class FeedCell: UICollectionViewCell {
     
     let thinksAboutChallengeView: UITextView = {
         let textView = UITextView()
-        textView.font = UIFont.systemFont(ofSize: 14)
+        textView.font = UIFont.systemFont(ofSize: 10)
+        textView.textAlignment = NSTextAlignment.center
+        textView.textColor = UIColor.gray
         textView.isScrollEnabled = false
+        textView.textContainer.lineBreakMode = NSLineBreakMode.byWordWrapping
         return textView
     }()
     
@@ -559,29 +551,26 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }()
     
-    let countOfLikeLabel: UILabel = {
+    let countOfLikeAndCommentLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 5)
-        label.textColor = UIColor.black
-        return label
-    }()
-    
-    let countOfCommentsLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 5)
-        label.textColor = UIColor.black
+        label.font = UIFont.boldSystemFont(ofSize: 8)
+        label.textAlignment = NSTextAlignment.right;
         return label
     }()
     
     let dividerLineView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.rgb(226, green: 228, blue: 232)
+        // view.backgroundColor = UIColor.red
+        view.layer.cornerRadius = 1.5
+        view.layer.masksToBounds = true
+        view.layer.borderWidth = 0.1
+        view.layer.borderColor = UIColor.gray.cgColor
         return view
     }()
     
-    let likeButton = FeedCell.buttonForTitle("Like", imageName: "like")
-    let commentButton: UIButton = FeedCell.buttonForTitle("Comment", imageName: "comment")
-    let shareButton: UIButton = FeedCell.buttonForTitle("Share", imageName: "share")
+    let likeButton = FeedCell.buttonForTitle("", imageName: "like")
+    let commentButton: UIButton = FeedCell.buttonForTitle("", imageName: "comment")
+    let shareButton: UIButton = FeedCell.buttonForTitle("", imageName: "share")
     
     static func buttonForTitle(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()
@@ -589,9 +578,10 @@ class FeedCell: UICollectionViewCell {
         button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
         
         button.setImage(UIImage(named: imageName), for: UIControlState())
-        button.titleEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 0)
+        button.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
         
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 10)
+        button.imageView?.contentMode = UIViewContentMode.scaleAspectFit
         
         return button
     }
@@ -727,10 +717,20 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }()
     
+    let leftSupportImageView: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    
+    let rightSupportImageView: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    
     let view: UIView = {
         let view = UIView()
         // view.backgroundColor=UIColor.gray
-        view.layer.cornerRadius = 4.0
+        view.layer.cornerRadius = 1.5
         view.layer.masksToBounds = true
         view.layer.borderWidth = 0.1
         view.layer.borderColor = UIColor.gray.cgColor
@@ -758,18 +758,6 @@ class FeedCell: UICollectionViewCell {
     }()
     
     let chlrPeopleView: UIView = {
-        let view = UIView()
-        view.backgroundColor=UIColor.white
-        return view
-    }()
-    
-    let likeView: UIView = {
-        let view = UIView()
-        view.backgroundColor=UIColor.white
-        return view
-    }()
-    
-    let commentView: UIView = {
         let view = UIView()
         view.backgroundColor=UIColor.white
         return view
@@ -805,7 +793,6 @@ class FeedCell: UICollectionViewCell {
     
     let joinButton = FeedCell.buttonForTitleWithBorder("Join", imageName: "Join")
     let supportButton = FeedCell.buttonForTitleWithBorder("Support", imageName: "Support")
-    let supportChlrButton = FeedCell.buttonForTitleWithBorder("Support", imageName: "Support")
 }
 
 extension UIColor {

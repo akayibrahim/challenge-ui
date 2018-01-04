@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/ViewController.swift"
-            timestampString = "536603212.274588"
+            timestampString = "536738793.76453"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "225"
-            endingLineNumber = "225"
+            startingLineNumber = "227"
+            endingLineNumber = "227"
             landmarkName = "FeedCell"
             landmarkType = "3">
          </BreakpointContent>

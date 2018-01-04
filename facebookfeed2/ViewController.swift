@@ -28,6 +28,8 @@ class Post: SafeJsonObject {
     var firstChlrPeopleImage: String?
     var secondChlrPeopleImage: String?
     var thirdChlrPeopleImage: String?
+    var done : String?
+    var countOfJoins : NSNumber?
 }
 
 class SafeJsonObject: NSObject {
@@ -244,21 +246,20 @@ class FeedCell: UICollectionViewCell {
             if let challengerImageName = post?.challengerImageName {
                 challengerImageView.image = UIImage(named: challengerImageName)
             }
-            worldImageView.image = UIImage(named: "worldImage")
-            if let untilDate = post?.untilDate {
-                untilDateLabel.text = "UNTIL \(untilDate)"
-            }
-            vsImageView.image = UIImage(named: "vs")
             if let subject = post?.subject {
                 subjectImageView.image = UIImage(named: subject)
             }
             if let countOfComments = post?.countOfComments, let countOfLike = post?.countOfLike {
-                countOfLikeAndCommentLabel.text = "\(countOfLike) Likes \(countOfComments) Comments"
+                countOfLikeAndCommentLabel.text = "\(countOfLike) Likes \(countOfComments) Comments "
+            }
+            if post?.type == "PUBLIC" {
+                if let countOfJoins = post?.countOfJoins {
+                    countOfLikeAndCommentLabel.text?.append(" \(countOfJoins) Joins ")
+                }
             }
             if let secondChallengerImageName = post?.secondChallengerImageName {
                 secondChallengerImageView.image = UIImage(named: secondChallengerImageName)
             }
-            goalLabel.text = "GOAL: 10"
             if let firstPeopleImage = post?.firstPeopleImage {
                 firstPeopleImageView.image = UIImage(named: firstPeopleImage)
             }
@@ -268,8 +269,6 @@ class FeedCell: UICollectionViewCell {
             if let thirdPeopleImage = post?.thirdPeopleImage {
                 thirdPeopleImageView.image = UIImage(named: thirdPeopleImage)
             }
-            morePeopleImageView.image = UIImage(named: "more_icon")
-            morePeopleImageView.contentMode = .scaleAspectFit
             if let firstChlrPeopleImage = post?.firstChlrPeopleImage {
                 firstChlrPeopleImageView.image = UIImage(named: firstChlrPeopleImage)
             }
@@ -279,8 +278,16 @@ class FeedCell: UICollectionViewCell {
             if let thirdChlrPeopleImage = post?.thirdChlrPeopleImage {
                 thirdChlrPeopleImageView.image = UIImage(named: thirdChlrPeopleImage)
             }
+            if let untilDate = post?.untilDate {
+                untilDateLabel.text = "\(untilDate)"
+            }
+            worldImageView.image = UIImage(named: "worldImage")
+            vsImageView.image = UIImage(named: "vs")
+            morePeopleImageView.image = UIImage(named: "more_icon")
+            morePeopleImageView.contentMode = .scaleAspectFit
             moreChlrPeopleImageView.image = UIImage(named: "more_icon")
             moreChlrPeopleImageView.contentMode = .scaleAspectFit
+            goalLabel.text = "GOAL: 10"
         }
     }
     
@@ -335,7 +342,6 @@ class FeedCell: UICollectionViewCell {
         shareHorizantalViews()
         shareVerticalViews()
         addSubjectViewAndButtonToMiidle(supportButton)
-        
         if peopleCount == "1" {
             setChallenger(challengerImageView)
             setChallenger(secondChallengerImageView)
@@ -445,7 +451,7 @@ class FeedCell: UICollectionViewCell {
     
     func shareVerticalViews() {
         addConstraintsWithFormat("V:|-10-[v0]", views: nameLabel)
-        addConstraintsWithFormat("V:|-14-[v0]", views: untilDateLabel)
+        addConstraintsWithFormat("V:|-10-[v0]", views: untilDateLabel)
         view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: middleView)
         
         addConstraintsWithFormat("V:[v0(25)]-4-|", views: commentButton)
@@ -455,32 +461,6 @@ class FeedCell: UICollectionViewCell {
         addConstraintsWithFormat("V:|-8-[v0(20)]-2-[v1(1)]-2-[v2(150)]-2-[v3(1)]-2-[v4]-1-[v5(1)]-4-[v6(25)]-4-|", views: profileImageView, dividerLineView, view, dividerLineView1, thinksAboutChallengeView, dividerLineView2, likeButton)
     }
     
-    let nameLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 1
-        return label
-    }()
-    
-    let untilDateLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 8)
-        label.textAlignment = .center
-        label.textColor = UIColor.gray
-        // label.backgroundColor=UIColor.red
-        return label
-    }()
-    
-    let goalLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textAlignment = .center
-        label.textColor = UIColor.white
-        label.backgroundColor = UIColor(red: 255/255, green: 90/255, blue: 51/255, alpha: 1)
-        label.layer.cornerRadius = 3
-        label.layer.masksToBounds = true
-        return label
-    }()
-    
     let countOfLikeAndCommentLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 8)
@@ -488,13 +468,13 @@ class FeedCell: UICollectionViewCell {
         return label
     }()
     
-    let thinksAboutChallengeView: UITextView = {
-        let textView = UITextView()
-        textView.font = UIFont.systemFont(ofSize: 9)
+    let thinksAboutChallengeView: UILabel = {
+        let textView = UILabel()
+        textView.font = UIFont.boldSystemFont(ofSize: 9)
         textView.textAlignment = NSTextAlignment.left
         textView.textColor = UIColor.white
-        textView.isScrollEnabled = false
-        // textView.textContainer.lineBreakMode = NSLineBreakMode.byWordWrapping
+        textView.lineBreakMode = NSLineBreakMode.byWordWrapping
+        textView.numberOfLines = 0
         textView.backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
         textView.layer.cornerRadius = 2
         textView.layer.masksToBounds = true
@@ -522,6 +502,28 @@ class FeedCell: UICollectionViewCell {
         imageView.semanticContentAttribute = .forceRightToLeft
         return imageView
     }()
+    
+    static func labelCreateDef(_ line: Int) -> UILabel {
+        let label = UILabel()
+        label.numberOfLines = line
+        return label
+    }
+    
+    let nameLabel: UILabel = FeedCell.labelCreateDef(1)
+    
+    static func labelCreate(_ fontSize: CGFloat) -> UILabel {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: fontSize)
+        label.textAlignment = .center
+        label.textColor = UIColor.white
+        label.backgroundColor = UIColor(red: 255/255, green: 90/255, blue: 51/255, alpha: 1)
+        label.layer.cornerRadius = 3
+        label.layer.masksToBounds = true
+        return label
+    }
+    
+    let untilDateLabel: UILabel = FeedCell.labelCreate(10)
+    let goalLabel: UILabel = FeedCell.labelCreate(12)
     
     static func lineForDivider() -> UIView {
         let view = UIView()

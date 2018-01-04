@@ -9,13 +9,15 @@
               "chlDate": "20/10/2017",
               "untilDate": "03/11/2017",
               "challengerImageName" : "zuckprofile",
-              "untilDate" : "29.12.2017",
+              "untilDate" : "LAST 8 WEEKS",
               "subject" : "tennis",
               "secondChallengerImageName" : "steve_profile",
               "firstPeopleImage" : "steve_profile",
               "secondPeopleImage" : "gandhi_profile",
               "thirdPeopleImage" : "zuckprofile",
-              "type": "PUBLIC"
+              "type": "PUBLIC",
+              "countOfJoins": 32,
+              "done" : "false"
               },
               {
               "name": "Steve Jobs",
@@ -24,11 +26,11 @@
               "countOfLike": 111,
               "countOfComments": 222,
               "chlDate": "20/10/2017",
-              "untilDate": "03/11/2017",
+              "untilDate": "LAST 14 DAY",
               "challengerImageName" : "steve_profile",
-              "untilDate" : "29.12.2017",
               "subject" : "readBook",
-              "type": "SELF"
+              "type": "SELF",
+              "done" : "false"
               },
               {
               "name": "Mahatma Gandhi",
@@ -37,9 +39,8 @@
               "countOfLike": 333,
               "countOfComments": 444,
               "chlDate": "20/10/2017",
-              "untilDate": "03/11/2017",
+              "untilDate": "LAST 11 HR",
               "challengerImageName" : "gandhi_profile",
-              "untilDate" : "29.12.2017",
               "subject" : "tennis",
               "secondChallengerImageName" : "steve_profile",
               "secondChallengerImageName" : "steve_profile",
@@ -50,7 +51,43 @@
               "firstChlrPeopleImage" : "steve_profile",
               "secondChlrPeopleImage" : "gandhi_profile",
               "thirdChlrPeopleImage" : "zuckprofile",
-              "type": "PRIVATE"
+              "type": "PRIVATE",
+              "done" : "false"
+              },
+              {
+              "name": "Steve Jobs",
+              "profileImageName": "steve_profile",
+              "thinksAboutChallenge": "Iphone will sell twice?",
+              "countOfLike": 111,
+              "countOfComments": 222,
+              "chlDate": "20/10/2017",
+              "untilDate": "LAST 14 DAY",
+              "challengerImageName" : "steve_profile",
+              "subject" : "readBook",
+              "type": "SELF",
+              "done" : "true"
+              },
+              {
+              "name": "Mahatma Gandhi",
+              "profileImageName": "gandhi_profile",
+              "thinksAboutChallenge": "Goodness will win one day?",
+              "countOfLike": 333,
+              "countOfComments": 444,
+              "chlDate": "20/10/2017",
+              "untilDate": "LAST 11 HR",
+              "challengerImageName" : "gandhi_profile",
+              "subject" : "tennis",
+              "secondChallengerImageName" : "steve_profile",
+              "secondChallengerImageName" : "steve_profile",
+              "firstPeopleImage" : "steve_profile",
+              "secondPeopleImage" : "gandhi_profile",
+              "thirdPeopleImage" : "zuckprofile",
+              "secondChallengerImageName" : "steve_profile",
+              "firstChlrPeopleImage" : "steve_profile",
+              "secondChlrPeopleImage" : "gandhi_profile",
+              "thirdChlrPeopleImage" : "zuckprofile",
+              "type": "PRIVATE",
+              "done" : "true"
               }
     ]
 }

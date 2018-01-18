@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1274107200F38E60073BFF2 /* FacebookController.swift */; };
+		BA814CC4F089C9048700059B /* Pods_facebookfeed2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2197A3DA9935AC76E3BE402E /* Pods_facebookfeed2.framework */; };
 		C780A7B21C88C582007023FD /* single_post.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B11C88C582007023FD /* single_post.json */; };
 		C780A7B41C88CEFB007023FD /* all_posts.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B31C88CEFB007023FD /* all_posts.json */; };
 		C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A85F331C78C137007E9A00 /* AppDelegate.swift */; };
@@ -18,6 +20,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2197A3DA9935AC76E3BE402E /* Pods_facebookfeed2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_facebookfeed2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		976BF351127C8F413F3EEBE3 /* Pods-facebookfeed2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-facebookfeed2.release.xcconfig"; path = "Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2.release.xcconfig"; sourceTree = "<group>"; };
+		A1274107200F38E60073BFF2 /* FacebookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookController.swift; sourceTree = "<group>"; };
 		C780A7B11C88C582007023FD /* single_post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = single_post.json; sourceTree = "<group>"; };
 		C780A7B31C88CEFB007023FD /* all_posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = all_posts.json; sourceTree = "<group>"; };
 		C7A85F301C78C137007E9A00 /* facebookfeed2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = facebookfeed2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -28,6 +33,7 @@
 		C7A85F3F1C78C137007E9A00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		C7D879AD1C828B36008766AE /* OtherControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherControllers.swift; sourceTree = "<group>"; };
+		EFA45848BA61777248D55379 /* Pods-facebookfeed2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-facebookfeed2.debug.xcconfig"; path = "Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,17 +41,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA814CC4F089C9048700059B /* Pods_facebookfeed2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		092C4114DC43A768A788FAEA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				EFA45848BA61777248D55379 /* Pods-facebookfeed2.debug.xcconfig */,
+				976BF351127C8F413F3EEBE3 /* Pods-facebookfeed2.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		6DA0C3576BF138403AFEE3BF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2197A3DA9935AC76E3BE402E /* Pods_facebookfeed2.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C7A85F271C78C137007E9A00 = {
 			isa = PBXGroup;
 			children = (
 				C7A85F321C78C137007E9A00 /* challenge */,
 				C7A85F311C78C137007E9A00 /* Products */,
+				092C4114DC43A768A788FAEA /* Pods */,
+				6DA0C3576BF138403AFEE3BF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,6 +95,7 @@
 				C7D879AD1C828B36008766AE /* OtherControllers.swift */,
 				C780A7B11C88C582007023FD /* single_post.json */,
 				C780A7B31C88CEFB007023FD /* all_posts.json */,
+				A1274107200F38E60073BFF2 /* FacebookController.swift */,
 			);
 			name = challenge;
 			path = facebookfeed2;
@@ -81,9 +108,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C7A85F421C78C137007E9A00 /* Build configuration list for PBXNativeTarget "facebookfeed2" */;
 			buildPhases = (
+				9C832D20D9D4B280B0F44C22 /* [CP] Check Pods Manifest.lock */,
 				C7A85F2C1C78C137007E9A00 /* Sources */,
 				C7A85F2D1C78C137007E9A00 /* Frameworks */,
 				C7A85F2E1C78C137007E9A00 /* Resources */,
+				49551CC512FE5D28774793DD /* [CP] Embed Pods Frameworks */,
+				4D26578DB429F4FED7F3303E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -106,7 +136,9 @@
 				TargetAttributes = {
 					C7A85F2F1C78C137007E9A00 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = BYSD94TYHS;
 						LastSwiftMigration = 0820;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -142,6 +174,64 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		49551CC512FE5D28774793DD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4D26578DB429F4FED7F3303E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9C832D20D9D4B280B0F44C22 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-facebookfeed2-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C7A85F2C1C78C137007E9A00 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -149,6 +239,7 @@
 			files = (
 				C7A85F361C78C137007E9A00 /* ViewController.swift in Sources */,
 				C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */,
+				A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */,
 				C7D879AE1C828B36008766AE /* OtherControllers.swift in Sources */,
 				C7D879AC1C8289DD008766AE /* CustomTabBarController.swift in Sources */,
 			);
@@ -204,7 +295,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Challenge;
@@ -244,7 +335,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Challenge;
 				SDKROOT = iphoneos;
@@ -255,24 +346,36 @@
 		};
 		C7A85F431C78C137007E9A00 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EFA45848BA61777248D55379 /* Pods-facebookfeed2.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BYSD94TYHS;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = facebookfeed2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.letsbuildthatapp.facebookfeed2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		C7A85F441C78C137007E9A00 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 976BF351127C8F413F3EEBE3 /* Pods-facebookfeed2.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BYSD94TYHS;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = facebookfeed2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.letsbuildthatapp.facebookfeed2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

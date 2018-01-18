@@ -20,6 +20,25 @@
               "done" : "false"
               },
               {
+              "name": "Mark Zuckerberg",
+              "profileImageName": "zuckprofile",
+              "thinksAboutChallenge": "I should lose 3 pounds?",
+              "countOfLike": 150,
+              "countOfComments": 300,
+              "chlDate": "20/10/2017",
+              "untilDate": "03/11/2017",
+              "challengerImageName" : "zuckprofile",
+              "untilDate" : "LAST 8 WEEKS",
+              "subject" : "tennis",
+              "secondChallengerImageName" : "steve_profile",
+              "firstPeopleImage" : "steve_profile",
+              "secondPeopleImage" : "gandhi_profile",
+              "thirdPeopleImage" : "zuckprofile",
+              "type": "PUBLIC",
+              "countOfJoins": 32,
+              "done" : "false"
+              },
+              {
               "name": "Steve Jobs",
               "profileImageName": "steve_profile",
               "thinksAboutChallenge": "Iphone will sell twice?",

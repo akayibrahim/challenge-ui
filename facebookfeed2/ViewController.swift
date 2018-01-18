@@ -51,7 +51,7 @@ class Feed: SafeJsonObject {
 class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     var posts = [Post]()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -110,9 +110,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
             
-            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 10)], context: nil)
+            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
             
-            let knownHeight: CGFloat = 8 + 20 + 2 + 1 + 2 + 150 + 2 + 1 + 2 + 1 + 1 + 4 + 25 + 4
+            let knownHeight: CGFloat = 8 + 20 + 2 + 1 + 2 + 150 + 2 + 1 + 2 + 1 + 1 + 4 + 25 + 4 + 20
             
             return CGSize(width: view.frame.width, height: rect.height + knownHeight + 12)
         }
@@ -234,7 +234,7 @@ class FeedCell: UICollectionViewCell {
                 }
             }
             if let name = post?.name {
-                let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
+                let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
                 nameLabel.attributedText = attributedText
             }
             if let thinksAboutChallenge = post?.thinksAboutChallenge {
@@ -301,6 +301,110 @@ class FeedCell: UICollectionViewCell {
     }
     
     func setupViewsJoin(_ peopleCount: String) {
+        backgroundColor = UIColor.white
+        let contentGuide = self.readableContentGuide
+        let topMiddleLeftGuide = UILayoutGuide()
+        addLayoutGuide(topMiddleLeftGuide)
+        addSubview(profileImageView)
+        addSubview(nameLabel)
+        addSubview(goalLabel)
+        profileImageView.topAnchor.constraint(equalTo: contentGuide.topAnchor).isActive = true
+        profileImageView.leadingAnchor.constraint(equalTo: contentGuide.leadingAnchor).isActive = true
+        profileImageView.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/10).isActive = true
+        profileImageView.heightAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/10).isActive = true
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        topMiddleLeftGuide.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 8.0).isActive = true
+        
+        nameLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 8).isActive = true
+        nameLabel.leadingAnchor.constraint(equalTo: topMiddleLeftGuide.trailingAnchor).isActive = true
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        goalLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 8).isActive = true
+        goalLabel.trailingAnchor.constraint(equalTo: contentGuide.trailingAnchor).isActive = true
+        goalLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        let centerMiddleLeftGuide = UILayoutGuide()
+        let centerMiddleRightGuide = UILayoutGuide()
+        addLayoutGuide(centerMiddleLeftGuide)
+        addLayoutGuide(centerMiddleRightGuide)
+        addSubview(challengerImageView)
+        addSubview(vsImageView)
+        addSubview(subjectImageView)
+        addSubview(worldImageView)
+        
+        challengerImageView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 4).isActive = true
+        challengerImageView.leadingAnchor.constraint(equalTo: contentGuide.leadingAnchor).isActive = true
+        challengerImageView.trailingAnchor.constraint(equalTo: centerMiddleLeftGuide.leadingAnchor).isActive = true
+        challengerImageView.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/3).isActive = true
+        challengerImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+        challengerImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let middleTopGuide = UILayoutGuide()
+        let middleCenterGuide = UILayoutGuide()
+        let middleBottomGuide = UILayoutGuide()
+        addLayoutGuide(middleTopGuide)
+        addLayoutGuide(middleCenterGuide)
+        addLayoutGuide(middleBottomGuide)
+        
+        middleTopGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
+        middleCenterGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
+        middleBottomGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
+        
+        middleTopGuide.topAnchor.constraint(equalTo: challengerImageView.topAnchor).isActive = true
+        vsImageView.leadingAnchor.constraint(equalTo: challengerImageView.trailingAnchor).isActive = true
+        vsImageView.trailingAnchor.constraint(equalTo: worldImageView.leadingAnchor).isActive = true
+        vsImageView.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/3).isActive = true
+        vsImageView.topAnchor.constraint(equalTo: middleTopGuide.bottomAnchor).isActive = true
+        vsImageView.translatesAutoresizingMaskIntoConstraints = false
+        middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
+        subjectImageView.leadingAnchor.constraint(equalTo: challengerImageView.trailingAnchor).isActive = true
+        subjectImageView.trailingAnchor.constraint(equalTo: worldImageView.leadingAnchor).isActive = true
+        subjectImageView.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/3).isActive = true
+        subjectImageView.topAnchor.constraint(equalTo: middleCenterGuide.bottomAnchor).isActive = true
+        subjectImageView.translatesAutoresizingMaskIntoConstraints = false
+        middleBottomGuide.topAnchor.constraint(equalTo: subjectImageView.bottomAnchor).isActive = true
+        
+        worldImageView.leadingAnchor.constraint(equalTo: centerMiddleRightGuide.trailingAnchor).isActive = true
+        worldImageView.trailingAnchor.constraint(equalTo: contentGuide.trailingAnchor).isActive = true
+        worldImageView.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/3).isActive = true
+        worldImageView.centerYAnchor.constraint(equalTo: challengerImageView.centerYAnchor).isActive = true
+        worldImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let bottomMiddleLeftGuide = UILayoutGuide()
+        let bottomMiddleRightGuide = UILayoutGuide()
+        addLayoutGuide(bottomMiddleLeftGuide)
+        addLayoutGuide(bottomMiddleRightGuide)
+        addSubview(likeButton)
+        addSubview(commentButton)
+        addSubview(shareButton)
+        addSubview(countOfLikeAndCommentLabel)
+        
+        likeButton.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor).isActive = true
+        likeButton.leadingAnchor.constraint(equalTo: contentGuide.leadingAnchor).isActive = true
+        likeButton.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
+        likeButton.heightAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
+        likeButton.translatesAutoresizingMaskIntoConstraints = false
+        bottomMiddleLeftGuide.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor, constant: 8.0).isActive = true
+        
+        commentButton.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor).isActive = true
+        commentButton.leadingAnchor.constraint(equalTo: bottomMiddleLeftGuide.leadingAnchor).isActive = true
+        commentButton.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
+        commentButton.heightAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
+        commentButton.translatesAutoresizingMaskIntoConstraints = false
+        bottomMiddleRightGuide.leadingAnchor.constraint(equalTo: commentButton.trailingAnchor, constant: 8.0).isActive = true
+        
+        shareButton.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor).isActive = true
+        shareButton.leadingAnchor.constraint(equalTo: bottomMiddleRightGuide.leadingAnchor).isActive = true
+        shareButton.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
+        shareButton.heightAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
+        shareButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        countOfLikeAndCommentLabel.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor, constant: -5).isActive = true
+        countOfLikeAndCommentLabel.trailingAnchor.constraint(equalTo: contentGuide.trailingAnchor).isActive = true
+        countOfLikeAndCommentLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        /**
         shareAddViews()
         shareHorizantalViews()
         shareVerticalViews()
@@ -320,7 +424,7 @@ class FeedCell: UICollectionViewCell {
         } else if peopleCount == "4" {
             challengeForMorePeople(peopleView, firstPerson: firstPeopleImageView, secondPerson: secondPeopleImageView, thirdPerson: thirdPeopleImageView, morePerson: moreChlrPeopleImageView)
             setHorizantalViewConstraint(challengerImageView, secondView :peopleView)
-        }
+        }*/
     }
     
     func setupViewsSelf() {
@@ -437,7 +541,7 @@ class FeedCell: UICollectionViewCell {
     
     func shareHorizantalViews() {
         statusImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedCell.animate as (FeedCell) -> () -> ())))
-        addConstraintsWithFormat("H:|-8-[v0(20)]-8-[v1][v2]-8-|", views: profileImageView, nameLabel, untilDateLabel)
+        addConstraintsWithFormat("H:|-8-[v0(30)]-8-[v1][v2]-8-|", views: profileImageView, nameLabel, untilDateLabel)
         addConstraintsWithFormat("H:|-4-[v0]-4-|", views: thinksAboutChallengeView)
         addConstraintsWithFormat("H:|[v0]|", views: view)
         
@@ -450,31 +554,30 @@ class FeedCell: UICollectionViewCell {
     }
     
     func shareVerticalViews() {
-        addConstraintsWithFormat("V:|-10-[v0]", views: nameLabel)
-        addConstraintsWithFormat("V:|-10-[v0]", views: untilDateLabel)
+        addConstraintsWithFormat("V:|-13-[v0]", views: nameLabel)
+        addConstraintsWithFormat("V:|-13-[v0]", views: untilDateLabel)
         view.addConstraintsWithFormat("V:|-4-[v0(140)]-4-|", views: middleView)
         
         addConstraintsWithFormat("V:[v0(25)]-4-|", views: commentButton)
         addConstraintsWithFormat("V:[v0(25)]-4-|", views: shareButton)
         addConstraintsWithFormat("V:[v0(25)]-4-|", views: countOfLikeAndCommentLabel)
         
-        addConstraintsWithFormat("V:|-8-[v0(20)]-2-[v1(1)]-2-[v2(150)]-2-[v3(1)]-2-[v4]-1-[v5(1)]-4-[v6(25)]-4-|", views: profileImageView, dividerLineView, view, dividerLineView1, thinksAboutChallengeView, dividerLineView2, likeButton)
+        addConstraintsWithFormat("V:|-8-[v0(30)]-2-[v1(1)]-2-[v2(150)]-2-[v3(1)]-2-[v4]-1-[v5(1)]-4-[v6(25)]-4-|", views: profileImageView, dividerLineView, view, dividerLineView1, thinksAboutChallengeView, dividerLineView2, likeButton)
     }
     
     let countOfLikeAndCommentLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 8)
+        label.font = UIFont.boldSystemFont(ofSize: 10)
         label.textAlignment = NSTextAlignment.right;
         return label
     }()
     
     let thinksAboutChallengeView: UILabel = {
         let textView = UILabel()
-        textView.font = UIFont.boldSystemFont(ofSize: 9)
+        textView.font = UIFont.boldSystemFont(ofSize: 12)
         textView.textAlignment = NSTextAlignment.left
         textView.textColor = UIColor.white
         textView.lineBreakMode = NSLineBreakMode.byWordWrapping
-        textView.numberOfLines = 0
         textView.backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
         textView.layer.cornerRadius = 2
         textView.layer.masksToBounds = true
@@ -522,7 +625,7 @@ class FeedCell: UICollectionViewCell {
         return label
     }
     
-    let untilDateLabel: UILabel = FeedCell.labelCreate(10)
+    let untilDateLabel: UILabel = FeedCell.labelCreate(14)
     let goalLabel: UILabel = FeedCell.labelCreate(12)
     
     static func lineForDivider() -> UIView {
@@ -547,7 +650,7 @@ class FeedCell: UICollectionViewCell {
         button.setImage(UIImage(named: imageName), for: UIControlState())
         button.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
         
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 10)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         button.imageView?.contentMode = UIViewContentMode.scaleAspectFit
         
         return button
@@ -565,7 +668,7 @@ class FeedCell: UICollectionViewCell {
         button.setImage(UIImage(named: imageName), for: UIControlState())
         button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
         
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 10)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
         button.layer.borderColor = UIColor.gray.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 3.0

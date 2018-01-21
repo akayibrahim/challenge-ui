@@ -107,17 +107,15 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
         if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
+            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
             
-            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+            let knownHeight: CGFloat = (view.frame.width / 10) + (view.frame.width / 2) + (view.frame.width / 12) + (view.frame.width / 10)
             
-            let knownHeight: CGFloat = 8 + 20 + 2 + 1 + 2 + 150 + 2 + 1 + 2 + 1 + 1 + 4 + 25 + 4 + 20
-            
-            return CGSize(width: view.frame.width, height: rect.height + knownHeight + 12)
+            return CGSize(width: view.frame.width, height: rect.height + knownHeight)
         }
         
-        return CGSize(width: view.frame.width, height: 500)
+        return CGSize(width: view.frame.width, height: 200)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -303,107 +301,30 @@ class FeedCell: UICollectionViewCell {
     func setupViewsJoin(_ peopleCount: String) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
-        let topMiddleLeftGuide = UILayoutGuide()
-        addLayoutGuide(topMiddleLeftGuide)
-        addSubview(profileImageView)
-        addSubview(nameLabel)
-        addSubview(goalLabel)
-        profileImageView.topAnchor.constraint(equalTo: contentGuide.topAnchor).isActive = true
-        profileImageView.leadingAnchor.constraint(equalTo: contentGuide.leadingAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/10).isActive = true
-        profileImageView.heightAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/10).isActive = true
-        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        addGeneralSubViews()
+        generateTopView(contentGuide)
         
-        topMiddleLeftGuide.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 8.0).isActive = true
+        addTopAnchor(dividerLineView, anchor: profileImageView.bottomAnchor, constant: 2)
+        addLeadingAnchor(dividerLineView, anchor: contentGuide.leadingAnchor, constant: 0)
+        addTrailingAnchor(dividerLineView, anchor: contentGuide.trailingAnchor, constant: 0)
+        dividerLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-        nameLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 8).isActive = true
-        nameLabel.leadingAnchor.constraint(equalTo: topMiddleLeftGuide.trailingAnchor).isActive = true
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        generateMiddleTopView(contentGuide)
         
-        goalLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 8).isActive = true
-        goalLabel.trailingAnchor.constraint(equalTo: contentGuide.trailingAnchor).isActive = true
-        goalLabel.translatesAutoresizingMaskIntoConstraints = false
+        addTopAnchor(dividerLineView1, anchor: challengerImageView.bottomAnchor, constant: 2)
+        addLeadingAnchor(dividerLineView1, anchor: contentGuide.leadingAnchor, constant: 0)
+        addTrailingAnchor(dividerLineView1, anchor: contentGuide.trailingAnchor, constant: 4)
+        dividerLineView1.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-        let centerMiddleLeftGuide = UILayoutGuide()
-        let centerMiddleRightGuide = UILayoutGuide()
-        addLayoutGuide(centerMiddleLeftGuide)
-        addLayoutGuide(centerMiddleRightGuide)
-        addSubview(challengerImageView)
-        addSubview(vsImageView)
-        addSubview(subjectImageView)
-        addSubview(worldImageView)
+        generateMiddleBottomView(contentGuide)
         
-        challengerImageView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 4).isActive = true
-        challengerImageView.leadingAnchor.constraint(equalTo: contentGuide.leadingAnchor).isActive = true
-        challengerImageView.trailingAnchor.constraint(equalTo: centerMiddleLeftGuide.leadingAnchor).isActive = true
-        challengerImageView.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/3).isActive = true
-        challengerImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
-        challengerImageView.translatesAutoresizingMaskIntoConstraints = false
+        addTopAnchor(dividerLineView2, anchor: thinksAboutChallengeView.bottomAnchor, constant: 2)
+        addLeadingAnchor(dividerLineView2, anchor: contentGuide.leadingAnchor, constant: 0)
+        addTrailingAnchor(dividerLineView2, anchor: contentGuide.trailingAnchor, constant: 4)
+        dividerLineView2.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-        let middleTopGuide = UILayoutGuide()
-        let middleCenterGuide = UILayoutGuide()
-        let middleBottomGuide = UILayoutGuide()
-        addLayoutGuide(middleTopGuide)
-        addLayoutGuide(middleCenterGuide)
-        addLayoutGuide(middleBottomGuide)
-        
-        middleTopGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
-        middleCenterGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
-        middleBottomGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
-        
-        middleTopGuide.topAnchor.constraint(equalTo: challengerImageView.topAnchor).isActive = true
-        vsImageView.leadingAnchor.constraint(equalTo: challengerImageView.trailingAnchor).isActive = true
-        vsImageView.trailingAnchor.constraint(equalTo: worldImageView.leadingAnchor).isActive = true
-        vsImageView.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/3).isActive = true
-        vsImageView.topAnchor.constraint(equalTo: middleTopGuide.bottomAnchor).isActive = true
-        vsImageView.translatesAutoresizingMaskIntoConstraints = false
-        middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
-        subjectImageView.leadingAnchor.constraint(equalTo: challengerImageView.trailingAnchor).isActive = true
-        subjectImageView.trailingAnchor.constraint(equalTo: worldImageView.leadingAnchor).isActive = true
-        subjectImageView.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/3).isActive = true
-        subjectImageView.topAnchor.constraint(equalTo: middleCenterGuide.bottomAnchor).isActive = true
-        subjectImageView.translatesAutoresizingMaskIntoConstraints = false
-        middleBottomGuide.topAnchor.constraint(equalTo: subjectImageView.bottomAnchor).isActive = true
-        
-        worldImageView.leadingAnchor.constraint(equalTo: centerMiddleRightGuide.trailingAnchor).isActive = true
-        worldImageView.trailingAnchor.constraint(equalTo: contentGuide.trailingAnchor).isActive = true
-        worldImageView.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/3).isActive = true
-        worldImageView.centerYAnchor.constraint(equalTo: challengerImageView.centerYAnchor).isActive = true
-        worldImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let bottomMiddleLeftGuide = UILayoutGuide()
-        let bottomMiddleRightGuide = UILayoutGuide()
-        addLayoutGuide(bottomMiddleLeftGuide)
-        addLayoutGuide(bottomMiddleRightGuide)
-        addSubview(likeButton)
-        addSubview(commentButton)
-        addSubview(shareButton)
-        addSubview(countOfLikeAndCommentLabel)
-        
-        likeButton.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor).isActive = true
-        likeButton.leadingAnchor.constraint(equalTo: contentGuide.leadingAnchor).isActive = true
-        likeButton.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
-        likeButton.heightAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
-        likeButton.translatesAutoresizingMaskIntoConstraints = false
-        bottomMiddleLeftGuide.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor, constant: 8.0).isActive = true
-        
-        commentButton.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor).isActive = true
-        commentButton.leadingAnchor.constraint(equalTo: bottomMiddleLeftGuide.leadingAnchor).isActive = true
-        commentButton.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
-        commentButton.heightAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
-        commentButton.translatesAutoresizingMaskIntoConstraints = false
-        bottomMiddleRightGuide.leadingAnchor.constraint(equalTo: commentButton.trailingAnchor, constant: 8.0).isActive = true
-        
-        shareButton.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor).isActive = true
-        shareButton.leadingAnchor.constraint(equalTo: bottomMiddleRightGuide.leadingAnchor).isActive = true
-        shareButton.widthAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
-        shareButton.heightAnchor.constraint(equalTo: contentGuide.widthAnchor, multiplier: 1/12).isActive = true
-        shareButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        countOfLikeAndCommentLabel.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor, constant: -5).isActive = true
-        countOfLikeAndCommentLabel.trailingAnchor.constraint(equalTo: contentGuide.trailingAnchor).isActive = true
-        countOfLikeAndCommentLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+        generateBottomView(contentGuide)
+
         /**
         shareAddViews()
         shareHorizantalViews()
@@ -425,6 +346,120 @@ class FeedCell: UICollectionViewCell {
             challengeForMorePeople(peopleView, firstPerson: firstPeopleImageView, secondPerson: secondPeopleImageView, thirdPerson: thirdPeopleImageView, morePerson: moreChlrPeopleImageView)
             setHorizantalViewConstraint(challengerImageView, secondView :peopleView)
         }*/
+    }
+    
+    func generateTopView(_ contentGuide: UILayoutGuide) {
+        let topMiddleLeftGuide = UILayoutGuide()
+        addLayoutGuide(topMiddleLeftGuide)
+        
+        addTopAnchor(profileImageView, anchor: contentGuide.topAnchor, constant: 0)
+        addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: 0)
+        addWidthAnchor(profileImageView, anchor: contentGuide.widthAnchor, multiplier: 1/10)
+        addHeightAnchor(profileImageView, anchor: contentGuide.widthAnchor, multiplier: 1/10)
+        
+        topMiddleLeftGuide.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 8.0).isActive = true
+        
+        addTopAnchor(nameLabel, anchor: profileImageView.topAnchor, constant: 8)
+        addLeadingAnchor(nameLabel, anchor: topMiddleLeftGuide.trailingAnchor, constant: 0)
+        
+        addTopAnchor(untilDateLabel, anchor: profileImageView.topAnchor, constant: 8)
+        addTrailingAnchor(untilDateLabel, anchor: contentGuide.trailingAnchor, constant: 0)
+    }
+    
+    func generateMiddleTopView(_ contentGuide: UILayoutGuide) {
+        let centerMiddleLeftGuide = UILayoutGuide()
+        let centerMiddleRightGuide = UILayoutGuide()
+        let middleTopGuide = UILayoutGuide()
+        let middleCenterGuide = UILayoutGuide()
+        let middleBottomGuide = UILayoutGuide()
+        addLayoutGuide(centerMiddleLeftGuide)
+        addLayoutGuide(centerMiddleRightGuide)
+        addLayoutGuide(middleTopGuide)
+        addLayoutGuide(middleCenterGuide)
+        addLayoutGuide(middleBottomGuide)
+        
+        addTopAnchor(challengerImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
+        addLeadingAnchor(challengerImageView, anchor: contentGuide.leadingAnchor, constant: 2)
+        addTrailingAnchor(challengerImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
+        addWidthAnchor(challengerImageView, anchor: contentGuide.widthAnchor, multiplier: 1/3)
+        addHeightAnchor(challengerImageView, anchor: contentGuide.widthAnchor, multiplier: 1/2)
+        
+        middleTopGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
+        middleCenterGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
+        middleBottomGuide.heightAnchor.constraint(equalTo: challengerImageView.heightAnchor, multiplier: 1/9).isActive = true
+        
+        centerMiddleLeftGuide.leadingAnchor.constraint(equalTo: challengerImageView.trailingAnchor).isActive = true
+        centerMiddleRightGuide.trailingAnchor.constraint(equalTo: worldImageView.leadingAnchor).isActive = true
+
+        middleTopGuide.topAnchor.constraint(equalTo: challengerImageView.topAnchor).isActive = true
+        addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: 0)
+        addLeadingAnchor(vsImageView, anchor: centerMiddleLeftGuide.trailingAnchor, constant: 0)
+        addTrailingAnchor(vsImageView, anchor: centerMiddleRightGuide.leadingAnchor, constant: 0)
+        addHeightAnchor(vsImageView, anchor: challengerImageView.heightAnchor, multiplier: 1/3)
+        middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
+        addTopAnchor(subjectImageView, anchor: middleCenterGuide.bottomAnchor, constant: 0)
+        addLeadingAnchor(subjectImageView, anchor: centerMiddleLeftGuide.trailingAnchor, constant: 10)
+        addTrailingAnchor(subjectImageView, anchor: centerMiddleRightGuide.leadingAnchor, constant: -10)
+        addHeightAnchor(subjectImageView, anchor: challengerImageView.heightAnchor, multiplier: 1/3)
+        subjectImageView.contentMode = .scaleAspectFill
+        middleBottomGuide.topAnchor.constraint(equalTo: subjectImageView.bottomAnchor).isActive = true
+        
+        addLeadingAnchor(worldImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 0)
+        addTrailingAnchor(worldImageView, anchor: contentGuide.trailingAnchor, constant: 0)
+        addWidthAnchor(worldImageView, anchor: contentGuide.widthAnchor, multiplier: 1/3)
+        addHeightAnchor(worldImageView, anchor: contentGuide.widthAnchor, multiplier: 1/2)
+        worldImageView.centerYAnchor.constraint(equalTo: challengerImageView.centerYAnchor).isActive = true
+    }
+    
+    func generateMiddleBottomView(_ contentGuide: UILayoutGuide) {
+        addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: 2)
+        addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
+        addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
+    }
+    
+    func generateBottomView(_ contentGuide: UILayoutGuide) {
+        let bottomMiddleLeftGuide = UILayoutGuide()
+        let bottomMiddleRightGuide = UILayoutGuide()
+        addLayoutGuide(bottomMiddleLeftGuide)
+        addLayoutGuide(bottomMiddleRightGuide)
+        
+        addTopAnchor(likeButton, anchor: dividerLineView2.bottomAnchor, constant: 2)
+        addLeadingAnchor(likeButton, anchor: contentGuide.leadingAnchor, constant: 0)
+        addWidthAnchor(likeButton, anchor: contentGuide.widthAnchor, multiplier: 1/12)
+        addHeightAnchor(likeButton, anchor: contentGuide.widthAnchor, multiplier: 1/12)
+        bottomMiddleLeftGuide.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor, constant: 8.0).isActive = true
+        
+        addTopAnchor(commentButton, anchor: dividerLineView2.bottomAnchor, constant: 2)
+        addLeadingAnchor(commentButton, anchor: bottomMiddleLeftGuide.leadingAnchor, constant: 2)
+        addWidthAnchor(commentButton, anchor: contentGuide.widthAnchor, multiplier: 1/12)
+        addHeightAnchor(commentButton, anchor: contentGuide.widthAnchor, multiplier: 1/12)
+        bottomMiddleRightGuide.leadingAnchor.constraint(equalTo: commentButton.trailingAnchor, constant: 8.0).isActive = true
+        
+        addTopAnchor(shareButton, anchor: dividerLineView2.bottomAnchor, constant: 0)
+        addLeadingAnchor(shareButton, anchor: bottomMiddleRightGuide.leadingAnchor, constant: 0)
+        addWidthAnchor(shareButton, anchor: contentGuide.widthAnchor, multiplier: 1/12)
+        addHeightAnchor(shareButton, anchor: contentGuide.widthAnchor, multiplier: 1/12)
+        
+        addTopAnchor(countOfLikeAndCommentLabel, anchor: dividerLineView2.bottomAnchor, constant: 10)
+        addTrailingAnchor(countOfLikeAndCommentLabel, anchor: contentGuide.trailingAnchor, constant: 0)
+    }
+    
+    func addGeneralSubViews() {
+        addSubview(profileImageView)
+        addSubview(nameLabel)
+        addSubview(untilDateLabel)
+        addSubview(challengerImageView)
+        addSubview(vsImageView)
+        addSubview(subjectImageView)
+        addSubview(worldImageView)
+        addSubview(dividerLineView)
+        addSubview(likeButton)
+        addSubview(commentButton)
+        addSubview(shareButton)
+        addSubview(countOfLikeAndCommentLabel)
+        addSubview(dividerLineView1)
+        addSubview(thinksAboutChallengeView)
+        addSubview(dividerLineView2)
     }
     
     func setupViewsSelf() {
@@ -572,15 +607,16 @@ class FeedCell: UICollectionViewCell {
         return label
     }()
     
-    let thinksAboutChallengeView: UILabel = {
-        let textView = UILabel()
+    let thinksAboutChallengeView: UITextView = {
+        let textView = UITextView()
         textView.font = UIFont.boldSystemFont(ofSize: 12)
         textView.textAlignment = NSTextAlignment.left
         textView.textColor = UIColor.white
-        textView.lineBreakMode = NSLineBreakMode.byWordWrapping
         textView.backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
         textView.layer.cornerRadius = 2
         textView.layer.masksToBounds = true
+        textView.isScrollEnabled = false
+        textView.isEditable = false
         return textView	
     }()
     
@@ -625,7 +661,7 @@ class FeedCell: UICollectionViewCell {
         return label
     }
     
-    let untilDateLabel: UILabel = FeedCell.labelCreate(14)
+    let untilDateLabel: UILabel = FeedCell.labelCreate(12)
     let goalLabel: UILabel = FeedCell.labelCreate(12)
     
     static func lineForDivider() -> UIView {
@@ -743,7 +779,87 @@ extension UIView {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutFormatOptions(), metrics: nil, views: viewsDictionary))
     }
     
+    func addTopAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutYAxisAnchor>, constant: CGFloat) {
+        view.topAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    func addBottomAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutYAxisAnchor>, constant: CGFloat) {
+        view.bottomAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    func addLeadingAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutXAxisAnchor>, constant: CGFloat) {
+        view.leadingAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    func addTrailingAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutXAxisAnchor>, constant: CGFloat) {
+        view.trailingAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    func addWidthAnchor(_ view: UIView, anchor: NSLayoutDimension, multiplier: CGFloat) {
+        view.widthAnchor.constraint(equalTo: anchor, multiplier: multiplier).isActive = true
+    }
+    
+    func addHeightAnchor(_ view: UIView, anchor: NSLayoutDimension, multiplier: CGFloat) {
+        view.heightAnchor.constraint(equalTo: anchor, multiplier: multiplier).isActive = true
+    }
 }
 
+extension UIFont {
+    
+    /**
+     Will return the best approximated font size which will fit in the bounds.
+     If no font with name `fontName` could be found, nil is returned.
+     */
+    static func bestFitFontSize(for text: String, in bounds: CGRect, fontName: String) -> CGFloat? {
+        var maxFontSize: CGFloat = 32.0 // UIKit best renders with factors of 2
+        guard let maxFont = UIFont(name: fontName, size: maxFontSize) else {
+            return nil
+        }
+        
+        let textWidth = text.width(withConstraintedHeight: bounds.height, font: maxFont)
+        let textHeight = text.height(withConstrainedWidth: bounds.width, font: maxFont)
+        
+        // Determine the font scaling factor that should allow the string to fit in the given rect
+        let scalingFactor = min(bounds.width / textWidth, bounds.height / textHeight)
+        
+        // Adjust font size
+        maxFontSize *= scalingFactor
+        
+        return floor(maxFontSize)
+    }
+    
+}
 
+fileprivate extension String {
+    
+    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        
+        return ceil(boundingBox.height)
+    }
+    
+    func width(withConstraintedHeight height: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        
+        return ceil(boundingBox.width)
+    }
+}
 
+extension UILabel {
+    /// Will auto resize the contained text to a font size which fits the frames bounds
+    /// Uses the pre-set font to dynamicly determine the proper sizing
+    func fitTextToBounds() {
+        guard let text = text, let currentFont = font else { return }
+        
+        if let dynamicFontSize = UIFont.bestFitFontSize(for: text, in: bounds, fontName: currentFont.fontName) {
+            font = UIFont(name: currentFont.fontName, size: dynamicFontSize)
+        }
+    }
+    
+}

@@ -58,7 +58,6 @@
 //        posts.append(postSteve)
 //        posts.append(postGandhi)
 
-
 {
     "posts": [
               {
@@ -187,12 +186,49 @@
               "done" : "true",
               "firstTeamCount" : "2",
               "secondTeamCount" : "2"
+              },
+              {
+              "name": "Mahatma Gandhi",
+              "profileImageName": "gandhi_profile",
+              "thinksAboutChallenge": "Goodness will win one day?",
+              "countOfLike": 333,
+              "countOfComments": 444,
+              "chlDate": "20/10/2017",
+              "untilDate": "LAST 11 HR",
+              "subject" : "tennis",
+              "firstPeopleImage" : "steve_profile",
+              "secondPeopleImage" : "gandhi_profile",
+              "thirdPeopleImage" : "zuckprofile",
+              "firstChlrPeopleImage" : "steve_profile",
+              "secondChlrPeopleImage" : "gandhi_profile",
+              "thirdChlrPeopleImage" : "zuckprofile",
+              "type": "PRIVATE",
+              "done" : "true",
+              "firstTeamCount" : "3",
+              "secondTeamCount" : "3"
+              },
+              {
+              "name": "Mahatma Gandhi",
+              "profileImageName": "gandhi_profile",
+              "thinksAboutChallenge": "Goodness will win one day?",
+              "countOfLike": 333,
+              "countOfComments": 444,
+              "chlDate": "20/10/2017",
+              "untilDate": "LAST 11 HR",
+              "subject" : "tennis",
+              "firstPeopleImage" : "steve_profile",
+              "secondPeopleImage" : "gandhi_profile",
+              "thirdPeopleImage" : "zuckprofile",
+              "firstChlrPeopleImage" : "steve_profile",
+              "secondChlrPeopleImage" : "gandhi_profile",
+              "thirdChlrPeopleImage" : "zuckprofile",
+              "type": "PRIVATE",
+              "done" : "true",
+              "firstTeamCount" : "4",
+              "secondTeamCount" : "4"
               }
               ]
 }
-
-
-
 
 {
     "posts": [
@@ -205,180 +241,466 @@
               "chlDate": "20/10/2017",
               "untilDate": "LAST 11 HR",
               "subject" : "tennis",
-              "firstPeopleImage" : "steve_profile",
-              "firstChlrPeopleImage" : "steve_profile",
-              "type": "PRIVATE",
-              "done" : "false",
-              "firstTeamCount" : "1",
-              "secondTeamCount" : "1"
-              },
-              {
-              "name": "Mahatma Gandhi",
-              "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "Goodness will win one day?",
-              "countOfLike": 333,
-              "countOfComments": 444,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 11 HR",
-              "subject" : "tennis",
-              "firstPeopleImage" : "steve_profile",
-              "secondPeopleImage" : "gandhi_profile",
-              "thirdPeopleImage" : "zuckprofile",
-              "firstChlrPeopleImage" : "steve_profile",
-              "secondChlrPeopleImage" : "gandhi_profile",
-              "thirdChlrPeopleImage" : "zuckprofile",
-              "type": "PRIVATE",
-              "done" : "true",
-              "firstTeamCount" : "2",
-              "secondTeamCount" : "2"
-              },
-              {
-              "name": "Mahatma Gandhi",
-              "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "Goodness will win one day?",
-              "countOfLike": 333,
-              "countOfComments": 444,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 11 HR",
-              "subject" : "tennis",
-              "firstPeopleImage" : "steve_profile",
-              "secondPeopleImage" : "gandhi_profile",
-              "thirdPeopleImage" : "zuckprofile",
-              "firstChlrPeopleImage" : "steve_profile",
-              "secondChlrPeopleImage" : "gandhi_profile",
-              "thirdChlrPeopleImage" : "zuckprofile",
-              "type": "PRIVATE",
-              "done" : "true",
-              "firstTeamCount" : "3",
-              "secondTeamCount" : "3"
-              },
-              {
-              "name": "Mahatma Gandhi",
-              "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "Goodness will win one day?",
-              "countOfLike": 333,
-              "countOfComments": 444,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 11 HR",
-              "subject" : "tennis",
-              "firstPeopleImage" : "steve_profile",
-              "secondPeopleImage" : "gandhi_profile",
-              "thirdPeopleImage" : "zuckprofile",
-              "firstChlrPeopleImage" : "steve_profile",
-              "secondChlrPeopleImage" : "gandhi_profile",
-              "thirdChlrPeopleImage" : "zuckprofile",
-              "type": "PRIVATE",
-              "done" : "true",
-              "firstTeamCount" : "4",
-              "secondTeamCount" : "4"
-              },
-              {
-              "name": "Steve Jobs",
-              "profileImageName": "steve_profile",
-              "thinksAboutChallenge": "Iphone will sell twice?",
-              "countOfLike": 111,
-              "countOfComments": 222,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 14 DAY",
-              "firstChlrPeopleImage" : "steve_profile",
-              "subject" : "readBook",
-              "type": "SELF",
-              "done" : "false",
-              "firstTeamCount" : "1",
-              "secondTeamCount" : "0"
-              },
-              {
-              "name": "Mahatma Gandhi",
-              "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "Goodness will win one day?",
-              "countOfLike": 333,
-              "countOfComments": 444,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 11 HR",
-              "subject" : "tennis",
-              "firstPeopleImage" : "steve_profile",
-              "firstChlrPeopleImage" : "steve_profile",
-              "type": "PRIVATE",
-              "done" : "false",
-              "firstTeamCount" : "1",
-              "secondTeamCount" : "1"
-              },
-              {
-              "name": "Mahatma Gandhi",
-              "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "Goodness will win one day?",
-              "countOfLike": 333,
-              "countOfComments": 444,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 11 HR",
-              "subject" : "tennis",
-              "firstPeopleImage" : "steve_profile",
-              "secondPeopleImage" : "gandhi_profile",
-              "thirdPeopleImage" : "zuckprofile",
-              "firstChlrPeopleImage" : "steve_profile",
-              "secondChlrPeopleImage" : "gandhi_profile",
-              "thirdChlrPeopleImage" : "zuckprofile",
-              "type": "PRIVATE",
-              "done" : "true",
-              "firstTeamCount" : "2",
-              "secondTeamCount" : "2"
-              },
-              {
-              "name": "Mahatma Gandhi",
-              "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "Goodness will win one day?",
-              "countOfLike": 333,
-              "countOfComments": 444,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 11 HR",
-              "subject" : "tennis",
-              "firstPeopleImage" : "steve_profile",
-              "secondPeopleImage" : "gandhi_profile",
-              "thirdPeopleImage" : "zuckprofile",
-              "firstChlrPeopleImage" : "steve_profile",
-              "secondChlrPeopleImage" : "gandhi_profile",
-              "thirdChlrPeopleImage" : "zuckprofile",
-              "type": "PRIVATE",
-              "done" : "true",
-              "firstTeamCount" : "3",
-              "secondTeamCount" : "3"
-              },
-              {
-              "name": "Mahatma Gandhi",
-              "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "Goodness will win one day?",
-              "countOfLike": 333,
-              "countOfComments": 444,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 11 HR",
-              "subject" : "tennis",
-              "firstPeopleImage" : "steve_profile",
-              "secondPeopleImage" : "gandhi_profile",
-              "thirdPeopleImage" : "zuckprofile",
-              "firstChlrPeopleImage" : "steve_profile",
-              "secondChlrPeopleImage" : "gandhi_profile",
-              "thirdChlrPeopleImage" : "zuckprofile",
+              "versusAttendanceList" : [
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":true,
+                                        "secondTeamMember":false,
+                                        "name":"steve_profile",
+                                        "FacebookID": "0980979767858748"
+                                        },
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":true,
+                                        "secondTeamMember":false,
+                                        "name":"gandhi_profile",
+                                        "FacebookID": "0980979767858748"
+                                        },
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":true,
+                                        "secondTeamMember":false,
+                                        "name":"gandhi_profile",
+                                        "FacebookID": "0980979767858748"
+                                        },
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":true,
+                                        "secondTeamMember":false,
+                                        "name":"steve_profile",
+                                        "FacebookID": "0980979767858748"
+                                        },
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":false,
+                                        "secondTeamMember":true,
+                                        "name":"gandhi_profile",
+                                        "FacebookID": "0980979767858748"
+                                        },
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":false,
+                                        "secondTeamMember":true,
+                                        "name":"gandhi_profile",
+                                        "FacebookID": "0980979767858748"
+                                        },
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":false,
+                                        "secondTeamMember":true,
+                                        "name":"gandhi_profile",
+                                        "FacebookID": "0980979767858748"
+                                        },
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":false,
+                                        "secondTeamMember":true,
+                                        "name":"gandhi_profile",
+                                        "FacebookID": "0980979767858748"
+                                        }
+                                        ],
               "type": "PRIVATE",
               "done" : "true",
               "firstTeamCount" : "4",
               "secondTeamCount" : "4"
-              },
-              {
-              "name": "Steve Jobs",
-              "profileImageName": "steve_profile",
-              "thinksAboutChallenge": "Iphone will sell twice?",
-              "countOfLike": 111,
-              "countOfComments": 222,
-              "chlDate": "20/10/2017",
-              "untilDate": "LAST 14 DAY",
-              "firstChlrPeopleImage" : "steve_profile",
-              "subject" : "readBook",
-              "type": "SELF",
-              "done" : "false",
-              "firstTeamCount" : "1",
-              "secondTeamCount" : "0"
               }
               ]
 }
 
 
+
+
+
+
+{
+    "name": "Steve Jobs",
+    "profileImageName": "steve_profile",
+    "thinksAboutChallenge": "Iphone will sell twice?",
+    "countOfLike": 111,
+    "countOfComments": 222,
+    "chlDate": "20/10/2017",
+    "untilDate": "LAST 14 DAY",
+    "subject" : "readBook",
+    "type": "SELF",
+    "done" : "false",
+    "firstTeamCount" : "1",
+    "secondTeamCount" : "0",
+    "challengerFBId" : "steve_profile"
+},
+{
+    "name": "Mahatma Gandhi",
+    "profileImageName": "gandhi_profile",
+    "countOfLike": 333,
+    "countOfComments": 444,
+    "chlDate": "20/10/2017",
+    "untilDate": "LAST 11 HR",
+    "subject" : "tennis",
+    "versusAttendanceList" : [
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "steve_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "gandhi_profile"
+                              }
+                              ],
+    "type": "PRIVATE",
+    "done" : "true",
+    "firstTeamCount" : "1",
+    "secondTeamCount" : "1"
+},
+{
+    "name": "Mahatma Gandhi",
+    "profileImageName": "gandhi_profile",
+    "thinksAboutChallenge": "Goodness will win one day?",
+    "countOfLike": 333,
+    "countOfComments": 444,
+    "chlDate": "20/10/2017",
+    "untilDate": "LAST 11 HR",
+    "subject" : "tennis",
+    "versusAttendanceList" : [
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "steve_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "gandhi_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "zuckprofile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "gandhi_profile"
+                              }
+                              ],
+    "type": "PRIVATE",
+    "done" : "true",
+    "firstTeamCount" : "2",
+    "secondTeamCount" : "2"
+},
+{
+    "name": "Mahatma Gandhi",
+    "profileImageName": "gandhi_profile",
+    "thinksAboutChallenge": "Goodness will win one day?",
+    "countOfLike": 333,
+    "countOfComments": 444,
+    "chlDate": "20/10/2017",
+    "untilDate": "LAST 11 HR",
+    "subject" : "tennis",
+    "versusAttendanceList" : [
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "steve_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "gandhi_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "zuckprofile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "zuckprofile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "gandhi_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "steve_profile"
+                              }
+                              ],
+    "type": "PRIVATE",
+    "done" : "true",
+    "firstTeamCount" : "3",
+    "secondTeamCount" : "3"
+},
+{
+    "name": "Mahatma Gandhi",
+    "profileImageName": "gandhi_profile",
+    "thinksAboutChallenge": "Goodness will win one day?",
+    "countOfLike": 333,
+    "countOfComments": 444,
+    "chlDate": "20/10/2017",
+    "untilDate": "LAST 11 HR",
+    "subject" : "tennis",
+    "versusAttendanceList" : [
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "steve_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "gandhi_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "zuckprofile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":true,
+                              "secondTeamMember":false,
+                              "facebookID": "steve_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "gandhi_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "zuckprofile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "steve_profile"
+                              },
+                              {
+                              "memberId":"5a1f048318e6063778be8f78",
+                              "accept":false,
+                              "firstTeamMember":false,
+                              "secondTeamMember":true,
+                              "facebookID": "gandhi_profile"
+                              }
+                              ],
+    "type": "PRIVATE",
+    "done" : "true",
+    "firstTeamCount" : "4",
+    "secondTeamCount" : "4"
+},
+{
+    "name": "Mark Zuckerberg",
+    "profileImageName": "zuckprofile",
+    "countOfLike": 150,
+    "countOfComments": 300,
+    "chlDate": "20/10/2017",
+    "untilDate": "03/11/2017",
+    "challengerFBId" : "zuckprofile",
+    "untilDate" : "LAST 8 WEEKS",
+    "subject" : "tennis",
+    "type": "PUBLIC",
+    "countOfJoins": 32,
+    "done" : "false",
+    "firstTeamCount" : "1",
+    "secondTeamCount" : "0",
+    "joinAttendanceList" : [
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":true,
+                            "facebookID": "steve_profile"
+                            }
+                            ]
+},
+{
+    "name": "Mark Zuckerberg",
+    "profileImageName": "zuckprofile",
+    "thinksAboutChallenge": "I should lose 3 pounds?",
+    "countOfLike": 150,
+    "countOfComments": 300,
+    "chlDate": "20/10/2017",
+    "untilDate": "03/11/2017",
+    "challengerFBId" : "zuckprofile",
+    "untilDate" : "LAST 8 WEEKS",
+    "subject" : "tennis",
+    "type": "PUBLIC",
+    "countOfJoins": 32,
+    "done" : "false",
+    "firstTeamCount" : "1",
+    "secondTeamCount" : "2",
+    "joinAttendanceList" : [
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":true,
+                            "facebookID": "steve_profile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "gandhi_profile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "zuckprofile"
+                            }
+                            ]
+},
+{
+    "name": "Mark Zuckerberg",
+    "profileImageName": "zuckprofile",
+    "thinksAboutChallenge": "I should lose 3 pounds? I should lose 3 pounds? I should lose 3 pounds? I should lose 3 pounds? I should lose 3 pounds? I should lose 3 pounds?",
+    "countOfLike": 150,
+    "countOfComments": 300,
+    "chlDate": "20/10/2017",
+    "untilDate": "03/11/2017",
+    "challengerFBId" : "zuckprofile",
+    "untilDate" : "LAST 8 WEEKS",
+    "subject" : "tennis",
+    "type": "PUBLIC",
+    "countOfJoins": 32,
+    "done" : "false",
+    "firstTeamCount" : "1",
+    "secondTeamCount" : "3",
+    "joinAttendanceList" : [
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":true,
+                            "facebookID": "steve_profile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "steve_profile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "gandhi_profile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "zuckprofile"
+                            }
+                            ]
+},
+{
+    "name": "Mark Zuckerberg",
+    "profileImageName": "zuckprofile",
+    "thinksAboutChallenge": "I should lose 3 pounds?",
+    "countOfLike": 150,
+    "countOfComments": 300,
+    "chlDate": "20/10/2017",
+    "untilDate": "03/11/2017",
+    "challengerFBId" : "zuckprofile",
+    "untilDate" : "LAST 8 WEEKS",
+    "subject" : "tennis",
+    "type": "PUBLIC",
+    "countOfJoins": 32,
+    "done" : "false",
+    "firstTeamCount" : "1",
+    "secondTeamCount" : "4",
+    "joinAttendanceList" : [
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":true,
+                            "facebookID": "steve_profile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "gandhi_profile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "steve_profile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "zuckprofile"
+                            },
+                            {
+                            "memberId":"5a1f048318e6063778be8f78",
+                            "join":false,
+                            "proof":true,
+                            "challenger":false,
+                            "facebookID": "steve_profile"
+                            }
+                            ]
+}

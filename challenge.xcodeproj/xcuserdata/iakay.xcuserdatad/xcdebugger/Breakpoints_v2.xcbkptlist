@@ -10,29 +10,152 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/ViewController.swift"
-            timestampString = "538667775.847566"
+            timestampString = "539683280.4674309"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "410"
-            endingLineNumber = "410"
-            landmarkName = "generateFirstTeam(_:centerMiddleLeftGuide:firstTeamCount:)"
-            landmarkType = "7">
+            startingLineNumber = "478"
+            endingLineNumber = "478"
+            landmarkName = "FeedCell"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/ViewController.swift"
-            timestampString = "538667775.847936"
+            timestampString = "539683280.468918"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "491"
-            endingLineNumber = "491"
-            landmarkName = "generateSecondTeam(_:centerMiddleRightGuide:secondTeamCount:type:)"
-            landmarkType = "7">
+            startingLineNumber = "97"
+            endingLineNumber = "97"
+            landmarkName = "unknown"
+            landmarkType = "0">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "facebookfeed2.FeedController.__deallocating_deinit"
+                  moduleName = "facebookfeed2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/ViewController.swift"
+                  timestampString = "539121359.667387"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "4">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "facebookfeed2.FeedController.__allocating_init(collectionViewLayout: __ObjC.UICollectionViewLayout) -&gt; facebookfeed2.FeedController"
+                  moduleName = "facebookfeed2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/ViewController.swift"
+                  timestampString = "539121359.671935"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "4">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "facebookfeed2.FeedController.init(collectionViewLayout: __ObjC.UICollectionViewLayout) -&gt; facebookfeed2.FeedController"
+                  moduleName = "facebookfeed2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/ViewController.swift"
+                  timestampString = "539121359.676645"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "21">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "facebookfeed2.FeedController.__allocating_init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__ObjC.Bundle&gt;) -&gt; facebookfeed2.FeedController"
+                  moduleName = "facebookfeed2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/ViewController.swift"
+                  timestampString = "539121359.680254"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "12">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "facebookfeed2.FeedController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__ObjC.Bundle&gt;) -&gt; facebookfeed2.FeedController"
+                  moduleName = "facebookfeed2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/ViewController.swift"
+                  timestampString = "539121359.684569"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "46">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "facebookfeed2.FeedController.__allocating_init(coder: __ObjC.NSCoder) -&gt; Swift.Optional&lt;facebookfeed2.FeedController&gt;"
+                  moduleName = "facebookfeed2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/ViewController.swift"
+                  timestampString = "539121359.688798"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "4">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "facebookfeed2.FeedController.init(coder: __ObjC.NSCoder) -&gt; Swift.Optional&lt;facebookfeed2.FeedController&gt;"
+                  moduleName = "facebookfeed2"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/ViewController.swift"
+                  timestampString = "539121359.691376"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "21">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "facebookfeed2/ViewController.swift"
+            timestampString = "539683280.469682"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "297"
+            endingLineNumber = "297"
+            landmarkName = "post"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

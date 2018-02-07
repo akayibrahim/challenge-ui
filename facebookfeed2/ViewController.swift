@@ -20,16 +20,63 @@ class Post: SafeJsonObject {
     var untilDate: String?
     var type: String?
     var subject: String?
-    var firstPeopleImage: String?
-    var secondPeopleImage: String?
-    var thirdPeopleImage: String?
-    var firstChlrPeopleImage: String?
-    var secondChlrPeopleImage: String?
-    var thirdChlrPeopleImage: String?
     var done : String?
     var countOfJoins : NSNumber?
     var firstTeamCount : String?
     var secondTeamCount : String?
+    var challengerFBId : String?
+    @nonobjc var versusAttendanceList = [VersusAttendance]()
+    @nonobjc var joinAttendanceList = [JoinAttendance]()
+    
+    /*
+    init(bookDict: NSDictionary){
+        self.name = (bookDict["name"] ?? "") as! String
+        self.profileImageName = (bookDict["profileImageName"] ?? "") as! String
+        self.thinksAboutChallenge = (bookDict["thinksAboutChallenge"] ?? "") as! String
+        self.countOfLike = (bookDict["countOfLike"] ?? -1) as! NSNumber
+        self.countOfComments = (bookDict["countOfComments"] ?? -1) as! NSNumber
+        self.chlDate = (bookDict["chlDate"] ?? "") as! String
+        self.untilDate = (bookDict["untilDate"] ?? "") as! String
+        self.type = (bookDict["type"] ?? "") as! String
+        self.subject = (bookDict["subject"] ?? "") as! String
+        self.done = (bookDict["done"] ?? "") as! String
+        self.countOfJoins = (bookDict["countOfJoins"] ?? -1) as! NSNumber
+        self.firstTeamCount = (bookDict["firstTeamCount"] ?? "") as! String
+        self.secondTeamCount = (bookDict["secondTeamCount"] ?? "") as! String
+        self.versusAttendanceList = (bookDict["versusAttendanceList"] ?? []) as! [VersusAttendance]
+    }*/
+}
+
+class VersusAttendance: SafeJsonObject {
+    var memberId: String?
+    var accept: Bool?
+    var firstTeamMember: Bool?
+    var secondTeamMember: Bool?
+    var FacebookID: String?
+    
+    init(data: [String : AnyObject]) {
+        self.memberId = data["memberId"] as? String ?? ""
+        self.accept = data["accept"] as? Bool ?? false
+        self.firstTeamMember = data["firstTeamMember"] as? Bool ?? false
+        self.secondTeamMember = data["secondTeamMember"] as? Bool ?? false
+        self.FacebookID = data["facebookID"] as? String ?? ""
+    }
+}
+
+class JoinAttendance: SafeJsonObject {
+    var memberId: String?
+    var join: Bool?
+    var proof: Bool?
+    var challenger: Bool?
+    var FacebookID: String?
+    
+    init(data: [String : AnyObject]) {
+        self.memberId = data["memberId"] as? String ?? ""
+        self.join = data["join"] as? Bool ?? false
+        self.proof = data["proof"] as? Bool ?? false
+        self.challenger = data["challenger"] as? Bool ?? false
+        self.FacebookID = data["facebookID"] as? String ?? ""
+    }
 }
 
 class SafeJsonObject: NSObject {
@@ -54,42 +101,42 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
 //        let samplePost = Post()
 //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
-        
         if let path = Bundle.main.path(forResource: "all_posts", ofType: "json") {
-            
             do {
-                
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                
                 let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                
                 if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    
                     self.posts = [Post]()
-                    
                     for postDictionary in postsArray {
                         let post = Post()
+                        post.versusAttendanceList = [VersusAttendance]()
+                        if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {
+                            for versus in verAttenLis {
+                                let versusAtten = VersusAttendance(data: versus)
+                                post.versusAttendanceList.append(versusAtten)
+                            }
+                        }
+                        post.joinAttendanceList = [JoinAttendance]()
+                        if let joinAttenLis = postDictionary["joinAttendanceList"] as? [[String: AnyObject]] {
+                            for join in joinAttenLis {
+                                let joinAtten = JoinAttendance(data: join)
+                                post.joinAttendanceList.append(joinAtten)
+                            }
+                        }
                         post.setValuesForKeys(postDictionary)
                         self.posts.append(post)
+                        self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
                     }
-
                 }
-                
             } catch let err {
                 print(err)
             }
-            
         }
-        
         navigationItem.title = "CHL"
-        
         collectionView?.alwaysBounceVertical = true
-        
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
     }
     
@@ -99,29 +146,35 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
-        
         feedCell.post = posts[indexPath.item]
         feedCell.feedController = self
-        
+        feedCell.prepareForReuse()
         return feedCell
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let screenSize = UIScreen.main.bounds
+        let knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width * 1.3/18) + 25
+
         if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
             let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
-            let screenSize = UIScreen.main.bounds
-            let knownHeight: CGFloat = (screenSize.width / 10) + (screenSize.width / 2) + (screenSize.width / 12) + (screenSize.width / 8)
-            
-            return CGSize(width: view.frame.width, height: rect.height + knownHeight)
+            return CGSize(width: view.frame.width, height: rect.height + knownHeight + 20)
         }
         
-        return CGSize(width: view.frame.width, height: 200)
+        return CGSize(width: view.frame.width, height: knownHeight)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         collectionView?.collectionViewLayout.invalidateLayout()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 8
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     }
     
     let zoomImageView = UIImageView()
@@ -133,31 +186,22 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func animateImageView(_ statusImageView: UIImageView) {
         self.statusImageView = statusImageView
-        
         if let startingFrame = statusImageView.superview?.convert(statusImageView.frame, to: nil) {
-            
             statusImageView.alpha = 0
-            
             blackBackgroundView.frame = self.view.frame
             blackBackgroundView.backgroundColor = UIColor.black
             blackBackgroundView.alpha = 0
             view.addSubview(blackBackgroundView)
-            
             navBarCoverView.frame = CGRect(x: 0, y: 0, width: 1000, height: 20 + 44)
             navBarCoverView.backgroundColor = UIColor.black
             navBarCoverView.alpha = 0
-            
-
-            
             if let keyWindow = UIApplication.shared.keyWindow {
                 keyWindow.addSubview(navBarCoverView)
-                
                 tabBarCoverView.frame = CGRect(x: 0, y: keyWindow.frame.height - 49, width: 1000, height: 49)
                 tabBarCoverView.backgroundColor = UIColor.black
                 tabBarCoverView.alpha = 0
                 keyWindow.addSubview(tabBarCoverView)
             }
-            
             zoomImageView.backgroundColor = UIColor.red
             zoomImageView.frame = startingFrame
             zoomImageView.isUserInteractionEnabled = true
@@ -165,25 +209,15 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             zoomImageView.contentMode = .scaleAspectFill
             zoomImageView.clipsToBounds = true
             view.addSubview(zoomImageView)
-            
             zoomImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedController.zoomOut)))
-            
             UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: { () -> Void in
-                
                 let height = (self.view.frame.width / startingFrame.width) * startingFrame.height
-                
                 let y = self.view.frame.height / 2 - height / 2
-                
                 self.zoomImageView.frame = CGRect(x: 0, y: y, width: self.view.frame.width, height: height)
-                
                 self.blackBackgroundView.alpha = 1
-                
                 self.navBarCoverView.alpha = 1
-                
                 self.tabBarCoverView.alpha = 1
-                
                 }, completion: nil)
-            
         }
     }
     
@@ -218,14 +252,19 @@ class FeedCell: UICollectionViewCell {
         feedController?.animateImageView(statusImageView)
     }
     
+    func setImage(name: String?, imageView: UIImageView) {
+        if let peopleImage = name {
+            imageView.image = UIImage(named: peopleImage)
+        }
+    }
+    
+    override func prepareForReuse() {
+        // Remove any state in this cell that may be left over from its previous use.
+        super.prepareForReuse()
+    }
+    
     var post: Post? {
         didSet {
-            if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount {
-                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type)
-            } else {
-                let type = post?.type
-                print(type)
-            }
             if let name = post?.name {
                 let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
                 nameLabel.attributedText = attributedText
@@ -246,24 +285,61 @@ class FeedCell: UICollectionViewCell {
                 if let countOfJoins = post?.countOfJoins {
                     countOfLikeAndCommentLabel.text?.append(" \(countOfJoins) Joins ")
                 }
-            }
-            if let firstPeopleImage = post?.firstPeopleImage {
-                firstPeopleImageView.image = UIImage(named: firstPeopleImage)
-            }
-            if let secondPeopleImage = post?.secondPeopleImage {
-                secondPeopleImageView.image = UIImage(named: secondPeopleImage)
-            }
-            if let thirdPeopleImage = post?.thirdPeopleImage {
-                thirdPeopleImageView.image = UIImage(named: thirdPeopleImage)
-            }
-            if let firstChlrPeopleImage = post?.firstChlrPeopleImage {
-                firstChlrPeopleImageView.image = UIImage(named: firstChlrPeopleImage)
-            }
-            if let secondChlrPeopleImage = post?.secondChlrPeopleImage {
-                secondChlrPeopleImageView.image = UIImage(named: secondChlrPeopleImage)
-            }
-            if let thirdChlrPeopleImage = post?.thirdChlrPeopleImage {
-                thirdChlrPeopleImageView.image = UIImage(named: thirdChlrPeopleImage)
+                var firstPImg: Bool = false;
+                var secondPImg: Bool = false;
+                var thirdPImg: Bool = false;
+                
+                for join in (post?.joinAttendanceList)! {
+                    if (join.challenger == false) {
+                        if !firstPImg {
+                            setImage(name: join.FacebookID, imageView: firstPeopleImageView)
+                            firstPImg = true
+                        } else if !secondPImg {
+                            setImage(name: join.FacebookID, imageView: secondPeopleImageView)
+                            secondPImg = true
+                        } else if !thirdPImg {
+                            setImage(name: join.FacebookID, imageView: thirdPeopleImageView)
+                            thirdPImg = true
+                        }
+                    } else if (join.challenger == true) {
+                        setImage(name: join.FacebookID, imageView: firstChlrPeopleImageView)
+                    }
+                }
+            } else if post?.type == "PRIVATE" {
+                var firstImg: Bool = false;
+                var secondImg: Bool = false;
+                var thirdImg: Bool = false;
+                var firstChlrImg: Bool = false;
+                var secondChlrImg: Bool = false;
+                var thirdChlrImg: Bool = false;
+                
+                for versus in (post?.versusAttendanceList)! {
+                    if(versus.firstTeamMember == true) {
+                        if !firstChlrImg {
+                            setImage(name: versus.FacebookID, imageView: firstChlrPeopleImageView)
+                            firstChlrImg = true
+                        } else if !secondChlrImg {
+                            setImage(name: versus.FacebookID, imageView: secondChlrPeopleImageView)
+                            secondChlrImg = true
+                        } else if !thirdChlrImg {
+                            setImage(name: versus.FacebookID, imageView: thirdChlrPeopleImageView)
+                            thirdChlrImg = true
+                        }
+                    } else if (versus.secondTeamMember == true){
+                        if !firstImg {
+                            setImage(name: versus.FacebookID, imageView: firstPeopleImageView)
+                            firstImg = true
+                        } else if !secondImg {
+                            setImage(name: versus.FacebookID, imageView: secondPeopleImageView)
+                            secondImg = true
+                        } else if !thirdImg {
+                            setImage(name: versus.FacebookID, imageView: thirdPeopleImageView)
+                            thirdImg = true
+                        }
+                    }
+                }
+            } else if post?.type == "SELF" {
+                setImage(name: post?.challengerFBId, imageView: firstChlrPeopleImageView)
             }
             if let untilDate = post?.untilDate {
                 untilDateLabel.text = "\(untilDate)"
@@ -275,12 +351,19 @@ class FeedCell: UICollectionViewCell {
             moreChlrPeopleImageView.image = UIImage(named: "more_icon")
             moreChlrPeopleImageView.contentMode = .scaleAspectFit
             goalLabel.text = "GOAL: 10"
+            likeLabel.text = "Like"
+            if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount {
+                //setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type)
+                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type)
+            } else {
+                let type = post?.type
+                print(type)
+            }
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -291,23 +374,26 @@ class FeedCell: UICollectionViewCell {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
-        generateTopView(contentGuide)
+        //generateTopView(contentGuide)
         
-        addTopAnchor(dividerLineView, anchor: profileImageView.bottomAnchor, constant: 2)
+        addTopAnchor(dividerLineView, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(dividerLineView, anchor: contentGuide.leadingAnchor, constant: 0)
         addTrailingAnchor(dividerLineView, anchor: contentGuide.trailingAnchor, constant: 0)
-        dividerLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        dividerLineView.heightAnchor.constraint(equalToConstant: 0).isActive = true
         
         generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type)
         
-        generateMiddleBottomView(contentGuide)
+         if(!thinksAboutChallengeView.text.isEmpty) {
+            generateMiddleBottomView(contentGuide)
+            addTopAnchor(dividerLineView2, anchor: thinksAboutChallengeView.bottomAnchor, constant: 2)
+            addLeadingAnchor(dividerLineView2, anchor: contentGuide.leadingAnchor, constant: 0)
+            addTrailingAnchor(dividerLineView2, anchor: contentGuide.trailingAnchor, constant: 4)
+            dividerLineView2.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            generateBottomView(contentGuide, whichDivider: dividerLineView2)
+        } else {
+            generateBottomView(contentGuide, whichDivider: dividerLineView1)
+        }
         
-        addTopAnchor(dividerLineView2, anchor: thinksAboutChallengeView.bottomAnchor, constant: 2)
-        addLeadingAnchor(dividerLineView2, anchor: contentGuide.leadingAnchor, constant: 0)
-        addTrailingAnchor(dividerLineView2, anchor: contentGuide.trailingAnchor, constant: 4)
-        dividerLineView2.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        
-        generateBottomView(contentGuide)
     }
     
     func generateTopView(_ contentGuide: UILayoutGuide) {
@@ -342,13 +428,12 @@ class FeedCell: UICollectionViewCell {
         
         let screenSize = UIScreen.main.bounds
         
-        middleTopGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1/18).isActive = true
-        middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1/18).isActive = true
-        middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1/18).isActive = true
+        middleTopGuide.heightAnchor.constraint(equalToConstant: 0).isActive = true
+        middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0.5/18).isActive = true
     
         generateFirstTeam(contentGuide, centerMiddleLeftGuide: centerMiddleLeftGuide, firstTeamCount: firstTeamCount);
-        
-        middleTopGuide.topAnchor.constraint(equalTo: dividerLineView.bottomAnchor, constant: 2).isActive = true
+    
+        middleTopGuide.topAnchor.constraint(equalTo: dividerLineView.bottomAnchor, constant: 1).isActive = true
         addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: 0)
         addLeadingAnchor(vsImageView, anchor: centerMiddleLeftGuide.trailingAnchor, constant: 0)
         addTrailingAnchor(vsImageView, anchor: centerMiddleRightGuide.leadingAnchor, constant: 0)
@@ -356,103 +441,139 @@ class FeedCell: UICollectionViewCell {
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
         
         if type != "SELF" {
+            middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1.5/18).isActive = true
             addTopAnchor(subjectImageView, anchor: middleCenterGuide.bottomAnchor, constant: 0)
-            addLeadingAnchor(subjectImageView, anchor: centerMiddleLeftGuide.trailingAnchor, constant: 10)
-            addTrailingAnchor(subjectImageView, anchor: centerMiddleRightGuide.leadingAnchor, constant: -10)
+            addLeadingAnchor(subjectImageView, anchor: centerMiddleLeftGuide.trailingAnchor, constant: 5)
+            addTrailingAnchor(subjectImageView, anchor: centerMiddleRightGuide.leadingAnchor, constant: -5)
             addHeightAnchor(subjectImageView, multiplier: 1/6)
             subjectImageView.contentMode = .scaleAspectFill
+            middleBottomGuide.topAnchor.constraint(equalTo: subjectImageView.bottomAnchor).isActive = true
+            addTopAnchor(untilDateLabel, anchor: middleBottomGuide.bottomAnchor, constant: 0)
+            addLeadingAnchor(untilDateLabel, anchor: centerMiddleLeftGuide.trailingAnchor, constant: 5)
+            addTrailingAnchor(untilDateLabel, anchor: centerMiddleRightGuide.leadingAnchor, constant: -5)
+            addHeightAnchor(untilDateLabel, multiplier: 1/18)
         } else {
+            middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 4.5/18).isActive = true
+            middleBottomGuide.topAnchor.constraint(equalTo: middleCenterGuide.bottomAnchor).isActive = true
+            addTopAnchor(untilDateLabel, anchor: middleBottomGuide.bottomAnchor, constant: 0)
+            addLeadingAnchor(untilDateLabel, anchor: centerMiddleLeftGuide.trailingAnchor, constant: 5)
+            addTrailingAnchor(untilDateLabel, anchor: centerMiddleRightGuide.leadingAnchor, constant: -5)
+            addHeightAnchor(untilDateLabel, multiplier: 1/18)
         }
-        // TODO
-        middleBottomGuide.topAnchor.constraint(equalTo: subjectImageView.bottomAnchor).isActive = true
         
-        addTopAnchor(dividerLineView1, anchor: middleBottomGuide.bottomAnchor, constant: 2)
+        addTopAnchor(joinButton, anchor: untilDateLabel.bottomAnchor, constant: 5)
+        addLeadingAnchor(joinButton, anchor: centerMiddleLeftGuide.leadingAnchor, constant: -10)
+        addTrailingAnchor(joinButton, anchor: centerMiddleRightGuide.leadingAnchor, constant: 10)
+        joinButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1.3/18).isActive = true
+        
+        addTopAnchor(dividerLineView1, anchor: joinButton.bottomAnchor, constant: 1)
         addLeadingAnchor(dividerLineView1, anchor: contentGuide.leadingAnchor, constant: 0)
         addTrailingAnchor(dividerLineView1, anchor: contentGuide.trailingAnchor, constant: 4)
         dividerLineView1.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
         generateSecondTeam(contentGuide, centerMiddleRightGuide: centerMiddleRightGuide,secondTeamCount: secondTeamCount, type: type)
+ 
     }
-    
+    var widthOfImage: CGFloat = 1/3
+    var heightOfFullImage: CGFloat = 1/2
+    var heightOfHalfImage: CGFloat = 0.975/4
+    var widthOfQuarterImage: CGFloat = 0.975/6
+    var heightOfMiddle: CGFloat = 0.05/4
+    var widthOfMiddle: CGFloat = 0.05/6
     func generateFirstTeam(_ contentGuide: UILayoutGuide, centerMiddleLeftGuide: UILayoutGuide, firstTeamCount: String) {
+        let screenSize = UIScreen.main.bounds
+        middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
         if firstTeamCount == "1" {
             addTopAnchor(firstChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addTrailingAnchor(firstChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
-            addWidthAnchor(firstChlrPeopleImageView, multiplier: 1/3)
-            addHeightAnchor(firstChlrPeopleImageView, multiplier: 1/2)
+            addWidthAnchor(firstChlrPeopleImageView, multiplier: widthOfImage)
+            addHeightAnchor(firstChlrPeopleImageView, multiplier: heightOfFullImage)
             centerMiddleLeftGuide.leadingAnchor.constraint(equalTo: firstChlrPeopleImageView.trailingAnchor).isActive = true
         } else if firstTeamCount == "2" {
             addTopAnchor(firstChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addTrailingAnchor(firstChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
-            addWidthAnchor(firstChlrPeopleImageView, multiplier: 1/3)
-            addHeightAnchor(firstChlrPeopleImageView, multiplier: 0.95/4)
-            addBottomAnchor(secondChlrPeopleImageView, anchor: dividerLineView1.topAnchor, constant: -2)
+            addBottomAnchor(firstChlrPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
+            addWidthAnchor(firstChlrPeopleImageView, multiplier: widthOfImage)
+            addHeightAnchor(firstChlrPeopleImageView, multiplier: heightOfHalfImage)
+            middleHeight.topAnchor.constraint(equalTo: firstChlrPeopleImageView.bottomAnchor)
+            addTopAnchor(secondChlrPeopleImageView, anchor: middleHeight.bottomAnchor, constant: -2)
             addLeadingAnchor(secondChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addTrailingAnchor(secondChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
-            addWidthAnchor(secondChlrPeopleImageView, multiplier: 1/3)
-            addHeightAnchor(secondChlrPeopleImageView, multiplier: 0.95/4)
+            addWidthAnchor(secondChlrPeopleImageView, multiplier: widthOfImage)
+            addHeightAnchor(secondChlrPeopleImageView, multiplier: heightOfHalfImage)
             centerMiddleLeftGuide.leadingAnchor.constraint(equalTo: firstChlrPeopleImageView.trailingAnchor).isActive = true
         } else if firstTeamCount == "3" {
-            addTopAnchor(firstChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
-            addLeadingAnchor(firstChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
-            addWidthAnchor(firstChlrPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(firstChlrPeopleImageView, multiplier: 0.95/4)
-            addTopAnchor(secondChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
-            addTrailingAnchor(secondChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
-            addWidthAnchor(secondChlrPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(secondChlrPeopleImageView, multiplier: 0.95/4)
-            addBottomAnchor(thirdChlrPeopleImageView, anchor: dividerLineView1.topAnchor, constant: -2)
-            addLeadingAnchor(thirdChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
-            addTrailingAnchor(thirdChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
-            addWidthAnchor(thirdChlrPeopleImageView, multiplier: 1/3)
-            addHeightAnchor(thirdChlrPeopleImageView, multiplier: 0.95/4)
-            centerMiddleLeftGuide.leadingAnchor.constraint(equalTo: thirdChlrPeopleImageView.trailingAnchor).isActive = true
-        } else if firstTeamCount == "4" {
             let screenSize = UIScreen.main.bounds
-            leftMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * 0.05/6)
-            leftMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * 0.05/6)
+            leftMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addTrailingAnchor(firstChlrPeopleImageView, anchor: leftMiddleTopWidth.leadingAnchor, constant: 0)
-            addWidthAnchor(firstChlrPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(firstChlrPeopleImageView, multiplier: 0.95/4)
+            addBottomAnchor(firstChlrPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
+            addWidthAnchor(firstChlrPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(firstChlrPeopleImageView, multiplier: heightOfHalfImage)
+            leftMiddleTopWidth.trailingAnchor.constraint(equalTo: secondChlrPeopleImageView.leadingAnchor)
+            addTopAnchor(secondChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
+            addLeadingAnchor(secondChlrPeopleImageView, anchor: leftMiddleTopWidth.trailingAnchor, constant: 2)
+            addTrailingAnchor(secondChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
+            addWidthAnchor(secondChlrPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(secondChlrPeopleImageView, multiplier: heightOfHalfImage)
+            middleHeight.topAnchor.constraint(equalTo: firstChlrPeopleImageView.bottomAnchor)
+            addTopAnchor(thirdChlrPeopleImageView, anchor: middleHeight.bottomAnchor, constant: -2)
+            addLeadingAnchor(thirdChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
+            addTrailingAnchor(thirdChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
+            addWidthAnchor(thirdChlrPeopleImageView, multiplier: widthOfImage)
+            addHeightAnchor(thirdChlrPeopleImageView, multiplier: heightOfHalfImage)
+            centerMiddleLeftGuide.leadingAnchor.constraint(equalTo: thirdChlrPeopleImageView.trailingAnchor).isActive = true
+        } else if firstTeamCount == "4" {
+            let screenSize = UIScreen.main.bounds
+            leftMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
+            leftMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
+            addTopAnchor(firstChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
+            addLeadingAnchor(firstChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
+            addTrailingAnchor(firstChlrPeopleImageView, anchor: leftMiddleTopWidth.leadingAnchor, constant: 0)
+            addBottomAnchor(firstChlrPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
+            addWidthAnchor(firstChlrPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(firstChlrPeopleImageView, multiplier: heightOfHalfImage)
             leftMiddleTopWidth.trailingAnchor.constraint(equalTo: secondChlrPeopleImageView.leadingAnchor)
             addTopAnchor(secondChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(secondChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
             addLeadingAnchor(secondChlrPeopleImageView, anchor: leftMiddleTopWidth.trailingAnchor, constant: 2)
-            addWidthAnchor(secondChlrPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(secondChlrPeopleImageView, multiplier: 0.95/4)
-            addBottomAnchor(thirdChlrPeopleImageView, anchor: dividerLineView1.topAnchor, constant: -2)
+            addWidthAnchor(secondChlrPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(secondChlrPeopleImageView, multiplier: heightOfHalfImage)
+            middleHeight.topAnchor.constraint(equalTo: firstChlrPeopleImageView.bottomAnchor)
+            addTopAnchor(thirdChlrPeopleImageView, anchor: middleHeight.bottomAnchor, constant: -2)
             addLeadingAnchor(thirdChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addTrailingAnchor(thirdChlrPeopleImageView, anchor: leftMiddleBottomWidth.leadingAnchor, constant: 0)
-            addWidthAnchor(thirdChlrPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(thirdChlrPeopleImageView, multiplier: 0.95/4)
+            addWidthAnchor(thirdChlrPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(thirdChlrPeopleImageView, multiplier: heightOfHalfImage)
             leftMiddleBottomWidth.trailingAnchor.constraint(equalTo: moreChlrPeopleImageView.leadingAnchor)
-            addBottomAnchor(moreChlrPeopleImageView, anchor: dividerLineView1.topAnchor, constant: -2)
+            addBottomAnchor(moreChlrPeopleImageView, anchor: thirdChlrPeopleImageView.bottomAnchor, constant: -2)
             addLeadingAnchor(moreChlrPeopleImageView, anchor: leftMiddleBottomWidth.trailingAnchor, constant: 2)
             addTrailingAnchor(moreChlrPeopleImageView, anchor: centerMiddleLeftGuide.leadingAnchor, constant: 0)
-            addWidthAnchor(moreChlrPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(moreChlrPeopleImageView, multiplier: 0.95/4)
+            addWidthAnchor(moreChlrPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(moreChlrPeopleImageView, multiplier: heightOfHalfImage)
             centerMiddleLeftGuide.leadingAnchor.constraint(equalTo: secondChlrPeopleImageView.trailingAnchor).isActive = true
         }
     }
     
     func generateSecondTeam(_ contentGuide: UILayoutGuide, centerMiddleRightGuide: UILayoutGuide, secondTeamCount: String, type: String) {
+        let screenSize = UIScreen.main.bounds
+        middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
         if secondTeamCount == "0" {
             if type == "SELF" {
                 addLeadingAnchor(subjectImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 0)
                 addTrailingAnchor(subjectImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-                addWidthAnchor(subjectImageView, multiplier: 1/3)
-                addHeightAnchor(subjectImageView, multiplier: 1/2)
+                addWidthAnchor(subjectImageView, multiplier: widthOfImage)
+                addHeightAnchor(subjectImageView, multiplier: heightOfFullImage)
                 subjectImageView.centerYAnchor.constraint(equalTo: firstChlrPeopleImageView.centerYAnchor).isActive = true
                 centerMiddleRightGuide.trailingAnchor.constraint(equalTo: subjectImageView.leadingAnchor).isActive = true
             } else if type == "PUBLIC" {
                 addLeadingAnchor(worldImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 0)
                 addTrailingAnchor(worldImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-                addWidthAnchor(worldImageView, multiplier: 1/3)
-                addHeightAnchor(worldImageView, multiplier: 1/2)
+                addWidthAnchor(worldImageView, multiplier: widthOfImage)
+                addHeightAnchor(worldImageView, multiplier: heightOfFullImage)
                 worldImageView.centerYAnchor.constraint(equalTo: firstChlrPeopleImageView.centerYAnchor).isActive = true
                 centerMiddleRightGuide.trailingAnchor.constraint(equalTo: worldImageView.leadingAnchor).isActive = true
             }
@@ -460,97 +581,119 @@ class FeedCell: UICollectionViewCell {
             addTopAnchor(firstPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstPeopleImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 2)
             addTrailingAnchor(firstPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-            addWidthAnchor(firstPeopleImageView, multiplier: 1/3)
-            addHeightAnchor(firstPeopleImageView, multiplier: 1/2)
+            addWidthAnchor(firstPeopleImageView, multiplier: widthOfImage)
+            addHeightAnchor(firstPeopleImageView, multiplier: heightOfFullImage)
             centerMiddleRightGuide.trailingAnchor.constraint(equalTo: firstPeopleImageView.leadingAnchor).isActive = true
         } else if secondTeamCount == "2" {
             addTopAnchor(firstPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstPeopleImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 2)
             addTrailingAnchor(firstPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-            addWidthAnchor(firstPeopleImageView, multiplier: 1/3)
-            addHeightAnchor(firstPeopleImageView, multiplier: 0.95/4)
-            addBottomAnchor(secondPeopleImageView, anchor: dividerLineView1.topAnchor, constant: -2)
+            addBottomAnchor(firstPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
+            addWidthAnchor(firstPeopleImageView, multiplier: widthOfImage)
+            addHeightAnchor(firstPeopleImageView, multiplier: heightOfHalfImage)
+            middleHeight.topAnchor.constraint(equalTo: firstPeopleImageView.bottomAnchor)
+            addTopAnchor(secondPeopleImageView, anchor: middleHeight.bottomAnchor, constant: -2)
             addLeadingAnchor(secondPeopleImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 2)
             addTrailingAnchor(secondPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-            addWidthAnchor(secondPeopleImageView, multiplier: 1/3)
-            addHeightAnchor(secondPeopleImageView, multiplier: 0.95/4)
-            centerMiddleRightGuide.trailingAnchor.constraint(equalTo: firstPeopleImageView.leadingAnchor).isActive = true
+            addWidthAnchor(secondPeopleImageView, multiplier: widthOfImage)
+            addHeightAnchor(secondPeopleImageView, multiplier: heightOfHalfImage)
+            centerMiddleRightGuide.trailingAnchor.constraint(equalTo: firstPeopleImageView.leadingAnchor, constant: -2).isActive = true
          } else if secondTeamCount == "3" {
             addTopAnchor(firstPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstPeopleImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 2)
-            addWidthAnchor(firstPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(firstPeopleImageView, multiplier: 0.95/4)
+            addWidthAnchor(firstPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(firstPeopleImageView, multiplier: heightOfHalfImage)
+            addBottomAnchor(firstPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
             addTopAnchor(secondPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(secondPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-            addWidthAnchor(secondPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(secondPeopleImageView, multiplier: 0.95/4)
-            addBottomAnchor(thirdPeopleImageView, anchor: dividerLineView1.topAnchor, constant: -2)
+            addWidthAnchor(secondPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(secondPeopleImageView, multiplier: heightOfHalfImage)
+            middleHeight.topAnchor.constraint(equalTo: firstPeopleImageView.bottomAnchor)
+            addTopAnchor(thirdPeopleImageView, anchor: middleHeight.bottomAnchor, constant: -2)
             addLeadingAnchor(thirdPeopleImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 2)
             addTrailingAnchor(thirdPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-            addWidthAnchor(thirdPeopleImageView, multiplier: 1/3)
-            addHeightAnchor(thirdPeopleImageView, multiplier: 0.95/4)
-            centerMiddleRightGuide.trailingAnchor.constraint(equalTo: thirdPeopleImageView.leadingAnchor).isActive = true
+            addWidthAnchor(thirdPeopleImageView, multiplier: widthOfImage)
+            addHeightAnchor(thirdPeopleImageView, multiplier: heightOfHalfImage)
+            centerMiddleRightGuide.trailingAnchor.constraint(equalTo: thirdPeopleImageView.leadingAnchor, constant: -2).isActive = true
          } else if secondTeamCount == "4" {
-            let screenSize = UIScreen.main.bounds
-            rightMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * 0.05/6)
-            rightMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * 0.05/6)
+            rightMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
+            rightMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstPeopleImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 2)
             addTrailingAnchor(firstPeopleImageView, anchor: rightMiddleTopWidth.leadingAnchor, constant: 0)
-            addWidthAnchor(firstPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(firstPeopleImageView, multiplier: 0.95/4)
+            addBottomAnchor(firstPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
+            addWidthAnchor(firstPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(firstPeopleImageView, multiplier: heightOfHalfImage)
             rightMiddleTopWidth.trailingAnchor.constraint(equalTo: secondPeopleImageView.leadingAnchor)
             addTopAnchor(secondPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(secondPeopleImageView, anchor: rightMiddleTopWidth.trailingAnchor, constant: 2)
             addTrailingAnchor(secondPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-            addWidthAnchor(secondPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(secondPeopleImageView, multiplier: 0.95/4)
-            addBottomAnchor(thirdPeopleImageView, anchor: dividerLineView1.topAnchor, constant: -2)
+            addWidthAnchor(secondPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(secondPeopleImageView, multiplier: heightOfHalfImage)
+            middleHeight.topAnchor.constraint(equalTo: firstPeopleImageView.bottomAnchor)
+            addTopAnchor(thirdPeopleImageView, anchor: middleHeight.bottomAnchor, constant: 0)
             addLeadingAnchor(thirdPeopleImageView, anchor: centerMiddleRightGuide.trailingAnchor, constant: 2)
             addTrailingAnchor(thirdPeopleImageView, anchor: rightMiddleBottomWidth.leadingAnchor, constant: 0)
-            addWidthAnchor(thirdPeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(thirdPeopleImageView, multiplier: 0.95/4)
+            addWidthAnchor(thirdPeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(thirdPeopleImageView, multiplier: heightOfHalfImage)
             rightMiddleBottomWidth.trailingAnchor.constraint(equalTo: morePeopleImageView.leadingAnchor)
-            addBottomAnchor(morePeopleImageView, anchor: dividerLineView1.topAnchor, constant: -2)
+            addBottomAnchor(morePeopleImageView, anchor: thirdPeopleImageView.bottomAnchor, constant: -2)
             addLeadingAnchor(morePeopleImageView, anchor: rightMiddleBottomWidth.trailingAnchor, constant: 2)
             addTrailingAnchor(morePeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
-            addWidthAnchor(morePeopleImageView, multiplier: 0.95/6)
-            addHeightAnchor(morePeopleImageView, multiplier: 0.95/4)
+            addWidthAnchor(morePeopleImageView, multiplier: widthOfQuarterImage)
+            addHeightAnchor(morePeopleImageView, multiplier: heightOfHalfImage)
             centerMiddleRightGuide.trailingAnchor.constraint(equalTo: firstPeopleImageView.leadingAnchor).isActive = true
         }
     }
     
     func generateMiddleBottomView(_ contentGuide: UILayoutGuide) {
-        addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: 2)
+        addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: 1)
         addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
         addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
     }
     
-    func generateBottomView(_ contentGuide: UILayoutGuide) {
+    func generateBottomView(_ contentGuide: UILayoutGuide, whichDivider: UIView) {
         let bottomMiddleLeftGuide = UILayoutGuide()
         let bottomMiddleRightGuide = UILayoutGuide()
         addLayoutGuide(bottomMiddleLeftGuide)
         addLayoutGuide(bottomMiddleRightGuide)
+        let bottomLeftGuide = UILayoutGuide()
+        let bottomRightGuide = UILayoutGuide()
+        addLayoutGuide(bottomLeftGuide)
+        addLayoutGuide(bottomRightGuide)
+        addSubview(likeLabel)
         
-        addTopAnchor(likeButton, anchor: dividerLineView2.bottomAnchor, constant: 2)
-        addLeadingAnchor(likeButton, anchor: contentGuide.leadingAnchor, constant: 0)
-        addWidthAnchor(likeButton, multiplier: 1/12)
-        addHeightAnchor(likeButton, multiplier: 1/12)
-        bottomMiddleLeftGuide.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor, constant: 8.0).isActive = true
+        let screenSize = UIScreen.main.bounds
+        bottomMiddleLeftGuide.widthAnchor.constraint(equalToConstant: screenSize.width * 3.8/15).isActive = true
+        bottomMiddleRightGuide.widthAnchor.constraint(equalToConstant: screenSize.width * 4/15).isActive = true
+        bottomLeftGuide.widthAnchor.constraint(equalToConstant: screenSize.width * 1.5/15).isActive = true
+        bottomRightGuide.widthAnchor.constraint(equalToConstant: screenSize.width * 3/15).isActive = true
         
-        addTopAnchor(commentButton, anchor: dividerLineView2.bottomAnchor, constant: 2)
-        addLeadingAnchor(commentButton, anchor: bottomMiddleLeftGuide.leadingAnchor, constant: 2)
-        addWidthAnchor(commentButton, multiplier: 1/12)
-        addHeightAnchor(commentButton, multiplier: 1/12)
-        bottomMiddleRightGuide.leadingAnchor.constraint(equalTo: commentButton.trailingAnchor, constant: 8.0).isActive = true
+        bottomLeftGuide.leadingAnchor.constraint(equalTo: contentGuide.leadingAnchor, constant: 0.0).isActive = true
         
-        addTopAnchor(shareButton, anchor: dividerLineView2.bottomAnchor, constant: 0)
-        addLeadingAnchor(shareButton, anchor: bottomMiddleRightGuide.leadingAnchor, constant: 0)
-        addWidthAnchor(shareButton, multiplier: 1/12)
-        addHeightAnchor(shareButton, multiplier: 1/12)
+        addTopAnchor(likeButton, anchor: whichDivider.bottomAnchor, constant: 3)
+        addLeadingAnchor(likeButton, anchor: bottomLeftGuide.trailingAnchor, constant: 0)
+        addTrailingAnchor(likeButton, anchor: bottomMiddleLeftGuide.leadingAnchor, constant: 0)
+        addWidthAnchor(likeButton, multiplier: 1/15)
+        addHeightAnchor(likeButton, multiplier: 1/15)
+        bottomMiddleLeftGuide.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor, constant: 0.0).isActive = true
         
-        addTopAnchor(countOfLikeAndCommentLabel, anchor: dividerLineView2.bottomAnchor, constant: 10)
-        addTrailingAnchor(countOfLikeAndCommentLabel, anchor: contentGuide.trailingAnchor, constant: 0)
+        addTopAnchor(commentButton, anchor: whichDivider.bottomAnchor, constant: 3)
+        addLeadingAnchor(commentButton, anchor: bottomMiddleLeftGuide.trailingAnchor, constant: 0)
+        addTrailingAnchor(commentButton, anchor: bottomMiddleRightGuide.leadingAnchor, constant: 0)
+        addWidthAnchor(commentButton, multiplier: 1/15)
+        addHeightAnchor(commentButton, multiplier: 1/15)
+        bottomMiddleRightGuide.leadingAnchor.constraint(equalTo: commentButton.trailingAnchor, constant: 0.0).isActive = true
+        
+        addTopAnchor(shareButton, anchor: whichDivider.bottomAnchor, constant: 3)
+        addLeadingAnchor(shareButton, anchor: bottomMiddleRightGuide.trailingAnchor, constant: 0)
+        addTrailingAnchor(shareButton, anchor: bottomRightGuide.leadingAnchor, constant: 0)
+        addWidthAnchor(shareButton, multiplier: 1/15)
+        addHeightAnchor(shareButton, multiplier: 1/15)
+        bottomRightGuide.leadingAnchor.constraint(equalTo: shareButton.trailingAnchor, constant: 0.0).isActive = true
+        
+        //addTopAnchor(countOfLikeAndCommentLabel, anchor: dividerLineView2.bottomAnchor, constant: 10)
+        //addTrailingAnchor(countOfLikeAndCommentLabel, anchor: contentGuide.trailingAnchor, constant: 0)
     }
     
     func addGeneralSubViews() {
@@ -581,6 +724,7 @@ class FeedCell: UICollectionViewCell {
         addLayoutGuide(leftMiddleBottomWidth)
         addLayoutGuide(rightMiddleTopWidth)
         addLayoutGuide(rightMiddleBottomWidth)
+        addSubview(joinButton)
     }
     
     let middleHeight = UILayoutGuide()
@@ -650,8 +794,18 @@ class FeedCell: UICollectionViewCell {
         return label
     }
     
-    let untilDateLabel: UILabel = FeedCell.labelCreate(12)
+    let untilDateLabel: UILabel = FeedCell.labelCreate(9)
     let goalLabel: UILabel = FeedCell.labelCreate(12)
+    
+    static func label(_ fontSize: CGFloat) -> UILabel {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: fontSize)
+        label.textAlignment = .center
+        label.textColor = UIColor.white
+        return label
+    }
+    
+    let likeLabel: UILabel = FeedCell.label(8)
     
     static func lineForDivider() -> UIView {
         let view = UIView()
@@ -669,21 +823,20 @@ class FeedCell: UICollectionViewCell {
     
     static func buttonForTitle(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()
+        button.semanticContentAttribute = .forceRightToLeft
         button.setTitle(title, for: UIControlState())
         button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
         
         button.setImage(UIImage(named: imageName), for: UIControlState())
-        button.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
-        
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
-        button.imageView?.contentMode = UIViewContentMode.scaleAspectFit
-        
+        button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
+
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)        
         return button
     }
     
-    let likeButton = FeedCell.buttonForTitle("", imageName: "like")
-    let commentButton: UIButton = FeedCell.buttonForTitle("", imageName: "comment")
-    let shareButton: UIButton = FeedCell.buttonForTitle("", imageName: "share")
+    let likeButton = FeedCell.buttonForTitle("Like", imageName: "like")
+    let commentButton: UIButton = FeedCell.buttonForTitle("Comment", imageName: "comment")
+    let shareButton: UIButton = FeedCell.buttonForTitle("Share", imageName: "share")
     
     static func buttonForTitleWithBorder(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()

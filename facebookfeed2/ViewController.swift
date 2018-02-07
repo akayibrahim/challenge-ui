@@ -87,6 +87,24 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
 //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
         if let path = Bundle.main.path(forResource: "all_posts", ofType: "json") {
             do {
+                // Asynchronous Http call to your api url, using NSURLSession:
+                // http://ip.jsontest.com
+                // http://localhost:8080/getChallenges?memberId=5a7b0afe9d1adf3bc631c133
+                /*URLSession.shared.dataTask(with: NSURL(string: "http://ip.jsontest.com")! as URL, completionHandler: { (data, response, error) -> Void in
+                    // Check if data was received successfully
+                    if error == nil && data != nil {
+                        do {
+                            // Convert NSData to Dictionary where keys are of type String, and values are of any type
+                            let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]
+                            // Access specific key with value of type String
+                            //let str = json!["key"] as! String
+                            print(json)
+                        } catch {
+                            // Something went wrong
+                        }
+                    }
+                }).resume()
+                */
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
                 let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
                 if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {

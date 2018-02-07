@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/ViewController.swift"
-            timestampString = "539683280.4674309"
+            timestampString = "539701420.8159699"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "478"
-            endingLineNumber = "478"
+            startingLineNumber = "592"
+            endingLineNumber = "592"
             landmarkName = "FeedCell"
             landmarkType = "3">
          </BreakpointContent>
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/ViewController.swift"
-            timestampString = "539683280.468918"
+            timestampString = "539701420.818138"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "97"
@@ -149,11 +149,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/ViewController.swift"
-            timestampString = "539683280.469682"
+            timestampString = "539701420.8195339"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "297"
-            endingLineNumber = "297"
+            startingLineNumber = "328"
+            endingLineNumber = "328"
             landmarkName = "post"
             landmarkType = "24">
          </BreakpointContent>

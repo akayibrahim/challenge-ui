@@ -27,24 +27,6 @@ class Post: SafeJsonObject {
     var challengerFBId : String?
     @nonobjc var versusAttendanceList = [VersusAttendance]()
     @nonobjc var joinAttendanceList = [JoinAttendance]()
-    
-    /*
-    init(bookDict: NSDictionary){
-        self.name = (bookDict["name"] ?? "") as! String
-        self.profileImageName = (bookDict["profileImageName"] ?? "") as! String
-        self.thinksAboutChallenge = (bookDict["thinksAboutChallenge"] ?? "") as! String
-        self.countOfLike = (bookDict["countOfLike"] ?? -1) as! NSNumber
-        self.countOfComments = (bookDict["countOfComments"] ?? -1) as! NSNumber
-        self.chlDate = (bookDict["chlDate"] ?? "") as! String
-        self.untilDate = (bookDict["untilDate"] ?? "") as! String
-        self.type = (bookDict["type"] ?? "") as! String
-        self.subject = (bookDict["subject"] ?? "") as! String
-        self.done = (bookDict["done"] ?? "") as! String
-        self.countOfJoins = (bookDict["countOfJoins"] ?? -1) as! NSNumber
-        self.firstTeamCount = (bookDict["firstTeamCount"] ?? "") as! String
-        self.secondTeamCount = (bookDict["secondTeamCount"] ?? "") as! String
-        self.versusAttendanceList = (bookDict["versusAttendanceList"] ?? []) as! [VersusAttendance]
-    }*/
 }
 
 class VersusAttendance: SafeJsonObject {
@@ -295,15 +277,15 @@ class FeedCell: UICollectionViewCell {
             if let profileImagename = post?.profileImageName {
                 profileImageView.image = UIImage(named: profileImagename)
             }
-            if let subject = post?.subject {
-                subjectImageView.image = UIImage(named: subject)
-            }
             if let countOfComments = post?.countOfComments, let countOfLike = post?.countOfLike {
                 countOfLikeAndCommentLabel.text = "\(countOfLike) Likes \(countOfComments) Comments "
             }
             if post?.type == "PUBLIC" {
                 if let countOfJoins = post?.countOfJoins {
                     countOfLikeAndCommentLabel.text?.append(" \(countOfJoins) Joins ")
+                }
+                if let subject = post?.subject {
+                    subjectImageView.image = UIImage(named: subject)
                 }
                 var firstPImg: Bool = false;
                 var secondPImg: Bool = false;
@@ -347,6 +329,9 @@ class FeedCell: UICollectionViewCell {
                     }
                 }
             } else if post?.type == "PRIVATE" {
+                if let subject = post?.subject {
+                    subjectImageView.image = UIImage(named: subject)
+                }
                 var firstImg: Bool = false;
                 var secondImg: Bool = false;
                 var thirdImg: Bool = false;
@@ -438,7 +423,6 @@ class FeedCell: UICollectionViewCell {
             goalLabel.text = "GOAL: 10"
             likeLabel.text = "Like"
             if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount {
-                //setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type)
                 setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type)
             } else {
                 let type = post?.type

@@ -16,11 +16,12 @@ class Post: SafeJsonObject {
     var thinksAboutChallenge: String?
     var countOfLike: NSNumber?
     var countOfComments: NSNumber?
-    var chlDate: String?
-    var untilDate: String?
+    var chlDate: NSDate?
+    var untilDate: NSDate?
+    var untilDateStr: NSString?
     var type: String?
     var subject: String?
-    var done : String?
+    var done : Bool?
     var countOfJoins : NSNumber?
     var firstTeamCount : String?
     var secondTeamCount : String?
@@ -81,63 +82,95 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     var posts = [Post]()
     
+    func fetchData() {
+        URLSession.shared.dataTask(with: NSURL(string: "http://localhost:8080/getChallenges?memberId=5a81b0f0f8b8e43e70325d3d")! as URL, completionHandler: { (data, response, error) -> Void in
+            // Check if data was received successfully
+            if error == nil && data != nil {
+                do {
+                    // Convert NSData to Dictionary where keys are of type String, and values are of any type
+                    // Access specific key with value of type String
+                    // let str = json!["key"] as! String
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: Any]] {
+                        self.posts = [Post]()
+                        for postDictionary in postsArray {
+                            let post = Post()
+                            post.versusAttendanceList = [VersusAttendance]()
+                            if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {
+                                for versus in verAttenLis {
+                                    let versusAtten = VersusAttendance(data: versus)
+                                    post.versusAttendanceList.append(versusAtten)
+                                }
+                            }
+                            post.joinAttendanceList = [JoinAttendance]()
+                            if let joinAttenLis = postDictionary["joinAttendanceList"] as? [[String: AnyObject]] {
+                                for join in joinAttenLis {
+                                    let joinAtten = JoinAttendance(data: join)
+                                    post.joinAttendanceList.append(joinAtten)
+                                }
+                            }
+                            post.setValuesForKeys(postDictionary)
+                            self.posts.append(post)
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            } else {
+                print(error)
+            }
+        }).resume()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let samplePost = Post()
-//        samplePost.performSelector(Selector("setName:"), withObject: "my name")
-        if let path = Bundle.main.path(forResource: "all_posts", ofType: "json") {
-            do {
-                // Asynchronous Http call to your api url, using NSURLSession:
-                // http://ip.jsontest.com
-                // http://localhost:8080/getChallenges?memberId=5a7b0afe9d1adf3bc631c133
-                /*URLSession.shared.dataTask(with: NSURL(string: "http://ip.jsontest.com")! as URL, completionHandler: { (data, response, error) -> Void in
-                    // Check if data was received successfully
-                    if error == nil && data != nil {
-                        do {
-                            // Convert NSData to Dictionary where keys are of type String, and values are of any type
-                            let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]
-                            // Access specific key with value of type String
-                            //let str = json!["key"] as! String
-                            print(json)
-                        } catch {
-                            // Something went wrong
+        let httpCall: Bool = false
+        if httpCall == true {
+            // Asynchronous Http call to your api url, using NSURLSession:
+            // http://ip.jsontest.com
+            // http://localhost:8080/getChallenges?memberId=5a81b0f0f8b8e43e70325d3d
+            self.fetchData()
+            self.collectionView?.reloadData()
+        } else {
+            //        let samplePost = Post()
+            //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
+            if let path = Bundle.main.path(forResource: "all_posts", ofType: "json") {
+                do {
+                    let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                    let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                    if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                        self.posts = [Post]()
+                        for postDictionary in postsArray {
+                            let post = Post()
+                            post.versusAttendanceList = [VersusAttendance]()
+                            if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {
+                                for versus in verAttenLis {
+                                    let versusAtten = VersusAttendance(data: versus)
+                                    post.versusAttendanceList.append(versusAtten)
+                                }
+                            }
+                            post.joinAttendanceList = [JoinAttendance]()
+                            if let joinAttenLis = postDictionary["joinAttendanceList"] as? [[String: AnyObject]] {
+                                for join in joinAttenLis {
+                                    let joinAtten = JoinAttendance(data: join)
+                                    post.joinAttendanceList.append(joinAtten)
+                                }
+                            }
+                            post.setValuesForKeys(postDictionary)
+                            self.posts.append(post)
+                            self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
                         }
                     }
-                }).resume()
-                */
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.posts = [Post]()
-                    for postDictionary in postsArray {
-                        let post = Post()
-                        post.versusAttendanceList = [VersusAttendance]()
-                        if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {
-                            for versus in verAttenLis {
-                                let versusAtten = VersusAttendance(data: versus)
-                                post.versusAttendanceList.append(versusAtten)
-                            }
-                        }
-                        post.joinAttendanceList = [JoinAttendance]()
-                        if let joinAttenLis = postDictionary["joinAttendanceList"] as? [[String: AnyObject]] {
-                            for join in joinAttenLis {
-                                let joinAtten = JoinAttendance(data: join)
-                                post.joinAttendanceList.append(joinAtten)
-                            }
-                        }
-                        post.setValuesForKeys(postDictionary)
-                        self.posts.append(post)
-                        self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
-                    }
+                } catch let err {
+                    print(err)
                 }
-            } catch let err {
-                print(err)
             }
         }
         navigationItem.title = "CHL"
         collectionView?.alwaysBounceVertical = true
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.showsVerticalScrollIndicator = false
+
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -154,7 +187,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let screenSize = UIScreen.main.bounds
-        let knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width * 1.3/18) + 25
+        let knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 15) + (screenSize.width * 1.3/18) + 25
 
         if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
             let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
@@ -279,6 +312,12 @@ class FeedCell: UICollectionViewCell {
         self.vsImageView.image = UIImage()
         self.subjectImageView.image = UIImage()
         self.thinksAboutChallengeView.text = nil
+        self.goalLabel.removeFromSuperview()
+        self.joinButton.removeFromSuperview()
+        self.supportButtonMatch.removeFromSuperview()
+        self.supportButton.removeFromSuperview()
+        self.subjectLabel.removeFromSuperview()
+        self.countOfLikeAndCommentLabel.removeFromSuperview()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -295,12 +334,9 @@ class FeedCell: UICollectionViewCell {
             if let profileImagename = post?.profileImageName {
                 profileImageView.image = UIImage(named: profileImagename)
             }
-            if let countOfComments = post?.countOfComments, let countOfLike = post?.countOfLike {
-                countOfLikeAndCommentLabel.text = "\(countOfLike) Likes \(countOfComments) Comments "
-            }
             if post?.type == "PUBLIC" {
-                if let countOfJoins = post?.countOfJoins {
-                    countOfLikeAndCommentLabel.text?.append(" \(countOfJoins) Joins ")
+                if let countOfComments = post?.countOfComments, let countOfLike = post?.countOfLike {
+                    countOfLikeAndCommentLabel.text = "\(countOfLike) Likes | \(countOfComments) Comments | 10 Joins | 8 Proofs"
                 }
                 if let subject = post?.subject {
                     subjectImageView.image = UIImage(named: subject)
@@ -349,6 +385,9 @@ class FeedCell: UICollectionViewCell {
             } else if post?.type == "PRIVATE" {
                 if let subject = post?.subject {
                     subjectImageView.image = UIImage(named: subject)
+                }
+                if let countOfComments = post?.countOfComments, let countOfLike = post?.countOfLike {
+                    countOfLikeAndCommentLabel.text = "\(countOfLike) Likes | \(countOfComments) Comments | First Team 55 | Second Team 44"
                 }
                 var firstImg: Bool = false;
                 var secondImg: Bool = false;
@@ -424,9 +463,12 @@ class FeedCell: UICollectionViewCell {
                     setImage(name: subject, imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.contentMode = .scaleAspectFill
                 }
+                if let countOfComments = post?.countOfComments, let countOfLike = post?.countOfLike {
+                    countOfLikeAndCommentLabel.text = "\(countOfLike) Likes | \(countOfComments) Comments"
+                }
                 
             }
-            if let untilDate = post?.untilDate {
+            if let untilDate = post?.untilDateStr {
                 untilDateLabel.text = "\(untilDate)"
             }
             vsImageView.image = UIImage(named: "vs")
@@ -440,6 +482,15 @@ class FeedCell: UICollectionViewCell {
             }
             goalLabel.text = "GOAL: 10"
             likeLabel.text = "Like"
+            if post?.type != "SELF" {
+                if let subject = post?.subject {
+                    subjectLabel.text = subject
+                    subjectLabel.font = UIFont (name: "Marker Felt", size: 24)
+                    subjectLabel.textAlignment = .center
+                    subjectLabel.numberOfLines = 2;
+                    subjectLabel.textColor = UIColor.gray
+                }
+            }
             if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount {
                 setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type)
             } else {
@@ -460,6 +511,7 @@ class FeedCell: UICollectionViewCell {
     func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
+        let screenSize = UIScreen.main.bounds
         addGeneralSubViews()
         //generateTopView(contentGuide)
         
@@ -470,30 +522,32 @@ class FeedCell: UICollectionViewCell {
         
         generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type)
         
-        generateMiddleBottomView(contentGuide)
-        
         if(!thinksAboutChallengeView.text.isEmpty) {
             addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: 1)
             addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
             addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
         
-            addTopAnchor(dividerLineView2, anchor: thinksAboutChallengeView.bottomAnchor, constant: 0)
+            addTopAnchor(countOfLikeAndCommentLabel, anchor: thinksAboutChallengeView.bottomAnchor, constant: 0)
+            addLeadingAnchor(countOfLikeAndCommentLabel, anchor: contentGuide.leadingAnchor, constant: 2)
+            addHeightAnchor(countOfLikeAndCommentLabel, multiplier: 1/15)
+
+            addTopAnchor(dividerLineView2, anchor: countOfLikeAndCommentLabel.bottomAnchor, constant: 0)
             addLeadingAnchor(dividerLineView2, anchor: contentGuide.leadingAnchor, constant: 0)
             addTrailingAnchor(dividerLineView2, anchor: contentGuide.trailingAnchor, constant: 4)
             dividerLineView2.heightAnchor.constraint(equalToConstant: 1).isActive = true
             
             addTopAnchor(likeButtonWithThink, anchor: dividerLineView2.bottomAnchor, constant: 5)
-            addTrailingAnchor(likeButtonWithThink, anchor: commentButtonWithThink.leadingAnchor, constant: -70)
+            addTrailingAnchor(likeButtonWithThink, anchor: commentButtonWithThink.leadingAnchor, constant: -(screenSize.width * 0.7 / 3))
             addWidthAnchor(likeButtonWithThink, multiplier: 1/15)
             addHeightAnchor(likeButtonWithThink, multiplier: 1/15)
-            
+
             addTopAnchor(commentButtonWithThink, anchor: dividerLineView2.bottomAnchor, constant: 5)
             commentButtonWithThink.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
             addWidthAnchor(commentButtonWithThink, multiplier: 1/15)
             addHeightAnchor(commentButtonWithThink, multiplier: 1/15)
             
             addTopAnchor(shareButtonWithThink, anchor: dividerLineView2.bottomAnchor, constant: 5)
-            addLeadingAnchor(shareButtonWithThink, anchor: commentButtonWithThink.trailingAnchor, constant: 70)
+            addLeadingAnchor(shareButtonWithThink, anchor: commentButtonWithThink.trailingAnchor, constant: (screenSize.width * 0.7 / 3))
             addWidthAnchor(shareButtonWithThink, multiplier: 1/15)
             addHeightAnchor(shareButtonWithThink, multiplier: 1/15)
         } else {
@@ -512,8 +566,6 @@ class FeedCell: UICollectionViewCell {
             addWidthAnchor(shareButton, multiplier: 1/15)
             addHeightAnchor(shareButton, multiplier: 1/15)
         }
-        
-        generateBottomView(contentGuide)
     }
     
     func generateTopView(_ contentGuide: UILayoutGuide) {
@@ -545,44 +597,75 @@ class FeedCell: UICollectionViewCell {
         let screenSize = UIScreen.main.bounds
         let contentGuide = self.readableContentGuide
         
-        middleTopGuide.heightAnchor.constraint(equalToConstant: 0).isActive = true
-        middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0.5/18).isActive = true
-    
         generateFirstTeam(contentGuide, firstTeamCount: firstTeamCount);
         
+        middleTopGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0).isActive = true
+        
         middleTopGuide.topAnchor.constraint(equalTo: dividerLineView.bottomAnchor, constant: 1).isActive = true
-        addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: 0)
+        
+        addTopAnchor(vsImageView, anchor: middleCenterGuide.bottomAnchor, constant: 0)
         vsImageView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         addHeightAnchor(vsImageView, multiplier: 1/6)
-        middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
         
         if type != "SELF" {
-            middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1.5/18).isActive = true
+            addSubview(subjectLabel)
+            addTopAnchor(subjectLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
+            subjectLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            addHeightAnchor(subjectLabel, multiplier: 1/6)
+            middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0).isActive = true
+            middleCenterGuide.topAnchor.constraint(equalTo: subjectLabel.bottomAnchor).isActive = true
+            /*
             addTopAnchor(subjectImageView, anchor: middleCenterGuide.bottomAnchor, constant: 0)
             subjectImageView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
             addHeightAnchor(subjectImageView, multiplier: 1/6)
             addWidthAnchor(subjectImageView, multiplier: 0.7/3)
             subjectImageView.contentMode = .scaleAspectFill
-            middleBottomGuide.topAnchor.constraint(equalTo: subjectImageView.bottomAnchor).isActive = true
+            */
+            middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 2/18).isActive = true
+            middleBottomGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
             addTopAnchor(untilDateLabel, anchor: middleBottomGuide.bottomAnchor, constant: 0)
             addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
             untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
             addHeightAnchor(untilDateLabel, multiplier: 1/18)
+            if type == "PRIVATE" {
+                addSubview(supportButton)
+                addSubview(supportButtonMatch)
+                addTopAnchor(supportButton, anchor: untilDateLabel.bottomAnchor, constant: 5)
+                supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.9/3)).isActive = true
+                supportButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1.3/18).isActive = true
+                supportButton.widthAnchor.constraint(equalToConstant: screenSize.width * 0.8/3).isActive = true
+                
+                
+                addTopAnchor(supportButtonMatch, anchor: untilDateLabel.bottomAnchor, constant: 5)
+                supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.9/3)).isActive = true
+                supportButtonMatch.heightAnchor.constraint(equalToConstant: screenSize.width * 1.3/18).isActive = true
+                supportButtonMatch.widthAnchor.constraint(equalToConstant: screenSize.width * 0.8/3).isActive = true
+            } else if type == "PUBLIC" {
+                addSubview(joinButton)
+                addTopAnchor(joinButton, anchor: untilDateLabel.bottomAnchor, constant: 5)
+                joinButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                joinButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1.3/18).isActive = true
+                joinButton.widthAnchor.constraint(equalToConstant: screenSize.width * 1/3).isActive = true
+            }
         } else {
-            middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 4.5/18).isActive = true
+            middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1/6).isActive = true
+            middleCenterGuide.topAnchor.constraint(equalTo: middleTopGuide.bottomAnchor).isActive = true
+            
+            middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 5/18).isActive = true
             middleBottomGuide.topAnchor.constraint(equalTo: middleCenterGuide.bottomAnchor).isActive = true
             addTopAnchor(untilDateLabel, anchor: middleBottomGuide.bottomAnchor, constant: 0)
             addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
             untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
             addHeightAnchor(untilDateLabel, multiplier: 1/18)
+            
+            addSubview(goalLabel)
+            addTopAnchor(goalLabel, anchor: untilDateLabel.bottomAnchor, constant: 5)
+            goalLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            goalLabel.heightAnchor.constraint(equalToConstant: screenSize.width * 1.3/18).isActive = true
+            goalLabel.widthAnchor.constraint(equalToConstant: screenSize.width * 1/3).isActive = true
         }
 
-        addTopAnchor(joinButton, anchor: untilDateLabel.bottomAnchor, constant: 5)
-        joinButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        joinButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1.3/18).isActive = true
-        joinButton.widthAnchor.constraint(equalToConstant: screenSize.width * 1/3).isActive = true
-
-        addTopAnchor(dividerLineView1, anchor: joinButton.bottomAnchor, constant: 1)
+        addTopAnchor(dividerLineView1, anchor: untilDateLabel.bottomAnchor, constant: (screenSize.width * 1.3/18) + 6)
         addLeadingAnchor(dividerLineView1, anchor: contentGuide.leadingAnchor, constant: 1)
         addTrailingAnchor(dividerLineView1, anchor: contentGuide.trailingAnchor, constant: 1)
         dividerLineView1.heightAnchor.constraint(equalToConstant: 1).isActive = true
@@ -727,17 +810,6 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func generateMiddleBottomView(_ contentGuide: UILayoutGuide) {
-        
-    }
-    
-    func generateBottomView(_ contentGuide: UILayoutGuide) {
-        
-        
-        //addTopAnchor(countOfLikeAndCommentLabel, anchor: dividerLineView2.bottomAnchor, constant: 10)
-        //addTrailingAnchor(countOfLikeAndCommentLabel, anchor: contentGuide.trailingAnchor, constant: 0)
-    }
-    
     func addGeneralSubViews() {
         addSubview(profileImageView)
         addSubview(nameLabel)
@@ -760,7 +832,6 @@ class FeedCell: UICollectionViewCell {
         addLayoutGuide(leftMiddleBottomWidth)
         addLayoutGuide(rightMiddleTopWidth)
         addLayoutGuide(rightMiddleBottomWidth)
-        addSubview(joinButton)
         addSubview(firstOneChlrPeopleImageView)
         addSubview(firstTwoChlrPeopleImageView)
         addSubview(secondTwoChlrPeopleImageView)
@@ -839,19 +910,20 @@ class FeedCell: UICollectionViewCell {
     
     let nameLabel: UILabel = FeedCell.labelCreateDef(1)
     
-    static func labelCreate(_ fontSize: CGFloat) -> UILabel {
+    static func labelCreate(_ fontSize: CGFloat, backColor: UIColor, textColor: UIColor) -> UILabel {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: fontSize)
         label.textAlignment = .center
-        label.textColor = UIColor.white
-        label.backgroundColor = UIColor(red: 255/255, green: 90/255, blue: 51/255, alpha: 1)
+        label.textColor = textColor
+        label.backgroundColor = backColor
         label.layer.cornerRadius = 3
         label.layer.masksToBounds = true
         return label
     }
     
-    let untilDateLabel: UILabel = FeedCell.labelCreate(9)
-    let goalLabel: UILabel = FeedCell.labelCreate(12)
+    let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor(red: 145/255, green: 90/255, blue: 51/255, alpha: 1), textColor: UIColor.white)
+    let goalLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor(red: 255/255, green: 90/255, blue: 51/255, alpha: 1), textColor: UIColor.white)
+    let subjectLabel: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
     
     static func label(_ fontSize: CGFloat) -> UILabel {
         let label = UILabel()
@@ -879,14 +951,13 @@ class FeedCell: UICollectionViewCell {
     
     static func buttonForTitle(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()
-        button.semanticContentAttribute = .forceRightToLeft
+        // button.semanticContentAttribute = .forceRightToLeft
         button.setTitle(title, for: UIControlState())
         button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
         
         button.setImage(UIImage(named: imageName), for: UIControlState())
         button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
-
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)        
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)     
         return button
     }
     
@@ -916,6 +987,7 @@ class FeedCell: UICollectionViewCell {
     
     let joinButton = FeedCell.buttonForTitleWithBorder("Join", imageName: "Join")
     let supportButton = FeedCell.buttonForTitleWithBorder("Support", imageName: "Support")
+    let supportButtonMatch = FeedCell.buttonForTitleWithBorder("Support", imageName: "Support")
     
     static func imageView() -> UIImageView {
         let imageView = UIImageView()

@@ -118,18 +118,20 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             } else {
                 print(error)
             }
+            DispatchQueue.main.async {
+                self.collectionView?.reloadData()
+            }
         }).resume()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let httpCall: Bool = false
+        let httpCall: Bool = true
         if httpCall == true {
             // Asynchronous Http call to your api url, using NSURLSession:
             // http://ip.jsontest.com
             // http://localhost:8080/getChallenges?memberId=5a81b0f0f8b8e43e70325d3d
             self.fetchData()
-            self.collectionView?.reloadData()
         } else {
             //        let samplePost = Post()
             //        samplePost.performSelector(Selector("setName:"), withObject: "my name")

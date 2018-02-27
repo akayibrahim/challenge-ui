@@ -23,16 +23,18 @@ class CustomTabBarController: UITabBarController {
         secondNavigationController.title = "Friends"
         secondNavigationController.tabBarItem.image = UIImage(named: "requests_icon")
         
-        let messengerVC = UIViewController()
-        let messengerNavigationController = UINavigationController(rootViewController: messengerVC)
+        let addChallengeController = AddChallengeController()
+        let messengerNavigationController = UINavigationController(rootViewController: addChallengeController)
         messengerNavigationController.title = "Add"
         messengerNavigationController.tabBarItem.image = UIImage(named: "add_icon")
         
-        let notificationsNavController = UINavigationController(rootViewController: UIViewController())
+        let selfChallengeController = SelfChallengeController()
+        let notificationsNavController = UINavigationController(rootViewController: selfChallengeController)
         notificationsNavController.title = "Self's"
         notificationsNavController.tabBarItem.image = UIImage(named: "globe_icon")
         
-        let moreNavController = UINavigationController(rootViewController: UIViewController())
+        let otherController = OtherController()
+        let moreNavController = UINavigationController(rootViewController: otherController)
         moreNavController.title = ""
         moreNavController.tabBarItem.image = UIImage(named: "more_icon")
         

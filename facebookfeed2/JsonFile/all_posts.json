@@ -1,63 +1,9 @@
 {
     "posts": [
-              {
-              "id": "5a81bb6bf8b8e43ec9a81e2e",
-              "challengerId": "5a81b0f0f8b8e43e70325d3d",
-              "challengerFBId": "666376928hb83c9jfhd",
-              "name": "ibrahim Akay",
-              "firstTeamCount": "1",
-              "secondTeamCount": "1",
-              "thinksAboutChallenge": "Okuma?",
-              "subject": "read_book",
-              "chlDate": 1511136000000,
-              "untilDate": 1514505600000,
-              "untilDateStr": "LAST 14 DAYS!",
-              "done": true,
-              "updateDate": 1511136000000,
-              "likes": [],
-              "countOfLike": 0,
-              "comments": [],
-              "countOfComments": 0,
-              "type": "PUBLIC",
-              "joinAttendanceList": [
-                                     {
-                                     "id": "5a81bb6bf8b8e43ec9a81e2f",
-                                     "challengeId": "5a81bb6bf8b8e43ec9a81e2e",
-                                     "memberId": "5a81b0f0f8b8e43e70325d3d",
-                                     "facebookID": "666376928hb83c9jfhd",
-                                     "join": true,
-                                     "proof": false,
-                                     "challenger": true
-                                     }
-                                     ],
-              "goal": "10"
-              },
-              {
-              "id": "5a81dd3587f8723fc231028b",
-              "challengerId": "5a81b0f0f8b8e43e70325d3d",
-              "challengerFBId": "666376928hb83c9jfhd",
-              "name": "ibrahim Akay",
-              "firstTeamCount": "1",
-              "secondTeamCount": "0",
-              "thinksAboutChallenge": "Fransızca öğrenme?",
-              "subject": "learn_language",
-              "chlDate": 1511136000000,
-              "untilDate": 1514505600000,
-              "untilDateStr": "LAST 14 DAYS!",
-              "done": true,
-              "updateDate": 1511136000000,
-              "likes": [],
-              "countOfLike": 0,
-              "comments": [],
-              "countOfComments": 0,
-              "type": "SELF",
-              "score": "advance!",
-              "goal": "advance!"
-              },
           {
           "name": "Steve Jobs",
           "profileImageName": "steve_profile",
-          "thinksAboutChallenge": "Iphone will sell twice?",
+              "thinksAboutChallenge": "ibrahim : Iphone will sell twice?",
           "countOfLike": 111,
           "countOfComments": 222,
           "chlDate": "20/10/2017",
@@ -73,7 +19,7 @@
           {
           "name": "Mahatma Gandhi",
           "profileImageName": "gandhi_profile",
-          "thinksAboutChallenge": "Iphone will sell twice?",
+              "thinksAboutChallenge": "shr : Iphone will sell twice?",
           "countOfLike": 333,
           "countOfComments": 444,
           "chlDate": "20/10/2017",
@@ -104,13 +50,13 @@
           {
           "name": "Mahatma Gandhi",
           "profileImageName": "gandhi_profile",
-          "thinksAboutChallenge": "Goodness will win one day?",
+              "thinksAboutChallenge": "ahmet : Goodness will win one day?",
           "countOfLike": 333,
           "countOfComments": 444,
           "chlDate": "20/10/2017",
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 14 DAY",
-          "subject" : "SWIM\nMING",
+          "subject" : "SWIMMING",
           "versusAttendanceList" : [
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -149,13 +95,13 @@
           {
           "name": "Mahatma Gandhi",
           "profileImageName": "gandhi_profile",
-          "thinksAboutChallenge": "Goodness will win one day?",
+              "thinksAboutChallenge": "selin : Goodness will win one day?",
           "countOfLike": 333,
           "countOfComments": 444,
           "chlDate": "20/10/2017",
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 14 DAY",
-          "subject" : "BILLI\nARD",
+          "subject" : "BILLIARD",
           "versusAttendanceList" : [
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -208,7 +154,7 @@
           {
           "name": "Mahatma Gandhi",
           "profileImageName": "gandhi_profile",
-          "thinksAboutChallenge": "Goodness will win one day?",
+              "thinksAboutChallenge": "brc : Goodness will win one day?",
           "countOfLike": 333,
           "countOfComments": 444,
           "chlDate": "20/10/2017",
@@ -289,7 +235,7 @@
               "untilDateStr": "LAST 14 DAY",
           "challengerFBId" : "zuckprofile",
           "untilDate" : "LAST 8 WEEKS",
-          "subject" : "FOOT\nBALL",
+          "subject" : "FOOTBALL",
           "type": "PUBLIC",
           "countOfJoins": 32,
           "done" : false,
@@ -316,7 +262,7 @@
           "challengerFBId" : "zuckprofile",
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 8 WEEKS",
-          "subject" : "RUNN\nING",
+          "subject" : "RUNNING",
           "type": "PUBLIC",
           "countOfJoins": 32,
           "done" : false,
@@ -405,7 +351,7 @@
           "challengerFBId" : "zuckprofile",
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 14 DAY",
-          "subject" : "LANG\nUAGE",
+          "subject" : "LANGUAGE",
           "type": "PUBLIC",
           "countOfJoins": 32,
           "done" : false,
@@ -448,6 +394,60 @@
                                   "facebookID": "steve_profile"
                                   }
                                   ]
-          }
+          },
+              {
+              "id": "5a81bb6bf8b8e43ec9a81e2e",
+              "challengerId": "5a81b0f0f8b8e43e70325d3d",
+              "challengerFBId": "666376928hb83c9jfhd",
+              "name": "ibrahim Akay",
+              "firstTeamCount": "1",
+              "secondTeamCount": "1",
+              "thinksAboutChallenge": "Okuma?",
+              "subject": "read_book",
+              "chlDate": 1511136000000,
+              "untilDate": 1514505600000,
+              "untilDateStr": "LAST 14 DAYS!",
+              "done": true,
+              "updateDate": 1511136000000,
+              "likes": [],
+              "countOfLike": 0,
+              "comments": [],
+              "countOfComments": 0,
+              "type": "PUBLIC",
+              "joinAttendanceList": [
+                                     {
+                                     "id": "5a81bb6bf8b8e43ec9a81e2f",
+                                     "challengeId": "5a81bb6bf8b8e43ec9a81e2e",
+                                     "memberId": "5a81b0f0f8b8e43e70325d3d",
+                                     "facebookID": "666376928hb83c9jfhd",
+                                     "join": true,
+                                     "proof": false,
+                                     "challenger": true
+                                     }
+                                     ],
+              "goal": "10"
+              },
+              {
+              "id": "5a81dd3587f8723fc231028b",
+              "challengerId": "5a81b0f0f8b8e43e70325d3d",
+              "challengerFBId": "666376928hb83c9jfhd",
+              "name": "ibrahim Akay",
+              "firstTeamCount": "1",
+              "secondTeamCount": "0",
+              "thinksAboutChallenge": "Fransızca öğrenme?",
+              "subject": "learn_language",
+              "chlDate": 1511136000000,
+              "untilDate": 1514505600000,
+              "untilDateStr": "LAST 14 DAYS!",
+              "done": true,
+              "updateDate": 1511136000000,
+              "likes": [],
+              "countOfLike": 0,
+              "comments": [],
+              "countOfComments": 0,
+              "type": "SELF",
+              "score": "advance!",
+              "goal": "advance!"
+              }
         ]
 }

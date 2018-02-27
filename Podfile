@@ -7,7 +7,7 @@ target 'facebookfeed2' do
 
   # Pods for facebookfeed2
 
-pod 'FBSDKLoginKit', '~> 4.16.1'
-pod 'FBSDKCoreKit', '~> 4.16.0'
+pod 'FBSDKLoginKit'
+pod 'FBSDKCoreKit'
     
 end

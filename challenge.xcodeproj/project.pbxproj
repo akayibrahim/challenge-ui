@@ -10,6 +10,7 @@
 		A113ABFC203BE01B006E99F1 /* AddChallengeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */; };
 		A113ABFE203BE15E006E99F1 /* SelfChallangeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ABFD203BE15E006E99F1 /* SelfChallangeController.swift */; };
 		A113AC00203BE1E9006E99F1 /* OtherController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ABFF203BE1E9006E99F1 /* OtherController.swift */; };
+		A11C823520499DDB0061A33F /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11C823420499DDB0061A33F /* ImageService.swift */; };
 		A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1274107200F38E60073BFF2 /* FacebookController.swift */; };
 		A13C709B2043CE000076B989 /* ChallengeFeedCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13C709A2043CE000076B989 /* ChallengeFeedCellView.swift */; };
 		A13C709D2043CE6E0076B989 /* FriendRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13C709C2043CE6E0076B989 /* FriendRequestView.swift */; };
@@ -63,6 +64,7 @@
 		A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddChallengeController.swift; sourceTree = "<group>"; };
 		A113ABFD203BE15E006E99F1 /* SelfChallangeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfChallangeController.swift; sourceTree = "<group>"; };
 		A113ABFF203BE1E9006E99F1 /* OtherController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherController.swift; sourceTree = "<group>"; };
+		A11C823420499DDB0061A33F /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		A1274107200F38E60073BFF2 /* FacebookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookController.swift; sourceTree = "<group>"; };
 		A13C709A2043CE000076B989 /* ChallengeFeedCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeFeedCellView.swift; sourceTree = "<group>"; };
 		A13C709C2043CE6E0076B989 /* FriendRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestView.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				C7A85F3A1C78C137007E9A00 /* Assets.xcassets */,
 				C7A85F3C1C78C137007E9A00 /* LaunchScreen.storyboard */,
 				C7A85F3F1C78C137007E9A00 /* Info.plist */,
+				A11C823420499DDB0061A33F /* ImageService.swift */,
 			);
 			name = challenge;
 			path = facebookfeed2;
@@ -387,6 +390,7 @@
 				C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */,
 				A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */,
 				C7D879AE1C828B36008766AE /* FriendRequestController.swift in Sources */,
+				A11C823520499DDB0061A33F /* ImageService.swift in Sources */,
 				A1D2CAB720451C9F008782D3 /* OtherView.swift in Sources */,
 				A113ABFE203BE15E006E99F1 /* SelfChallangeController.swift in Sources */,
 				A13C709D2043CE6E0076B989 /* FriendRequestView.swift in Sources */,

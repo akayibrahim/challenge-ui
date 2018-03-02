@@ -16,6 +16,18 @@ class FeedCell: UICollectionViewCell {
         feedController?.animateImageView(statusImageView)
     }
     
+    func setImage(fbID: String?, imageView: UIImageView) {
+        if let peoplefbID = fbID {
+            let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
+            ImageService.getImage(withURL: url!) { image in
+                imageView.image = image
+            }
+            //let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
+            // imageView.image = UIImage(data: data!)
+            // imageView.image = UIImage(named: peopleImage)
+        }
+    }
+    
     func setImage(name: String?, imageView: UIImageView) {
         if let peopleImage = name {
             imageView.image = UIImage(named: peopleImage)
@@ -88,34 +100,34 @@ class FeedCell: UICollectionViewCell {
                     if (join.challenger == false) {
                         if !firstPImg {
                             if post?.secondTeamCount == "1" {
-                                setImage(name: join.FacebookID, imageView: firstOnePeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: firstOnePeopleImageView)
                             } else if post?.secondTeamCount == "2" {
-                                setImage(name: join.FacebookID, imageView: firstTwoPeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: firstTwoPeopleImageView)
                             } else if post?.secondTeamCount == "3" {
-                                setImage(name: join.FacebookID, imageView: firstThreePeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: firstThreePeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: join.FacebookID, imageView: firstFourPeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: firstFourPeopleImageView)
                             }
                             firstPImg = true
                         } else if !secondPImg {
                             if post?.secondTeamCount == "2" {
-                                setImage(name: join.FacebookID, imageView: secondTwoPeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: secondTwoPeopleImageView)
                             } else if post?.secondTeamCount == "3" {
-                                setImage(name: join.FacebookID, imageView: secondThreePeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: secondThreePeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: join.FacebookID, imageView: secondFourPeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: secondFourPeopleImageView)
                             }
                             secondPImg = true
                         } else if !thirdPImg {
                             if post?.secondTeamCount == "3" {
-                                setImage(name: join.FacebookID, imageView: thirdThreePeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: thirdThreePeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: join.FacebookID, imageView: thirdFourPeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: thirdFourPeopleImageView)
                             }
                             thirdPImg = true
                         }
                     } else if (join.challenger == true) {
-                        setImage(name: join.FacebookID, imageView: firstOneChlrPeopleImageView)
+                        setImage(fbID: join.FacebookID, imageView: firstOneChlrPeopleImageView)
                     }
                 }
             } else if post?.type == "PRIVATE" {
@@ -136,65 +148,65 @@ class FeedCell: UICollectionViewCell {
                     if(versus.firstTeamMember == true) {
                         if !firstChlrImg {
                             if post?.secondTeamCount == "1" {
-                                setImage(name: versus.FacebookID, imageView: firstOneChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstOneChlrPeopleImageView)
                             } else if post?.secondTeamCount == "2" {
-                                setImage(name: versus.FacebookID, imageView: firstTwoChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstTwoChlrPeopleImageView)
                             } else if post?.secondTeamCount == "3" {
-                                setImage(name: versus.FacebookID, imageView: firstThreeChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstThreeChlrPeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: versus.FacebookID, imageView: firstFourChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstFourChlrPeopleImageView)
                             }
                             firstChlrImg = true
                         } else if !secondChlrImg {
                             if post?.secondTeamCount == "2" {
-                                setImage(name: versus.FacebookID, imageView: secondTwoChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: secondTwoChlrPeopleImageView)
                             } else if post?.secondTeamCount == "3" {
-                                setImage(name: versus.FacebookID, imageView: secondThreeChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: secondThreeChlrPeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: versus.FacebookID, imageView: secondFourChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: secondFourChlrPeopleImageView)
                             }
                             secondChlrImg = true
                         } else if !thirdChlrImg {
                             if post?.secondTeamCount == "3" {
-                                setImage(name: versus.FacebookID, imageView: thirdThreeChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: thirdThreeChlrPeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: versus.FacebookID, imageView: thirdFourChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: thirdFourChlrPeopleImageView)
                             }
                             thirdChlrImg = true
                         }
                     } else if (versus.secondTeamMember == true){
                         if !firstImg {
                             if post?.secondTeamCount == "1" {
-                                setImage(name: versus.FacebookID, imageView: firstOnePeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstOnePeopleImageView)
                             } else if post?.secondTeamCount == "2" {
-                                setImage(name: versus.FacebookID, imageView: firstTwoPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstTwoPeopleImageView)
                             } else if post?.secondTeamCount == "3" {
-                                setImage(name: versus.FacebookID, imageView: firstThreePeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstThreePeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: versus.FacebookID, imageView: firstFourPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstFourPeopleImageView)
                             }
                             firstImg = true
                         } else if !secondImg {
                             if post?.secondTeamCount == "2" {
-                                setImage(name: versus.FacebookID, imageView: secondTwoPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: secondTwoPeopleImageView)
                             } else if post?.secondTeamCount == "3" {
-                                setImage(name: versus.FacebookID, imageView: secondThreePeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: secondThreePeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: versus.FacebookID, imageView: secondFourPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: secondFourPeopleImageView)
                             }
                             secondImg = true
                         } else if !thirdImg {
                             if post?.secondTeamCount == "3" {
-                                setImage(name: versus.FacebookID, imageView: thirdThreePeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: thirdThreePeopleImageView)
                             } else if post?.secondTeamCount == "4" {
-                                setImage(name: versus.FacebookID, imageView: thirdFourPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: thirdFourPeopleImageView)
                             }
                             thirdImg = true
                         }
                     }
                 }
             } else if post?.type == "SELF" {
-                setImage(name: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
+                setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
                 if let subject = post?.subject {
                     setImage(name: subject, imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.contentMode = .scaleAspectFill

@@ -37,6 +37,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                 print("LoggedIn")
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.window?.rootViewController = CustomTabBarController()
+                self.fetchFacebookProfile()
             }
         })
         print("true")
@@ -52,7 +53,6 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         loginButton.frame = CGRect(x: 16, y: 50, width: view.frame.width - 32, height: 50)
         
         loginButton.delegate = self
-        fetchFacebookProfile()
         /*
         imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         imageView.center = CGPoint(x: view.center.x, y: 200)
@@ -79,7 +79,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         
         connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
             if error == nil {
-                let data = result as! [String : Any]
+                print(result)
+                print("https://graph.facebook.com/10156204749600712/invitable_friends?access_token=\(FBSDKAccessToken.current().tokenString)")
+/*                let data = result as! [String : Any]
                 // self.label.text = data["name"] as? String
                 print(data["name"] as? String)
                 let FBid = data["id"] as? String
@@ -89,7 +91,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                 let user_friends = data["friends"] as? Any
                 let friends = user_friends as! [String : Any]
                 print(friends)
-
+*/
                 // self.imageView.image = UIImage(data: NSData(contentsOf: url! as URL)! as Data)
             } else {
                 print("Error Getting Friends \(error)");

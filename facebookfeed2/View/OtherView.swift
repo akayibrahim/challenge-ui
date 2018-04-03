@@ -20,7 +20,7 @@ class OtherView: UIView {
     
     let logoutButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Logout", for: UIControlState())
+        button.setTitle("Log Out", for: UIControlState())
         button.setTitleColor(UIColor.red, for: UIControlState())
         button.backgroundColor = UIColor.white
         button.titleLabel?.font = UIFont.systemFont(ofSize: 22)
@@ -43,6 +43,11 @@ class OtherView: UIView {
     }
     
     func logout() {
+        /*
+         let button2Alert: UIAlertView = UIAlertView(title: "Title", message: "message",
+         delegate: self as? UIAlertViewDelegate, cancelButtonTitle: "Ok")
+         button2Alert.show()
+         */
         let loginManager = FBSDKLoginManager()
         loginManager.logOut()
         window?.rootViewController = FacebookController()

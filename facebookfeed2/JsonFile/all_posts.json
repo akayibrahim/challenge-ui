@@ -9,7 +9,7 @@
           "chlDate": "20/10/2017",
           "untilDate": "20/10/2017",
           "untilDateStr": "LAST 14 DAY",
-          "subject" : "readBook",
+          "subject" : "READING",
           "type": "SELF",
           "done" : false,
           "firstTeamCount" : "1",
@@ -32,7 +32,7 @@
                                     "accept":false,
                                     "firstTeamMember":true,
                                     "secondTeamMember":false,
-                                    "facebookID": "10156204749600712"
+                                    "facebookID": "634127860"
                                     },
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -63,7 +63,7 @@
                                     "accept":false,
                                     "firstTeamMember":true,
                                     "secondTeamMember":false,
-                                    "facebookID": "10156204749600712"
+                                    "facebookID": "634127860"
                                     },
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -77,7 +77,7 @@
                                     "accept":false,
                                     "firstTeamMember":false,
                                     "secondTeamMember":true,
-                                    "facebookID": "10156204749600712"
+                                    "facebookID": "634127860"
                                     },
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -115,7 +115,7 @@
                                     "accept":false,
                                     "firstTeamMember":true,
                                     "secondTeamMember":false,
-                                    "facebookID": "10156204749600712"
+                                    "facebookID": "634127860"
                                     },
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -143,7 +143,7 @@
                                     "accept":false,
                                     "firstTeamMember":false,
                                     "secondTeamMember":true,
-                                    "facebookID": "10156204749600712"
+                                    "facebookID": "634127860"
                                     }
                                     ],
           "type": "PRIVATE",
@@ -167,7 +167,7 @@
                                     "accept":false,
                                     "firstTeamMember":true,
                                     "secondTeamMember":false,
-                                    "facebookID": "10156204749600712"
+                                    "facebookID": "634127860"
                                     },
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -247,7 +247,7 @@
                                   "join":false,
                                   "proof":true,
                                   "challenger":true,
-                                  "facebookID": "10156204749600712"
+                                  "facebookID": "634127860"
                                   }
                     ]
           },
@@ -315,7 +315,7 @@
                                   "join":false,
                                   "proof":true,
                                   "challenger":true,
-                                  "facebookID": "10156204749600712"
+                                  "facebookID": "634127860"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
@@ -384,7 +384,7 @@
                                   "join":false,
                                   "proof":true,
                                   "challenger":false,
-                                  "facebookID": "10156204749600712"
+                                  "facebookID": "634127860"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
@@ -401,9 +401,9 @@
               "challengerFBId": "666376928hb83c9jfhd",
               "name": "ibrahim Akay",
               "firstTeamCount": "1",
-              "secondTeamCount": "1",
+              "secondTeamCount": "0",
               "thinksAboutChallenge": "Okuma?",
-              "subject": "read_book",
+              "subject": "READING",
               "chlDate": 1511136000000,
               "untilDate": 1514505600000,
               "untilDateStr": "LAST 14 DAYS!",
@@ -435,7 +435,7 @@
               "firstTeamCount": "1",
               "secondTeamCount": "0",
               "thinksAboutChallenge": "Fransızca öğrenme?",
-              "subject": "learn_language",
+              "subject": "READING",
               "chlDate": 1511136000000,
               "untilDate": 1514505600000,
               "untilDateStr": "LAST 14 DAYS!",

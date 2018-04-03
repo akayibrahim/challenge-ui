@@ -14,6 +14,7 @@ class SelfChallengeController: UIViewController {
         super.viewDidLoad()
         
         navigationItem.title = "Self Challenges"
+        self.view.backgroundColor = UIColor.lightGray
     }
     
 }

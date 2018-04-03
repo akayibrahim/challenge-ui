@@ -17,7 +17,7 @@ class FriendRequestsController: UITableViewController {
         super.viewDidLoad()
         
         navigationItem.title = "Friend Requests"
-        
+ 
         tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
         tableView.sectionHeaderHeight = 26
         

@@ -12,9 +12,15 @@
 		A113AC00203BE1E9006E99F1 /* OtherController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ABFF203BE1E9006E99F1 /* OtherController.swift */; };
 		A11C823520499DDB0061A33F /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11C823420499DDB0061A33F /* ImageService.swift */; };
 		A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1274107200F38E60073BFF2 /* FacebookController.swift */; };
+		A138F38A204D9C4F00142231 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = A138F389204D9C4F00142231 /* Post.swift */; };
+		A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A138F38F204D9CD100142231 /* VersusAttendance.swift */; };
+		A138F392204D9CFA00142231 /* JoinAttendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A138F391204D9CFA00142231 /* JoinAttendance.swift */; };
 		A13C709B2043CE000076B989 /* ChallengeFeedCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13C709A2043CE000076B989 /* ChallengeFeedCellView.swift */; };
 		A13C709D2043CE6E0076B989 /* FriendRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13C709C2043CE6E0076B989 /* FriendRequestView.swift */; };
 		A1462A7820432CBE00F5EF0F /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1462A7720432CBE00F5EF0F /* ExternalAccessory.framework */; };
+		A14BDFED204E5E780095875F /* AddChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14BDFEC204E5E780095875F /* AddChallengeView.swift */; };
+		A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */; };
+		A19BBDFC206A07D700EC7B11 /* TableViewCellContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19BBDFB206A07D700EC7B11 /* TableViewCellContent.swift */; };
 		A1D2CAB720451C9F008782D3 /* OtherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D2CAB620451C9F008782D3 /* OtherView.swift */; };
 		BA814CC4F089C9048700059B /* Pods_facebookfeed2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2197A3DA9935AC76E3BE402E /* Pods_facebookfeed2.framework */; };
 		C780A7B21C88C582007023FD /* single_post.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B11C88C582007023FD /* single_post.json */; };
@@ -66,9 +72,15 @@
 		A113ABFF203BE1E9006E99F1 /* OtherController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherController.swift; sourceTree = "<group>"; };
 		A11C823420499DDB0061A33F /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		A1274107200F38E60073BFF2 /* FacebookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookController.swift; sourceTree = "<group>"; };
+		A138F389204D9C4F00142231 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		A138F38F204D9CD100142231 /* VersusAttendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersusAttendance.swift; sourceTree = "<group>"; };
+		A138F391204D9CFA00142231 /* JoinAttendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinAttendance.swift; sourceTree = "<group>"; };
 		A13C709A2043CE000076B989 /* ChallengeFeedCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeFeedCellView.swift; sourceTree = "<group>"; };
 		A13C709C2043CE6E0076B989 /* FriendRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestView.swift; sourceTree = "<group>"; };
 		A1462A7720432CBE00F5EF0F /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
+		A14BDFEC204E5E780095875F /* AddChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddChallengeView.swift; sourceTree = "<group>"; };
+		A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewController.swift; sourceTree = "<group>"; };
+		A19BBDFB206A07D700EC7B11 /* TableViewCellContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellContent.swift; sourceTree = "<group>"; };
 		A1D2CAB620451C9F008782D3 /* OtherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherView.swift; sourceTree = "<group>"; };
 		A1D8871120405A9600E45A1B /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		A1ED4B1020404BAE00422544 /* facebookfeed2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = facebookfeed2.entitlements; path = facebookfeed2/facebookfeed2.entitlements; sourceTree = "<group>"; };
@@ -127,6 +139,7 @@
 		A13C70972043CD010076B989 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */,
 				C7A85F351C78C137007E9A00 /* ChallengesController.swift */,
 				C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */,
 				C7D879AD1C828B36008766AE /* FriendRequestController.swift */,
@@ -153,8 +166,20 @@
 				A13C709A2043CE000076B989 /* ChallengeFeedCellView.swift */,
 				A13C709C2043CE6E0076B989 /* FriendRequestView.swift */,
 				A1D2CAB620451C9F008782D3 /* OtherView.swift */,
+				A14BDFEC204E5E780095875F /* AddChallengeView.swift */,
+				A19BBDFB206A07D700EC7B11 /* TableViewCellContent.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		A14EC3BA204B29E000F11C82 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A138F389204D9C4F00142231 /* Post.swift */,
+				A138F38F204D9CD100142231 /* VersusAttendance.swift */,
+				A138F391204D9CFA00142231 /* JoinAttendance.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		A1D8871220405A9600E45A1B /* Products */ = {
@@ -191,6 +216,7 @@
 		C7A85F321C78C137007E9A00 /* challenge */ = {
 			isa = PBXGroup;
 			children = (
+				A14EC3BA204B29E000F11C82 /* Model */,
 				A13C70992043CD440076B989 /* View */,
 				A13C70982043CD2D0076B989 /* JsonFile */,
 				A13C70972043CD010076B989 /* Controller */,
@@ -387,16 +413,22 @@
 			files = (
 				C7A85F361C78C137007E9A00 /* ChallengesController.swift in Sources */,
 				A113ABFC203BE01B006E99F1 /* AddChallengeController.swift in Sources */,
+				A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */,
 				C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */,
 				A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */,
+				A138F38A204D9C4F00142231 /* Post.swift in Sources */,
 				C7D879AE1C828B36008766AE /* FriendRequestController.swift in Sources */,
+				A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */,
 				A11C823520499DDB0061A33F /* ImageService.swift in Sources */,
+				A14BDFED204E5E780095875F /* AddChallengeView.swift in Sources */,
 				A1D2CAB720451C9F008782D3 /* OtherView.swift in Sources */,
 				A113ABFE203BE15E006E99F1 /* SelfChallangeController.swift in Sources */,
 				A13C709D2043CE6E0076B989 /* FriendRequestView.swift in Sources */,
+				A19BBDFC206A07D700EC7B11 /* TableViewCellContent.swift in Sources */,
 				A113AC00203BE1E9006E99F1 /* OtherController.swift in Sources */,
 				C7D879AC1C8289DD008766AE /* CustomTabBarController.swift in Sources */,
 				A13C709B2043CE000076B989 /* ChallengeFeedCellView.swift in Sources */,
+				A138F392204D9CFA00142231 /* JoinAttendance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

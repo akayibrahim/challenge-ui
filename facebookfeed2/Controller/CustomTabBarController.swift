@@ -17,11 +17,13 @@ class CustomTabBarController: UITabBarController {
         let navigationController = UINavigationController(rootViewController: feedController)
         navigationController.title = "Challenges"
         navigationController.tabBarItem.image = UIImage(named: "news_feed_icon")
+        navigationController.hidesBarsOnSwipe = true
         
         let friendRequestsController = FriendRequestsController()
         let secondNavigationController = UINavigationController(rootViewController: friendRequestsController)
         secondNavigationController.title = "Friends"
         secondNavigationController.tabBarItem.image = UIImage(named: "requests_icon")
+        // secondNavigationController.isNavigationBarHidden = true
         
         let addChallengeController = AddChallengeController()
         let messengerNavigationController = UINavigationController(rootViewController: addChallengeController)

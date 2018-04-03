@@ -10,58 +10,6 @@ import UIKit
 
 let cellId = "cellId"
 
-class Post: SafeJsonObject {
-    var name: String?
-    var profileImageName: String?
-    var thinksAboutChallenge: String?
-    var countOfLike: NSNumber?
-    var countOfComments: NSNumber?
-    var chlDate: NSDate?
-    var untilDate: NSDate?
-    var untilDateStr: NSString?
-    var type: String?
-    var subject: String?
-    var done : Bool?
-    var countOfJoins : NSNumber?
-    var firstTeamCount : String?
-    var secondTeamCount : String?
-    var challengerFBId : String?
-    @nonobjc var versusAttendanceList = [VersusAttendance]()
-    @nonobjc var joinAttendanceList = [JoinAttendance]()
-}
-
-class VersusAttendance: SafeJsonObject {
-    var memberId: String?
-    var accept: Bool?
-    var firstTeamMember: Bool?
-    var secondTeamMember: Bool?
-    var FacebookID: String?
-    
-    init(data: [String : AnyObject]) {
-        self.memberId = data["memberId"] as? String ?? ""
-        self.accept = data["accept"] as? Bool ?? false
-        self.firstTeamMember = data["firstTeamMember"] as? Bool ?? false
-        self.secondTeamMember = data["secondTeamMember"] as? Bool ?? false
-        self.FacebookID = data["facebookID"] as? String ?? ""
-    }
-}
-
-class JoinAttendance: SafeJsonObject {
-    var memberId: String?
-    var join: Bool?
-    var proof: Bool?
-    var challenger: Bool?
-    var FacebookID: String?
-    
-    init(data: [String : AnyObject]) {
-        self.memberId = data["memberId"] as? String ?? ""
-        self.join = data["join"] as? Bool ?? false
-        self.proof = data["proof"] as? Bool ?? false
-        self.challenger = data["challenger"] as? Bool ?? false
-        self.FacebookID = data["facebookID"] as? String ?? ""
-    }
-}
-
 class SafeJsonObject: NSObject {
     
     override func setValue(_ value: Any?, forKey key: String) {
@@ -167,7 +115,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 }
             }
         }
-        navigationItem.title = "CHALLENGE"
+        navigationItem.title = "Challenge"
         collectionView?.alwaysBounceVertical = true
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
@@ -189,7 +137,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let screenSize = UIScreen.main.bounds
-        let knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 15) + 10
+        let knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15)
+            // + (screenSize.width / 15) + 10
 
         if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
             let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)

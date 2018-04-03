@@ -66,6 +66,7 @@ class FeedCell: UICollectionViewCell {
         self.supportButton.removeFromSuperview()
         self.subjectLabel.removeFromSuperview()
         self.countOfLikeAndCommentLabel.removeFromSuperview()
+        self.mySegControl.removeFromSuperview()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -218,7 +219,7 @@ class FeedCell: UICollectionViewCell {
             }
             if let untilDate = post?.untilDateStr {
                 untilDateLabel.text = "\(untilDate)"
-                untilDateLabel.font = UIFont (name: "Marker Felt", size: 20)
+                untilDateLabel.font = UIFont (name: "Marker Felt", size: 24)
                 untilDateLabel.textAlignment = .center
                 untilDateLabel.numberOfLines = 2;
                 untilDateLabel.textColor = UIColor.gray
@@ -233,7 +234,7 @@ class FeedCell: UICollectionViewCell {
                 moreFourChlrPeopleImageView.contentMode = .scaleAspectFit
             }
             goalLabel.text = "GOAL: 10"
-            likeLabel.text = "Like"
+            likeLabel.text = "+10 Likes"
             if let subject = post?.subject {
                 subjectLabel.text = subject
                 subjectLabel.font = UIFont (name: "Marker Felt", size: 20)
@@ -261,7 +262,6 @@ class FeedCell: UICollectionViewCell {
     func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
-        let screenSize = UIScreen.main.bounds
         addGeneralSubViews()
         //generateTopView(contentGuide)
         
@@ -273,14 +273,15 @@ class FeedCell: UICollectionViewCell {
         generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type)
         
         if(!thinksAboutChallengeView.text.isEmpty) {
-            addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: 1)
-            addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
-            addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
-            
-            addTopAnchor(countOfLikeAndCommentLabel, anchor: thinksAboutChallengeView.bottomAnchor, constant: 0)
-            addLeadingAnchor(countOfLikeAndCommentLabel, anchor: contentGuide.leadingAnchor, constant: 2)
-            addHeightAnchor(countOfLikeAndCommentLabel, multiplier: 1/15)
             /*
+             addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: 1)
+             addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
+             addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
+            
+             addTopAnchor(countOfLikeAndCommentLabel, anchor: thinksAboutChallengeView.bottomAnchor, constant: 0)
+             addLeadingAnchor(countOfLikeAndCommentLabel, anchor: contentGuide.leadingAnchor, constant: 2)
+             addHeightAnchor(countOfLikeAndCommentLabel, multiplier: 1/15)
+             
              addTopAnchor(dividerLineView2, anchor: countOfLikeAndCommentLabel.bottomAnchor, constant: 0)
              addLeadingAnchor(dividerLineView2, anchor: contentGuide.leadingAnchor, constant: 0)
              addTrailingAnchor(dividerLineView2, anchor: contentGuide.trailingAnchor, constant: 4)
@@ -366,34 +367,52 @@ class FeedCell: UICollectionViewCell {
         vsImageView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         addHeightAnchor(vsImageView, multiplier: 1/6)
         
-        middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0.5/18).isActive = true
+        middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
         
         if type == "PRIVATE" {
+            /*
+            addSubview(mySegControl)
+            addTopAnchor(mySegControl, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
+            mySegControl.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
+            addWidthAnchor(mySegControl, multiplier: 0.6/3)
+            addHeightAnchor(mySegControl, multiplier: 2.1/18)
+            mySegControl.selectedSegmentIndex = 1
+            */
             addSubview(supportButton)
-            addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: 0)
-            supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.14/3)).isActive = true
+            addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
+            supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.2/3)).isActive = true
             addWidthAnchor(supportButton, multiplier: 0.3/3)
-            addHeightAnchor(supportButton, multiplier: 2.1/18)
-            
+            addHeightAnchor(supportButton, multiplier: 1.8/18)
+            supportButton.setBackgroundImage(UIImage(named: "leftArrow"), for: UIControlState())
+            supportButton.layer.borderWidth = 0
             
             addSubview(supportButtonMatch)
-            addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: 0)
-            supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.15/3)).isActive = true
+            addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
+            supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.2/3)).isActive = true
             addWidthAnchor(supportButtonMatch, multiplier: 0.3/3)
-            addHeightAnchor(supportButtonMatch, multiplier: 2.1/18)
+            addHeightAnchor(supportButtonMatch, multiplier: 1.8/18)
+            supportButtonMatch.setBackgroundImage(UIImage(named: "rightArrow"), for: UIControlState())
+            supportButtonMatch.layer.borderWidth = 0
         } else if type == "PUBLIC" {
             addSubview(joinButton)
-            addTopAnchor(joinButton, anchor: middleCenterGuide.bottomAnchor, constant: 0)
+            addTopAnchor(joinButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
             joinButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addWidthAnchor(joinButton, multiplier: 0.4/3)
-            addHeightAnchor(joinButton, multiplier: 2.1/18)
+            addWidthAnchor(joinButton, multiplier: 0.5/3)
+            addHeightAnchor(joinButton, multiplier: 1.8/18)
         } else {
             addSubview(likeButton)
             addTopAnchor(likeButton, anchor: middleCenterGuide.bottomAnchor, constant: 0)
             likeButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addWidthAnchor(likeButton, multiplier: 0.4/3)
+            addWidthAnchor(likeButton, multiplier: 0.36/3)
             addHeightAnchor(likeButton, multiplier: 2.1/18)
+            
+            addSubview(likeLabel)
+            addTopAnchor(likeLabel, anchor: likeButton.bottomAnchor, constant: 0)
+            likeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            addWidthAnchor(likeLabel, multiplier: 1/3)
+            addHeightAnchor(likeLabel, multiplier: 1/15)
+
         }
         
         middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0).isActive = true
@@ -442,9 +461,9 @@ class FeedCell: UICollectionViewCell {
         addSubview(subjectLabel)
         addTopAnchor(subjectLabel, anchor: middleBottomGuide.bottomAnchor, constant: 0)
         subjectLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        addHeightAnchor(subjectLabel, multiplier: 1/12)
+        addHeightAnchor(subjectLabel, multiplier: 1/15)
         
-        addTopAnchor(dividerLineView1, anchor: middleBottomGuide.bottomAnchor, constant: (screenSize.width * 1.1/18) + 6) // CGSIZE
+        addTopAnchor(dividerLineView1, anchor: middleBottomGuide.bottomAnchor, constant: (screenSize.width * 1/15)) // CGSIZE
         addLeadingAnchor(dividerLineView1, anchor: contentGuide.leadingAnchor, constant: 1)
         addTrailingAnchor(dividerLineView1, anchor: contentGuide.trailingAnchor, constant: 1)
         dividerLineView1.heightAnchor.constraint(equalToConstant: 1).isActive = true
@@ -707,11 +726,11 @@ class FeedCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: fontSize)
         label.textAlignment = .center
-        label.textColor = UIColor.white
+        label.textColor = UIColor.darkGray
         return label
     }
     
-    let likeLabel: UILabel = FeedCell.label(8)
+    let likeLabel: UILabel = FeedCell.label(12)
     
     static func lineForDivider() -> UIView {
         let view = UIView()
@@ -754,7 +773,7 @@ class FeedCell: UICollectionViewCell {
         button.setImage(UIImage(named: imageName), for: UIControlState())
         button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
         
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.layer.borderColor = UIColor.gray.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 3.0
@@ -764,8 +783,8 @@ class FeedCell: UICollectionViewCell {
     }
     
     let joinButton = FeedCell.buttonForTitleWithBorder("Join", imageName: "Join")
-    let supportButton = FeedCell.buttonForTitleWithBorder("<-", imageName: "Support")
-    let supportButtonMatch = FeedCell.buttonForTitleWithBorder("->", imageName: "Support")
+    let supportButton = FeedCell.buttonForTitleWithBorder("", imageName: "Support")
+    let supportButtonMatch = FeedCell.buttonForTitleWithBorder("", imageName: "Support")
     
     static func imageView() -> UIImageView {
         let imageView = UIImageView()
@@ -816,6 +835,18 @@ class FeedCell: UICollectionViewCell {
     let peopleView: UIView = FeedCell.viewFunc()
     let chlrPeopleView: UIView = FeedCell.viewFunc()
     let view: UIView = FeedCell.viewFunc()
+    
+    static func segmentedControl() -> UISegmentedControl {
+        let myArray : NSArray = ["", ""]
+        let mySegControl : UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
+        mySegControl.backgroundColor = UIColor.white
+        mySegControl.layer.cornerRadius = 5.0
+        mySegControl.tintColor = UIColor.black
+        // mySegControl.setBackgroundImage(UIImage(named: "hand"), for: UIControlState(), barMetrics: UIBarMetrics.default)
+        return mySegControl
+    }
+    
+    let mySegControl: UISegmentedControl = FeedCell.segmentedControl()
 }
 
 extension UIColor {

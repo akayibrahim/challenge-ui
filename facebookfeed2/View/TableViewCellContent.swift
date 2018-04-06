@@ -38,7 +38,7 @@ class TableViewCellContent: UITableViewCell {
         label.textColor = UIColor.gray
         
         if cellRow == 0 {
-            addChallenge.backgroundColor = UIColor.lightGray
+            addChallenge.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
             addSubview(addChallenge)
         } else if cellRow == 1 {
             addSubview(mySegControl)
@@ -49,6 +49,7 @@ class TableViewCellContent: UITableViewCell {
             addSubview(datePicker)
             addTrailingAnchor(datePicker, anchor: contentGuide.trailingAnchor, constant: 0)
             datePicker.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            datePicker.minimumDate = Date()
         } else if cellRow == 7 {
             addSubview(mySwitch)
             addTrailingAnchor(mySwitch, anchor: contentGuide.trailingAnchor, constant: 0)

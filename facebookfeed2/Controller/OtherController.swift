@@ -13,7 +13,7 @@ class OtherController: UIViewController {
         super.viewDidLoad()
         let screenSize = UIScreen.main.bounds
         let otherView = OtherView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height))
-        otherView.backgroundColor = UIColor.lightGray
+        otherView.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
         self.view.addSubview(otherView)
         navigationItem.title = "Profiles & Settings"
     }

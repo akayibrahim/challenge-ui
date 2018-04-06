@@ -18,17 +18,54 @@ class AddChallengeController: UITableViewController {
     let subjectIndexPath = IndexPath(item: 2, section: 0)
     let leftSideIndex = IndexPath(item: 3, section: 0)
     let rightSideIndex = IndexPath(item: 4, section: 0)
+    let deadlineIndexPath = IndexPath(item: 5, section: 0)
+    let calenddarIndexPath = IndexPath(item: 6, section: 0)
     let proofIndexPath = IndexPath(item: 7, section: 0)
+    var subjects = [Subject]()
+    var friends = [Friends]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Add Challenge"
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MyCellAdd")
         tableView.tableFooterView = UIView()
-        self.view.backgroundColor = UIColor.lightGray
+        self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
         let rightButton = UIBarButtonItem(title: "Add", style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.addChallenge))
         navigationItem.rightBarButtonItem = rightButton
-        rightButton.tintColor = UIColor.black
+        rightButton.tintColor = UIColor.white
+        
+        if let path = Bundle.main.path(forResource: "subject", ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    self.subjects = [Subject]()
+                    for postDictionary in postsArray {
+                        let subject = Subject()
+                        subject.setValuesForKeys(postDictionary)
+                        self.subjects.append(subject)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        if let path = Bundle.main.path(forResource: "friends", ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    self.friends = [Friends]()
+                    for postDictionary in postsArray {
+                        let friends = Friends()
+                        friends.setValuesForKeys(postDictionary)
+                        self.friends.append(friends)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
     }
     
     func addChallenge() {
@@ -37,31 +74,50 @@ class AddChallengeController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 2 {
             let selectionTable = SelectionTableViewController()
-            selectionTable.items = ["READING", "LANGUAGE", "WALKING"]
+            var selItems = [SelectedItems]()
+            for subj in self.subjects {
+                let selItem = SelectedItems()
+                selItem.name = subj.name
+                selItems.append(selItem)
+            }
+            selectionTable.items = selItems
             selectionTable.tableTitle = "Subjects"
             selectionTable.popIndexPath = indexPath
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath.row == 3 || indexPath.row == 4 {
             let selectionTable = SelectionTableViewController()
-            if indexPath.row == 3 {
-                selectionTable.items = ["Seher Can", "Tamer", "Serkan", "Melisa"]
+            var selItems = [SelectedItems]()
+            for fri in self.friends {
+                let selItem = SelectedItems()
+                selItem.name = fri.name
+                selItem.id = fri.id
+                selItems.append(selItem)
+            }
+            let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
+            var selItemsWithoutWorld = [SelectedItems]()
+            selItemsWithoutWorld = selItems
+            selItemsWithoutWorld.removeLast()
+            if segControlContent.mySegControl.selectedSegmentIndex != 0 || indexPath.row == 3 {
+                selectionTable.items = selItemsWithoutWorld
             } else {
-                selectionTable.items = ["Seher Can", "Tamer", "Serkan", "Melisa", "To World"]
+                selectionTable.items = selItems
             }
             selectionTable.tableTitle = "Friends"
             selectionTable.popIndexPath = indexPath
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath.row == 5 {
-            let iindexPath = IndexPath(item: 6, section: 0)
-            let cIndexPath = IndexPath(item: 5, section: 0)
-            let cellContent = tableView.cellForRow(at: iindexPath) as! TableViewCellContent
-            let cCellContent = tableView.cellForRow(at: cIndexPath) as! TableViewCellContent
+            let cellContent = tableView.cellForRow(at: calenddarIndexPath) as! TableViewCellContent
+            let cCellContent = tableView.cellForRow(at: deadlineIndexPath) as! TableViewCellContent
+            let addViewCellContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
             let formatter = DateFormatter()
             formatter.dateFormat = "dd-MM-yyyy HH:mm"
             let formattedDate = formatter.string(from: cellContent.datePicker.date)
             cCellContent.labelOtherSide.text = formattedDate
             switchDateP = !switchDateP
-            tableView.reloadRows(at: [iindexPath], with: .fade)
+            tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
+            let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
+            addViewCellContent.addChallenge.untilDateLabel.text = "LAST \(daysBetween) DAYS"
+            self.tableView?.scrollToRow(at: proofIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
         }
     }
     var switchDateP : Bool = false;
@@ -144,9 +200,16 @@ class AddChallengeController: UITableViewController {
     func updateCell(result : [SelectedItems], popIndexPath : IndexPath) {
         let cellContent = tableView.cellForRow(at: popIndexPath) as! TableViewCellContent
         var itemsResult : String = ""
+        var itemsCount : Int = 1
         for item in result {
+            if itemsCount > 2 {
+                itemsResult += " ..."
+                break
+            }
             itemsResult += item.name + ", "
+            itemsCount += 1
         }
+        
         cellContent.labelOtherSide.text = itemsResult.trim()
         if popIndexPath.row != 2 {
             segControlChange(isNotAction : true, popIndexPath : popIndexPath)
@@ -216,25 +279,23 @@ class AddChallengeController: UITableViewController {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         addViewContent.addChallenge.generateSecondTeam(count: result.count)
         if result.count == 1 {
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.firstOnePeopleImageView)
+            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
+            // setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
             if result[0].name == "To World" {
-                setImage(name: "worldImage", imageView: addViewContent.addChallenge.firstOnePeopleImageView)
                 addViewContent.addChallenge.firstOnePeopleImageView.contentMode = .scaleAspectFit
-            } else {
-                setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
             }
         } else if result.count == 2 {
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.firstTwoPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.secondTwoPeopleImageView)
+            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstTwoPeopleImageView)
+            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondTwoPeopleImageView)
         } else if result.count == 3 {
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.firstThreePeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.secondThreePeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.thirdThreePeopleImageView)
-        } else if result.count == 4 {
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.firstFourPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.secondFourPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.thirdFourPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.moreFourPeopleImageView)
+            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstThreePeopleImageView)
+            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondThreePeopleImageView)
+            setImage(name: result[2].id, imageView: addViewContent.addChallenge.thirdThreePeopleImageView)
+        } else {
+            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstFourPeopleImageView)
+            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondFourPeopleImageView)
+            setImage(name: result[2].id, imageView: addViewContent.addChallenge.thirdFourPeopleImageView)
+            setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourPeopleImageView)
         }
     }
     
@@ -243,19 +304,20 @@ class AddChallengeController: UITableViewController {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         addViewContent.addChallenge.generateFirstTeam(count: result.count)
         if result.count == 1 {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOneChlrPeopleImageView)
+            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstOneChlrPeopleImageView)
+            // setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOneChlrPeopleImageView)
         } else if result.count == 2 {
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.firstTwoChlrPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.secondTwoChlrPeopleImageView)
+            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstTwoChlrPeopleImageView)
+            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondTwoChlrPeopleImageView)
         } else if result.count == 3 {
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.firstThreeChlrPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.secondThreeChlrPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.thirdThreeChlrPeopleImageView)
-        } else if result.count == 4 {
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.firstFourChlrPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.secondFourChlrPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView)
-            setImage(name: "unknown", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView)
+            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstThreeChlrPeopleImageView)
+            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondThreeChlrPeopleImageView)
+            setImage(name: result[2].id, imageView: addViewContent.addChallenge.thirdThreeChlrPeopleImageView)
+        } else {
+            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstFourChlrPeopleImageView)
+            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondFourChlrPeopleImageView)
+            setImage(name: result[2].id, imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView)
+            setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView)
         }
     }
     
@@ -285,9 +347,4 @@ extension String
         let cs = CharacterSet.init(charactersIn: ", ")
         return self.trimmingCharacters(in: cs)
     }
-}
-
-class SelectedItems {
-    var name : String!
-    var id : String!
 }

@@ -10,7 +10,7 @@ import UIKit
 
 class SelectionTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
     let screenSize = UIScreen.main.bounds
-    var items = [""]
+    var items = [SelectedItems]()
     var tableTitle : String!
     var tableView : UITableView!
     var popIndexPath : IndexPath!
@@ -29,7 +29,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             tableView.allowsMultipleSelection = true
             navigationItem.rightBarButtonItem = self.editButtonItem
             let rightButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.showEditing))
-            rightButton.tintColor = UIColor.black
+            rightButton.tintColor = UIColor.white
             navigationItem.rightBarButtonItem = rightButton
         }
     }
@@ -46,7 +46,8 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             var selItems = [SelectedItems]()
             for index in indexPath {
                 let selItem = SelectedItems()
-                selItem.name = items[index.row]
+                selItem.name = items[index.row].name
+                selItem.id = items[index.row].id
                 selItems.append(selItem)
             }
             controller.updateCell(result: selItems, popIndexPath: popIndexPath)
@@ -60,7 +61,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 var selItems = [SelectedItems]()
                 let selItem = SelectedItems()
                 selItems.append(selItem)
-                selItem.name = items[indexPath.row]
+                selItem.name = items[indexPath.row].name                
                 controller.updateCell(result: selItems, popIndexPath: popIndexPath)
             }
             navigationController?.popViewController(animated: true)
@@ -77,7 +78,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath)
-        cell.textLabel?.text = items[indexPath.row]
+        cell.textLabel?.text = items[indexPath.row].name
         return cell
     }
 }

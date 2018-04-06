@@ -3,7 +3,7 @@
           {
           "name": "Steve Jobs",
           "profileImageName": "steve_profile",
-              "thinksAboutChallenge": "ibrahim : Iphone will sell twice?",
+              "thinksAboutChallenge": "Iphone will sell twice?",
           "countOfLike": 111,
           "countOfComments": 222,
           "chlDate": "20/10/2017",
@@ -14,12 +14,14 @@
           "done" : false,
           "firstTeamCount" : "1",
           "secondTeamCount" : "0",
-          "challengerFBId" : "10156204749600712"
+          "challengerFBId" : "10156204749600712",
+              "isComeFromSelf" : false,
+              "amILike" : false
           },
           {
           "name": "Mahatma Gandhi",
           "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "shr : Iphone will sell twice?",
+              "thinksAboutChallenge": "Iphone will sell twice?",
           "countOfLike": 333,
           "countOfComments": 444,
           "chlDate": "20/10/2017",
@@ -45,12 +47,15 @@
           "type": "PRIVATE",
           "done" : true,
           "firstTeamCount" : "1",
-          "secondTeamCount" : "1"
+          "secondTeamCount" : "1",
+              "isComeFromSelf" : false,
+              "supportFirstTeam" : true,
+              "supportSecondTeam" : false
           },
           {
           "name": "Mahatma Gandhi",
           "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "ahmet : Goodness will win one day?",
+              "thinksAboutChallenge": "Goodness will win one day?",
           "countOfLike": 333,
           "countOfComments": 444,
           "chlDate": "20/10/2017",
@@ -90,12 +95,15 @@
           "type": "PRIVATE",
           "done" : true,
           "firstTeamCount" : "2",
-          "secondTeamCount" : "2"
+              "secondTeamCount" : "2",
+              "isComeFromSelf" : false,
+              "supportFirstTeam" : false,
+              "supportSecondTeam" : true
           },
           {
           "name": "Mahatma Gandhi",
           "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "selin : Goodness will win one day?",
+              "thinksAboutChallenge": "Goodness will win one day?",
           "countOfLike": 333,
           "countOfComments": 444,
           "chlDate": "20/10/2017",
@@ -149,12 +157,15 @@
           "type": "PRIVATE",
           "done" : true,
           "firstTeamCount" : "3",
-          "secondTeamCount" : "3"
+              "secondTeamCount" : "3",
+              "isComeFromSelf" : false,
+              "supportFirstTeam" : true,
+              "supportSecondTeam" : false
           },
           {
           "name": "Mahatma Gandhi",
           "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "brc : Goodness will win one day?",
+              "thinksAboutChallenge": "Goodness will win one day?",
           "countOfLike": 333,
           "countOfComments": 444,
           "chlDate": "20/10/2017",
@@ -222,7 +233,10 @@
           "type": "PRIVATE",
           "done" : true,
           "firstTeamCount" : "4",
-          "secondTeamCount" : "4"
+              "secondTeamCount" : "4",
+              "isComeFromSelf" : false,
+              "supportFirstTeam" : false,
+              "supportSecondTeam" : true
           },
           {
           "name": "Mark Zuckerberg",
@@ -244,12 +258,13 @@
           "joinAttendanceList" : [
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
+                                  "join":true,
                                   "proof":true,
                                   "challenger":true,
                                   "facebookID": "634127860"
                                   }
-                    ]
+                                  ],
+              "isComeFromSelf" : false
           },
           {
           "name": "Mark Zuckerberg",
@@ -290,7 +305,8 @@
                                   "challenger":false,
                                   "facebookID": "10156204749600712"
                                   }
-                                  ]
+                                  ],
+              "isComeFromSelf" : false
           },
           {
           "name": "Mark Zuckerberg",
@@ -312,7 +328,7 @@
           "joinAttendanceList" : [
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
+                                  "join":true,
                                   "proof":true,
                                   "challenger":true,
                                   "facebookID": "634127860"
@@ -338,7 +354,8 @@
                                   "challenger":false,
                                   "facebookID": "10156204749600712"
                                   }
-                                  ]
+                                  ],
+              "isComeFromSelf" : false
           },
           {
           "name": "Mark Zuckerberg",
@@ -393,7 +410,8 @@
                                   "challenger":false,
                                   "facebookID": "10156204749600712"
                                   }
-                                  ]
+                                  ],
+              "isComeFromSelf" : false
           },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -425,7 +443,8 @@
                                      "challenger": true
                                      }
                                      ],
-              "goal": "10"
+              "goal": "10",
+              "isComeFromSelf" : false
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -447,7 +466,9 @@
               "countOfComments": 0,
               "type": "SELF",
               "score": "advance!",
-              "goal": "advance!"
+              "goal": "advance!",
+              "isComeFromSelf" : false,
+              "amILike" : true
               }
         ]
 }

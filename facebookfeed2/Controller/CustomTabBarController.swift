@@ -30,10 +30,10 @@ class CustomTabBarController: UITabBarController {
         messengerNavigationController.title = "Add"
         messengerNavigationController.tabBarItem.image = UIImage(named: "add_icon")
         
-        let selfChallengeController = SelfChallengeController()
+        let selfChallengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let notificationsNavController = UINavigationController(rootViewController: selfChallengeController)
         notificationsNavController.title = "Self's"
-        notificationsNavController.tabBarItem.image = UIImage(named: "globe_icon")
+        notificationsNavController.tabBarItem.image = UIImage(named: "selfs")
         
         let otherController = OtherController()
         let moreNavController = UINavigationController(rootViewController: otherController)

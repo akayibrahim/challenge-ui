@@ -20,10 +20,14 @@ class Post: SafeJsonObject {
     var type: String?
     var subject: String?
     var done : Bool?
+    var isComeFromSelf : Bool?
     var countOfJoins : NSNumber?
     var firstTeamCount : String?
     var secondTeamCount : String?
     var challengerFBId : String?
     @nonobjc var versusAttendanceList = [VersusAttendance]()
     @nonobjc var joinAttendanceList = [JoinAttendance]()
+    var amILike : Bool?
+    var supportFirstTeam : Bool?
+    var supportSecondTeam : Bool?
 }

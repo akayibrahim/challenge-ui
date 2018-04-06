@@ -91,7 +91,7 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
 
         vsImageView.image = UIImage(named: "vs")
         
-        untilDateLabel.text = "LAST 14 Days"
+        untilDateLabel.text = "DeadLine"
         untilDateLabel.font = UIFont (name: "Marker Felt", size: 24)
         untilDateLabel.textAlignment = .center
         untilDateLabel.numberOfLines = 2;
@@ -175,7 +175,7 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
             addLeadingAnchor(thirdThreeChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(thirdThreeChlrPeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(thirdThreeChlrPeopleImageView, multiplier: heightOfHalfImage)
-        } else if count == 4 {
+        } else {
             let screenSize = UIScreen.main.bounds
             leftMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             leftMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
@@ -201,7 +201,8 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
             addHeightAnchor(thirdFourChlrPeopleImageView, multiplier: heightOfHalfImage)
             leftMiddleBottomWidth.trailingAnchor.constraint(equalTo: moreFourChlrPeopleImageView.leadingAnchor)
             challengeView.addSubview(moreFourChlrPeopleImageView)
-            addBottomAnchor(moreFourChlrPeopleImageView, anchor: thirdFourChlrPeopleImageView.bottomAnchor, constant: -2)
+            moreFourChlrPeopleImageView.contentMode = .scaleAspectFit
+            addBottomAnchor(moreFourChlrPeopleImageView, anchor: thirdFourChlrPeopleImageView.bottomAnchor, constant: 0)
             addLeadingAnchor(moreFourChlrPeopleImageView, anchor: leftMiddleBottomWidth.trailingAnchor, constant: 2)
             addWidthAnchor(moreFourChlrPeopleImageView, multiplier: widthOfQuarterImage)
             addHeightAnchor(moreFourChlrPeopleImageView, multiplier: heightOfHalfImage)
@@ -264,7 +265,7 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
             addTrailingAnchor(thirdThreePeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addWidthAnchor(thirdThreePeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(thirdThreePeopleImageView, multiplier: heightOfHalfImage)
-        } else if count == 4 {
+        } else {
             rightMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             challengeView.addSubview(firstFourPeopleImageView)
             addTopAnchor(firstFourPeopleImageView, anchor: middleTopGuide.topAnchor, constant: 2)
@@ -287,6 +288,7 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
             addHeightAnchor(thirdFourPeopleImageView, multiplier: heightOfHalfImage)
             rightMiddleBottomWidth.trailingAnchor.constraint(equalTo: moreFourPeopleImageView.leadingAnchor)
             challengeView.addSubview(moreFourPeopleImageView)
+            moreFourPeopleImageView.contentMode = .scaleAspectFit
             addBottomAnchor(moreFourPeopleImageView, anchor: thirdFourPeopleImageView.bottomAnchor, constant: 0)
             addLeadingAnchor(moreFourPeopleImageView, anchor: rightMiddleBottomWidth.trailingAnchor, constant: 2)
             addTrailingAnchor(moreFourPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)

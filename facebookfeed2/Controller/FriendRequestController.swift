@@ -16,7 +16,7 @@ class FriendRequestsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Friend Requests"
+        navigationItem.title = "Follow Requests"
  
         tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
         tableView.sectionHeaderHeight = 26
@@ -26,7 +26,7 @@ class FriendRequestsController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -41,30 +41,31 @@ class FriendRequestsController: UITableViewController {
             cell.requestImageView.image = UIImage(named: "zuckprofile")
         } else if indexPath.row % 3 == 1 {
             cell.nameLabel.text = "Steve Jobs"
-            cell.requestImageView.image = UIImage(named: "steve_profile")
+            cell.requestImageView.image = UIImage(named: "gandhi_profile")
         } else {
             cell.nameLabel.text = "Mahatma Gandhi"
             cell.requestImageView.image = UIImage(named: "gandhi_profile")
         }
         
         cell.imageView?.backgroundColor = UIColor.black
-        
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return UIScreen.main.bounds.width * 3.3 / 10
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: FriendRequestsController.headerId) as! RequestHeader
-        
+        header.nameLabel.text = "PEOPLE YOU MAY KNOW"
+        /*
         if section == 0 {
             header.nameLabel.text = "FRIEND REQUESTS"
         } else {
             header.nameLabel.text = "PEOPLE YOU MAY KNOW"
         }
-        
+        */
         return header
     }
     
@@ -96,13 +97,17 @@ class RequestHeader: UITableViewHeaderFooterView {
     }()
     
     func setupViews() {
+        let contentGuide = self.readableContentGuide
+        
         addSubview(nameLabel)
         addSubview(bottomBorderView)
         
-        addConstraintsWithFormat("H:|-8-[v0]-8-|", views: nameLabel)
-        addConstraintsWithFormat("V:|[v0][v1(0.5)]|", views: nameLabel, bottomBorderView)
+        addTopAnchor(nameLabel, anchor: contentGuide.topAnchor, constant: 0)
+        addLeadingAnchor(nameLabel, anchor: contentGuide.leadingAnchor, constant: 0)
         
-        addConstraintsWithFormat("H:|[v0]|", views: bottomBorderView)
+        addTopAnchor(bottomBorderView, anchor: contentGuide.topAnchor, constant: 0)
+        addLeadingAnchor(bottomBorderView, anchor: contentGuide.leadingAnchor, constant: 0)
+        addHeightAnchor(bottomBorderView, multiplier: 0.5/10)
     }
     
 }

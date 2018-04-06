@@ -57,6 +57,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                                 }
                             }
                             post.setValuesForKeys(postDictionary)
+                            post.done = postDictionary["done"] as? Bool
+                            post.isComeFromSelf = postDictionary["isComeFromSelf"] as? Bool
+                            post.amILike = postDictionary["amILike"] as? Bool
+                            post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
+                            post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
                             self.posts.append(post)
                         }
                     }
@@ -83,7 +88,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         } else {
             //        let samplePost = Post()
             //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
-            if let path = Bundle.main.path(forResource: "all_posts", ofType: "json") {
+            var jsonFileName = "self_posts"
+            if self.tabBarController?.selectedIndex == 0 {
+                jsonFileName = "all_posts"
+            }
+            if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
                 do {
                     let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
                     let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
@@ -106,6 +115,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                                 }
                             }
                             post.setValuesForKeys(postDictionary)
+                            post.done = postDictionary["done"] as? Bool
+                            post.isComeFromSelf = postDictionary["isComeFromSelf"] as? Bool
+                            post.amILike = postDictionary["amILike"] as? Bool
+                            post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
+                            post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
                             self.posts.append(post)
                             self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
                         }
@@ -115,7 +129,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 }
             }
         }
-        navigationItem.title = "Challenge"
+        if self.tabBarController?.selectedIndex == 0 {
+            navigationItem.title = "Challenge"
+        } else if self.tabBarController?.selectedIndex == 3 {
+            navigationItem.title = "Self Challenges"
+        }
         collectionView?.alwaysBounceVertical = true
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
@@ -132,19 +150,73 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.prepareForReuse()
         feedCell.post = posts[indexPath.item]
         feedCell.feedController = self
+        if feedCell.post?.type == "SELF" {
+            feedCell.likeButton.tag = indexPath.row
+            feedCell.likeButton.addTarget(self, action: #selector(self.likeSelfs), for: UIControlEvents.touchUpInside)
+        } else if feedCell.post?.type == "PUBLIC" {
+            feedCell.joinButton.tag = indexPath.row
+            feedCell.joinButton.addTarget(self, action: #selector(self.acceptChallenge), for: UIControlEvents.touchUpInside)
+        } else if feedCell.post?.type == "PRIVATE" {
+            feedCell.supportButton.tag = indexPath.row
+            feedCell.supportButtonMatch.tag = indexPath.row
+            feedCell.supportButton.addTarget(self, action: #selector(self.supportChallenge), for: UIControlEvents.touchUpInside)
+            feedCell.supportButtonMatch.addTarget(self, action: #selector(self.supportChallengeMatch), for: UIControlEvents.touchUpInside)
+        }
         return feedCell
+    }
+    
+    func supportChallenge(sender: UIButton) {
+        let index = IndexPath(item: sender.tag, section: 0)
+        let feedCcell = collectionView?.cellForItem(at: index) as! FeedCell
+        let currentImage = sender.currentImage
+        if currentImage == UIImage(named:"leftArrow") {
+            sender.setImage(UIImage(named:"rightArrow"), for: .normal)
+            feedCcell.supportButtonMatch.setImage(UIImage(named:"leftArrow"), for: .normal)
+        } else {
+            sender.setImage(UIImage(named:"leftArrow"), for: .normal)
+        }
+    }
+    
+    func supportChallengeMatch(sender: UIButton) {
+        let index = IndexPath(item: sender.tag, section: 0)
+        let feedCcell = collectionView?.cellForItem(at: index) as! FeedCell
+        let currentImage = sender.currentImage
+        if currentImage == UIImage(named:"leftArrow") {
+            sender.setImage(UIImage(named:"rightArrow"), for: .normal)
+            feedCcell.supportButton.setImage(UIImage(named:"leftArrow"), for: .normal)
+        } else {
+            sender.setImage(UIImage(named:"leftArrow"), for: .normal)
+        }
+    }
+    
+    func likeSelfs(sender: UIButton) {
+        let currentImage = sender.currentImage
+        if currentImage == UIImage(named:"like") {
+            sender.setImage(UIImage(named:"likeRed"), for: .normal)
+        } else {
+            sender.setImage(UIImage(named:"like"), for: .normal)
+        }
+    }
+    
+    func acceptChallenge(sender: UIButton) {
+        let currentImage = sender.currentImage
+        if currentImage == UIImage(named:"acceptedRed") {
+            sender.setImage(UIImage(named:"acceptedBlack"), for: .normal)
+        } else {
+            sender.setImage(UIImage(named:"acceptedRed"), for: .normal)
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let screenSize = UIScreen.main.bounds
-        let knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15)
-            // + (screenSize.width / 15) + 10
-
-        if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
-            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
-            return CGSize(width: view.frame.width, height: rect.height + knownHeight + 20)
+        var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
+        if posts[indexPath.item].isComeFromSelf == false {
+            knownHeight += (screenSize.width / 26)
+            if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
+                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
+                return CGSize(width: view.frame.width, height: rect.height + knownHeight)
+            }
         }
-        
         return CGSize(width: view.frame.width, height: knownHeight)
     }
     

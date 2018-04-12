@@ -8,15 +8,55 @@
 
 import UIKit
 
-class OtherController: UIViewController {
+class OtherController: UITableViewController {
+    static let headerId = "headerId"
+    static let cellId = "cellId"
+    let screenSize = UIScreen.main.bounds
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let screenSize = UIScreen.main.bounds
-        let otherView = OtherView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height))
-        otherView.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
-        self.view.addSubview(otherView)
-        navigationItem.title = "Profiles & Settings"
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: OtherController.cellId)
+        tableView.register(RequestHeader.self, forHeaderFooterViewReuseIdentifier: OtherController.headerId)
+        navigationItem.title = "Settings"
+        tableView.tableFooterView = UIView()
+        self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
+        tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
+        tableView.sectionHeaderHeight = 26
     }
     
+    var tableRowHeightHeight: CGFloat = 44
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // let cell =  tableView.dequeueReusableCell(withIdentifier: OtherController.cellId, for: indexPath)
+        let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
+        let cell = OtherViewCell(frame: frameOfCell, cellRow: indexPath.row)
+        cell.imageView?.backgroundColor = UIColor.black
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableRowHeightHeight
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: OtherController.headerId) as? RequestHeader
+        header?.nameLabel.text = ""
+        /*
+         if section == 0 {
+         header.nameLabel.text = "FRIEND REQUESTS"
+         } else {
+         header.nameLabel.text = "PEOPLE YOU MAY KNOW"
+         }
+         */
+        return header
+    }
 }
 

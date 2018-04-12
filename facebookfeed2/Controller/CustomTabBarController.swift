@@ -12,17 +12,17 @@ class CustomTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let navigationController = UINavigationController(rootViewController: feedController)
         navigationController.title = "Challenges"
         navigationController.tabBarItem.image = UIImage(named: "news_feed_icon")
         navigationController.hidesBarsOnSwipe = true
         
-        let friendRequestsController = FriendRequestsController()
-        let secondNavigationController = UINavigationController(rootViewController: friendRequestsController)
-        secondNavigationController.title = "Friends"
-        secondNavigationController.tabBarItem.image = UIImage(named: "requests_icon")
+        let searchController = PageViewController()
+        let secondNavigationController = UINavigationController(rootViewController: searchController)
+        secondNavigationController.title = "Search"
+        secondNavigationController.tabBarItem.image = UIImage(named: "search")
         // secondNavigationController.isNavigationBarHidden = true
         
         let addChallengeController = AddChallengeController()
@@ -32,15 +32,15 @@ class CustomTabBarController: UITabBarController {
         
         let selfChallengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let notificationsNavController = UINavigationController(rootViewController: selfChallengeController)
-        notificationsNavController.title = "Self's"
-        notificationsNavController.tabBarItem.image = UIImage(named: "selfs")
-        
+        notificationsNavController.title = "Profile"
+        notificationsNavController.tabBarItem.image = UIImage(named: "requests_icon")
+        /*
         let otherController = OtherController()
         let moreNavController = UINavigationController(rootViewController: otherController)
         moreNavController.title = ""
         moreNavController.tabBarItem.image = UIImage(named: "more_icon")
-        
-        viewControllers = [navigationController, secondNavigationController, messengerNavigationController, notificationsNavController, moreNavController]
+        */
+        viewControllers = [navigationController, secondNavigationController, messengerNavigationController, notificationsNavController] //, moreNavController]
         
         tabBar.isTranslucent = false
         
@@ -51,5 +51,19 @@ class CustomTabBarController: UITabBarController {
         tabBar.layer.addSublayer(topBorder)
         tabBar.clipsToBounds = true
         
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        let fromView: UIView = tabBarController.selectedViewController!.view
+        let toView  : UIView = viewController.view
+        if fromView == toView {
+            return false
+        }
+        
+        UIView.transition(from: fromView, to: toView, duration: 0.3, options: UIViewAnimationOptions.transitionCrossDissolve) { (finished:Bool) in
+            
+        }
+        return true
     }
 }

@@ -30,4 +30,6 @@ class Post: SafeJsonObject {
     var amILike : Bool?
     var supportFirstTeam : Bool?
     var supportSecondTeam : Bool?
+    var firstTeamSupportCount : NSNumber?
+    var secondTeamSupportCount : NSNumber?
 }

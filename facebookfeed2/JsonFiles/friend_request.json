@@ -2,31 +2,27 @@
     "posts": [
               {
               "name": "Sehar Can",
-              "id" : ""
+              "id" : "unknown"
               },
               {
               "name": "Serkan Aykut",
-              "id" : ""
+              "id" : "unknown"
               },
               {
               "name": "Melisa Bahçıvan",
-              "id" : ""
+              "id" : "unknown"
               },
               {
               "name": "Umut Akay",
-              "id" : ""
+              "id" : "unknown"
               },
               {
               "name": "Tamer Uzun",
-              "id" : ""
+              "id" : "unknown"
               },
               {
               "name": "Berkay Bahçıvan",
-              "id" : ""
-              },
-              {
-              "name": "To World",
-              "id" : "worldImage"
+              "id" : "unknown"
               }
         ]
 }

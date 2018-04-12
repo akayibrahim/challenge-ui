@@ -2,7 +2,7 @@
     "posts": [
           {
           "name": "Steve Jobs",
-          "profileImageName": "steve_profile",
+          "profileImageName": "gandhi_profile",
               "thinksAboutChallenge": "Iphone will sell twice?",
           "countOfLike": 111,
           "countOfComments": 222,
@@ -50,7 +50,9 @@
           "secondTeamCount" : "1",
               "isComeFromSelf" : false,
               "supportFirstTeam" : true,
-              "supportSecondTeam" : false
+              "supportSecondTeam" : false,
+              "firstTeamSupportCount" : 13,
+              "secondTeamSupportCount" : 15
           },
           {
           "name": "Mahatma Gandhi",
@@ -98,7 +100,9 @@
               "secondTeamCount" : "2",
               "isComeFromSelf" : false,
               "supportFirstTeam" : false,
-              "supportSecondTeam" : true
+              "supportSecondTeam" : true,
+              "firstTeamSupportCount" : 23,
+              "secondTeamSupportCount" : 25
           },
           {
           "name": "Mahatma Gandhi",
@@ -160,7 +164,9 @@
               "secondTeamCount" : "3",
               "isComeFromSelf" : false,
               "supportFirstTeam" : true,
-              "supportSecondTeam" : false
+              "supportSecondTeam" : false,
+              "firstTeamSupportCount" : 33,
+              "secondTeamSupportCount" : 35
           },
           {
           "name": "Mahatma Gandhi",
@@ -236,7 +242,9 @@
               "secondTeamCount" : "4",
               "isComeFromSelf" : false,
               "supportFirstTeam" : false,
-              "supportSecondTeam" : true
+              "supportSecondTeam" : true,
+              "firstTeamSupportCount" : 43,
+              "secondTeamSupportCount" : 45
           },
           {
           "name": "Mark Zuckerberg",
@@ -461,7 +469,7 @@
               "done": true,
               "updateDate": 1511136000000,
               "likes": [],
-              "countOfLike": 0,
+              "countOfLike": 7,
               "comments": [],
               "countOfComments": 0,
               "type": "SELF",

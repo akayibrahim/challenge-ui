@@ -62,17 +62,6 @@ class TableViewCellContent: UITableViewCell {
         }
     }
     
-    func setupViews(labelText: String, cellRow: Int, resultText: String) {
-        /*
-         pickerData = ["READING", "LEARNING LANGUAGE", "WALKING", "RUNNING", "FOOTBALL", "TENNIS"]
-         myUIPicker = UIPickerView()
-         myUIPicker.delegate = self
-         addSubview(myUIPicker)
-         addTopAnchor(myUIPicker, anchor: mySegControl.bottomAnchor, constant: 0)
-         myUIPicker.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
-         */
-    }
-    
     func addNew() {
         self.removeFromSuperview()
     }

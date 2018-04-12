@@ -8,4 +8,5 @@
 
 import UIKit
 
-var memberID = "5a1f048318e6063778be8f78"
+var memberID = "10156204749600712"
+var memberName = "İbrahim AKAY"

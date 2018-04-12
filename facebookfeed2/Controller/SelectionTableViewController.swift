@@ -14,10 +14,10 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     var tableTitle : String!
     var tableView : UITableView!
     var popIndexPath : IndexPath!
+    var otherSideCount : Int!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // self.view.backgroundColor = UIColor.lightGray
         tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height), style: UITableViewStyle.plain)
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "LabelCell")
         self.tableView.delegate = self
@@ -37,9 +37,9 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     func showEditing() {
         if let controller = navigationController?.viewController(class: AddChallengeController.self) {
             if tableView.indexPathsForSelectedRows == nil {
-                let selectAlert: UIAlertView = UIAlertView(title: "Alert", message: "You have to select at least one person!",
-                                                           delegate: self as? UIAlertViewDelegate, cancelButtonTitle: "Ok")
-                selectAlert.show()
+                let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "You have to select at least one person!", preferredStyle: UIAlertControllerStyle.alert)
+                selectAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                self.present(selectAlert, animated: true, completion: nil)
                 return
             }
             let indexPath : [IndexPath] = tableView.indexPathsForSelectedRows!
@@ -49,6 +49,17 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 selItem.name = items[index.row].name
                 selItem.id = items[index.row].id
                 selItems.append(selItem)
+            }
+            if otherSideCount != -1 && otherSideCount != 0 && selItems.count != otherSideCount {
+                let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "You select \(otherSideCount) people at the other side, you have to select same count. So if you you choose different count, you have to select again at the other side.", preferredStyle: UIAlertControllerStyle.alert)
+                selectAlert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: nil))
+                selectAlert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: {
+                    action in
+                        controller.updateCell(result: selItems, popIndexPath: self.popIndexPath)
+                        self.navigationController?.popViewController(animated: true)
+                }))
+                self.present(selectAlert, animated: true, completion: nil)
+                return
             }
             controller.updateCell(result: selItems, popIndexPath: popIndexPath)
         }

@@ -9,7 +9,7 @@
 import UIKit
 import FBSDKCoreKit
 
-class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
+class AddChallengeView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -25,7 +25,6 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     var heightOfMiddle: CGFloat = 0.05/4
     var widthOfMiddle: CGFloat = 0.05/6
     var pickerData: [String] = [String]()
-    var myUIPicker: UIPickerView!
 
     func setupViews() {
         let contentGuide = self.readableContentGuide
@@ -81,11 +80,9 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
         addTrailingAnchor(firstOnePeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
         addWidthAnchor(firstOnePeopleImageView, multiplier: widthOfImage)
         addHeightAnchor(firstOnePeopleImageView, multiplier: heightOfFullImage)
-
-        if(FBSDKAccessToken.current() != nil) {
+        
+        if(FBSDKAccessToken.current().userID != nil) {
             setImage(fbID: FBSDKAccessToken.current().userID, imageView: firstOneChlrPeopleImageView)
-        } else {
-            firstOneChlrPeopleImageView.image = UIImage(named: "unknown")
         }
         firstOnePeopleImageView.image = UIImage(named: "unknown")
 
@@ -102,27 +99,11 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
         subjectLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         challengeView.addHeightAnchor(subjectLabel, multiplier: 1/15)
         
-        subjectLabel.text = "READING"
+        subjectLabel.text = "SUBJECT"
         subjectLabel.font = UIFont (name: "Marker Felt", size: 20)
         subjectLabel.textAlignment = .center
         subjectLabel.numberOfLines = 2;
         subjectLabel.textColor = UIColor.gray
-/*
-        addSubview(mySegControl)
-        addTopAnchor(mySegControl, anchor: challengeView.bottomAnchor, constant: 10)
-        mySegControl.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
-        addHeightAnchor(mySegControl, multiplier: 1.5/18)
-        mySegControl.selectedSegmentIndex = 0
-        
-        pickerData = ["READING", "LEARNING LANGUAGE", "WALKING", "RUNNING", "FOOTBALL", "TENNIS"]
-        
-        myUIPicker = UIPickerView()
-        myUIPicker.delegate = self
-        addSubview(myUIPicker)
-        addTopAnchor(myUIPicker, anchor: mySegControl.bottomAnchor, constant: 0)
-        myUIPicker.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
- */
-        
     }
     
     func removeChlrFromChallengeView(challengeView : UIView) {
@@ -297,28 +278,8 @@ class AddChallengeView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
         }
     }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
-        return pickerData.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView!, titleForRow row: Int, forComponent component: Int) -> String! {
-        return pickerData[row]
-    }
-    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
-    }
-    
-    func setImage(fbID: String?, imageView: UIImageView) {
-        if let peoplefbID = fbID {
-            let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
-            ImageService.getImage(withURL: url!) { image in
-                imageView.image = image
-            }
-            //let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
-            // imageView.image = UIImage(data: data!)
-            // imageView.image = UIImage(named: peopleImage)
-        }
     }
     
     let firstOnePeopleImageView: UIImageView = FeedCell.imageView()

@@ -8,21 +8,38 @@
 
 import UIKit
 
-class FriendRequestsController: UITableViewController {
+class FollowRequestController: UITableViewController {
     
-    static let cellId = "cellId"
-    static let headerId = "headerId"
+    let cellId = "cellId"
+    let headerId = "headerId"
+    var friendRequest = [FriendRequest]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Follow Requests"
- 
         tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
         tableView.sectionHeaderHeight = 26
+        tableView.tableFooterView = UIView()
         
-        tableView.register(FriendRequestCell.self, forCellReuseIdentifier: FriendRequestsController.cellId)
-        tableView.register(RequestHeader.self, forHeaderFooterViewReuseIdentifier: FriendRequestsController.headerId)
+        tableView.register(FriendRequestCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(RequestHeader.self, forHeaderFooterViewReuseIdentifier: headerId)
+        
+        if let path = Bundle.main.path(forResource: "friend_request", ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    self.friendRequest = [FriendRequest]()
+                    for postDictionary in postsArray {
+                        let friendReq = FriendRequest()
+                        friendReq.setValuesForKeys(postDictionary)
+                        self.friendRequest.append(friendReq)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -34,30 +51,20 @@ class FriendRequestsController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell =  tableView.dequeueReusableCell(withIdentifier: FriendRequestsController.cellId, for: indexPath) as! FriendRequestCell
-        
-        if indexPath.row % 3 == 0 {
-            cell.nameLabel.text = "Mark Zuckerberg"
-            cell.requestImageView.image = UIImage(named: "zuckprofile")
-        } else if indexPath.row % 3 == 1 {
-            cell.nameLabel.text = "Steve Jobs"
-            cell.requestImageView.image = UIImage(named: "gandhi_profile")
-        } else {
-            cell.nameLabel.text = "Mahatma Gandhi"
-            cell.requestImageView.image = UIImage(named: "gandhi_profile")
-        }
-        
+        let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! FriendRequestCell
+        cell.nameLabel.text = friendRequest[indexPath.row].name
+        cell.requestImageView.image = UIImage(named: friendRequest[indexPath.row].id!)
         cell.imageView?.backgroundColor = UIColor.black
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UIScreen.main.bounds.width * 3.3 / 10
+        return UIScreen.main.bounds.width * 1.9 / 10
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: FriendRequestsController.headerId) as! RequestHeader
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerId) as! RequestHeader
         header.nameLabel.text = "PEOPLE YOU MAY KNOW"
         /*
         if section == 0 {

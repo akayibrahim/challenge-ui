@@ -64,19 +64,19 @@ class FriendRequestCell: UITableViewCell {
         
         addTopAnchor(requestImageView, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(requestImageView, anchor: contentGuide.leadingAnchor, constant: 0)
-        addWidthAnchor(requestImageView, multiplier: 2/10)
-        addHeightAnchor(requestImageView, multiplier: 3/10)
+        addWidthAnchor(requestImageView, multiplier: 1.5/10)
+        addHeightAnchor(requestImageView, multiplier: 1.5/10)
         
-        addTopAnchor(nameLabel, anchor: contentGuide.topAnchor, constant: 5)
-        addLeadingAnchor(nameLabel, anchor: requestImageView.trailingAnchor, constant: 5)
+        addTopAnchor(nameLabel, anchor: contentGuide.topAnchor, constant: 0)
+        addLeadingAnchor(nameLabel, anchor: requestImageView.trailingAnchor, constant: 10)
         
         addTopAnchor(confirmButton, anchor: nameLabel.bottomAnchor, constant: 10)
         addLeadingAnchor(confirmButton, anchor: requestImageView.trailingAnchor, constant: 10)
         addWidthAnchor(confirmButton, multiplier: 2.3/10)
         addHeightAnchor(confirmButton, multiplier: 0.8/10)
         
-        addTopAnchor(deleteButton, anchor: confirmButton.bottomAnchor, constant: 5)
-        addLeadingAnchor(deleteButton, anchor: requestImageView.trailingAnchor, constant: 10)
+        addTopAnchor(deleteButton, anchor: nameLabel.bottomAnchor, constant: 10)
+        addLeadingAnchor(deleteButton, anchor: confirmButton.trailingAnchor, constant: 10)
         addWidthAnchor(deleteButton, multiplier: 2.3/10)
         addHeightAnchor(deleteButton, multiplier: 0.8/10)
         

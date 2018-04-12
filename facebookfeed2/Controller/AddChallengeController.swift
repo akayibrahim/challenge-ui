@@ -22,7 +22,11 @@ class AddChallengeController: UITableViewController {
     let calenddarIndexPath = IndexPath(item: 6, section: 0)
     let proofIndexPath = IndexPath(item: 7, section: 0)
     var subjects = [Subject]()
+    var self_subjects = [Subject]()
     var friends = [Friends]()
+    var leftSide = [SelectedItems]()
+    var rightSide = [SelectedItems]()
+    var deadLine = Int()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +54,22 @@ class AddChallengeController: UITableViewController {
                 print(err)
             }
         }
+        if let path = Bundle.main.path(forResource: "self_subject", ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    self.self_subjects = [Subject]()
+                    for postDictionary in postsArray {
+                        let subject = Subject()
+                        subject.setValuesForKeys(postDictionary)
+                        self.self_subjects.append(subject)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
         if let path = Bundle.main.path(forResource: "friends", ofType: "json") {
             do {
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
@@ -69,13 +89,26 @@ class AddChallengeController: UITableViewController {
     }
     
     func addChallenge() {
+        let addViewCellContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
+        let proofContent = tableView.cellForRow(at: proofIndexPath) as! TableViewCellContent
+        let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
+        let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "\(segControlContent.mySegControl.selectedSegmentIndex) \(addViewCellContent.addChallenge.subjectLabel.text) \(leftSide) \(rightSide) \(deadLine) \(proofContent.mySwitch.isOn)", preferredStyle: UIAlertControllerStyle.alert)
+        selectAlert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: nil))
+        self.present(selectAlert, animated: true, completion: nil)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
         if indexPath.row == 2 {
             let selectionTable = SelectionTableViewController()
             var selItems = [SelectedItems]()
-            for subj in self.subjects {
+            var subjs = [Subject]()
+            if segControlContent.mySegControl.selectedSegmentIndex != 1 {
+                subjs = self.subjects
+            } else {
+                subjs = self.self_subjects
+            }
+            for subj in subjs {
                 let selItem = SelectedItems()
                 selItem.name = subj.name
                 selItems.append(selItem)
@@ -93,7 +126,6 @@ class AddChallengeController: UITableViewController {
                 selItem.id = fri.id
                 selItems.append(selItem)
             }
-            let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
             var selItemsWithoutWorld = [SelectedItems]()
             selItemsWithoutWorld = selItems
             selItemsWithoutWorld.removeLast()
@@ -101,6 +133,15 @@ class AddChallengeController: UITableViewController {
                 selectionTable.items = selItemsWithoutWorld
             } else {
                 selectionTable.items = selItems
+            }
+            if segControlContent.mySegControl.selectedSegmentIndex != 0 {
+                if indexPath.row == 3 {
+                    selectionTable.otherSideCount = rightSide.count
+                } else {
+                    selectionTable.otherSideCount = leftSide.count
+                }
+            } else {
+                selectionTable.otherSideCount = -1
             }
             selectionTable.tableTitle = "Friends"
             selectionTable.popIndexPath = indexPath
@@ -116,6 +157,7 @@ class AddChallengeController: UITableViewController {
             switchDateP = !switchDateP
             tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
             let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
+            deadLine = daysBetween
             addViewCellContent.addChallenge.untilDateLabel.text = "LAST \(daysBetween) DAYS"
             self.tableView?.scrollToRow(at: proofIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
         }
@@ -161,7 +203,6 @@ class AddChallengeController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // let cell = tableView.dequeueReusableCell(withIdentifier: "MyCellAdd", for: indexPath as IndexPath)
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
         let cell = TableViewCellContent(frame: frameOfCell, cellRow: indexPath.row)
         if indexPath.row == 0 {
@@ -209,12 +250,32 @@ class AddChallengeController: UITableViewController {
             itemsResult += item.name + ", "
             itemsCount += 1
         }
-        
         cellContent.labelOtherSide.text = itemsResult.trim()
+        let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
+        let subjectContent = tableView.cellForRow(at: subjectIndexPath) as! TableViewCellContent
+        let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
         if popIndexPath.row != 2 {
             segControlChange(isNotAction : true, popIndexPath : popIndexPath)
+        } else {
+            addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
+            if segControlContent.mySegControl.selectedSegmentIndex == 1 {
+                setImage(name: addViewContent.addChallenge.subjectLabel.text, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
+            }
         }
         if popIndexPath.row == 3 || popIndexPath.row == 4 {
+            if popIndexPath.row == 3 {
+                leftSide = result
+                if rightSide.count != leftSide.count {
+                    rightSide.removeAll()
+                    tableView.reloadRows(at: [rightSideIndex], with: .fade)
+                }
+            } else if popIndexPath.row == 4 {
+                rightSide = result
+                if rightSide.count != leftSide.count {
+                    leftSide.removeAll()
+                    tableView.reloadRows(at: [leftSideIndex], with: .fade)
+                }
+            }
             prepareViewForSelection(result: result, popIndexPath: popIndexPath, reset: false)
         }
     }
@@ -223,11 +284,6 @@ class AddChallengeController: UITableViewController {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
         let subjectContent = tableView.cellForRow(at: subjectIndexPath) as! TableViewCellContent
-        let leftSideContent = tableView.cellForRow(at: leftSideIndex) as! TableViewCellContent
-        let rightSideContent = tableView.cellForRow(at: rightSideIndex) as! TableViewCellContent
-        if subjectContent.labelOtherSide.text != "Select" {
-            addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
-        }
         var selItems = [SelectedItems]()
         let selItem = SelectedItems()
         selItem.name = "unknown"
@@ -250,10 +306,15 @@ class AddChallengeController: UITableViewController {
         }
         setImage(name: subjectImage, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
         if !isNotAction {
+            tableView.reloadRows(at: [addViewIndexPath], with: .fade)
+            tableView.reloadRows(at: [subjectIndexPath], with: .fade)
             tableView.reloadRows(at: [leftSideIndex], with: .fade)
             tableView.reloadRows(at: [rightSideIndex], with: .fade)
+            tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
             tableView.reloadRows(at: [proofIndexPath], with: .fade)
-        } else if popIndexPath.row == 3 || popIndexPath.row == 4 {
+            leftSide.removeAll()
+            rightSide.removeAll()
+        } else if popIndexPath.row == 3 || popIndexPath.row == 4 || (popIndexPath.row == 2 && segControlContent.mySegControl.selectedSegmentIndex == 1){
             tableView.reloadRows(at: [addViewIndexPath], with: .fade)
         }
     }
@@ -279,23 +340,23 @@ class AddChallengeController: UITableViewController {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         addViewContent.addChallenge.generateSecondTeam(count: result.count)
         if result.count == 1 {
-            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
-            // setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
+            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
             if result[0].name == "To World" {
+                setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
                 addViewContent.addChallenge.firstOnePeopleImageView.contentMode = .scaleAspectFit
             }
         } else if result.count == 2 {
-            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstTwoPeopleImageView)
-            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondTwoPeopleImageView)
+            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstTwoPeopleImageView)
+            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondTwoPeopleImageView)
         } else if result.count == 3 {
-            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstThreePeopleImageView)
-            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondThreePeopleImageView)
-            setImage(name: result[2].id, imageView: addViewContent.addChallenge.thirdThreePeopleImageView)
+            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstThreePeopleImageView)
+            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondThreePeopleImageView)
+            setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdThreePeopleImageView)
         } else {
-            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstFourPeopleImageView)
-            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondFourPeopleImageView)
-            setImage(name: result[2].id, imageView: addViewContent.addChallenge.thirdFourPeopleImageView)
-            setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourPeopleImageView)
+            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstFourPeopleImageView)
+            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondFourPeopleImageView)
+            setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdFourPeopleImageView)
+            setImage(fbID: "more_icon", imageView: addViewContent.addChallenge.moreFourPeopleImageView)
         }
     }
     
@@ -304,28 +365,43 @@ class AddChallengeController: UITableViewController {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         addViewContent.addChallenge.generateFirstTeam(count: result.count)
         if result.count == 1 {
-            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstOneChlrPeopleImageView)
-            // setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOneChlrPeopleImageView)
+            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOneChlrPeopleImageView)
         } else if result.count == 2 {
-            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstTwoChlrPeopleImageView)
-            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondTwoChlrPeopleImageView)
+            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstTwoChlrPeopleImageView)
+            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondTwoChlrPeopleImageView)
         } else if result.count == 3 {
-            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstThreeChlrPeopleImageView)
-            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondThreeChlrPeopleImageView)
-            setImage(name: result[2].id, imageView: addViewContent.addChallenge.thirdThreeChlrPeopleImageView)
+            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstThreeChlrPeopleImageView)
+            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondThreeChlrPeopleImageView)
+            setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdThreeChlrPeopleImageView)
         } else {
-            setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstFourChlrPeopleImageView)
-            setImage(name: result[1].id, imageView: addViewContent.addChallenge.secondFourChlrPeopleImageView)
-            setImage(name: result[2].id, imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView)
-            setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView)
+            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstFourChlrPeopleImageView)
+            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondFourChlrPeopleImageView)
+            setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView)
+            setImage(fbID: "more_icon", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView)
         }
     }
-    
+}
+
+extension String
+{
+    func trim() -> String
+    {
+        let cs = CharacterSet.init(charactersIn: ", ")
+        return self.trimmingCharacters(in: cs)
+    }
+}
+
+extension UITableViewController
+{
     func setImage(fbID: String?, imageView: UIImageView) {
         if let peoplefbID = fbID {
             let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
             ImageService.getImage(withURL: url!) { image in
-                imageView.image = image
+                if image != nil {
+                    imageView.image = image
+                } else {
+                    self.setImage(name: "unknown", imageView: imageView)
+                }
             }
             //let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
             // imageView.image = UIImage(data: data!)
@@ -337,14 +413,5 @@ class AddChallengeController: UITableViewController {
         if let peopleImage = name {
             imageView.image = UIImage(named: peopleImage)
         }
-    }
-}
-
-extension String
-{
-    func trim() -> String
-    {
-        let cs = CharacterSet.init(charactersIn: ", ")
-        return self.trimmingCharacters(in: cs)
     }
 }

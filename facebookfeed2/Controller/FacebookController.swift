@@ -30,7 +30,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         loginManager.loginBehavior = FBSDKLoginBehavior.systemAccount
         loginManager.logIn(withReadPermissions: ["public_profile", "email", "user_friends"], from: self.parent, handler: { (result, error) -> Void in
             if error != nil {
-                print(error)
+                print(error as Any)
             } else if (result?.isCancelled)! {
                 print("Cancelled")
             } else if(FBSDKAccessToken.current() != nil) {

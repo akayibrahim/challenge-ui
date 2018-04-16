@@ -1,14 +1,14 @@
 {
     "posts": [
           {
-          "name": "Steve Jobs",
+          "name": "ibrahim AKAY",
           "profileImageName": "steve_profile",
-              "thinksAboutChallenge": "ibrahim : Iphone will sell twice?",
-          "countOfLike": 111,
-          "countOfComments": 222,
+              "thinksAboutChallenge": "Yıl sonuna kadar 12 kitap!",
+          "countOfLike": 87,
+          "countOfComments": 17,
           "chlDate": "20/10/2017",
           "untilDate": "20/10/2017",
-          "untilDateStr": "LAST 104 DAY",
+          "untilDateStr": "LAST 225 DAY",
           "subject" : "READING",
           "type": "SELF",
           "done" : false,

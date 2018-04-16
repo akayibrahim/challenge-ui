@@ -17,8 +17,13 @@ class CustomTabBarController: UITabBarController {
         let navigationController = UINavigationController(rootViewController: feedController)
         navigationController.title = "Challenges"
         navigationController.tabBarItem.image = UIImage(named: "news_feed_icon")
-        navigationController.hidesBarsOnSwipe = true
-        
+        // navigationController.hidesBarsOnSwipe = true
+        /*
+        let statusFrame = CGRect(x: 0.0, y: 0, width: self.view.bounds.size.width, height: UIApplication.shared.statusBarFrame.size.height)
+        let statusBar = UIView(frame: statusFrame)
+        statusBar.backgroundColor = navigationColor
+        navigationController.view.addSubview(statusBar)
+        */
         let searchController = PageViewController()
         let secondNavigationController = UINavigationController(rootViewController: searchController)
         secondNavigationController.title = "Search"

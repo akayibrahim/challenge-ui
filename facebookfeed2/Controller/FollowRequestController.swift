@@ -53,7 +53,7 @@ class FollowRequestController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! FriendRequestCell
         cell.nameLabel.text = friendRequest[indexPath.row].name
-        cell.requestImageView.image = UIImage(named: friendRequest[indexPath.row].id!)
+        setImage(fbID: friendRequest[indexPath.row].id!, imageView: cell.requestImageView)        
         cell.imageView?.backgroundColor = UIColor.black
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell

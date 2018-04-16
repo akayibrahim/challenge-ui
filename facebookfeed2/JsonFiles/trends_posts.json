@@ -1,0 +1,213 @@
+{
+    "posts": [
+          
+          {
+          "name": "Mark Zuckerberg",
+          "profileImageName": "zuckprofile",
+          "thinksAboutChallenge": "Iphone will sell twice?",
+          "countOfLike": 150,
+          "countOfComments": 300,
+          "chlDate": "20/10/2017",
+              "untilDate": "20/10/2017",
+              "untilDateStr": "LAST 14 DAY",
+          "challengerFBId" : "zuckprofile",
+          "untilDate" : "LAST 8 WEEKS",
+          "subject" : "FOOTBALL",
+          "type": "PUBLIC",
+          "countOfJoins": 32,
+          "done" : false,
+          "firstTeamCount" : "1",
+          "secondTeamCount" : "0",
+          "joinAttendanceList" : [
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":true,
+                                  "proof":true,
+                                  "challenger":true,
+                                  "facebookID": "634127860"
+                                  }
+                                  ],
+              "isComeFromSelf" : false
+          },
+          {
+          "name": "Mark Zuckerberg",
+          "profileImageName": "zuckprofile",
+          "thinksAboutChallenge": "I should lose 3 pounds?",
+          "countOfLike": 150,
+          "countOfComments": 300,
+          "chlDate": "20/10/2017",
+          "untilDate": "03/11/2017",
+          "challengerFBId" : "10156204749600712",
+              "untilDate": "20/10/2017",
+              "untilDateStr": "LAST 8 WEEKS",
+          "subject" : "RUNNING",
+          "type": "PUBLIC",
+          "countOfJoins": 32,
+          "done" : false,
+          "firstTeamCount" : "1",
+          "secondTeamCount" : "2",
+          "joinAttendanceList" : [
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":true,
+                                  "facebookID": "689764048"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "100002391996271"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "100002408468624"
+                                  }
+                                  ],
+              "isComeFromSelf" : false
+          },
+          {
+          "name": "Mark Zuckerberg",
+          "profileImageName": "zuckprofile",
+          "thinksAboutChallenge": "I should lose 3 pounds? I should lose 3 pounds? I should lose 3 pounds? I should lose 3 pounds? I should lose 3 pounds? I should lose 3 pounds?",
+          "countOfLike": 150,
+          "countOfComments": 300,
+          "chlDate": "20/10/2017",
+          "untilDate": "03/11/2017",
+          "challengerFBId" : "10156204749600712",
+              "untilDate": "20/10/2017",
+              "untilDateStr": "LAST 14 DAY",
+          "subject" : "BOXING",
+          "type": "PUBLIC",
+          "countOfJoins": 32,
+          "done" : false,
+          "firstTeamCount" : "1",
+          "secondTeamCount" : "3",
+          "joinAttendanceList" : [
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":true,
+                                  "proof":true,
+                                  "challenger":true,
+                                  "facebookID": "634127860"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "10156204749600712"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "100002408468624"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "696089910"
+                                  }
+                                  ],
+              "isComeFromSelf" : false
+          },
+          {
+          "name": "Mark Zuckerberg",
+          "profileImageName": "zuckprofile",
+          "thinksAboutChallenge": "I should lose 3 pounds?",
+          "countOfLike": 150,
+          "countOfComments": 300,
+          "chlDate": "20/10/2017",
+          "untilDate": "03/11/2017",
+          "challengerFBId" : "10156204749600712",
+              "untilDate": "20/10/2017",
+              "untilDateStr": "LAST 14 DAY",
+          "subject" : "LANGUAGE",
+          "type": "PUBLIC",
+          "countOfJoins": 32,
+          "done" : false,
+          "firstTeamCount" : "1",
+          "secondTeamCount" : "4",
+          "joinAttendanceList" : [
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":true,
+                                  "facebookID": "10156204749600712"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "696089910"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "100002408468624"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "100002391996271"
+                                  },
+                                  {
+                                  "memberId":"5a1f048318e6063778be8f78",
+                                  "join":false,
+                                  "proof":true,
+                                  "challenger":false,
+                                  "facebookID": "689764048"
+                                  }
+                                  ],
+              "isComeFromSelf" : false
+          },
+              {
+              "id": "5a81bb6bf8b8e43ec9a81e2e",
+              "challengerId": "5a81b0f0f8b8e43e70325d3d",
+              "challengerFBId": "666376928hb83c9jfhd",
+              "name": "ibrahim Akay",
+              "firstTeamCount": "1",
+              "secondTeamCount": "0",
+              "thinksAboutChallenge": "Okuma?",
+              "subject": "READING",
+              "chlDate": 1511136000000,
+              "untilDate": 1514505600000,
+              "untilDateStr": "LAST 14 DAYS!",
+              "done": true,
+              "updateDate": 1511136000000,
+              "likes": [],
+              "countOfLike": 0,
+              "comments": [],
+              "countOfComments": 0,
+              "type": "PUBLIC",
+              "joinAttendanceList": [
+                                     {
+                                     "id": "5a81bb6bf8b8e43ec9a81e2f",
+                                     "challengeId": "5a81bb6bf8b8e43ec9a81e2e",
+                                     "memberId": "5a81b0f0f8b8e43e70325d3d",
+                                     "facebookID": "10156204749600712",
+                                     "join": true,
+                                     "proof": false,
+                                     "challenger": true
+                                     }
+                                     ],
+              "goal": "10",
+              "isComeFromSelf" : false
+              }
+        ]
+}

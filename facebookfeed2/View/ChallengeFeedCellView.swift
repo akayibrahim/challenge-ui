@@ -751,7 +751,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     let likeButton = FeedCell.buttonForTitle("", imageName: "likeRed")
-    let joinButton = FeedCell.buttonForTitle("", imageName: "acceptedRed")
+    let joinButton = FeedCell.buttonForTitle("", imageName: "acceptedBlack")
     let viewComments = FeedCell.buttonForTitle("View all 9 comments", imageName: "")
     let viewProofs = FeedCell.buttonForTitle("View all 9 proofs", imageName: "")
     let addComments = FeedCell.buttonForTitle("Add a comment", imageName: "")

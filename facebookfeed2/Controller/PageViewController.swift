@@ -8,9 +8,10 @@
 
 import UIKit
 
-class PageViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
-    let searchController = UISearchController(searchResultsController: nil)
+class PageViewController: UITableViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+    let searchBar = UISearchBar()
     let buttonBar = UIView()
+    let pageView = UIViewController()
     let segmentedControl = UISegmentedControl()
     var pages = [UIViewController]()
     // let pageControl = UIPageControl()
@@ -19,21 +20,19 @@ class PageViewController: UIViewController, UIPageViewControllerDataSource, UIPa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Search"
         self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
-        // tableView.tableFooterView = UIView()
-        let searchController = UISearchController()
-        searchController.searchBar.placeholder = "Search"
-        self.navigationItem.titleView = searchController.searchBar
+        tableView.tableFooterView = UIView()
+        searchBar.placeholder = "Search"
+        self.navigationItem.titleView = searchBar
         
-        segmentedControl.insertSegment(withTitle: "One", at: 0, animated: true)
-        segmentedControl.insertSegment(withTitle: "Two", at: 1, animated: true)
+        segmentedControl.insertSegment(withTitle: "Trends", at: 0, animated: true)
+        segmentedControl.insertSegment(withTitle: "Follow Requests", at: 1, animated: true)
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(segmentedControl)
-        segmentedControl.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        segmentedControl.topAnchor.constraint(equalTo: view.topAnchor, constant: searchBar.frame.height).isActive = true
         segmentedControl.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        segmentedControl.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        segmentedControl.heightAnchor.constraint(equalToConstant: 30).isActive = true
         segmentedControl.backgroundColor = .clear
         segmentedControl.tintColor = .clear
         segmentedControl.addTarget(self, action: #selector(self.segControlChange), for: UIControlEvents.valueChanged)
@@ -50,21 +49,29 @@ class PageViewController: UIViewController, UIPageViewControllerDataSource, UIPa
         buttonBar.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor).isActive = true
         buttonBar.heightAnchor.constraint(equalToConstant: 5).isActive = true
         buttonBar.widthAnchor.constraint(equalTo: segmentedControl.widthAnchor, multiplier: 1 / CGFloat(segmentedControl.numberOfSegments)).isActive = true
-
+        
+        pageView.view.translatesAutoresizingMaskIntoConstraints = false
+        pageView.view.backgroundColor = UIColor.white
+        view.addSubview(pageView.view)
+        pageView.view.topAnchor.constraint(equalTo: buttonBar.bottomAnchor).isActive = true
+        pageView.view.heightAnchor.constraint(equalToConstant: view.frame.height - (searchBar.frame.height + buttonBar.frame.height + (self.tabBarController?.tabBar.frame.height)!)).isActive = true
+        pageView.view.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        
         pageViewController.dataSource = self
         pageViewController.delegate = self
         let initialPage = 0
-
-        let searchTabController = SearchTabController()
+        
+        let selfChallengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let followController = FollowRequestController()
-        self.pages.append(searchTabController)
+        self.pages.append(selfChallengeController)
         self.pages.append(followController)
         pageViewController.setViewControllers([pages[initialPage]], direction: .forward, animated: true, completion: nil)
-        self.view.addSubview(pageViewController.view)
-        pageViewController.view.topAnchor.constraint(equalTo: buttonBar.bottomAnchor).isActive = true
+        pageView.view.addSubview(pageViewController.view)
+        pageViewController.view.topAnchor.constraint(equalTo: pageView.view.topAnchor).isActive = true
         pageViewController.view.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        pageViewController.view.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
+ 
+        pageViewController.didMove(toParentViewController: pageView)
+
         /*
         self.pageControl.frame = CGRect()
         self.pageControl.currentPageIndicatorTintColor = UIColor.black
@@ -81,9 +88,16 @@ class PageViewController: UIViewController, UIPageViewControllerDataSource, UIPa
         */
     }
     
-    func segControlChange() {
-        UIView.animate(withDuration: 0.3) {
+    func segControlChange(isComeFromOutside: Bool) {
+        UIView.animate(withDuration: 0.1) {
             self.buttonBar.frame.origin.x = (self.segmentedControl.frame.width / CGFloat(self.segmentedControl.numberOfSegments)) * CGFloat(self.segmentedControl.selectedSegmentIndex)
+        }
+        if !isComeFromOutside {
+            if segmentedControl.selectedSegmentIndex == 1 {
+                pageViewController.setViewControllers([pages[segmentedControl.selectedSegmentIndex] as! UIViewController], direction: .forward, animated: true, completion: nil)
+            } else {
+                pageViewController.setViewControllers([pages[segmentedControl.selectedSegmentIndex] as! UIViewController], direction: .reverse, animated: true, completion: nil)
+            }
         }
     }
     
@@ -91,9 +105,13 @@ class PageViewController: UIViewController, UIPageViewControllerDataSource, UIPa
         if let viewControllerIndex = self.pages.index(of: viewController) {
             if viewControllerIndex == 0 {
                 // wrap to last page in array
-                return self.pages.last
-            } else {
+                segmentedControl.selectedSegmentIndex = 0
+                segControlChange(isComeFromOutside: true)
+                // return self.pages.last
+            } else if viewControllerIndex == 1 {
                 // go to previous page in array
+                segmentedControl.selectedSegmentIndex = 0
+                segControlChange(isComeFromOutside: true)
                 return self.pages[viewControllerIndex - 1]
             }
         }
@@ -102,12 +120,16 @@ class PageViewController: UIViewController, UIPageViewControllerDataSource, UIPa
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         if let viewControllerIndex = self.pages.index(of: viewController) {
-            if viewControllerIndex < self.pages.count - 1 {
+            if viewControllerIndex == 0 { // < self.pages.count - 1 {
                 // go to next page in array
+                segmentedControl.selectedSegmentIndex = 1
+                segControlChange(isComeFromOutside: true)
                 return self.pages[viewControllerIndex + 1]
-            } else {
+            } else if viewControllerIndex == 1 {
                 // wrap to first page in array
-                return self.pages.first
+                segmentedControl.selectedSegmentIndex = 1
+                segControlChange(isComeFromOutside: true)
+                // return self.pages.first
             }
         }
         return nil

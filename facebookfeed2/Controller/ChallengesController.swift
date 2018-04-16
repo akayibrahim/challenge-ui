@@ -89,8 +89,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         } else {
             //        let samplePost = Post()
             //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
-            var jsonFileName = "own_posts"
-            if self.tabBarController?.selectedIndex == 0 {
+            var jsonFileName = "trends_posts"
+            if self.tabBarController?.selectedIndex == 3 {
+                jsonFileName = "own_posts"
+            } else if self.tabBarController?.selectedIndex == 0 {
                 jsonFileName = "all_posts"
             }
             if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
@@ -213,9 +215,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //Correct the nav bar state unwinding from segues
-        if self.tabBarController?.selectedIndex == 0  {
+        if self.tabBarController?.selectedIndex == 0 || self.tabBarController?.selectedIndex == 3 {
             self.navigationController?.hidesBarsOnSwipe = true
-        }
+        }        
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -430,7 +432,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
         }
     }
-    
 }
 
 class ChallengeHeader: UICollectionReusableView {

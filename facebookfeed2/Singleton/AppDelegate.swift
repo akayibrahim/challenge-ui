@@ -28,13 +28,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = FacebookController()
         }
         
-        UINavigationBar.appearance().barTintColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
+        UINavigationBar.appearance().barTintColor = navigationColor
         UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)!, NSForegroundColorAttributeName: UIColor.white]
         
         UITabBar.appearance().tintColor = UIColor.rgb(70, green: 146, blue: 250)
         
         application.statusBarStyle = .lightContent
-        
+        if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+            if application.isStatusBarHidden {
+                status.backgroundColor = navigationColor
+            }
+        }
         return true
     }
     
@@ -61,7 +65,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 

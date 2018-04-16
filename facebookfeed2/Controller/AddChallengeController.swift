@@ -147,21 +147,30 @@ class AddChallengeController: UITableViewController {
             selectionTable.popIndexPath = indexPath
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath.row == 5 {
-            let cellContent = tableView.cellForRow(at: calenddarIndexPath) as! TableViewCellContent
-            let cCellContent = tableView.cellForRow(at: deadlineIndexPath) as! TableViewCellContent
             let addViewCellContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd-MM-yyyy HH:mm"
-            let formattedDate = formatter.string(from: cellContent.datePicker.date)
-            cCellContent.labelOtherSide.text = formattedDate
-            switchDateP = !switchDateP
-            tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
-            let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
-            deadLine = daysBetween
-            addViewCellContent.addChallenge.untilDateLabel.text = "LAST \(daysBetween) DAYS"
+            addViewCellContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: true)) DAYS"
             self.tableView?.scrollToRow(at: proofIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
         }
     }
+    
+    func getDayBetweenDates(isSelect : Bool) -> Int {
+        let cellContent = tableView.cellForRow(at: calenddarIndexPath) as! TableViewCellContent
+        let cCellContent = tableView.cellForRow(at: deadlineIndexPath) as! TableViewCellContent
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy HH:mm"
+        let formattedDate = formatter.string(from: cellContent.datePicker.date)
+        if isSelect {
+            cCellContent.labelOtherSide.text = formattedDate
+            switchDateP = !switchDateP
+            tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
+        } else {
+            let date = formatter.date(from: cCellContent.labelOtherSide.text!)
+            cellContent.datePicker.date = date!
+        }
+        let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
+        return daysBetween
+    }
+    
     var switchDateP : Bool = false;
     var switchProofCell : Bool = true;
     var switchLeftPeopleCell : Bool = false;
@@ -336,8 +345,10 @@ class AddChallengeController: UITableViewController {
     }
     
     func setPeopleImages(result : [SelectedItems]) {
-        let addViewIndexPath = IndexPath(item: 0, section: 0)
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
+        let subjectContent = tableView.cellForRow(at: subjectIndexPath) as! TableViewCellContent
+        addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
+        addViewContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: false)) DAYS"
         addViewContent.addChallenge.generateSecondTeam(count: result.count)
         if result.count == 1 {
             setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)

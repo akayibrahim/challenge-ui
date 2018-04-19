@@ -30,7 +30,10 @@ class OtherController: UITableViewController {
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
         let cell = OtherViewCell(frame: frameOfCell, cellRow: indexPath.row)
         cell.imageView?.backgroundColor = UIColor.black
-        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        if indexPath.row == 3 {
+            cell.backgroundColor = pagesBackColor
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+        }
         return cell
     }
     
@@ -39,7 +42,7 @@ class OtherController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 5
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {

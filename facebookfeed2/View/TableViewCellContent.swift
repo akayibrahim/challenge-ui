@@ -51,9 +51,10 @@ class TableViewCellContent: UITableViewCell {
             datePicker.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             datePicker.minimumDate = Date()
         } else if cellRow == 7 {
-            addSubview(mySwitch)
-            addTrailingAnchor(mySwitch, anchor: contentGuide.trailingAnchor, constant: 0)
-            mySwitch.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            visibilitySegControl.selectedSegmentIndex = 0
+            addSubview(visibilitySegControl)
+            addTrailingAnchor(visibilitySegControl, anchor: contentGuide.trailingAnchor, constant: 0)
+            visibilitySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
         } else {
             addSubview(labelOtherSide)
             addTrailingAnchor(labelOtherSide, anchor: contentGuide.trailingAnchor, constant: 0)
@@ -77,8 +78,9 @@ class TableViewCellContent: UITableViewCell {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-    
-    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl()
+        
+    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Friend", "Everyone"])
+    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Public", "Self", "Private"])
     let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
     let labelOtherSide: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.gray)
 }

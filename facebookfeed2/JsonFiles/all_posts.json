@@ -16,7 +16,9 @@
           "secondTeamCount" : "0",
           "challengerFBId" : "10156204749600712",
               "isComeFromSelf" : false,
-              "amILike" : false
+              "amILike" : false,
+              "countOfProofs": 0,
+              "insertTime" : "12 HOURS AGO"
           },
           {
           "name": "Seher Can Akay",
@@ -52,7 +54,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "countOfProofs": 0,
+              "insertTime" : "14 HOURS AGO"
           },
           {
           "name": "Seher Can Akay",
@@ -102,7 +106,9 @@
               "supportFirstTeam" : false,
               "supportSecondTeam" : true,
               "firstTeamSupportCount" : 23,
-              "secondTeamSupportCount" : 25
+              "secondTeamSupportCount" : 25,
+              "countOfProofs": 0,
+              "insertTime" : "3 DAYS AGO"
           },
           {
           "name": "İbrahim AKAY",
@@ -166,7 +172,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 33,
-              "secondTeamSupportCount" : 35
+              "secondTeamSupportCount" : 35,
+              "countOfProofs": 0,
+              "insertTime" : "18 HOURS AGO"
           },
           {
           "name": "Seher Can Akay",
@@ -244,7 +252,9 @@
               "supportFirstTeam" : false,
               "supportSecondTeam" : true,
               "firstTeamSupportCount" : 43,
-              "secondTeamSupportCount" : 45
+              "secondTeamSupportCount" : 45,
+              "countOfProofs": 0,
+              "insertTime" : "2 DAYS AGO"
           },
           {
           "name": "Serkan Aykut",
@@ -272,7 +282,9 @@
                                   "facebookID": "689764048"
                                   }
                                   ],
-              "isComeFromSelf" : false
+              "isComeFromSelf" : false,
+              "countOfProofs": 3,
+              "insertTime" : "4 HOURS AGO"
           },
           {
           "name": "Melisa Bahçıvan",
@@ -314,7 +326,9 @@
                                   "facebookID": "696089910"
                                   }
                                   ],
-              "isComeFromSelf" : false
+              "isComeFromSelf" : false,
+              "countOfProofs": 4,
+              "insertTime" : "1 HOURS AGO"
           },
           {
           "name": "Serkan Aykut",
@@ -363,7 +377,9 @@
                                   "facebookID": "100001948011413"
                                   }
                                   ],
-              "isComeFromSelf" : false
+              "isComeFromSelf" : false,
+              "countOfProofs": 5,
+              "insertTime" : "7 HOURS AGO"
           },
           {
           "name": "Melisa Bahçıvan",
@@ -419,7 +435,9 @@
                                   "facebookID": "10156204749600712"
                                   }
                                   ],
-              "isComeFromSelf" : false
+              "isComeFromSelf" : false,
+              "countOfProofs": 6,
+              "insertTime" : "9 HOURS AGO"
           },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -452,7 +470,9 @@
                                      }
                                      ],
               "goal": "10",
-              "isComeFromSelf" : false
+              "isComeFromSelf" : false,
+              "countOfProofs": 7,
+              "insertTime" : "2 HOURS AGO"
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -476,7 +496,9 @@
               "score": "advance!",
               "goal": "advance!",
               "isComeFromSelf" : false,
-              "amILike" : true
+              "amILike" : true,
+              "countOfProofs": 0,
+              "insertTime" : "23 HOURS AGO"
               }
         ]
 }

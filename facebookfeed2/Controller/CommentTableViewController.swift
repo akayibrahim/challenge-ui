@@ -13,7 +13,10 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     var tableTitle : String!
     var tableView : UITableView!
     var comments = [Comments]()
+    var proofs = [Proofs]()
     var commentCellView = CommentCellView()
+    var comment : Bool = false
+    var proof : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +36,13 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     
     let heighForRow : CGFloat = UIScreen.main.bounds.width * 0.9 / 10
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if let thinksAboutChallenge = comments[indexPath.item].comment {
+        var thinksAboutChl : String!
+        if comment {
+            thinksAboutChl = comments[indexPath.item].comment
+        } else if proof {
+            thinksAboutChl = proofs[indexPath.item].comment
+        }
+        if let thinksAboutChallenge = thinksAboutChl {
             let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
             return rect.height + heighForRow
         }
@@ -41,6 +50,11 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if comment {
+            return comments.count
+        } else if proof {
+            return proofs.count
+        }
         return comments.count
     }
     
@@ -48,10 +62,17 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         // let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath) as! CommentCellView
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
         let cell = CommentCellView(frame: frameOfCell, cellRow: indexPath.row)
-        let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
-        let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
-        commentAtt.append(nameAtt)
-        cell.thinksAboutChallengeView.attributedText = commentAtt
+        if comment {
+            let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
+            let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
+            commentAtt.append(nameAtt)
+            cell.thinksAboutChallengeView.attributedText = commentAtt
+        } else if proof {
+            let commentAtt = NSMutableAttributedString(string: "\(String(describing: proofs[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
+            let nameAtt = NSMutableAttributedString(string: "\(String(describing: proofs[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
+            commentAtt.append(nameAtt)
+            cell.thinksAboutChallengeView.attributedText = commentAtt
+        }
         // cell.profileImageView = setIma
         return cell
     }

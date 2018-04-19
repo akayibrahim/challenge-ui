@@ -33,12 +33,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UITabBar.appearance().tintColor = UIColor.rgb(70, green: 146, blue: 250)
         
-        application.statusBarStyle = .lightContent
+        /*
         if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
-            if application.isStatusBarHidden {
-                status.backgroundColor = navigationColor
-            }
-        }
+            status.backgroundColor = navigationColor
+        }*/
+        
+        application.statusBarStyle = .lightContent
         return true
     }
     

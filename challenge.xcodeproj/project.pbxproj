@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A107695720850773001F9281 /* trends_posts.json in Resources */ = {isa = PBXBuildFile; fileRef = A107695620850773001F9281 /* trends_posts.json */; };
 		A113ABFC203BE01B006E99F1 /* AddChallengeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */; };
 		A113AC00203BE1E9006E99F1 /* OtherController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ABFF203BE1E9006E99F1 /* OtherController.swift */; };
 		A11C823520499DDB0061A33F /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11C823420499DDB0061A33F /* ImageService.swift */; };
+		A1235D3E20870C3A0028738E /* Proofs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1235D3D20870C3A0028738E /* Proofs.swift */; };
 		A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1274107200F38E60073BFF2 /* FacebookController.swift */; };
 		A138F38A204D9C4F00142231 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = A138F389204D9C4F00142231 /* Post.swift */; };
 		A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A138F38F204D9CD100142231 /* VersusAttendance.swift */; };
@@ -30,7 +32,6 @@
 		A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */; };
 		A19A31F6207D1ACD00DDC98C /* comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A19A31F5207D1ACD00DDC98C /* comments.json */; };
 		A19BBDFC206A07D700EC7B11 /* TableViewCellContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19BBDFB206A07D700EC7B11 /* TableViewCellContent.swift */; };
-		A1C13414207F210500C6A435 /* SearchTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C13413207F210500C6A435 /* SearchTabController.swift */; };
 		A1C13416207F212700C6A435 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C13415207F212700C6A435 /* PageViewController.swift */; };
 		A1D2CAB720451C9F008782D3 /* OtherViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D2CAB620451C9F008782D3 /* OtherViewCell.swift */; };
 		A1DC3414207E2A1800F21232 /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3413207E2A1800F21232 /* Comments.swift */; };
@@ -38,7 +39,6 @@
 		A1DC3418207E402300F21232 /* ProfileCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3417207E402300F21232 /* ProfileCellView.swift */; };
 		A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */; };
 		A1E45A3E2074996800FD58E6 /* own_posts.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E45A3D2074996800FD58E6 /* own_posts.json */; };
-		BA814CC4F089C9048700059B /* Pods_facebookfeed2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2197A3DA9935AC76E3BE402E /* Pods_facebookfeed2.framework */; };
 		C780A7B21C88C582007023FD /* single_post.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B11C88C582007023FD /* single_post.json */; };
 		C780A7B41C88CEFB007023FD /* all_posts.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B31C88CEFB007023FD /* all_posts.json */; };
 		C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A85F331C78C137007E9A00 /* AppDelegate.swift */; };
@@ -47,45 +47,54 @@
 		C7A85F3E1C78C137007E9A00 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7A85F3C1C78C137007E9A00 /* LaunchScreen.storyboard */; };
 		C7D879AC1C8289DD008766AE /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */; };
 		C7D879AE1C828B36008766AE /* FollowRequestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D879AD1C828B36008766AE /* FollowRequestController.swift */; };
+		EA8D14494D658912944AC5CF /* Pods_facebookfeed2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97703B0D28FD3CB4B74C0ED /* Pods_facebookfeed2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A1D8871820405A9700E45A1B /* PBXContainerItemProxy */ = {
+		A14F7868208505BB006E1BE8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = A1D8871120405A9600E45A1B /* Pods.xcodeproj */;
+			containerPortal = A14F7860208505BB006E1BE8 /* Pods.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 4AFDD19702BF374993776E75F84A3DA1;
+			remoteGlobalIDString = 1CE92EE0EB75FB92F92C95D6C1CB5213;
 			remoteInfo = Bolts;
 		};
-		A1D8871A20405A9700E45A1B /* PBXContainerItemProxy */ = {
+		A14F786A208505BB006E1BE8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = A1D8871120405A9600E45A1B /* Pods.xcodeproj */;
+			containerPortal = A14F7860208505BB006E1BE8 /* Pods.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = A0150E42757C1D6477379CEC1D4BBB8F;
+			remoteGlobalIDString = FA99C0F551D18F006A215B3E466C7A44;
 			remoteInfo = FBSDKCoreKit;
 		};
-		A1D8871C20405A9700E45A1B /* PBXContainerItemProxy */ = {
+		A14F786C208505BB006E1BE8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = A1D8871120405A9600E45A1B /* Pods.xcodeproj */;
+			containerPortal = A14F7860208505BB006E1BE8 /* Pods.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = F32B04E7D33981F276118E430A114C3A;
+			remoteGlobalIDString = 3E14FE0A517BDC00F2DB5C9A2DAC2CA8;
 			remoteInfo = FBSDKLoginKit;
 		};
-		A1D8871E20405A9700E45A1B /* PBXContainerItemProxy */ = {
+		A14F786E208505BB006E1BE8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = A1D8871120405A9600E45A1B /* Pods.xcodeproj */;
+			containerPortal = A14F7860208505BB006E1BE8 /* Pods.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = B9655830B43B1AF798C0C24D966EDC49;
+			remoteGlobalIDString = A680A778FA216840A3F28AD9BB8DE10E;
 			remoteInfo = "Pods-facebookfeed2";
+		};
+		A14F7870208505BB006E1BE8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A14F7860208505BB006E1BE8 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7E52474B1EB9A141C634A69B6DB31EF9;
+			remoteInfo = TLYShyNavBar;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2197A3DA9935AC76E3BE402E /* Pods_facebookfeed2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_facebookfeed2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		976BF351127C8F413F3EEBE3 /* Pods-facebookfeed2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-facebookfeed2.release.xcconfig"; path = "Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2.release.xcconfig"; sourceTree = "<group>"; };
+		A107695620850773001F9281 /* trends_posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trends_posts.json; sourceTree = "<group>"; };
 		A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddChallengeController.swift; sourceTree = "<group>"; };
 		A113ABFF203BE1E9006E99F1 /* OtherController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherController.swift; sourceTree = "<group>"; };
 		A11C823420499DDB0061A33F /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
+		A1235D3D20870C3A0028738E /* Proofs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proofs.swift; sourceTree = "<group>"; };
 		A1274107200F38E60073BFF2 /* FacebookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookController.swift; sourceTree = "<group>"; };
 		A138F389204D9C4F00142231 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		A138F38F204D9CD100142231 /* VersusAttendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersusAttendance.swift; sourceTree = "<group>"; };
@@ -99,6 +108,7 @@
 		A14A996C2075310D00B1418D /* Friends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friends.swift; sourceTree = "<group>"; };
 		A14BDFEC204E5E780095875F /* AddChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddChallengeView.swift; sourceTree = "<group>"; };
 		A14D75FD20752D430005B2F2 /* SelectedItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedItems.swift; sourceTree = "<group>"; };
+		A14F7860208505BB006E1BE8 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		A15A30D3207B282D000C74A9 /* self_subject.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = self_subject.json; sourceTree = "<group>"; };
 		A15F875E207BBBB70035130D /* friend_request.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = friend_request.json; sourceTree = "<group>"; };
 		A15F8764207BBBF30035130D /* FriendRequests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequests.swift; sourceTree = "<group>"; };
@@ -106,16 +116,15 @@
 		A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewController.swift; sourceTree = "<group>"; };
 		A19A31F5207D1ACD00DDC98C /* comments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = comments.json; sourceTree = "<group>"; };
 		A19BBDFB206A07D700EC7B11 /* TableViewCellContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellContent.swift; sourceTree = "<group>"; };
-		A1C13413207F210500C6A435 /* SearchTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTabController.swift; sourceTree = "<group>"; };
 		A1C13415207F212700C6A435 /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		A1D2CAB620451C9F008782D3 /* OtherViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewCell.swift; sourceTree = "<group>"; };
-		A1D8871120405A9600E45A1B /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		A1DC3413207E2A1800F21232 /* Comments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		A1DC3415207E2D9800F21232 /* CommentCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentCellView.swift; sourceTree = "<group>"; };
 		A1DC3417207E402300F21232 /* ProfileCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCellView.swift; sourceTree = "<group>"; };
 		A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewController.swift; sourceTree = "<group>"; };
 		A1E45A3D2074996800FD58E6 /* own_posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = own_posts.json; sourceTree = "<group>"; };
 		A1ED4B1020404BAE00422544 /* facebookfeed2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = facebookfeed2.entitlements; path = facebookfeed2/facebookfeed2.entitlements; sourceTree = "<group>"; };
+		A97703B0D28FD3CB4B74C0ED /* Pods_facebookfeed2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_facebookfeed2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C780A7B11C88C582007023FD /* single_post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = single_post.json; sourceTree = "<group>"; };
 		C780A7B31C88CEFB007023FD /* all_posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = all_posts.json; sourceTree = "<group>"; };
 		C7A85F301C78C137007E9A00 /* facebookfeed2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = facebookfeed2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,7 +144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1462A7820432CBE00F5EF0F /* ExternalAccessory.framework in Frameworks */,
-				BA814CC4F089C9048700059B /* Pods_facebookfeed2.framework in Frameworks */,
+				EA8D14494D658912944AC5CF /* Pods_facebookfeed2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				A1462A7720432CBE00F5EF0F /* ExternalAccessory.framework */,
-				2197A3DA9935AC76E3BE402E /* Pods_facebookfeed2.framework */,
+				A97703B0D28FD3CB4B74C0ED /* Pods_facebookfeed2.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -176,7 +185,6 @@
 				C7A85F351C78C137007E9A00 /* ChallengesController.swift */,
 				C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */,
 				C7D879AD1C828B36008766AE /* FollowRequestController.swift */,
-				A1C13413207F210500C6A435 /* SearchTabController.swift */,
 				A1C13415207F212700C6A435 /* PageViewController.swift */,
 				A1274107200F38E60073BFF2 /* FacebookController.swift */,
 				A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */,
@@ -188,6 +196,7 @@
 		A13C70982043CD2D0076B989 /* JsonFiles */ = {
 			isa = PBXGroup;
 			children = (
+				A107695620850773001F9281 /* trends_posts.json */,
 				C780A7B11C88C582007023FD /* single_post.json */,
 				A14A996220752F7D00B1418D /* subject.json */,
 				A19A31F5207D1ACD00DDC98C /* comments.json */,
@@ -204,12 +213,12 @@
 			isa = PBXGroup;
 			children = (
 				A13C709A2043CE000076B989 /* ChallengeFeedCellView.swift */,
-				A1DC3417207E402300F21232 /* ProfileCellView.swift */,
 				A13C709C2043CE6E0076B989 /* FriendRequestView.swift */,
 				A1D2CAB620451C9F008782D3 /* OtherViewCell.swift */,
 				A1DC3415207E2D9800F21232 /* CommentCellView.swift */,
 				A14BDFEC204E5E780095875F /* AddChallengeView.swift */,
 				A19BBDFB206A07D700EC7B11 /* TableViewCellContent.swift */,
+				A1DC3417207E402300F21232 /* ProfileCellView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -221,6 +230,7 @@
 				A14A996A207530F500B1418D /* Subject.swift */,
 				A14A996C2075310D00B1418D /* Friends.swift */,
 				A1DC3413207E2A1800F21232 /* Comments.swift */,
+				A1235D3D20870C3A0028738E /* Proofs.swift */,
 				A15F8764207BBBF30035130D /* FriendRequests.swift */,
 				A138F38F204D9CD100142231 /* VersusAttendance.swift */,
 				A138F391204D9CFA00142231 /* JoinAttendance.swift */,
@@ -230,13 +240,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		A1D8871220405A9600E45A1B /* Products */ = {
+		A14F7861208505BB006E1BE8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A1D8871920405A9700E45A1B /* Bolts.framework */,
-				A1D8871B20405A9700E45A1B /* FBSDKCoreKit.framework */,
-				A1D8871D20405A9700E45A1B /* FBSDKLoginKit.framework */,
-				A1D8871F20405A9700E45A1B /* Pods_facebookfeed2.framework */,
+				A14F7869208505BB006E1BE8 /* Bolts.framework */,
+				A14F786B208505BB006E1BE8 /* FBSDKCoreKit.framework */,
+				A14F786D208505BB006E1BE8 /* FBSDKLoginKit.framework */,
+				A14F786F208505BB006E1BE8 /* Pods_facebookfeed2.framework */,
+				A14F7871208505BB006E1BE8 /* TLYShyNavBar.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -244,7 +255,7 @@
 		C7A85F271C78C137007E9A00 = {
 			isa = PBXGroup;
 			children = (
-				A1D8871120405A9600E45A1B /* Pods.xcodeproj */,
+				A14F7860208505BB006E1BE8 /* Pods.xcodeproj */,
 				A1ED4B1020404BAE00422544 /* facebookfeed2.entitlements */,
 				C7A85F321C78C137007E9A00 /* challenge */,
 				C7A85F311C78C137007E9A00 /* Products */,
@@ -340,8 +351,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = A1D8871220405A9600E45A1B /* Products */;
-					ProjectRef = A1D8871120405A9600E45A1B /* Pods.xcodeproj */;
+					ProductGroup = A14F7861208505BB006E1BE8 /* Products */;
+					ProjectRef = A14F7860208505BB006E1BE8 /* Pods.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -352,32 +363,39 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		A1D8871920405A9700E45A1B /* Bolts.framework */ = {
+		A14F7869208505BB006E1BE8 /* Bolts.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Bolts.framework;
-			remoteRef = A1D8871820405A9700E45A1B /* PBXContainerItemProxy */;
+			remoteRef = A14F7868208505BB006E1BE8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A1D8871B20405A9700E45A1B /* FBSDKCoreKit.framework */ = {
+		A14F786B208505BB006E1BE8 /* FBSDKCoreKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = FBSDKCoreKit.framework;
-			remoteRef = A1D8871A20405A9700E45A1B /* PBXContainerItemProxy */;
+			remoteRef = A14F786A208505BB006E1BE8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A1D8871D20405A9700E45A1B /* FBSDKLoginKit.framework */ = {
+		A14F786D208505BB006E1BE8 /* FBSDKLoginKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = FBSDKLoginKit.framework;
-			remoteRef = A1D8871C20405A9700E45A1B /* PBXContainerItemProxy */;
+			remoteRef = A14F786C208505BB006E1BE8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A1D8871F20405A9700E45A1B /* Pods_facebookfeed2.framework */ = {
+		A14F786F208505BB006E1BE8 /* Pods_facebookfeed2.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Pods_facebookfeed2.framework;
-			remoteRef = A1D8871E20405A9700E45A1B /* PBXContainerItemProxy */;
+			remoteRef = A14F786E208505BB006E1BE8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A14F7871208505BB006E1BE8 /* TLYShyNavBar.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = TLYShyNavBar.framework;
+			remoteRef = A14F7870208505BB006E1BE8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -397,6 +415,7 @@
 				C7A85F3B1C78C137007E9A00 /* Assets.xcassets in Resources */,
 				C780A7B41C88CEFB007023FD /* all_posts.json in Resources */,
 				A14A99692075306800B1418D /* friends.json in Resources */,
+				A107695720850773001F9281 /* trends_posts.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,12 +432,14 @@
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/TLYShyNavBar/TLYShyNavBar.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TLYShyNavBar.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -431,9 +452,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2-resources.sh",
+				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -473,7 +497,6 @@
 				A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */,
 				A14A996D2075310D00B1418D /* Friends.swift in Sources */,
 				C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */,
-				A1C13414207F210500C6A435 /* SearchTabController.swift in Sources */,
 				A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */,
 				A138F38A204D9C4F00142231 /* Post.swift in Sources */,
 				A15F8765207BBBF30035130D /* FriendRequests.swift in Sources */,
@@ -482,6 +505,7 @@
 				A14A996B207530F500B1418D /* Subject.swift in Sources */,
 				A11C823520499DDB0061A33F /* ImageService.swift in Sources */,
 				A14BDFED204E5E780095875F /* AddChallengeView.swift in Sources */,
+				A1235D3E20870C3A0028738E /* Proofs.swift in Sources */,
 				A1D2CAB720451C9F008782D3 /* OtherViewCell.swift in Sources */,
 				A13C709D2043CE6E0076B989 /* FriendRequestView.swift in Sources */,
 				A19BBDFC206A07D700EC7B11 /* TableViewCellContent.swift in Sources */,

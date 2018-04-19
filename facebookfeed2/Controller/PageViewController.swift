@@ -36,7 +36,7 @@ class PageViewController: UITableViewController, UIPageViewControllerDataSource,
         segmentedControl.backgroundColor = .clear
         segmentedControl.tintColor = .clear
         segmentedControl.addTarget(self, action: #selector(self.segControlChange), for: UIControlEvents.valueChanged)
-
+        
         let attr = NSDictionary(object: UIFont(name: "DINCondensed-Bold", size: 18)!, forKey: NSFontAttributeName as NSCopying)
         segmentedControl.setTitleTextAttributes(attr as [NSObject : AnyObject], for: .normal)
         segmentedControl.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.lightGray]  as [NSObject : AnyObject], for: .normal)

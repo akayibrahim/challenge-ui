@@ -32,4 +32,6 @@ class Post: SafeJsonObject {
     var supportSecondTeam : Bool?
     var firstTeamSupportCount : NSNumber?
     var secondTeamSupportCount : NSNumber?
+    var countOfProofs: NSNumber?
+    var insertTime : String?
 }

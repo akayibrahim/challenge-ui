@@ -8,22 +8,18 @@
 
 import UIKit
 
-class CustomTabBarController: UITabBarController {
+class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.delegate = self
+        
         let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let navigationController = UINavigationController(rootViewController: feedController)
         navigationController.title = "Challenges"
         navigationController.tabBarItem.image = UIImage(named: "news_feed_icon")
         // navigationController.hidesBarsOnSwipe = true
-        /*
-        let statusFrame = CGRect(x: 0.0, y: 0, width: self.view.bounds.size.width, height: UIApplication.shared.statusBarFrame.size.height)
-        let statusBar = UIView(frame: statusFrame)
-        statusBar.backgroundColor = navigationColor
-        navigationController.view.addSubview(statusBar)
-        */
+        
         let searchController = PageViewController()
         let secondNavigationController = UINavigationController(rootViewController: searchController)
         secondNavigationController.title = "Search"
@@ -70,5 +66,23 @@ class CustomTabBarController: UITabBarController {
             
         }
         return true
+    }
+    
+    func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem) {
+        
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if (tabBarController.selectedIndex == 0 && chlScrollMoveDown) || (tabBarController.selectedIndex == 3 && prflScrollMoveDown) {
+            if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+                status.backgroundColor = navigationColor
+            }
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
+        } else {
+            if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+                status.backgroundColor = nil
+            }
+            self.navigationController?.setNavigationBarHidden(false, animated: true)
+        }
     }
 }

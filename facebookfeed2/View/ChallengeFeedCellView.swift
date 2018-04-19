@@ -43,7 +43,7 @@ class FeedCell: UICollectionViewCell {
         self.thinksAboutChallengeView.text = nil
         self.goalLabel.removeFromSuperview()
         self.joinButton.removeFromSuperview()
-        self.likeButton.removeFromSuperview()
+        self.supportSelfButton.removeFromSuperview()
         self.supportButtonMatch.removeFromSuperview()
         self.supportButton.removeFromSuperview()
         self.subjectLabel.removeFromSuperview()
@@ -80,9 +80,13 @@ class FeedCell: UICollectionViewCell {
             if let countOfComments = post?.countOfComments {
                 viewComments.setTitle("View all \(countOfComments) comments", for: UIControlState())
             }
-            
-            viewProofs.setTitle("View all 9 proofs", for: UIControlState())
-            if post?.type == "PUBLIC" {
+            if let countOfProofs = post?.countOfProofs {
+                viewProofs.setTitle("View all \(countOfProofs) proofs", for: UIControlState())
+            }
+            if let insertTimeText = post?.insertTime {
+                insertTime.text = insertTimeText
+            }
+            if post?.type == PUBLIC {
                 if let subject = post?.subject {
                     subjectImageView.image = UIImage(named: subject)
                 }
@@ -90,7 +94,7 @@ class FeedCell: UICollectionViewCell {
                 var secondPImg: Bool = false;
                 var thirdPImg: Bool = false;
                 if post?.secondTeamCount == "0" {
-                    setImage(name: "worldImage", imageView: firstOnePeopleImageView)
+                    setImage(name: worldImage, imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.contentMode = .scaleAspectFit
                 }
                 for join in (post?.joinAttendanceList)! {
@@ -128,13 +132,13 @@ class FeedCell: UICollectionViewCell {
                     }
                     if memberID == join.memberId {
                         if join.join! {
-                            joinButton.setImage(UIImage(named: "acceptedRed"), for: .normal)
+                            joinButton.setImage(UIImage(named: acceptedRed), for: .normal)
                         } else {
-                            joinButton.setImage(UIImage(named: "acceptedBlack"), for: .normal)
+                            joinButton.setImage(UIImage(named: acceptedBlack), for: .normal)
                         }
                     }
                 }
-            } else if post?.type == "PRIVATE" {
+            } else if post?.type == PRIVATE {
                 if let subject = post?.subject {
                     subjectImageView.image = UIImage(named: subject)
                 }
@@ -206,7 +210,7 @@ class FeedCell: UICollectionViewCell {
                         }
                     }
                 }
-            } else if post?.type == "SELF" {
+            } else if post?.type == SELF {
                 setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
                 if let subject = post?.subject {
                     setImage(name: subject, imageView: firstOnePeopleImageView)
@@ -218,33 +222,33 @@ class FeedCell: UICollectionViewCell {
             }
             if let untilDate = post?.untilDateStr {
                 untilDateLabel.text = "\(untilDate)"
-                untilDateLabel.font = UIFont (name: "Marker Felt", size: 24)
+                untilDateLabel.font = UIFont (name: fontMarkerFelt, size: 24)
                 untilDateLabel.textAlignment = .center
                 untilDateLabel.numberOfLines = 2;
                 untilDateLabel.textColor = UIColor.gray
             }
             vsImageView.image = UIImage(named: "vs")
             if post?.secondTeamCount == "4" {
-                moreFourPeopleImageView.image = UIImage(named: "more_icon")
+                moreFourPeopleImageView.image = UIImage(named: more_icon)
                 moreFourPeopleImageView.contentMode = .scaleAspectFit
             }
             if post?.firstTeamCount == "4" {
-                moreFourChlrPeopleImageView.image = UIImage(named: "more_icon")
+                moreFourChlrPeopleImageView.image = UIImage(named: more_icon)
                 moreFourChlrPeopleImageView.contentMode = .scaleAspectFit
             }
-            goalLabel.text = "GOAL: 10"
+            goalLabel.text = "GOAL: 10" // TODO
             if let subject = post?.subject {
                 subjectLabel.text = subject
-                subjectLabel.font = UIFont (name: "Marker Felt", size: 20)
+                subjectLabel.font = UIFont (name: fontMarkerFelt, size: 20)
                 subjectLabel.textAlignment = .center
                 subjectLabel.numberOfLines = 2;
                 subjectLabel.textColor = UIColor.gray
             }
             if let amILike = post?.amILike {
                 if amILike {
-                    likeButton.setImage(UIImage(named: "likeRed"), for: .normal)
+                    supportSelfButton.setImage(UIImage(named: supported), for: .normal)
                 } else {
-                    likeButton.setImage(UIImage(named: "like"), for: .normal)
+                    supportSelfButton.setImage(UIImage(named: support), for: .normal)
                 }
             }
             if let supportFirstTeam = post?.supportFirstTeam, let supportSecondTeam = post?.supportSecondTeam {
@@ -254,16 +258,16 @@ class FeedCell: UICollectionViewCell {
                 if let secondTeamSupportCount = post?.secondTeamSupportCount {
                     supportMatchLabel.text = "+\(secondTeamSupportCount)"
                 }
-                supportTextLabel.text = "SUPPORT"
+                supportTextLabel.text = supportText
                 if supportFirstTeam {
-                    supportButton.setImage(UIImage(named: "rightArrow"), for: .normal)
+                    supportButton.setImage(UIImage(named: supported), for: .normal)
                 } else {
-                    supportButton.setImage(UIImage(named: "leftArrow"), for: .normal)
+                    supportButton.setImage(UIImage(named: support), for: .normal)
                 }
                 if supportSecondTeam {
-                    supportButtonMatch.setImage(UIImage(named: "rightArrow"), for: .normal)
+                    supportButtonMatch.setImage(UIImage(named: supported), for: .normal)
                 } else {
-                    supportButtonMatch.setImage(UIImage(named: "leftArrow"), for: .normal)
+                    supportButtonMatch.setImage(UIImage(named: support), for: .normal)
                 }
             }
             if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount,  let isComeFromSelf = post?.isComeFromSelf {
@@ -321,7 +325,7 @@ class FeedCell: UICollectionViewCell {
             addComments.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
             addHeightAnchor(addComments, multiplier: 0.7/10)
             
-            if type == "PUBLIC" {
+            if type == PUBLIC {
                 addSubview(viewProofs)
                 viewProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
                 addTopAnchor(viewProofs, anchor: thinksAboutChallengeView.bottomAnchor, constant: -(screenSize.width * 0.1/10))
@@ -336,7 +340,6 @@ class FeedCell: UICollectionViewCell {
                 addHeightAnchor(addProofs, multiplier: 0.7/10)
             }
             
-            insertTime.text = "12 HOURS AGO"
             addSubview(insertTime)
             addTopAnchor(insertTime, anchor: addComments.bottomAnchor, constant: 0)
             addLeadingAnchor(insertTime, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
@@ -391,22 +394,18 @@ class FeedCell: UICollectionViewCell {
         middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
         if !isComeFromSelf {
-            if type == "PRIVATE" {
+            if type == PRIVATE {
                 addSubview(supportButton)
                 addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.3/18)
                 supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.35/3)).isActive = true
                 addWidthAnchor(supportButton, multiplier: 0.3/3)
                 addHeightAnchor(supportButton, multiplier: 1.8/18)
-                // supportButton.setImage(UIImage(named: "leftArrow"), for: UIControlState())
-                supportButton.layer.borderWidth = 0
                 
                 addSubview(supportButtonMatch)
                 addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.3/18)
                 supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.35/3)).isActive = true
                 addWidthAnchor(supportButtonMatch, multiplier: 0.3/3)
                 addHeightAnchor(supportButtonMatch, multiplier: 1.8/18)
-                // supportButtonMatch.setImage(UIImage(named: "leftArrow"), for: UIControlState())
-                supportButtonMatch.layer.borderWidth = 0
                 
                 addSubview(supportLabel)
                 addBottomAnchor(supportLabel, anchor: supportButton.topAnchor, constant: 0)
@@ -426,21 +425,21 @@ class FeedCell: UICollectionViewCell {
                 addWidthAnchor(supportTextLabel, multiplier: 1/3)
                 addHeightAnchor(supportTextLabel, multiplier: 1/15)
                 supportTextLabel.textColor = UIColor.red
-            } else if type == "PUBLIC" {
+            } else if type == PUBLIC {
                 addSubview(joinButton)
                 addTopAnchor(joinButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
                 joinButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
                 addWidthAnchor(joinButton, multiplier: 0.8/6)
                 addHeightAnchor(joinButton, multiplier: 0.8/6)
             } else {
-                addSubview(likeButton)
-                addTopAnchor(likeButton, anchor: middleCenterGuide.bottomAnchor, constant: 0)
-                likeButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                addWidthAnchor(likeButton, multiplier: 0.6/6)
-                addHeightAnchor(likeButton, multiplier: 0.6/6)
+                addSubview(supportSelfButton)
+                addTopAnchor(supportSelfButton, anchor: middleCenterGuide.bottomAnchor, constant: 0)
+                supportSelfButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                addWidthAnchor(supportSelfButton, multiplier: 0.6/6)
+                addHeightAnchor(supportSelfButton, multiplier: 0.6/6)
                 
                 addSubview(likeLabel)
-                addTopAnchor(likeLabel, anchor: likeButton.bottomAnchor, constant: 0)
+                addTopAnchor(likeLabel, anchor: supportSelfButton.bottomAnchor, constant: 0)
                 likeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
                 addWidthAnchor(likeLabel, multiplier: 1/3)
                 addHeightAnchor(likeLabel, multiplier: 1/15)
@@ -750,12 +749,14 @@ class FeedCell: UICollectionViewCell {
         return button
     }
     
-    let likeButton = FeedCell.buttonForTitle("", imageName: "likeRed")
-    let joinButton = FeedCell.buttonForTitle("", imageName: "acceptedBlack")
-    let viewComments = FeedCell.buttonForTitle("View all 9 comments", imageName: "")
-    let viewProofs = FeedCell.buttonForTitle("View all 9 proofs", imageName: "")
-    let addComments = FeedCell.buttonForTitle("Add a comment", imageName: "")
-    let addProofs = FeedCell.buttonForTitle("Add a proof", imageName: "")
+    let supportSelfButton = FeedCell.buttonForTitle("", imageName: support)
+    let joinButton = FeedCell.buttonForTitle("", imageName: acceptedBlack)
+    let viewComments = FeedCell.buttonForTitle(viewAllComments, imageName: "")
+    let viewProofs = FeedCell.buttonForTitle(viewAllProofs, imageName: "")
+    let addComments = FeedCell.buttonForTitle(addComents, imageName: "")
+    let addProofs = FeedCell.buttonForTitle(addProofsVar, imageName: "")
+    let supportButton = FeedCell.buttonForTitle("", imageName: support)
+    let supportButtonMatch = FeedCell.buttonForTitle("", imageName: support)
     
     static func buttonForTitleWithBorder(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()
@@ -773,9 +774,6 @@ class FeedCell: UICollectionViewCell {
         
         return button
     }
-    
-    let supportButton = FeedCell.buttonForTitleWithBorder("", imageName: "leftArrow")
-    let supportButtonMatch = FeedCell.buttonForTitleWithBorder("", imageName: "leftArrow")
     
     static func imageView() -> UIImageView {
         let imageView = UIImageView()
@@ -856,7 +854,7 @@ extension UIView {
                 if image != nil {
                     imageView.image = image
                 } else {
-                    self.setImage(name: "unknown", imageView: imageView)
+                    self.setImage(name: unknown, imageView: imageView)
                 }
             }
             //let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch

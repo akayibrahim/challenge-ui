@@ -48,9 +48,15 @@ class ProfileCellView: UICollectionViewCell {
         other.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         addTrailingAnchor(other, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.3 / 10))
         addHeightAnchor(other, multiplier: 2/10)
+        
+        addSubview(activity)
+        activity.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+        addTrailingAnchor(activity, anchor: other.leadingAnchor, constant: -(screenSize.width * 0.3 / 10))
+        addHeightAnchor(activity, multiplier: 2/10)
     }
     
     let profileImageView: UIImageView = FeedCell().profileImageView
-    let other = FeedCell.buttonForTitle("", imageName: "more_icon")
+    let other = FeedCell.buttonForTitle("", imageName: "settings")
+    let activity = FeedCell.buttonForTitle("", imageName: "activity")
     let nameLabel: UILabel = FeedCell.labelCreateDef(1)
 }

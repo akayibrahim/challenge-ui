@@ -7,7 +7,8 @@ target 'facebookfeed2' do
 
   # Pods for facebookfeed2
 
-pod 'FBSDKLoginKit'
-pod 'FBSDKCoreKit'
-    
+pod 'FBSDKLoginKit', '4.29.0'
+pod 'FBSDKCoreKit', '4.29.0'
+pod 'TLYShyNavBar'
+
 end

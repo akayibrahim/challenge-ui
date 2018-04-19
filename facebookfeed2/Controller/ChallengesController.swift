@@ -7,8 +7,14 @@
 //
 
 import UIKit
+import TLYShyNavBar
 
 let cellId = "cellId"
+var chlScrollMoveDown : Bool = false
+var chlScrollMoveUp : Bool = false
+var prflScrollMoveDown : Bool = false
+var prflScrollMoveUp : Bool = false
+var refreshControl : UIRefreshControl!
 
 class SafeJsonObject: NSObject {
     
@@ -32,9 +38,120 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var donePosts = [Post]()
     var notDonePosts = [Post]()
     var comments = [Comments]()
+    var proofs = [Proofs]()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if self.tabBarController?.selectedIndex == 0 {
+            navigationItem.title = challengeTitle
+        } else if self.tabBarController?.selectedIndex == 3 {
+            navigationItem.title = profileTitle
+        }
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
+        collectionView?.addSubview(refreshControl)
+        collectionView?.alwaysBounceVertical = true
+        
+        loadChallenges()
+        
+        collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "profile")
+        collectionView?.showsVerticalScrollIndicator = false
+        collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
+    }
+    
+    func onRefesh(){
+        self.loadChallenges()
+        self.collectionView?.reloadData()
+        refreshControl.endRefreshing()
+    }
+    
+    func loadChallenges() {
+        let httpCall: Bool = false
+        if httpCall == true {
+            // Asynchronous Http call to your api url, using NSURLSession:
+            // http://ip.jsontest.com
+            // http://localhost:8080/getChallenges?memberId=5a81b0f0f8b8e43e70325d3d
+            // self.fetchData()
+        } else {
+            //        let samplePost = Post()
+            //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
+            var jsonFileName = "trends_posts"
+            if self.tabBarController?.selectedIndex == 3 {
+                jsonFileName = "own_posts"
+            } else if self.tabBarController?.selectedIndex == 0 {
+                jsonFileName = "all_posts"
+            }
+            
+            if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+                do {
+                    let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                    let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                    if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                        self.posts = [Post]()
+                        self.donePosts = [Post]()
+                        self.notDonePosts = [Post]()
+                        for postDictionary in postsArray {
+                            let post = Post()
+                            post.versusAttendanceList = [VersusAttendance]()
+                            if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {
+                                for versus in verAttenLis {
+                                    let versusAtten = VersusAttendance(data: versus)
+                                    post.versusAttendanceList.append(versusAtten)
+                                }
+                            }
+                            post.joinAttendanceList = [JoinAttendance]()
+                            if let joinAttenLis = postDictionary["joinAttendanceList"] as? [[String: AnyObject]] {
+                                for join in joinAttenLis {
+                                    let joinAtten = JoinAttendance(data: join)
+                                    post.joinAttendanceList.append(joinAtten)
+                                }
+                            }
+                            post.setValuesForKeys(postDictionary)
+                            post.done = postDictionary["done"] as? Bool
+                            post.isComeFromSelf = postDictionary["isComeFromSelf"] as? Bool
+                            post.amILike = postDictionary["amILike"] as? Bool
+                            post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
+                            post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
+                            self.posts.append(post)
+                            if post.done == true {
+                                self.donePosts.append(post)
+                            } else {
+                                self.notDonePosts.append(post)
+                            }
+                            // self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+            if let path = Bundle.main.path(forResource: "comments", ofType: "json") {
+                do {
+                    let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                    let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                    if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                        self.comments = [Comments]()
+                        self.proofs = [Proofs]()
+                        for postDictionary in postsArray {
+                            let comment = Comments()
+                            let proof = Proofs()
+                            comment.setValuesForKeys(postDictionary)
+                            self.comments.append(comment)
+                            proof.setValuesForKeys(postDictionary)
+                            self.proofs.append(proof)
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+        }
+    }
     
     func fetchData() {
-        URLSession.shared.dataTask(with: NSURL(string: "http://localhost:8080/getChallenges?memberId=5a81b0f0f8b8e43e70325d3d")! as URL, completionHandler: { (data, response, error) -> Void in
+        URLSession.shared.dataTask(with: NSURL(string: getChallengesURL)! as URL, completionHandler: { (data, response, error) -> Void in
             // Check if data was received successfully
             if error == nil && data != nil {
                 do {
@@ -78,103 +195,15 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }).resume()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        let httpCall: Bool = false
-        if httpCall == true {
-            // Asynchronous Http call to your api url, using NSURLSession:
-            // http://ip.jsontest.com
-            // http://localhost:8080/getChallenges?memberId=5a81b0f0f8b8e43e70325d3d
-            // self.fetchData()
-        } else {
-            //        let samplePost = Post()
-            //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
-            var jsonFileName = "trends_posts"
-            if self.tabBarController?.selectedIndex == 3 {
-                jsonFileName = "own_posts"
-            } else if self.tabBarController?.selectedIndex == 0 {
-                jsonFileName = "all_posts"
-            }
-            if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
-                do {
-                    let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                    let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                    if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                        self.posts = [Post]()
-                        for postDictionary in postsArray {
-                            let post = Post()
-                            post.versusAttendanceList = [VersusAttendance]()
-                            if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {
-                                for versus in verAttenLis {
-                                    let versusAtten = VersusAttendance(data: versus)
-                                    post.versusAttendanceList.append(versusAtten)
-                                }
-                            }
-                            post.joinAttendanceList = [JoinAttendance]()
-                            if let joinAttenLis = postDictionary["joinAttendanceList"] as? [[String: AnyObject]] {
-                                for join in joinAttenLis {
-                                    let joinAtten = JoinAttendance(data: join)
-                                    post.joinAttendanceList.append(joinAtten)
-                                }
-                            }
-                            post.setValuesForKeys(postDictionary)
-                            post.done = postDictionary["done"] as? Bool
-                            post.isComeFromSelf = postDictionary["isComeFromSelf"] as? Bool
-                            post.amILike = postDictionary["amILike"] as? Bool
-                            post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
-                            post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
-                            self.posts.append(post)
-                            if post.done == true {
-                                self.donePosts.append(post)
-                            } else {
-                                self.notDonePosts.append(post)
-                            }
-                            self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
-            }
-        }
-        if let path = Bundle.main.path(forResource: "comments", ofType: "json") {
-            do {
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.comments = [Comments]()
-                    for postDictionary in postsArray {
-                        let comment = Comments()
-                        comment.setValuesForKeys(postDictionary)
-                        self.comments.append(comment)
-                    }
-                }
-            } catch let err {
-                print(err)
-            }
-        }
-        if self.tabBarController?.selectedIndex == 0 {
-            navigationItem.title = "Challenge"
-        } else if self.tabBarController?.selectedIndex == 3 {
-            navigationItem.title = "Profile"
-        }
-        collectionView?.alwaysBounceVertical = true
-        collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "profile")
-        collectionView?.showsVerticalScrollIndicator = false
-        collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
-    }
-    
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var reusableView : UICollectionReusableView? = nil
         if self.tabBarController?.selectedIndex == 3 {
             if kind == UICollectionElementKindSectionHeader {
                 let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "someRandonIdentifierString", for: indexPath as IndexPath) as! ChallengeHeader
                 if indexPath.section == 1 {
-                    headerView.nameLabel.text = "YOUR ACTIVE CHALLENGES"
+                    headerView.nameLabel.text = profileFirstHeader
                 } else if indexPath.section == 2 {
-                    headerView.nameLabel.text = "YOUR PAST CHALLENGES"
+                    headerView.nameLabel.text = profileSecondHeader
                 }
                 reusableView = headerView
             }
@@ -216,8 +245,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         super.viewWillAppear(animated)
         //Correct the nav bar state unwinding from segues
         if self.tabBarController?.selectedIndex == 0 || self.tabBarController?.selectedIndex == 3 {
-            self.navigationController?.hidesBarsOnSwipe = true
-        }        
+            // self.navigationController?.setNavigationBarHidden(false, animated: true)
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -241,13 +270,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.prepareForReuse()
         feedCell.post = posts[indexPath.item]
         feedCell.feedController = self
-        if feedCell.post?.type == "SELF" {
-            feedCell.likeButton.tag = indexPath.row
-            feedCell.likeButton.addTarget(self, action: #selector(self.likeSelfs), for: UIControlEvents.touchUpInside)
-        } else if feedCell.post?.type == "PUBLIC" {
+        if feedCell.post?.type == SELF {
+            feedCell.supportSelfButton.tag = indexPath.row
+            feedCell.supportSelfButton.addTarget(self, action: #selector(self.likeSelfs), for: UIControlEvents.touchUpInside)
+        } else if feedCell.post?.type == PUBLIC {
             feedCell.joinButton.tag = indexPath.row
             feedCell.joinButton.addTarget(self, action: #selector(self.acceptChallenge), for: UIControlEvents.touchUpInside)
-        } else if feedCell.post?.type == "PRIVATE" {
+        } else if feedCell.post?.type == PRIVATE {
             feedCell.supportButton.tag = indexPath.row
             feedCell.supportButtonMatch.tag = indexPath.row
             feedCell.supportButton.addTarget(self, action: #selector(self.supportChallenge), for: UIControlEvents.touchUpInside)
@@ -267,35 +296,37 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func addComments(sender: UIButton) {
         let commentsTable = CommentTableViewController()        
-        commentsTable.tableTitle = "Comments"
+        commentsTable.tableTitle = commentsTableTitle
+        commentsTable.comments = self.comments
+        commentsTable.comment = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.hidesBarsOnSwipe = false
-        self.navigationController?.pushViewController(commentsTable, animated: true)
-    }
-    
-    func addProofs(sender: UIButton) {
-        let commentsTable = CommentTableViewController()
-        commentsTable.tableTitle = "Proofs"
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.hidesBarsOnSwipe = false
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
     func viewComments(sender: UIButton) {
         let commentsTable = CommentTableViewController()
-        commentsTable.tableTitle = "Comments"
+        commentsTable.tableTitle = commentsTableTitle
         commentsTable.comments = self.comments
+        commentsTable.comment = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.hidesBarsOnSwipe = false
+        self.navigationController?.pushViewController(commentsTable, animated: true)
+    }
+    
+    func addProofs(sender: UIButton) {
+        let commentsTable = CommentTableViewController()
+        commentsTable.tableTitle = proofsTableTitle
+        commentsTable.proofs = self.proofs
+        commentsTable.proof = true
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
     func viewProofs(sender: UIButton) {
         let commentsTable = CommentTableViewController()
-        commentsTable.tableTitle = "Proofs"
-        commentsTable.comments = self.comments
+        commentsTable.tableTitle = proofsTableTitle
+        commentsTable.proofs = self.proofs
+        commentsTable.proof = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.hidesBarsOnSwipe = false
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
@@ -303,11 +334,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let index = IndexPath(item: sender.tag, section: 0)
         let feedCcell = collectionView?.cellForItem(at: index) as! FeedCell
         let currentImage = sender.currentImage
-        if currentImage == UIImage(named:"leftArrow") {
-            sender.setImage(UIImage(named:"rightArrow"), for: .normal)
-            feedCcell.supportButtonMatch.setImage(UIImage(named:"leftArrow"), for: .normal)
+        if currentImage == UIImage(named:support) {
+            sender.setImage(UIImage(named: supported), for: .normal)
+            feedCcell.supportButtonMatch.setImage(UIImage(named:support), for: .normal)
         } else {
-            sender.setImage(UIImage(named:"leftArrow"), for: .normal)
+            sender.setImage(UIImage(named: support), for: .normal)
         }
     }
     
@@ -315,29 +346,29 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let index = IndexPath(item: sender.tag, section: 0)
         let feedCcell = collectionView?.cellForItem(at: index) as! FeedCell
         let currentImage = sender.currentImage
-        if currentImage == UIImage(named:"leftArrow") {
-            sender.setImage(UIImage(named:"rightArrow"), for: .normal)
-            feedCcell.supportButton.setImage(UIImage(named:"leftArrow"), for: .normal)
+        if currentImage == UIImage(named: support) {
+            sender.setImage(UIImage(named: supported), for: .normal)
+            feedCcell.supportButton.setImage(UIImage(named: support), for: .normal)
         } else {
-            sender.setImage(UIImage(named:"leftArrow"), for: .normal)
+            sender.setImage(UIImage(named: support), for: .normal)
         }
     }
     
     func likeSelfs(sender: UIButton) {
         let currentImage = sender.currentImage
-        if currentImage == UIImage(named:"like") {
-            sender.setImage(UIImage(named:"likeRed"), for: .normal)
+        if currentImage == UIImage(named: support) {
+            sender.setImage(UIImage(named: supported), for: .normal)
         } else {
-            sender.setImage(UIImage(named:"like"), for: .normal)
+            sender.setImage(UIImage(named: support), for: .normal)
         }
     }
     
     func acceptChallenge(sender: UIButton) {
         let currentImage = sender.currentImage
-        if currentImage == UIImage(named:"acceptedRed") {
-            sender.setImage(UIImage(named:"acceptedBlack"), for: .normal)
+        if currentImage == UIImage(named: acceptedRed) {
+            sender.setImage(UIImage(named: acceptedBlack), for: .normal)
         } else {
-            sender.setImage(UIImage(named:"acceptedRed"), for: .normal)
+            sender.setImage(UIImage(named: acceptedRed), for: .normal)
         }
     }
 
@@ -432,6 +463,42 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
         }
     }
+    
+    var lastContentOffSet : CGFloat = 0
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if self.tabBarController?.selectedIndex == 0 || self.tabBarController?.selectedIndex == 3 {
+            if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
+                // move down
+                if self.tabBarController?.selectedIndex == 0 {
+                    chlScrollMoveDown = true
+                    chlScrollMoveUp = false
+                }
+                if self.tabBarController?.selectedIndex == 3 {
+                    prflScrollMoveDown = true
+                    prflScrollMoveUp = false
+                }
+                if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+                    status.backgroundColor = navigationColor
+                }
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+            } else {
+                // move up
+                if self.tabBarController?.selectedIndex == 0 {
+                    chlScrollMoveDown = false
+                    chlScrollMoveUp = true
+                }
+                if self.tabBarController?.selectedIndex == 3 {
+                    prflScrollMoveDown = false
+                    prflScrollMoveUp = true
+                }
+                if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+                    status.backgroundColor = nil
+                }
+                self.navigationController?.setNavigationBarHidden(false, animated: true)
+            }
+            self.lastContentOffSet = scrollView.contentOffset.y
+        }
+    }
 }
 
 class ChallengeHeader: UICollectionReusableView {
@@ -484,7 +551,7 @@ extension UICollectionViewController
                 if image != nil {
                     imageView.image = image
                 } else {
-                    self.setImage(name: "unknown", imageView: imageView)
+                    self.setImage(name: unknown, imageView: imageView)
                 }
             }
             //let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
@@ -498,4 +565,29 @@ extension UICollectionViewController
             imageView.image = UIImage(named: peopleImage)
         }
     }
+}
+
+extension UIScrollView {
+    
+    var isAtTop: Bool {
+        return contentOffset.y <= verticalOffsetForTop
+    }
+    
+    var isAtBottom: Bool {
+        return contentOffset.y >= verticalOffsetForBottom
+    }
+    
+    var verticalOffsetForTop: CGFloat {
+        let topInset = contentInset.top
+        return -topInset
+    }
+    
+    var verticalOffsetForBottom: CGFloat {
+        let scrollViewHeight = bounds.height
+        let scrollContentSizeHeight = contentSize.height
+        let bottomInset = contentInset.bottom
+        let scrollViewBottomOffset = scrollContentSizeHeight + bottomInset - scrollViewHeight
+        return scrollViewBottomOffset
+    }
+    
 }

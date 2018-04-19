@@ -307,8 +307,7 @@ class AddChallengeView: UIView {
     
     let challengeView: UIView = FeedCell.viewFunc()
     
-    static func segmentedControl() -> UISegmentedControl {
-        let myArray : NSArray = ["Public", "Self", "Private"]
+    static func segmentedControl(myArray : NSArray) -> UISegmentedControl {
         let mySegControl : UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
         mySegControl.backgroundColor = UIColor.white
         mySegControl.layer.cornerRadius = 5.0
@@ -316,7 +315,7 @@ class AddChallengeView: UIView {
         return mySegControl
     }
     
-    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl()
+    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Public", "Self", "Private"])
     
     let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
     

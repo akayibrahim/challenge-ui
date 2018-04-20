@@ -47,7 +47,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         } else if self.tabBarController?.selectedIndex == 3 {
             navigationItem.title = profileTitle
         }
-        refreshControl = UIRefreshControl()
+        refreshControl = UIRefreshControl()        
         refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         collectionView?.addSubview(refreshControl)
         collectionView?.alwaysBounceVertical = true

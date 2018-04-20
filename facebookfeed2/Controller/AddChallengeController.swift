@@ -297,7 +297,6 @@ class AddChallengeController: UITableViewController {
         let selItem = SelectedItems()
         selItem.name = "unknown"
         selItems.append(selItem)
-        prepareViewForSelection(result: selItems, popIndexPath: popIndexPath, reset: true)
         switchProofCell = true
         switchLeftPeopleCell = true
         switchRightPeopleCell = true
@@ -315,6 +314,7 @@ class AddChallengeController: UITableViewController {
         }
         setImage(name: subjectImage, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
         if !isNotAction {
+            prepareViewForSelection(result: selItems, popIndexPath: popIndexPath, reset: true)
             tableView.reloadRows(at: [addViewIndexPath], with: .fade)
             tableView.reloadRows(at: [subjectIndexPath], with: .fade)
             tableView.reloadRows(at: [leftSideIndex], with: .fade)
@@ -336,14 +336,33 @@ class AddChallengeController: UITableViewController {
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
         let leftSideContent = tableView.cellForRow(at: leftSideIndex) as! TableViewCellContent
         let rightSideContent = tableView.cellForRow(at: rightSideIndex) as! TableViewCellContent
+        let isLeftSide = popIndexPath == leftSideIndex
+        let isRightSide = popIndexPath == rightSideIndex
+        let isRightSideFull = rightSideContent.labelOtherSide.text != selectText
+        let isLeftSideFull = leftSideContent.labelOtherSide.text != selectText
         if segControlContent.mySegControl.selectedSegmentIndex == 0 {
             if reset {
                 setChlrPeopleImages(result : result, reset: !reset)
             }
+            setPeopleImages(result : result, reset: false)
         } else if segControlContent.mySegControl.selectedSegmentIndex == 1 || segControlContent.mySegControl.selectedSegmentIndex == 2 {
-            self.setChlrPeopleImages(result : result, reset: popIndexPath != self.leftSideIndex && leftSideContent.labelOtherSide.text == selectText)
+            if isLeftSide {
+                setChlrPeopleImages(result : result, reset: false)
+                if rightSide.count != leftSide.count {
+                    setPeopleImages(result : result, reset: true)
+                } else {
+                    setPeopleImages(result : rightSide, reset: false)
+                }
+            }
+            if isRightSide {
+                setPeopleImages(result : result, reset: false)
+                if rightSide.count != leftSide.count {
+                    setChlrPeopleImages(result : result, reset: true)
+                } else {
+                    setChlrPeopleImages(result : leftSide, reset: false)
+                }
+            }
         }
-        setPeopleImages(result : result, reset: popIndexPath != rightSideIndex && rightSideContent.labelOtherSide.text == selectText)
     }
     
     func setPeopleImages(result : [SelectedItems], reset : Bool) {
@@ -369,7 +388,7 @@ class AddChallengeController: UITableViewController {
             setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstFourPeopleImageView, reset: reset)
             setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondFourPeopleImageView, reset: reset)
             setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdFourPeopleImageView, reset: reset)
-            setImage(fbID: "more_icon", imageView: addViewContent.addChallenge.moreFourPeopleImageView, reset: false)
+            setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourPeopleImageView)
         }
     }
     
@@ -390,7 +409,7 @@ class AddChallengeController: UITableViewController {
             setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstFourChlrPeopleImageView, reset: reset)
             setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondFourChlrPeopleImageView, reset: reset)
             setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView, reset: reset)
-            setImage(fbID: "more_icon", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView, reset: false)
+            setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView)
         }
     }
 }

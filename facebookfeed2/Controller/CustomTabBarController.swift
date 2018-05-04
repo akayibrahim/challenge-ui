@@ -16,32 +16,34 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         
         let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let navigationController = UINavigationController(rootViewController: feedController)
-        navigationController.title = "Challenges"
+        navigationController.title = "Feeds"
         navigationController.tabBarItem.image = UIImage(named: "news_feed_icon")
         // navigationController.hidesBarsOnSwipe = true
         
-        let searchController = PageViewController()
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let searchController = TrendsController(collectionViewLayout: layout)
         let secondNavigationController = UINavigationController(rootViewController: searchController)
-        secondNavigationController.title = "Search"
+        secondNavigationController.title = "Trends"
         secondNavigationController.tabBarItem.image = UIImage(named: "search")
         // secondNavigationController.isNavigationBarHidden = true
         
         let addChallengeController = AddChallengeController()
-        let messengerNavigationController = UINavigationController(rootViewController: addChallengeController)
-        messengerNavigationController.title = "Add"
-        messengerNavigationController.tabBarItem.image = UIImage(named: "add_icon")
+        let addNavigationController = UINavigationController(rootViewController: addChallengeController)
+        addNavigationController.title = "Add"
+        addNavigationController.tabBarItem.image = UIImage(named: "add_icon")
+        
+        let notifyController = NotificationsController()
+        let notifyNavController = UINavigationController(rootViewController: notifyController)
+        notifyNavController.title = "Activity"
+        notifyNavController.tabBarItem.image = UIImage(named: "activity")
         
         let selfChallengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
-        let notificationsNavController = UINavigationController(rootViewController: selfChallengeController)
-        notificationsNavController.title = "Profile"
-        notificationsNavController.tabBarItem.image = UIImage(named: "requests_icon")
-        /*
-        let otherController = OtherController()
-        let moreNavController = UINavigationController(rootViewController: otherController)
-        moreNavController.title = ""
-        moreNavController.tabBarItem.image = UIImage(named: "more_icon")
-        */
-        viewControllers = [navigationController, secondNavigationController, messengerNavigationController, notificationsNavController] //, moreNavController]
+        let profileNavController = UINavigationController(rootViewController: selfChallengeController)
+        profileNavController.title = "Profile"
+        profileNavController.tabBarItem.image = UIImage(named: "requests_icon")
+        
+        viewControllers = [navigationController, secondNavigationController, addNavigationController, notifyNavController, profileNavController] //, moreNavController]
         
         tabBar.isTranslucent = false
         
@@ -50,8 +52,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         topBorder.backgroundColor = UIColor.rgb(229, green: 231, blue: 235).cgColor
         
         tabBar.layer.addSublayer(topBorder)
-        tabBar.clipsToBounds = true
-        
+        tabBar.clipsToBounds = true        
     }
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
@@ -73,9 +74,10 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if (tabBarController.selectedIndex == 0 && chlScrollMoveDown) || (tabBarController.selectedIndex == 3 && prflScrollMoveDown) {
+        /*
+        if (tabBarController.selectedIndex == 0 && chlScrollMoveDown) || (tabBarController.selectedIndex == profileIndex && prflScrollMoveDown) {
             if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
-                status.backgroundColor = navigationColor
+                status.backgroundColor = navAndTabColor
             }
             self.navigationController?.setNavigationBarHidden(true, animated: true)
         } else {
@@ -83,6 +85,10 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 status.backgroundColor = nil
             }
             self.navigationController?.setNavigationBarHidden(false, animated: true)
+        }*/
+        if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+            status.backgroundColor = navAndTabColor
         }
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
 }

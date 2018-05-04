@@ -10,7 +10,6 @@ import UIKit
 
 var memberID = "10156204749600712"
 var memberName = "İbrahim AKAY"
-var navigationColor : UIColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
 var supported = "supported"
 var support = "support"
 var acceptedRed = "acceptedRed"
@@ -38,3 +37,10 @@ var addProofsVar = "Add a proof"
 var justMe = "Just Me"
 var pagesBackColor : UIColor = UIColor.rgb(229, green: 231, blue: 235)
 var selectText = "Select"
+var profileIndex : Int = 4
+var chanllengeIndex : Int = 0
+var navAndTabColor : UIColor = UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1)
+// UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1) coca-cola red
+// UIColor.rgb(70, green: 146, blue: 250)
+// UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
+var screenWidth = UIScreen.main.bounds.width

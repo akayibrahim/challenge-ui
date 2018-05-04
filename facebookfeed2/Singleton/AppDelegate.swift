@@ -28,15 +28,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = FacebookController()
         }
         
-        UINavigationBar.appearance().barTintColor = navigationColor
+        UINavigationBar.appearance().barTintColor = navAndTabColor
         UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)!, NSForegroundColorAttributeName: UIColor.white]
         
-        UITabBar.appearance().tintColor = UIColor.rgb(70, green: 146, blue: 250)
+        UITabBar.appearance().tintColor = navAndTabColor
         
-        /*
-        if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
-            status.backgroundColor = navigationColor
-        }*/
+        let barButtonColor  = UIBarButtonItem.appearance()
+        barButtonColor.tintColor = UIColor.white
+        
         
         application.statusBarStyle = .lightContent
         return true

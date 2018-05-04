@@ -20,7 +20,7 @@ class FollowRequestController: UITableViewController {
         tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
         tableView.sectionHeaderHeight = 26
         tableView.tableFooterView = UIView()
-        
+        navigationItem.title = "Friend Requests"
         tableView.register(FriendRequestCell.self, forCellReuseIdentifier: cellId)
         tableView.register(RequestHeader.self, forHeaderFooterViewReuseIdentifier: headerId)
         

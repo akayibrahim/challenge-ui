@@ -42,15 +42,15 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if self.tabBarController?.selectedIndex == 0 {
+        if self.tabBarController?.selectedIndex == chanllengeIndex {
             navigationItem.title = challengeTitle
-        } else if self.tabBarController?.selectedIndex == 3 {
+        } else if self.tabBarController?.selectedIndex == profileIndex {
             navigationItem.title = profileTitle
         }
         refreshControl = UIRefreshControl()        
         refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         collectionView?.addSubview(refreshControl)
-        collectionView?.alwaysBounceVertical = true
+        collectionView?.alwaysBounceVertical = true        
         
         loadChallenges()
         
@@ -78,9 +78,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             //        let samplePost = Post()
             //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
             var jsonFileName = "trends_posts"
-            if self.tabBarController?.selectedIndex == 3 {
+            if self.tabBarController?.selectedIndex == profileIndex {
                 jsonFileName = "own_posts"
-            } else if self.tabBarController?.selectedIndex == 0 {
+            } else if self.tabBarController?.selectedIndex == chanllengeIndex {
                 jsonFileName = "all_posts"
             }
             
@@ -197,7 +197,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var reusableView : UICollectionReusableView? = nil
-        if self.tabBarController?.selectedIndex == 3 {
+        if self.tabBarController?.selectedIndex == profileIndex {
             if kind == UICollectionElementKindSectionHeader {
                 let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "someRandonIdentifierString", for: indexPath as IndexPath) as! ChallengeHeader
                 if indexPath.section == 1 {
@@ -212,7 +212,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if self.tabBarController?.selectedIndex == 3 {
+        if self.tabBarController?.selectedIndex == profileIndex {
             if section == 0 {
                 return CGSize(width: view.frame.width, height: 0)
             }
@@ -222,7 +222,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if self.tabBarController?.selectedIndex == 3 {
+        if self.tabBarController?.selectedIndex == profileIndex {
             if section == 0 {
                 return 1
             } else if section == 1 {
@@ -235,7 +235,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if self.tabBarController?.selectedIndex == 3 {
+        if self.tabBarController?.selectedIndex == profileIndex {
             return 3
         }
         return 1
@@ -244,14 +244,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //Correct the nav bar state unwinding from segues
-        if self.tabBarController?.selectedIndex == 0 || self.tabBarController?.selectedIndex == 3 {
+        if self.tabBarController?.selectedIndex == chanllengeIndex || self.tabBarController?.selectedIndex == profileIndex {
             // self.navigationController?.setNavigationBarHidden(false, animated: true)
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
-        if self.tabBarController?.selectedIndex == 3  {
+        if self.tabBarController?.selectedIndex == profileIndex  {
             if indexPath.section == 0 && indexPath.row == 0 {
                 feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
                 let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10))
@@ -374,7 +374,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
     let screenSize = UIScreen.main.bounds
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if self.tabBarController?.selectedIndex == 3  {
+        if self.tabBarController?.selectedIndex == profileIndex  {
             if indexPath.row == 0 && indexPath.section == 0 {
                 return CGSize(width: view.frame.width, height: screenSize.width * 2.5 / 10)
             }
@@ -466,28 +466,28 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if self.tabBarController?.selectedIndex == 0 || self.tabBarController?.selectedIndex == 3 {
+        if self.tabBarController?.selectedIndex == chanllengeIndex || self.tabBarController?.selectedIndex == profileIndex {
             if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
                 // move down
-                if self.tabBarController?.selectedIndex == 0 {
+                if self.tabBarController?.selectedIndex == chanllengeIndex {
                     chlScrollMoveDown = true
                     chlScrollMoveUp = false
                 }
-                if self.tabBarController?.selectedIndex == 3 {
+                if self.tabBarController?.selectedIndex == profileIndex {
                     prflScrollMoveDown = true
                     prflScrollMoveUp = false
                 }
                 if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
-                    status.backgroundColor = navigationColor
+                    status.backgroundColor = navAndTabColor
                 }
                 self.navigationController?.setNavigationBarHidden(true, animated: true)
             } else {
                 // move up
-                if self.tabBarController?.selectedIndex == 0 {
+                if self.tabBarController?.selectedIndex == chanllengeIndex {
                     chlScrollMoveDown = false
                     chlScrollMoveUp = true
                 }
-                if self.tabBarController?.selectedIndex == 3 {
+                if self.tabBarController?.selectedIndex == profileIndex {
                     prflScrollMoveDown = false
                     prflScrollMoveUp = true
                 }

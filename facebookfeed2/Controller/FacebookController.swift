@@ -46,12 +46,13 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor(white: 0.95, alpha: 1)
         
         let loginButton = FBSDKLoginButton()
         view.addSubview(loginButton)
-        //frame's are obselete, please use constraints instead because its 2016 after all
-        loginButton.frame = CGRect(x: 16, y: 50, width: view.frame.width - 32, height: 50)
         
+        //frame's are obselete, please use constraints instead because its 2016 after all
+        loginButton.frame = CGRect(x: 16, y: screenWidth / 2, width: view.frame.width - 32, height: 50)
         loginButton.delegate = self
         /*
         imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))

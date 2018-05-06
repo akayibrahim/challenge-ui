@@ -320,6 +320,8 @@ class AddChallengeController: UITableViewController {
             tableView.reloadRows(at: [leftSideIndex], with: .fade)
             tableView.reloadRows(at: [rightSideIndex], with: .fade)
             tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
+            switchDateP = false
+            tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
             tableView.reloadRows(at: [proofIndexPath], with: .fade)
             leftSide.removeAll()
             rightSide.removeAll()

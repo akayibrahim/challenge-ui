@@ -15,6 +15,7 @@ var chlScrollMoveUp : Bool = false
 var prflScrollMoveDown : Bool = false
 var prflScrollMoveUp : Bool = false
 var refreshControl : UIRefreshControl!
+var selfRefreshControl : UIRefreshControl!
 
 class SafeJsonObject: NSObject {
     
@@ -44,12 +45,15 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         super.viewDidLoad()
         if self.tabBarController?.selectedIndex == chanllengeIndex {
             navigationItem.title = challengeTitle
+            refreshControl = UIRefreshControl()
+            refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
+            collectionView?.addSubview(refreshControl)
         } else if self.tabBarController?.selectedIndex == profileIndex {
             navigationItem.title = profileTitle
+            selfRefreshControl = UIRefreshControl()
+            selfRefreshControl.addTarget(self, action: #selector(self.onSelfRefesh), for: UIControlEvents.valueChanged)
+            collectionView?.addSubview(selfRefreshControl)
         }
-        refreshControl = UIRefreshControl()        
-        refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
-        collectionView?.addSubview(refreshControl)
         collectionView?.alwaysBounceVertical = true        
         
         loadChallenges()
@@ -61,10 +65,16 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
     }
     
-    func onRefesh(){
+    func onRefesh() {
         self.loadChallenges()
         self.collectionView?.reloadData()
         refreshControl.endRefreshing()
+    }
+    
+    func onSelfRefesh() {
+        self.loadChallenges()
+        self.collectionView?.reloadData()
+        selfRefreshControl.endRefreshing()
     }
     
     func loadChallenges() {
@@ -381,10 +391,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
         if posts[indexPath.item].isComeFromSelf == false {
-            knownHeight += (screenSize.width / 26) + (screenSize.width / 5)
+            knownHeight += (screenSize.width / 26) + (screenSize.width / 5) + (screenWidth * 0.575 / 10)
             if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
-                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
-                return CGSize(width: view.frame.width, height: rect.height + knownHeight)
+                // let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
+                return CGSize(width: view.frame.width, height: thinksAboutChallenge.heightOf(withConstrainedWidth: screenWidth * 4 / 5, font: UIFont.systemFont(ofSize: 12)) + knownHeight)
             }
         }
         return CGSize(width: view.frame.width, height: knownHeight)
@@ -590,4 +600,13 @@ extension UIScrollView {
         return scrollViewBottomOffset
     }
     
+}
+
+extension String {
+    func heightOf(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        
+        return ceil(boundingBox.height)
+    }
 }

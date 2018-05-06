@@ -311,7 +311,7 @@ class AddChallengeView: UIView {
         let mySegControl : UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
         mySegControl.backgroundColor = UIColor.white
         mySegControl.layer.cornerRadius = 5.0
-        mySegControl.tintColor = UIColor.blue
+        mySegControl.tintColor = UIColor.rgb(0, green: 123, blue: 255)
         return mySegControl
     }
     

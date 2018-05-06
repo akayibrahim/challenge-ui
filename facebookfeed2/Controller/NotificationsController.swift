@@ -24,6 +24,20 @@ class NotificationsController: UITableViewController {
         tableView.sectionHeaderHeight = 0
         tableView?.showsVerticalScrollIndicator = false
         
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
+        tableView?.addSubview(refreshControl!)
+        
+        loadNotifications()
+    }
+
+    func onRefesh() {
+        self.loadNotifications()
+        self.tableView?.reloadData()
+        refreshControl?.endRefreshing()
+    }
+
+    func loadNotifications() {
         if let path = Bundle.main.path(forResource: "notifications", ofType: "json") {
             do {
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
@@ -41,7 +55,8 @@ class NotificationsController: UITableViewController {
             }
         }
     }
-    
+
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }

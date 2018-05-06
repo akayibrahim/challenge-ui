@@ -38,7 +38,7 @@ class NotificationCell: UITableViewCell {
         let screenSize = UIScreen.main.bounds
         
         addSubview(profileImageView)
-        profileImageView.layer.cornerRadius = 15.0
+        profileImageView.layer.cornerRadius = screenWidth * 0.9 / 10 / 2
         addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.1/10)
         addWidthAnchor(profileImageView, multiplier: 0.9/10)
         addHeightAnchor(profileImageView, multiplier: 0.9/10)

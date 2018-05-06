@@ -13,4 +13,5 @@ class TrendRequest: SafeJsonObject {
     var challengeId : String?
     var proof : String?
     var prooferFBId : String?
+    var subject : String?
 }

@@ -36,7 +36,7 @@ class FriendRequestCell: UITableViewCell {
     
     let confirmButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Follow", for: UIControlState())
+        button.setTitle(followButtonText, for: UIControlState())
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.backgroundColor = UIColor.rgb(87, green: 143, blue: 255)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 10)

@@ -58,15 +58,19 @@ class FeedCell: UICollectionViewCell {
         self.addComments.removeFromSuperview()
         self.addProofs.removeFromSuperview()
         self.insertTime.removeFromSuperview()
+        self.nameAndStatusLabel.removeFromSuperview()
+        self.challengerImageView.image = UIImage()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
     
     var post: Post? {
         didSet {
-            if let name = post?.name {
-                let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
-                nameLabel.attributedText = attributedText
+            if let name = post?.name, let status = post?.status {
+                let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
+                let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
+                attributedText.append(statusText)
+                nameAndStatusLabel.attributedText = attributedText
             }
             if let thinksAboutChallenge = post?.thinksAboutChallenge, let name = post?.name {
                 let commentAtt = NSMutableAttributedString(string: "\(name): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
@@ -74,9 +78,7 @@ class FeedCell: UICollectionViewCell {
                 commentAtt.append(nameAtt)
                 thinksAboutChallengeView.attributedText = commentAtt
             }
-            if let profileImagename = post?.profileImageName {
-                profileImageView.image = UIImage(named: profileImagename)
-            }
+            setImage(fbID: memberID, imageView: profileImageView)
             if let countOfComments = post?.countOfComments {
                 viewComments.setTitle("View all \(countOfComments) comments", for: UIControlState())
             }
@@ -86,6 +88,7 @@ class FeedCell: UICollectionViewCell {
             if let insertTimeText = post?.insertTime {
                 insertTime.text = insertTimeText
             }
+            setImage(fbID: post?.challengerFBId, imageView: challengerImageView)
             if post?.type == PUBLIC {
                 if let subject = post?.subject {
                     subjectImageView.image = UIImage(named: subject)
@@ -98,7 +101,7 @@ class FeedCell: UICollectionViewCell {
                     firstOnePeopleImageView.contentMode = .scaleAspectFit
                 }
                 for join in (post?.joinAttendanceList)! {
-                    if (join.challenger == false) {
+                    if (join.FacebookID != post?.challengerFBId) {
                         if !firstPImg {
                             if post?.secondTeamCount == "1" {
                                 setImage(fbID: join.FacebookID, imageView: firstOnePeopleImageView)
@@ -127,9 +130,8 @@ class FeedCell: UICollectionViewCell {
                             }
                             thirdPImg = true
                         }
-                    } else if (join.challenger == true) {
-                        setImage(fbID: join.FacebookID, imageView: firstOneChlrPeopleImageView)
                     }
+                    setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
                     if memberID == join.memberId {
                         if join.join! {
                             joinButton.setImage(UIImage(named: acceptedRed), for: .normal)
@@ -217,7 +219,10 @@ class FeedCell: UICollectionViewCell {
                     firstOnePeopleImageView.contentMode = .scaleAspectFill
                 }
                 if let countOfLike = post?.countOfLike {
-                    likeLabel.text = "+\(countOfLike) Likes"
+                    let countAtt = NSMutableAttributedString(string: "+\(countOfLike)", attributes: nil)
+                    let supportAtt = NSMutableAttributedString(string: " Likes", attributes: [NSForegroundColorAttributeName: UIColor.red, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 10)])
+                    countAtt.append(supportAtt)
+                    likeLabel.attributedText = countAtt
                 }
             }
             if let untilDate = post?.untilDateStr {
@@ -289,9 +294,14 @@ class FeedCell: UICollectionViewCell {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
-        //generateTopView(contentGuide)
+        generateTopView(contentGuide, isComeFromSelf: isComeFromSelf)
         
-        addTopAnchor(dividerLineView, anchor: contentGuide.topAnchor, constant: 0)
+        if !isComeFromSelf {
+            addTopAnchor(dividerLineView, anchor: contentGuide.topAnchor, constant: (screenWidth * 0.675 / 10))
+        } else {
+            addTopAnchor(dividerLineView, anchor: contentGuide.topAnchor, constant: 0)
+        }
+        
         addLeadingAnchor(dividerLineView, anchor: contentGuide.leadingAnchor, constant: 0)
         addTrailingAnchor(dividerLineView, anchor: contentGuide.trailingAnchor, constant: 0)
         dividerLineView.heightAnchor.constraint(equalToConstant: 0).isActive = true
@@ -301,7 +311,7 @@ class FeedCell: UICollectionViewCell {
         if !isComeFromSelf {
             if(!thinksAboutChallengeView.text.isEmpty) {
                 addSubview(thinksAboutChallengeView)
-                addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: screenSize.width * 0.15/10)
+                addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: screenSize.width * 0.05 / 10)
                 addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
                 addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
             }
@@ -312,7 +322,6 @@ class FeedCell: UICollectionViewCell {
             addLeadingAnchor(viewComments, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addHeightAnchor(viewComments, multiplier: 0.7/10)
             
-            self.profileImageView.layer.cornerRadius = 15.0
             addTopAnchor(profileImageView, anchor: viewComments.bottomAnchor, constant: 0)
             addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addWidthAnchor(profileImageView, multiplier: 0.7/10)
@@ -347,22 +356,18 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func generateTopView(_ contentGuide: UILayoutGuide) {
-        let topMiddleLeftGuide = UILayoutGuide()
-        addLayoutGuide(topMiddleLeftGuide)
-        
-        addTopAnchor(profileImageView, anchor: contentGuide.topAnchor, constant: 0)
-        addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: 0)
-        addWidthAnchor(profileImageView, multiplier: 1/10)
-        addHeightAnchor(profileImageView, multiplier: 1/10)
-        
-        topMiddleLeftGuide.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 8.0).isActive = true
-        
-        addTopAnchor(nameLabel, anchor: profileImageView.topAnchor, constant: 8)
-        addLeadingAnchor(nameLabel, anchor: topMiddleLeftGuide.trailingAnchor, constant: 0)
-        
-        addTopAnchor(untilDateLabel, anchor: profileImageView.topAnchor, constant: 8)
-        addTrailingAnchor(untilDateLabel, anchor: contentGuide.trailingAnchor, constant: 0)
+    func generateTopView(_ contentGuide: UILayoutGuide, isComeFromSelf : Bool) {
+        if !isComeFromSelf {
+            addSubview(challengerImageView)
+            addTopAnchor(challengerImageView, anchor: contentGuide.topAnchor, constant: 0)
+            addLeadingAnchor(challengerImageView, anchor: contentGuide.leadingAnchor, constant: 2)
+            addWidthAnchor(challengerImageView, multiplier: 0.6/10)
+            addHeightAnchor(challengerImageView, multiplier: 0.6/10)
+            challengerImageView.layer.cornerRadius = screenWidth * 0.6 / 10 / 2
+            
+            nameAndStatusLabel.centerYAnchor.constraint(equalTo: challengerImageView.centerYAnchor).isActive = true
+            addLeadingAnchor(nameAndStatusLabel, anchor: challengerImageView.trailingAnchor, constant: 5)
+        }
     }
     
     func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool) {
@@ -472,12 +477,12 @@ class FeedCell: UICollectionViewCell {
     func generateFirstTeam(_ contentGuide: UILayoutGuide, firstTeamCount: String) {
         let screenSize = UIScreen.main.bounds
         middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
-        if firstTeamCount == "1" {
+        if firstTeamCount == teamCountOne {
             addTopAnchor(firstOneChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstOneChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(firstOneChlrPeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(firstOneChlrPeopleImageView, multiplier: heightOfFullImage)
-        } else if firstTeamCount == "2" {
+        } else if firstTeamCount == teamCountTwo {
             addTopAnchor(firstTwoChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstTwoChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addBottomAnchor(firstTwoChlrPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
@@ -488,7 +493,7 @@ class FeedCell: UICollectionViewCell {
             addLeadingAnchor(secondTwoChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(secondTwoChlrPeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(secondTwoChlrPeopleImageView, multiplier: heightOfHalfImage)
-        } else if firstTeamCount == "3" {
+        } else if firstTeamCount == teamCountThree {
             let screenSize = UIScreen.main.bounds
             leftMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstThreeChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
@@ -507,7 +512,7 @@ class FeedCell: UICollectionViewCell {
             addLeadingAnchor(thirdThreeChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(thirdThreeChlrPeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(thirdThreeChlrPeopleImageView, multiplier: heightOfHalfImage)
-        } else if firstTeamCount == "4" {
+        } else if firstTeamCount == teamCountFour {
             let screenSize = UIScreen.main.bounds
             leftMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             leftMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
@@ -539,12 +544,12 @@ class FeedCell: UICollectionViewCell {
     func generateSecondTeam(_ contentGuide: UILayoutGuide, secondTeamCount: String, type: String) {
         let screenSize = UIScreen.main.bounds
         middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
-        if (secondTeamCount == "0" || secondTeamCount == "1") {
+        if (secondTeamCount == teamCountZero || secondTeamCount == teamCountOne) {
             addTopAnchor(firstOnePeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(firstOnePeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addWidthAnchor(firstOnePeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(firstOnePeopleImageView, multiplier: heightOfFullImage)
-        } else if secondTeamCount == "2" {
+        } else if secondTeamCount == teamCountTwo {
             addTopAnchor(firstTwoPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(firstTwoPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addBottomAnchor(firstTwoPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
@@ -555,7 +560,7 @@ class FeedCell: UICollectionViewCell {
             addTrailingAnchor(secondTwoPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addWidthAnchor(secondTwoPeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(secondTwoPeopleImageView, multiplier: heightOfHalfImage)
-        } else if secondTeamCount == "3" {
+        } else if secondTeamCount == teamCountThree {
             rightMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstThreePeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(firstThreePeopleImageView, anchor: rightMiddleTopWidth.leadingAnchor, constant: 0)
@@ -573,7 +578,7 @@ class FeedCell: UICollectionViewCell {
             addTrailingAnchor(thirdThreePeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addWidthAnchor(thirdThreePeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(thirdThreePeopleImageView, multiplier: heightOfHalfImage)
-        } else if secondTeamCount == "4" {
+        } else if secondTeamCount == teamCountFour {
             rightMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstFourPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(firstFourPeopleImageView, anchor: rightMiddleTopWidth.leadingAnchor, constant: 0)
@@ -602,7 +607,7 @@ class FeedCell: UICollectionViewCell {
     
     func addGeneralSubViews() {
         addSubview(profileImageView)
-        addSubview(nameLabel)
+        addSubview(nameAndStatusLabel)
         addSubview(untilDateLabel)
         addSubview(vsImageView)
         addSubview(subjectImageView)
@@ -664,12 +669,16 @@ class FeedCell: UICollectionViewCell {
         return textView
     }()
     
-    let profileImageView: UIImageView = {
+    static func circleImageView() -> UIImageView {
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = imageView.frame.size.width / 2
+        // imageView.layer.cornerRadius = 15.0
+        imageView.roundedImage()
         imageView.clipsToBounds = true
         return imageView
-    }()
+    }
+    
+    let profileImageView: UIImageView = FeedCell.circleImageView()
+    let challengerImageView: UIImageView = FeedCell.circleImageView()
     
     let statusImageView: UIImageView = {
         let imageView = UIImageView()
@@ -689,10 +698,11 @@ class FeedCell: UICollectionViewCell {
     static func labelCreateDef(_ line: Int) -> UILabel {
         let label = UILabel()
         label.numberOfLines = line
+        label.font = UIFont.boldSystemFont(ofSize: 10)
         return label
     }
     
-    let nameLabel: UILabel = FeedCell.labelCreateDef(1)
+    let nameAndStatusLabel: UILabel = FeedCell.labelCreateDef(1)
     
     static func labelCreate(_ fontSize: CGFloat, backColor: UIColor, textColor: UIColor) -> UILabel {
         let label = UILabel()
@@ -708,7 +718,7 @@ class FeedCell: UICollectionViewCell {
     let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
     let goalLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor(red: 255/255, green: 90/255, blue: 51/255, alpha: 1), textColor: UIColor.white)
     let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
-    let insertTime: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.lightGray)
+    let insertTime: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
     
     static func label(_ fontSize: CGFloat) -> UILabel {
         let label = UILabel()
@@ -963,4 +973,13 @@ extension UILabel {
             font = UIFont(name: currentFont.fontName, size: dynamicFontSize)
         }
     }
+}
+
+extension UIImageView {
+    
+    func roundedImage() {
+        self.layer.cornerRadius = screenWidth * 0.7 / 10 / 2
+        self.clipsToBounds = true
+    }
+    
 }

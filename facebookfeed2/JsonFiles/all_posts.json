@@ -18,7 +18,8 @@
               "isComeFromSelf" : false,
               "amILike" : false,
               "countOfProofs": 0,
-              "insertTime" : "12 HOURS AGO"
+              "insertTime" : "12 HOURS AGO",
+              "status": "has a new challenge"
           },
           {
           "name": "Seher Can Akay",
@@ -30,6 +31,7 @@
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 7 DAYS",
           "subject" : "TENNIS",
+              "challengerFBId" : "634127860",
           "versusAttendanceList" : [
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -56,7 +58,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "countOfProofs": 0,
-              "insertTime" : "14 HOURS AGO"
+              "insertTime" : "14 HOURS AGO",
+              "status": "has a new challenge"
           },
           {
           "name": "Seher Can Akay",
@@ -68,6 +71,7 @@
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 4 DAYS",
           "subject" : "SWIMMING",
+              "challengerFBId" : "634127860",
           "versusAttendanceList" : [
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -108,7 +112,8 @@
               "firstTeamSupportCount" : 23,
               "secondTeamSupportCount" : 25,
               "countOfProofs": 0,
-              "insertTime" : "3 DAYS AGO"
+              "insertTime" : "3 DAYS AGO",
+              "status": "has a new challenge"
           },
           {
           "name": "İbrahim AKAY",
@@ -120,6 +125,7 @@
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 10 DAYS",
           "subject" : "BILLIARD",
+              "challengerFBId" : "10156204749600712",
           "versusAttendanceList" : [
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -174,7 +180,8 @@
               "firstTeamSupportCount" : 33,
               "secondTeamSupportCount" : 35,
               "countOfProofs": 0,
-              "insertTime" : "18 HOURS AGO"
+              "insertTime" : "18 HOURS AGO",
+              "status": "has a new challenge"
           },
           {
           "name": "Seher Can Akay",
@@ -186,6 +193,7 @@
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 3 DAYS",
           "subject" : "BASKET",
+              "challengerFBId" : "634127860",
           "versusAttendanceList" : [
                                     {
                                     "memberId":"5a1f048318e6063778be8f78",
@@ -254,7 +262,8 @@
               "firstTeamSupportCount" : 43,
               "secondTeamSupportCount" : 45,
               "countOfProofs": 0,
-              "insertTime" : "2 DAYS AGO"
+              "insertTime" : "2 DAYS AGO",
+              "status": "has a new challenge"
           },
           {
           "name": "Serkan Aykut",
@@ -265,7 +274,7 @@
           "chlDate": "20/10/2017",
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 12 DAYS",
-          "challengerFBId" : "zuckprofile",
+          "challengerFBId" : "689764048",
           "untilDate" : "LAST 8 WEEKS",
           "subject" : "FOOTBALL",
           "type": "PUBLIC",
@@ -278,13 +287,13 @@
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":true,
                                   "proof":true,
-                                  "challenger":true,
                                   "facebookID": "689764048"
                                   }
                                   ],
               "isComeFromSelf" : false,
               "countOfProofs": 3,
-              "insertTime" : "4 HOURS AGO"
+              "insertTime" : "4 HOURS AGO",
+              "status": "joined to challenge"
           },
           {
           "name": "Melisa Bahçıvan",
@@ -294,7 +303,7 @@
           "countOfComments": 2,
           "chlDate": "20/10/2017",
           "untilDate": "03/11/2017",
-          "challengerFBId" : "100001948011413",
+          "challengerFBId" : "100002408468624",
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 5 DAYS",
           "subject" : "RUNNING",
@@ -308,27 +317,25 @@
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":true,
                                   "facebookID": "100002391996271"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "100002408468624"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "696089910"
                                   }
                                   ],
               "isComeFromSelf" : false,
               "countOfProofs": 4,
-              "insertTime" : "1 HOURS AGO"
+              "insertTime" : "1 HOURS AGO",
+              "status": "joined to challenge"
           },
           {
           "name": "Serkan Aykut",
@@ -338,7 +345,7 @@
           "countOfComments": 11,
           "chlDate": "20/10/2017",
           "untilDate": "03/11/2017",
-          "challengerFBId" : "100002408468624",
+          "challengerFBId" : "689764048",
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 2 DAYS",
           "subject" : "BOXING",
@@ -352,34 +359,31 @@
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":true,
                                   "proof":true,
-                                  "challenger":true,
                                   "facebookID": "689764048"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "100002391996271"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "100002408468624"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "100001948011413"
                                   }
                                   ],
               "isComeFromSelf" : false,
               "countOfProofs": 5,
-              "insertTime" : "7 HOURS AGO"
+              "insertTime" : "7 HOURS AGO",
+              "status": "joined to challenge"
           },
           {
           "name": "Melisa Bahçıvan",
@@ -389,7 +393,7 @@
           "countOfComments": 7,
           "chlDate": "20/10/2017",
           "untilDate": "03/11/2017",
-          "challengerFBId" : "689764048",
+          "challengerFBId" : "100002391996271",
               "untilDate": "20/10/2017",
               "untilDateStr": "LAST 8 DAYS",
           "subject" : "LANGUAGE",
@@ -403,41 +407,37 @@
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":true,
                                   "facebookID": "100002391996271"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "100002408468624"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "696089910"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "100001948011413"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
                                   "proof":true,
-                                  "challenger":false,
                                   "facebookID": "10156204749600712"
                                   }
                                   ],
               "isComeFromSelf" : false,
               "countOfProofs": 6,
-              "insertTime" : "9 HOURS AGO"
+              "insertTime" : "9 HOURS AGO",
+              "status": "joined to challenge"
           },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -465,14 +465,14 @@
                                      "memberId": "5a81b0f0f8b8e43e70325d3d",
                                      "facebookID": "100001948011413",
                                      "join": true,
-                                     "proof": false,
-                                     "challenger": true
+                                     "proof": false
                                      }
                                      ],
               "goal": "10",
               "isComeFromSelf" : false,
               "countOfProofs": 7,
-              "insertTime" : "2 HOURS AGO"
+              "insertTime" : "2 HOURS AGO",
+              "status": "joined to challenge"
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -498,7 +498,8 @@
               "isComeFromSelf" : false,
               "amILike" : true,
               "countOfProofs": 0,
-              "insertTime" : "23 HOURS AGO"
+              "insertTime" : "23 HOURS AGO",
+              "status": "has a new challenge"
               }
         ]
 }

@@ -12,6 +12,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     let searchBar = UISearchBar()
     var trendRequest = [TrendRequest]()
     let cellId = "cellId"
+    var refreshControl : UIRefreshControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +25,20 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         collectionView?.alwaysBounceVertical = true
         collectionView?.showsVerticalScrollIndicator = false
 
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
+        collectionView?.addSubview(refreshControl)
+        
+        loadTrends()
+    }
+    
+    func onRefesh() {
+        self.loadTrends()
+        self.collectionView?.reloadData()
+        refreshControl.endRefreshing()
+    }
+    
+    func loadTrends() {
         if let path = Bundle.main.path(forResource: "trend_request", ofType: "json") {
             do {
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))

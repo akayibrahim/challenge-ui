@@ -16,11 +16,13 @@ class TrendRequestCell: UICollectionViewCell {
     
     var trendRequest : TrendRequest? {
         didSet {
-            if let name = trendRequest?.name {
-                let proofBy = NSMutableAttributedString(string: "Proofed By ", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
+            if let name = trendRequest?.name, let subject = trendRequest?.subject {
                 let nameAtt = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
-                proofBy.append(nameAtt)
-                nameLabel.attributedText = proofBy
+                let proofBy = NSMutableAttributedString(string: " proofed ", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
+                let subjectAtt = NSMutableAttributedString(string: "\(subject).", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
+                proofBy.append(subjectAtt)
+                nameAtt.append(proofBy)
+                nameLabel.attributedText = nameAtt
             }
             if let proof = trendRequest?.proof {
                 requestImageView.image = UIImage(named: proof)

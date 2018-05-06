@@ -4,19 +4,22 @@
               "name": "Sehar Can",
               "challengeId" : "634127860",
               "proof" : "steve",
-              "prooferFBId" : "10156204749600712"
+              "prooferFBId" : "634127860",
+              "subject": "ICE BUCKET"
               },
               {
               "name": "ibrahim AKAY",
               "challengeId" : "634127860",
               "proof" : "zuckdog",
-              "prooferFBId" : "10156204749600712"
+              "prooferFBId" : "10156204749600712",
+              "subject": "READING"
               },
               {
               "name": "Serkan Aykut",
               "challengeId" : "634127860",
               "proof" : "gandhi",
-              "prooferFBId" : "10156204749600712"
+              "prooferFBId" : "689764048",
+              "subject": "RUNNING 10K"
               }
         ]
 }

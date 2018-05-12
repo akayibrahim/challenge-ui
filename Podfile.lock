@@ -9,19 +9,16 @@ PODS:
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.29.0):
     - FBSDKCoreKit
-  - TLYShyNavBar (1.1.1)
 
 DEPENDENCIES:
   - FBSDKCoreKit (= 4.29.0)
   - FBSDKLoginKit (= 4.29.0)
-  - TLYShyNavBar
 
 SPEC CHECKSUMS:
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   FBSDKCoreKit: 6f139173dc63a1deaff4430a55f2fe5bb222d2af
   FBSDKLoginKit: 56a057ca6822535ea0faa25f57a7c41edb697fd4
-  TLYShyNavBar: d200e598923fbc2bd21a5c5efdfabf4898b11da0
 
-PODFILE CHECKSUM: 668fd4319e1b03724d5ead5bd40c794ded8337d9
+PODFILE CHECKSUM: 4c2ddb8bdc53a2ef0db1e339759768e9e0142583
 
 COCOAPODS: 1.3.1

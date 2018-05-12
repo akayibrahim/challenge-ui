@@ -9,6 +9,5 @@ target 'facebookfeed2' do
 
 pod 'FBSDKLoginKit', '4.29.0'
 pod 'FBSDKCoreKit', '4.29.0'
-pod 'TLYShyNavBar'
 
 end

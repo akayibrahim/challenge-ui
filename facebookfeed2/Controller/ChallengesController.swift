@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import TLYShyNavBar
 
 let cellId = "cellId"
 var chlScrollMoveDown : Bool = false

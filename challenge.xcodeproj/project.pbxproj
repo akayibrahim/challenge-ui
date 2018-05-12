@@ -12,6 +12,12 @@
 		A11C823520499DDB0061A33F /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11C823420499DDB0061A33F /* ImageService.swift */; };
 		A1235D3E20870C3A0028738E /* Proofs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1235D3D20870C3A0028738E /* Proofs.swift */; };
 		A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1274107200F38E60073BFF2 /* FacebookController.swift */; };
+		A1289CA820A555F100CC66B0 /* UIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CA720A555F100CC66B0 /* UIExtension.swift */; };
+		A1289CAA20A5562700CC66B0 /* UINavigationControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */; };
+		A1289CAC20A5564900CC66B0 /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CAB20A5564900CC66B0 /* UIViewControllerExtension.swift */; };
+		A1289CAE20A5567600CC66B0 /* UIScrollViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CAD20A5567600CC66B0 /* UIScrollViewExtension.swift */; };
+		A1289CB020A556F500CC66B0 /* UITableViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CAF20A556F500CC66B0 /* UITableViewControllerExtension.swift */; };
+		A1289CB220A557BF00CC66B0 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CB120A557BF00CC66B0 /* UIViewExtension.swift */; };
 		A138F38A204D9C4F00142231 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = A138F389204D9C4F00142231 /* Post.swift */; };
 		A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A138F38F204D9CD100142231 /* VersusAttendance.swift */; };
 		A138F392204D9CFA00142231 /* JoinAttendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A138F391204D9CFA00142231 /* JoinAttendance.swift */; };
@@ -37,6 +43,7 @@
 		A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */; };
 		A19A31F6207D1ACD00DDC98C /* comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A19A31F5207D1ACD00DDC98C /* comments.json */; };
 		A19BBDFC206A07D700EC7B11 /* TableViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */; };
+		A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */; };
 		A1B27B04209A2F8D00263E48 /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B27B03209A2F8D00263E48 /* NotificationsController.swift */; };
 		A1C13416207F212700C6A435 /* TrendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C13415207F212700C6A435 /* TrendsController.swift */; };
 		A1D2CAB720451C9F008782D3 /* OtherViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */; };
@@ -101,6 +108,12 @@
 		A11C823420499DDB0061A33F /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		A1235D3D20870C3A0028738E /* Proofs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proofs.swift; sourceTree = "<group>"; };
 		A1274107200F38E60073BFF2 /* FacebookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookController.swift; sourceTree = "<group>"; };
+		A1289CA720A555F100CC66B0 /* UIExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIExtension.swift; sourceTree = "<group>"; };
+		A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigationControllerExtension.swift; sourceTree = "<group>"; };
+		A1289CAB20A5564900CC66B0 /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
+		A1289CAD20A5567600CC66B0 /* UIScrollViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIScrollViewExtension.swift; sourceTree = "<group>"; };
+		A1289CAF20A556F500CC66B0 /* UITableViewControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewControllerExtension.swift; sourceTree = "<group>"; };
+		A1289CB120A557BF00CC66B0 /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		A138F389204D9C4F00142231 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		A138F38F204D9CD100142231 /* VersusAttendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersusAttendance.swift; sourceTree = "<group>"; };
 		A138F391204D9CFA00142231 /* JoinAttendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinAttendance.swift; sourceTree = "<group>"; };
@@ -127,6 +140,7 @@
 		A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewController.swift; sourceTree = "<group>"; };
 		A19A31F5207D1ACD00DDC98C /* comments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = comments.json; sourceTree = "<group>"; };
 		A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellView.swift; sourceTree = "<group>"; };
+		A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateProgressController.swift; sourceTree = "<group>"; };
 		A1B27B03209A2F8D00263E48 /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		A1C13415207F212700C6A435 /* TrendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendsController.swift; sourceTree = "<group>"; };
 		A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewCellView.swift; sourceTree = "<group>"; };
@@ -181,6 +195,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		A1289CA120A555D700CC66B0 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				A1289CA720A555F100CC66B0 /* UIExtension.swift */,
+				A1289CB120A557BF00CC66B0 /* UIViewExtension.swift */,
+				A1289CAD20A5567600CC66B0 /* UIScrollViewExtension.swift */,
+				A1289CAB20A5564900CC66B0 /* UIViewControllerExtension.swift */,
+				A1289CAF20A556F500CC66B0 /* UITableViewControllerExtension.swift */,
+				A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		A13C70962043CCE70076B989 /* Singleton */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +221,7 @@
 			children = (
 				A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */,
 				A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */,
+				A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */,
 				C7A85F351C78C137007E9A00 /* ChallengesController.swift */,
 				C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */,
 				C7D879AD1C828B36008766AE /* FollowRequestController.swift */,
@@ -214,10 +242,10 @@
 				A19A31F5207D1ACD00DDC98C /* comments.json */,
 				A17162C2209C424D00061399 /* notifications.json */,
 				A15A30D3207B282D000C74A9 /* self_subject.json */,
+				C780A7B31C88CEFB007023FD /* all_posts.json */,
 				A14A99682075306800B1418D /* friends.json */,
 				A15F875E207BBBB70035130D /* friend_request.json */,
 				A1592659209ACC2900D98923 /* trend_request.json */,
-				C780A7B31C88CEFB007023FD /* all_posts.json */,
 				A1E45A3D2074996800FD58E6 /* own_posts.json */,
 			);
 			path = JsonFiles;
@@ -293,6 +321,7 @@
 		C7A85F321C78C137007E9A00 /* challenge */ = {
 			isa = PBXGroup;
 			children = (
+				A1289CA120A555D700CC66B0 /* Extension */,
 				A14EC3BA204B29E000F11C82 /* Model */,
 				A13C70992043CD440076B989 /* View */,
 				A13C70982043CD2D0076B989 /* JsonFiles */,
@@ -508,13 +537,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1289CAA20A5562700CC66B0 /* UINavigationControllerExtension.swift in Sources */,
 				A1DC3418207E402300F21232 /* ProfileCellView.swift in Sources */,
 				C7A85F361C78C137007E9A00 /* ChallengesController.swift in Sources */,
+				A1289CA820A555F100CC66B0 /* UIExtension.swift in Sources */,
 				A159265E209ACDEC00D98923 /* TrendRequestCellView.swift in Sources */,
+				A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */,
 				A1C13416207F212700C6A435 /* TrendsController.swift in Sources */,
 				A159265C209ACCFD00D98923 /* TrendRequest.swift in Sources */,
 				A113ABFC203BE01B006E99F1 /* AddChallengeController.swift in Sources */,
 				A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */,
+				A1289CB220A557BF00CC66B0 /* UIViewExtension.swift in Sources */,
 				A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */,
 				A14A996D2075310D00B1418D /* Friends.swift in Sources */,
 				C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */,
@@ -526,11 +559,14 @@
 				A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */,
 				A14A996B207530F500B1418D /* Subject.swift in Sources */,
 				A11C823520499DDB0061A33F /* ImageService.swift in Sources */,
+				A1289CAC20A5564900CC66B0 /* UIViewControllerExtension.swift in Sources */,
 				A14BDFED204E5E780095875F /* AddChallengeView.swift in Sources */,
 				A1235D3E20870C3A0028738E /* Proofs.swift in Sources */,
+				A1289CB020A556F500CC66B0 /* UITableViewControllerExtension.swift in Sources */,
 				A1D2CAB720451C9F008782D3 /* OtherViewCellView.swift in Sources */,
 				A13C709D2043CE6E0076B989 /* FriendRequestCellView.swift in Sources */,
 				A19BBDFC206A07D700EC7B11 /* TableViewCellView.swift in Sources */,
+				A1289CAE20A5567600CC66B0 /* UIScrollViewExtension.swift in Sources */,
 				A113AC00203BE1E9006E99F1 /* OtherController.swift in Sources */,
 				A17162C5209C42DC00061399 /* Notifications.swift in Sources */,
 				A17162C1209C420900061399 /* NotificationCell.swift in Sources */,

@@ -64,8 +64,7 @@
               "isComeFromSelf" : true
               },
               {
-              "name": "Mark Zuckerberg",
-              "profileImageName": "zuckprofile",
+              "name": "İbrahim AKAY",
               "thinksAboutChallenge": "Iphone will sell twice?",
               "countOfLike": 150,
               "countOfComments": 300,
@@ -89,7 +88,8 @@
                                       "facebookID": "634127860"
                                       }
                                       ],
-              "isComeFromSelf" : true
+              "isComeFromSelf" : true,
+              "challengerFBId": "10156204749600712"
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -138,8 +138,7 @@
               "isComeFromSelf" : true
               },
               {
-              "name": "Mahatma Gandhi",
-              "profileImageName": "gandhi_profile",
+              "name": "İbrahim AKAY",
               "thinksAboutChallenge": "Iphone will sell twice?",
               "countOfLike": 333,
               "countOfComments": 444,
@@ -171,7 +170,8 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "challengerFBId": "10156204749600712"
               }
         ]
 }

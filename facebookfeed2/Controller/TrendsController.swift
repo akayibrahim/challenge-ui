@@ -30,6 +30,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         collectionView?.addSubview(refreshControl)
         
         loadTrends()
+        
+        self.hideKeyboardWhenTappedAround()
     }
     
     func onRefesh() {

@@ -301,6 +301,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func openOthers(sender: UIButton) {
         let other = OtherController()
+        other.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(other, animated: true)
     }
     
@@ -309,6 +310,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.tableTitle = commentsTableTitle
         commentsTable.comments = self.comments
         commentsTable.comment = true
+        commentsTable.textView.becomeFirstResponder()
+        commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
@@ -318,6 +321,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.tableTitle = commentsTableTitle
         commentsTable.comments = self.comments
         commentsTable.comment = true
+        commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
@@ -327,6 +331,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.tableTitle = proofsTableTitle
         commentsTable.proofs = self.proofs
         commentsTable.proof = true
+        commentsTable.textView.becomeFirstResponder()
+        commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
@@ -336,6 +342,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.tableTitle = proofsTableTitle
         commentsTable.proofs = self.proofs
         commentsTable.proof = true
+        commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
@@ -550,63 +557,4 @@ class ChallengeHeader: UICollectionReusableView {
         addHeightAnchor(bottomBorderView, multiplier: 0.5/10)
     }
     
-}
-
-extension UICollectionViewController
-{
-    func setImage(fbID: String?, imageView: UIImageView) {
-        if let peoplefbID = fbID {
-            let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
-            ImageService.getImage(withURL: url!) { image in
-                if image != nil {
-                    imageView.image = image
-                } else {
-                    self.setImage(name: unknown, imageView: imageView)
-                }
-            }
-            //let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
-            // imageView.image = UIImage(data: data!)
-            // imageView.image = UIImage(named: peopleImage)
-        }
-    }
-    
-    func setImage(name: String?, imageView: UIImageView) {
-        if let peopleImage = name {
-            imageView.image = UIImage(named: peopleImage)
-        }
-    }
-}
-
-extension UIScrollView {
-    
-    var isAtTop: Bool {
-        return contentOffset.y <= verticalOffsetForTop
-    }
-    
-    var isAtBottom: Bool {
-        return contentOffset.y >= verticalOffsetForBottom
-    }
-    
-    var verticalOffsetForTop: CGFloat {
-        let topInset = contentInset.top
-        return -topInset
-    }
-    
-    var verticalOffsetForBottom: CGFloat {
-        let scrollViewHeight = bounds.height
-        let scrollContentSizeHeight = contentSize.height
-        let bottomInset = contentInset.bottom
-        let scrollViewBottomOffset = scrollContentSizeHeight + bottomInset - scrollViewHeight
-        return scrollViewBottomOffset
-    }
-    
-}
-
-extension String {
-    func heightOf(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
-        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
-        
-        return ceil(boundingBox.height)
-    }
 }

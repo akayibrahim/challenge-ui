@@ -80,7 +80,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         
         connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
             if error == nil {
-                print(result)
+                print(result!)
                 print("https://graph.facebook.com/10156204749600712/invitable_friends?access_token=\(FBSDKAccessToken.current().tokenString)")
 /*                let data = result as! [String : Any]
                 // self.label.text = data["name"] as? String
@@ -95,7 +95,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
 */
                 // self.imageView.image = UIImage(data: NSData(contentsOf: url! as URL)! as Data)
             } else {
-                print("Error Getting Friends \(error)");
+                print("Error Getting Friends \(error!)");
             }
         })
         connection.start()

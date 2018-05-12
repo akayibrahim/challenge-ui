@@ -50,3 +50,7 @@ var teamCountTwo = "2"
 var teamCountThree = "3"
 var teamCountFour = "4"
 var followButtonText = "Follow"
+var globalHeight : CGFloat = 44
+var customSubjectLabel = "Custom Subject"
+var ok = "OK"
+var greaterThan = NSMutableAttributedString(string: ">", attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])

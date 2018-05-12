@@ -95,7 +95,7 @@ class AddChallengeView: UIView {
         untilDateLabel.textColor = UIColor.gray
         
         challengeView.addSubview(subjectLabel)
-        challengeView.addTopAnchor(subjectLabel, anchor: middleBottomGuide.bottomAnchor, constant: 0)
+        challengeView.addTopAnchor(subjectLabel, anchor: middleBottomGuide.bottomAnchor, constant: screenWidth * 0.1 / 10)
         subjectLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         challengeView.addHeightAnchor(subjectLabel, multiplier: 1/15)
         
@@ -104,6 +104,7 @@ class AddChallengeView: UIView {
         subjectLabel.textAlignment = .center
         subjectLabel.numberOfLines = 2;
         subjectLabel.textColor = UIColor.gray
+        subjectLabel.backgroundColor = UIColor(white: 1, alpha: 0)
     }
     
     func removeChlrFromChallengeView(challengeView : UIView) {

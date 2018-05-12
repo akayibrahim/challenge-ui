@@ -15,6 +15,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     var tableView : UITableView!
     var popIndexPath : IndexPath!
     var otherSideCount : Int!
+    var segmentIndex : Int!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,15 +69,29 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if popIndexPath.row == 2 {
-            if let controller = navigationController?.viewController(class: AddChallengeController.self) {
-                var selItems = [SelectedItems]()
-                let selItem = SelectedItems()
-                selItems.append(selItem)
-                selItem.name = items[indexPath.row].name                
-                controller.updateCell(result: selItems, popIndexPath: popIndexPath)
+            if (indexPath.row == (items.count + 1)) {
+                let updateProgress = UpdateProgressController()
+                updateProgress.customeSubjectText.becomeFirstResponder()
+                updateProgress.customSubject = true
+                updateProgress.hidesBottomBarWhenPushed = true
+                self.navigationController?.pushViewController(updateProgress, animated: true)
+            } else if (indexPath.row == items.count) {
+                // nothing
+            } else {
+                updateAndPopViewController(subjectName: items[indexPath.row].name)
             }
-            navigationController?.popViewController(animated: true)
         }
+    }
+    
+    func updateAndPopViewController(subjectName : String) {
+        if let controller = navigationController?.viewController(class: AddChallengeController.self) {
+            var selItems = [SelectedItems]()
+            let selItem = SelectedItems()
+            selItem.name = subjectName
+            selItems.append(selItem)
+            controller.updateCell(result: selItems, popIndexPath: popIndexPath)
+        }
+        navigationController?.popViewController(animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -84,18 +99,27 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
+            return items.count
+        } else {
+            return items.count + 2
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath)
-        cell.textLabel?.text = items[indexPath.row].name
+        if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
+            cell.textLabel?.text = items[indexPath.row].name
+        } else {
+            if (indexPath.row == (items.count + 1)) {
+                cell.textLabel?.text = customSubjectLabel
+            } else if (indexPath.row == items.count) {
+                cell.backgroundColor = pagesBackColor
+                cell.selectionStyle = UITableViewCellSelectionStyle.none
+            } else {
+                cell.textLabel?.text = items[indexPath.row].name
+            }
+        }
         return cell
-    }
-}
-
-extension UINavigationController {
-    func viewController<T: UIViewController>(class: T.Type) -> T? {
-        return viewControllers.filter({$0 is T}).first as? T
     }
 }

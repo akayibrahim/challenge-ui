@@ -8,35 +8,41 @@
 
 import UIKit
 
-class AddChallengeController: UITableViewController {
-    
+let addViewIndexPath = IndexPath(item: 0, section: 0)
+let segControlIndexPath = IndexPath(item: 1, section: 0)
+let subjectIndexPath = IndexPath(item: 2, section: 0)
+let leftSideIndex = IndexPath(item: 3, section: 0)
+let rightSideIndex = IndexPath(item: 4, section: 0)
+let deadlineIndexPath = IndexPath(item: 5, section: 0)
+let calenddarIndexPath = IndexPath(item: 6, section: 0)
+let visibilityIndexPath = IndexPath(item: 7, section: 0)
+let doneIndexPath = IndexPath(item: 8, section: 0)
+let scoreIndexPath = IndexPath(item: 9, section: 0)
+let resultIndexPath = IndexPath(item: 10, section: 0)
+
+class AddChallengeController: UITableViewController {    
     let screenSize = UIScreen.main.bounds
     var tableRowHeightHeight: CGFloat = 44
     var chlViewHeight: CGFloat = 17.5/30
-    let addViewIndexPath = IndexPath(item: 0, section: 0)
-    let segControlIndexPath = IndexPath(item: 1, section: 0)
-    let subjectIndexPath = IndexPath(item: 2, section: 0)
-    let leftSideIndex = IndexPath(item: 3, section: 0)
-    let rightSideIndex = IndexPath(item: 4, section: 0)
-    let deadlineIndexPath = IndexPath(item: 5, section: 0)
-    let calenddarIndexPath = IndexPath(item: 6, section: 0)
-    let proofIndexPath = IndexPath(item: 7, section: 0)
+    
     var subjects = [Subject]()
     var self_subjects = [Subject]()
     var friends = [Friends]()
     var leftSide = [SelectedItems]()
     var rightSide = [SelectedItems]()
     var deadLine = Int()
+    var bottomConstraint: NSLayoutConstraint?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Add Challenge"
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MyCellAdd")
+        tableView.register(TableViewCellContent.self, forCellReuseIdentifier: cellId)
         tableView.tableFooterView = UIView()
         self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
         let rightButton = UIBarButtonItem(title: "Add", style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.addChallenge))
         navigationItem.rightBarButtonItem = rightButton
         rightButton.tintColor = UIColor.white
+        tableView?.showsVerticalScrollIndicator = false
         
         if let path = Bundle.main.path(forResource: "subject", ofType: "json") {
             do {
@@ -86,20 +92,21 @@ class AddChallengeController: UITableViewController {
                 print(err)
             }
         }
+        self.hideKeyboardWhenTappedAround()
     }
     
     func addChallenge() {
         let addViewCellContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
-        let proofContent = tableView.cellForRow(at: proofIndexPath) as! TableViewCellContent
+        let proofContent = tableView.cellForRow(at: visibilityIndexPath) as! TableViewCellContent
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
-        let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "\(segControlContent.mySegControl.selectedSegmentIndex) \(addViewCellContent.addChallenge.subjectLabel.text!) \(leftSide) \(rightSide) \(deadLine) \(proofContent.mySwitch.isOn)", preferredStyle: UIAlertControllerStyle.alert)
+        let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "\(segControlContent.mySegControl.selectedSegmentIndex) \(addViewCellContent.addChallenge.subjectLabel.text!) \(leftSide) \(rightSide) \(deadLine) \(proofContent.isDone.isOn)", preferredStyle: UIAlertControllerStyle.alert)
         selectAlert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: nil))
         self.present(selectAlert, animated: true, completion: nil)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
-        if indexPath.row == 2 {
+        if indexPath == subjectIndexPath {
             let selectionTable = SelectionTableViewController()
             var selItems = [SelectedItems]()
             var subjs = [Subject]()
@@ -116,8 +123,10 @@ class AddChallengeController: UITableViewController {
             selectionTable.items = selItems
             selectionTable.tableTitle = "Subjects"
             selectionTable.popIndexPath = indexPath
+            selectionTable.segmentIndex = segControlContent.mySegControl.selectedSegmentIndex
+            selectionTable.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(selectionTable, animated: true)
-        } else if indexPath.row == 3 || indexPath.row == 4 {
+        } else if indexPath == leftSideIndex || indexPath == rightSideIndex {
             let selectionTable = SelectionTableViewController()
             var selItems = [SelectedItems]()
             for fri in self.friends {
@@ -135,7 +144,7 @@ class AddChallengeController: UITableViewController {
                 selectionTable.items = selItems
             }
             if segControlContent.mySegControl.selectedSegmentIndex != 0 {
-                if indexPath.row == 3 {
+                if indexPath == leftSideIndex {
                     selectionTable.otherSideCount = rightSide.count
                 } else {
                     selectionTable.otherSideCount = leftSide.count
@@ -145,11 +154,52 @@ class AddChallengeController: UITableViewController {
             }
             selectionTable.tableTitle = "Friends"
             selectionTable.popIndexPath = indexPath
+            selectionTable.segmentIndex = segControlContent.mySegControl.selectedSegmentIndex
+            selectionTable.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(selectionTable, animated: true)
-        } else if indexPath.row == 5 {
+        } else if indexPath == deadlineIndexPath {
             let addViewCellContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
-            addViewCellContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: true)) DAYS"
-            self.tableView?.scrollToRow(at: proofIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
+            if (switchDeadline) {                
+                addViewCellContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: true)) DAYS"
+                self.tableView?.scrollToRow(at: resultIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
+            } else {
+                addViewCellContent.addChallenge.untilDateLabel.text = "Done!"
+            }
+        } else if indexPath == resultIndexPath {
+            let updateProgress = UpdateProgressController()
+            updateProgress.result = true
+            updateProgress.resultText.becomeFirstResponder()
+            updateProgress.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(updateProgress, animated: true)
+        } else if indexPath == scoreIndexPath {
+            let updateProgress = UpdateProgressController()
+            updateProgress.homeScoreText.becomeFirstResponder()
+            updateProgress.score = true
+            updateProgress.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(updateProgress, animated: true)
+            /*
+            let alert = UIAlertController(title: "Scores", message: nil, preferredStyle: .alert)
+            alert.addTextField {
+                (textfield) in
+                textfield.placeholder = "Home score..."
+                textfield.autocapitalizationType = .allCharacters
+            }
+            alert.addTextField {
+                (textfield) in
+                textfield.placeholder = "Away score..."
+                textfield.autocapitalizationType = .allCharacters
+            }
+            alert.addAction(UIAlertAction(title: ok, style: .default, handler: {
+                [weak alert] (_) in
+                let homeTextField = alert?.textFields![0]
+                let awayTextField = alert?.textFields![1]
+                let scoreContent = tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
+                if let homeText = homeTextField?.text, let awayText = awayTextField?.text {
+                    scoreContent.labelOtherSide.text = "\(homeText) - \(awayText)"
+                }
+            }))
+            self.present(alert, animated: true, completion: nil)
+            */
         }
     }
     
@@ -172,35 +222,57 @@ class AddChallengeController: UITableViewController {
     }
     
     var switchDateP : Bool = false;
+    var switchDeadline : Bool = true;
     var switchProofCell : Bool = false;
     var switchLeftPeopleCell : Bool = false;
     var switchRightPeopleCell : Bool = true;
+    var switchDone : Bool = false;
+    var switchScore : Bool = false;
+    var switchResult : Bool = false;
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 6 {
+        if indexPath == calenddarIndexPath {
             if switchDateP {
                 return 180
             } else {
                 return 0
             }
-        } else if indexPath.row == 7 {
+        } else if indexPath == visibilityIndexPath {
             if switchProofCell {
                 return tableRowHeightHeight
             } else {
                 return 0
             }
-        } else if indexPath.row == 3 {
+        } else if indexPath == leftSideIndex {
             if switchLeftPeopleCell {
                 return tableRowHeightHeight
             } else {
                 return 0
             }
-        } else if indexPath.row == 4 {
+        } else if indexPath == rightSideIndex {
             if switchRightPeopleCell {
                 return tableRowHeightHeight
             } else {
                 return 0
             }
-        } else if indexPath.row != 0 {
+        } else if indexPath == scoreIndexPath {
+            if switchScore {
+                return tableRowHeightHeight
+            } else {
+                return 0
+            }
+        } else if indexPath == resultIndexPath {
+            if switchResult {
+                return tableRowHeightHeight
+            } else {
+                return 0
+            }
+        } else if indexPath == deadlineIndexPath {
+            if switchDeadline {
+                return tableRowHeightHeight
+            } else {
+                return 0
+            }
+        } else if indexPath != addViewIndexPath {
             return tableRowHeightHeight
         } else {
             return (screenSize.width * chlViewHeight) + tableRowHeightHeight
@@ -208,43 +280,81 @@ class AddChallengeController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 8
+        return 11
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
         let cell = TableViewCellContent(frame: frameOfCell, cellRow: indexPath.row)
-        if indexPath.row == 0 {
-            cell.selectionStyle = UITableViewCellSelectionStyle.none
-        } else if indexPath.row == 1 {
-            cell.selectionStyle = UITableViewCellSelectionStyle.none
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        if indexPath == segControlIndexPath {
             cell.label.text = "Type"
             cell.mySegControl.addTarget(self, action: #selector(self.segControlChange), for: UIControlEvents.valueChanged)
-        } else if indexPath.row == 2 {
+        } else if indexPath == subjectIndexPath {
             cell.label.text = "Subject"
             cell.labelOtherSide.text = selectText
-        } else if indexPath.row == 3 {
+        } else if indexPath == leftSideIndex {
             cell.label.text = "Home"
             cell.labelOtherSide.text = selectText
             cell.isHidden = !switchLeftPeopleCell
-        } else if indexPath.row == 4 {
+        } else if indexPath == rightSideIndex {
             cell.label.text = "Away"
             cell.labelOtherSide.text = selectText
             cell.isHidden = !switchRightPeopleCell
-        } else if indexPath.row == 5 {
+        } else if indexPath == deadlineIndexPath {
             cell.label.text = "Deadline"
             let formatter = DateFormatter()
             formatter.dateFormat = "dd-MM-yyyy HH:mm"
             let formattedDate = formatter.string(from: cell.datePicker.date)
             cell.labelOtherSide.text = formattedDate
-        } else if indexPath.row == 6 {
+            cell.isHidden = !switchDeadline
+        } else if indexPath == calenddarIndexPath {
             cell.isHidden = !switchDateP
-        } else if indexPath.row == 7 {
+        } else if indexPath == visibilityIndexPath {
             cell.label.text = "Visibility"
-            cell.selectionStyle = UITableViewCellSelectionStyle.none
             cell.isHidden = !switchProofCell
+        } else if indexPath == doneIndexPath {
+            cell.label.text = "Done"
+            cell.isHidden = !switchDone
+            cell.isDone.addTarget(self, action: #selector(self.doneSwitch), for: UIControlEvents.valueChanged)
+        } else if indexPath == scoreIndexPath {
+            cell.label.text = "Score"
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+            cell.isHidden = !switchScore
+            cell.labelOtherSide.attributedText = greaterThan
+        } else if indexPath == resultIndexPath {
+            cell.label.text = "Result"
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+            cell.isHidden = !switchResult
+            cell.labelOtherSide.attributedText = greaterThan
         }
         return cell
+    }
+    
+    func doneSwitch() {
+        let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
+        let doneSwitch = tableView.cellForRow(at: doneIndexPath) as! TableViewCellContent
+        let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
+        if (doneSwitch.isDone.isOn) {
+            switchDeadline = false
+            addViewContent.addChallenge.untilDateLabel.text = "Done!"
+            if segControlContent.mySegControl.selectedSegmentIndex == 1 {
+                switchResult = true
+            } else if segControlContent.mySegControl.selectedSegmentIndex == 2 {
+                switchScore = true
+            }
+        } else {
+            switchDeadline = true
+            addViewContent.addChallenge.untilDateLabel.text = "Deadline"
+            if segControlContent.mySegControl.selectedSegmentIndex == 1 {
+                switchResult = false
+            } else if segControlContent.mySegControl.selectedSegmentIndex == 2 {
+                switchScore = false
+            }
+        }
+        tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
+        tableView.reloadRows(at: [scoreIndexPath], with: .fade)
+        tableView.reloadRows(at: [resultIndexPath], with: .fade)
     }
     
     func updateCell(result : [SelectedItems], popIndexPath : IndexPath) {
@@ -263,7 +373,7 @@ class AddChallengeController: UITableViewController {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         let subjectContent = tableView.cellForRow(at: subjectIndexPath) as! TableViewCellContent
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
-        if popIndexPath.row != 2 {
+        if popIndexPath != subjectIndexPath {
             segControlChange(isNotAction : true, popIndexPath : popIndexPath)
         } else {
             addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
@@ -271,14 +381,14 @@ class AddChallengeController: UITableViewController {
                 setImage(name: addViewContent.addChallenge.subjectLabel.text, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
             }
         }
-        if popIndexPath.row == 3 || popIndexPath.row == 4 {
-            if popIndexPath.row == 3 {
+        if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex {
+            if popIndexPath == leftSideIndex {
                 leftSide = result
                 if rightSide.count != leftSide.count {
                     rightSide.removeAll()
                     tableView.reloadRows(at: [rightSideIndex], with: .fade)
                 }
-            } else if popIndexPath.row == 4 {
+            } else if popIndexPath == rightSideIndex {
                 rightSide = result
                 if rightSide.count != leftSide.count {
                     leftSide.removeAll()
@@ -292,56 +402,68 @@ class AddChallengeController: UITableViewController {
     func segControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
-        let subjectContent = tableView.cellForRow(at: subjectIndexPath) as! TableViewCellContent
         var selItems = [SelectedItems]()
         let selItem = SelectedItems()
         selItem.name = "unknown"
         selItems.append(selItem)
-        switchProofCell = true
-        switchLeftPeopleCell = true
-        switchRightPeopleCell = true
         addViewContent.addChallenge.firstOnePeopleImageView.contentMode = .scaleAspectFill
-        var subjectImage = "unknown"
-        if segControlContent.mySegControl.selectedSegmentIndex == 0 {
-            switchProofCell = false
-            switchLeftPeopleCell = false
-        } else if segControlContent.mySegControl.selectedSegmentIndex == 1 {
-            if subjectContent.labelOtherSide.text != selectText {
-                subjectImage = subjectContent.labelOtherSide.text!
-            }
-            switchLeftPeopleCell = false
-            switchRightPeopleCell = false
-        }
-        setImage(name: subjectImage, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
+        var doneContent : TableViewCellContent!
         if !isNotAction {
+            switchProofCell = true
+            switchLeftPeopleCell = true
+            switchRightPeopleCell = true
+            switchDone = true
+            switchScore = false
+            switchResult = false
+            switchDeadline = true
+            switchDateP = false
+            tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
+            doneContent = tableView.cellForRow(at: doneIndexPath) as! TableViewCellContent
+            doneContent.isDone.setOn(false, animated: false)
+            if segControlContent.mySegControl.selectedSegmentIndex == 0 {
+                switchProofCell = false
+                switchLeftPeopleCell = false
+                switchDone = false
+                switchScore = false
+                switchResult = false
+            } else if segControlContent.mySegControl.selectedSegmentIndex == 1 {
+                switchLeftPeopleCell = false
+                switchRightPeopleCell = false
+                if (doneContent.isDone.isOn) {
+                    switchResult = true
+                    switchDeadline = false
+                }
+            } else if segControlContent.mySegControl.selectedSegmentIndex == 2 {
+                if (doneContent.isDone.isOn) {
+                    switchScore = true
+                    switchDeadline = false
+                }
+            }
             prepareViewForSelection(result: selItems, popIndexPath: popIndexPath, reset: true)
             tableView.reloadRows(at: [addViewIndexPath], with: .fade)
             tableView.reloadRows(at: [subjectIndexPath], with: .fade)
             tableView.reloadRows(at: [leftSideIndex], with: .fade)
             tableView.reloadRows(at: [rightSideIndex], with: .fade)
             tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
-            switchDateP = false
-            tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
-            tableView.reloadRows(at: [proofIndexPath], with: .fade)
+            tableView.reloadRows(at: [visibilityIndexPath], with: .fade)
+            tableView.reloadRows(at: [doneIndexPath], with: .fade)
+            tableView.reloadRows(at: [scoreIndexPath], with: .fade)
+            tableView.reloadRows(at: [resultIndexPath], with: .fade)
             leftSide.removeAll()
             rightSide.removeAll()
             if segControlContent.mySegControl.selectedSegmentIndex == 1 {
-                let visibilityContent = tableView.cellForRow(at: proofIndexPath) as! TableViewCellContent
+                let visibilityContent = tableView.cellForRow(at: visibilityIndexPath) as! TableViewCellContent
                 visibilityContent.visibilitySegControl.insertSegment(withTitle: justMe, at: 0, animated: true)
             }
-        } else if popIndexPath.row == 3 || popIndexPath.row == 4 || (popIndexPath.row == 2 && segControlContent.mySegControl.selectedSegmentIndex == 1) {
+        } else if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex || (popIndexPath == subjectIndexPath && segControlContent.mySegControl.selectedSegmentIndex == 1) {
             tableView.reloadRows(at: [addViewIndexPath], with: .fade)
         }
     }
     
     func prepareViewForSelection(result : [SelectedItems], popIndexPath : IndexPath, reset : Bool) {
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
-        let leftSideContent = tableView.cellForRow(at: leftSideIndex) as! TableViewCellContent
-        let rightSideContent = tableView.cellForRow(at: rightSideIndex) as! TableViewCellContent
         let isLeftSide = popIndexPath == leftSideIndex
-        let isRightSide = popIndexPath == rightSideIndex
-        let isRightSideFull = rightSideContent.labelOtherSide.text != selectText
-        let isLeftSideFull = leftSideContent.labelOtherSide.text != selectText
+        let isRightSide = popIndexPath == rightSideIndex        
         if segControlContent.mySegControl.selectedSegmentIndex == 0 {
             if reset {
                 setChlrPeopleImages(result : result, reset: !reset)
@@ -371,7 +493,11 @@ class AddChallengeController: UITableViewController {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         let subjectContent = tableView.cellForRow(at: subjectIndexPath) as! TableViewCellContent
         addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
-        addViewContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: false)) DAYS"
+        if (switchDeadline) {
+            addViewContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: false)) DAYS"
+        } else {
+            addViewContent.addChallenge.untilDateLabel.text = "Done!"
+        }
         addViewContent.addChallenge.generateSecondTeam(count: result.count)
         if result.count == 1 {
             setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView, reset: reset)
@@ -412,40 +538,6 @@ class AddChallengeController: UITableViewController {
             setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondFourChlrPeopleImageView, reset: reset)
             setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView, reset: reset)
             setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView)
-        }
-    }
-}
-
-extension String
-{
-    func trim() -> String
-    {
-        let cs = CharacterSet.init(charactersIn: ", ")
-        return self.trimmingCharacters(in: cs)
-    }
-}
-
-extension UITableViewController
-{
-    func setImage(fbID: String?, imageView: UIImageView, reset : Bool) {
-        if let peoplefbID = fbID {
-            let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
-            ImageService.getImage(withURL: url!) { image in
-                if image != nil && !reset {
-                    imageView.image = image
-                } else {
-                    self.setImage(name: "unknown", imageView: imageView)
-                }
-            }
-            //let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
-            // imageView.image = UIImage(data: data!)
-            // imageView.image = UIImage(named: peopleImage)
-        }
-    }
-    
-    func setImage(name: String?, imageView: UIImageView) {
-        if let peopleImage = name {
-            imageView.image = UIImage(named: peopleImage)
         }
     }
 }

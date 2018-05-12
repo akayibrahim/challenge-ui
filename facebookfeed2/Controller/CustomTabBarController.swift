@@ -89,6 +89,6 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
             status.backgroundColor = navAndTabColor
         }
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: true)        
     }
 }

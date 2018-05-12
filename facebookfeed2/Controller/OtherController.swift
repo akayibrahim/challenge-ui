@@ -19,8 +19,8 @@ class OtherController: UITableViewController {
         tableView.register(RequestHeader.self, forHeaderFooterViewReuseIdentifier: OtherController.headerId)
         navigationItem.title = "Settings"
         tableView.tableFooterView = UIView()
-        self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
-        tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
+        self.view.backgroundColor =  pagesBackColor
+        tableView.separatorColor = pagesBackColor
         tableView.sectionHeaderHeight = 26
     }
     

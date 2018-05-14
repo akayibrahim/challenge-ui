@@ -16,6 +16,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     var popIndexPath : IndexPath!
     var otherSideCount : Int!
     var segmentIndex : Int!
+    var switchCustomeSubject : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +34,22 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             rightButton.tintColor = UIColor.white
             navigationItem.rightBarButtonItem = rightButton
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        self.hideKeyboardWhenTappedAround()
+    }
+    
+    func keyboardWasShown (notification: NSNotification) {
+        var info = notification.userInfo
+        let keyboardFrame = (info![UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
+        
+        tableView.contentInset = UIEdgeInsetsMake(0, 0, (keyboardFrame?.height)!, 0)
+        tableView.scrollIndicatorInsets = tableView.contentInset
+    }
+    
+    func keyboardWillBeHidden (notification: NSNotification) {
+        tableView.contentInset = UIEdgeInsets.zero
+        tableView.scrollIndicatorInsets = UIEdgeInsets.zero
     }
     
     func showEditing() {
@@ -69,12 +86,14 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if popIndexPath.row == 2 {
-            if (indexPath.row == (items.count + 1)) {
-                let updateProgress = UpdateProgressController()
-                updateProgress.customeSubjectText.becomeFirstResponder()
-                updateProgress.customSubject = true
-                updateProgress.hidesBottomBarWhenPushed = true
-                self.navigationController?.pushViewController(updateProgress, animated: true)
+            if (indexPath.row == (items.count + 2)) {
+                // nothing
+            } else if (indexPath.row == (items.count + 1)) {
+                switchCustomeSubject = !switchCustomeSubject
+                let customSubjectIndex = IndexPath(item: items.count + 2, section: 0)
+                tableView.reloadRows(at: [customSubjectIndex], with: .fade)
+                customeSubjectText.becomeFirstResponder()
+                tableView.scrollToRow(at: customSubjectIndex, at: UITableViewScrollPosition.bottom, animated: true)
             } else if (indexPath.row == items.count) {
                 // nothing
             } else {
@@ -95,6 +114,11 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if (indexPath.row == (items.count + 2)) {
+            if !switchCustomeSubject {
+                return 0
+            }
+        }
         return 44
     }
     
@@ -102,7 +126,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
             return items.count
         } else {
-            return items.count + 2
+            return items.count + 3
         }
     }
     
@@ -111,7 +135,22 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
             cell.textLabel?.text = items[indexPath.row].name
         } else {
-            if (indexPath.row == (items.count + 1)) {
+            if (indexPath.row == (items.count + 2)) {
+                let view = UIView()
+                view.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: globalHeight)
+                view.addSubview(customeSubjectText)
+                customeSubjectText.frame = CGRect(x: 0, y: 0, width: view.frame.width * 4 / 5, height: globalHeight)
+                customeSubjectText.placeholder = "Enter custom subject..."
+                customeSubjectText.autocapitalizationType = .allCharacters
+                view.addSubview(saveButton)
+                saveButton.frame = CGRect(x: view.frame.width * 4 / 5, y: 0, width: view.frame.width * 1 / 5, height: globalHeight)
+                saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)
+                saveButton.backgroundColor = navAndTabColor
+                saveButton.layer.borderWidth = 0
+                saveButton.setTitleColor(UIColor.white, for: UIControlState())
+                cell.addSubview(view)
+                cell.isHidden = !switchCustomeSubject
+            } else if (indexPath.row == (items.count + 1)) {
                 cell.textLabel?.text = customSubjectLabel
             } else if (indexPath.row == items.count) {
                 cell.backgroundColor = pagesBackColor
@@ -122,4 +161,11 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
         return cell
     }
+    
+    func save() {
+        updateAndPopViewController(subjectName: customeSubjectText.text!)
+    }
+    
+    let customeSubjectText: UITextField = UpdateProgressController.textField()
+    let saveButton = FeedCell.buttonForTitleWithBorder("Save", imageName: "")
 }

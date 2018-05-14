@@ -11,34 +11,25 @@ import UIKit
 class UpdateProgressController : UIViewController {
     var result : Bool = false
     var score : Bool = false
-    var customSubject : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Update Progress"
         self.view.backgroundColor = UIColor.white
-        let middleOfScreenWidth = (screenWidth * 2.5 / 5) - (view.frame.width * 1 / 5)
         if result {
             view.addSubview(resultText)
-            resultText.frame = CGRect(x: middleOfScreenWidth, y: screenWidth * 1 / 5, width: view.frame.width * 2 / 5, height: globalHeight)
+            resultText.frame = CGRect(x: 0, y: screenWidth * 1.2 / 5, width: view.frame.width, height: globalHeight)
         } else if score {
             view.addSubview(homeScoreText)
-            homeScoreText.frame = CGRect(x: middleOfScreenWidth, y: screenWidth * 1 / 5, width: view.frame.width * 2 / 5, height: globalHeight)
+            homeScoreText.frame = CGRect(x: 0, y: screenWidth * 1.2 / 5, width: view.frame.width, height: globalHeight)
             homeScoreText.placeholder = " Home Score..."
             
             view.addSubview(awayScoreText)
-            awayScoreText.frame = CGRect(x: middleOfScreenWidth, y: screenWidth * 2 / 5, width: view.frame.width * 2 / 5, height: globalHeight)
+            awayScoreText.frame = CGRect(x: 0, y: (screenWidth * 1.2 / 5) + globalHeight + 5, width: view.frame.width, height: globalHeight)
             awayScoreText.placeholder = " Away Score..."
-        } else if customSubject {
-            let customMiddleOfScreenWidth = (screenWidth * 2.5 / 5) - (view.frame.width * 2 / 5)
-            navigationItem.title = "Custom Subject"
-            view.addSubview(customeSubjectText)
-            customeSubjectText.frame = CGRect(x: customMiddleOfScreenWidth, y: screenWidth * 1 / 5, width: view.frame.width * 4 / 5, height: globalHeight)
-            customeSubjectText.placeholder = " Enter subject..."
-            customeSubjectText.autocapitalizationType = .allCharacters
         }
         navigationItem.rightBarButtonItem = self.editButtonItem
-        let rightButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.done))
+        let rightButton = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.done))
         rightButton.tintColor = UIColor.white
         navigationItem.rightBarButtonItem = rightButton
         
@@ -54,16 +45,11 @@ class UpdateProgressController : UIViewController {
                 let scoreContent = controller.tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
                 scoreContent.labelOtherSide.text = "\(homeScoreText.text!) - \(awayScoreText.text!)"
             }
-        }
-        if let controller = navigationController?.viewController(class: SelectionTableViewController.self) {
-            if customSubject {
-                controller.updateAndPopViewController(subjectName: customeSubjectText.text!)
-            }
+            controller.updateScoreAndResult()
         }
         navigationController?.popViewController(animated: true)
     }
     
-    let customeSubjectText: UITextField = UpdateProgressController.textField()
     let resultText: UITextField = UpdateProgressController.textField()
     let homeScoreText: UITextField = UpdateProgressController.textField()
     let awayScoreText: UITextField = UpdateProgressController.textField()

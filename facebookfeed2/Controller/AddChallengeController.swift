@@ -8,23 +8,33 @@
 
 import UIKit
 
-let addViewIndexPath = IndexPath(item: 0, section: 0)
-let segControlIndexPath = IndexPath(item: 1, section: 0)
-let subjectIndexPath = IndexPath(item: 2, section: 0)
-let leftSideIndex = IndexPath(item: 3, section: 0)
-let rightSideIndex = IndexPath(item: 4, section: 0)
-let deadlineIndexPath = IndexPath(item: 5, section: 0)
-let calenddarIndexPath = IndexPath(item: 6, section: 0)
-let visibilityIndexPath = IndexPath(item: 7, section: 0)
-let doneIndexPath = IndexPath(item: 8, section: 0)
-let scoreIndexPath = IndexPath(item: 9, section: 0)
-let resultIndexPath = IndexPath(item: 10, section: 0)
+var chlIndex : Int = 0
+var typeIndex : Int = 1
+var subjectIndex : Int = 2
+var homeIndex : Int = 3
+var awayIndex : Int = 4
+var deadlineIndex : Int = 5
+var calIndex : Int = 6
+var visibilityIndex : Int = 7
+var doneIndex : Int = 8
+var scoreIndex : Int = 9
+var resultIndex : Int = 10
+let addViewIndexPath = IndexPath(item: chlIndex, section: 0)
+let segControlIndexPath = IndexPath(item: typeIndex, section: 0)
+let subjectIndexPath = IndexPath(item: subjectIndex, section: 0)
+let leftSideIndex = IndexPath(item: homeIndex, section: 0)
+let rightSideIndex = IndexPath(item: awayIndex, section: 0)
+let deadlineIndexPath = IndexPath(item: deadlineIndex, section: 0)
+let calenddarIndexPath = IndexPath(item: calIndex, section: 0)
+let visibilityIndexPath = IndexPath(item: visibilityIndex, section: 0)
+let doneIndexPath = IndexPath(item: doneIndex, section: 0)
+let scoreIndexPath = IndexPath(item: scoreIndex, section: 0)
+let resultIndexPath = IndexPath(item: resultIndex, section: 0)
 
 class AddChallengeController: UITableViewController {    
     let screenSize = UIScreen.main.bounds
     var tableRowHeightHeight: CGFloat = 44
     var chlViewHeight: CGFloat = 17.5/30
-    
     var subjects = [Subject]()
     var self_subjects = [Subject]()
     var friends = [Friends]()
@@ -32,9 +42,11 @@ class AddChallengeController: UITableViewController {
     var rightSide = [SelectedItems]()
     var deadLine = Int()
     var bottomConstraint: NSLayoutConstraint?
+    var addChallengeIns = [AddChallenge]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        createAddChallengeInstance()
         navigationItem.title = "Add Challenge"
         tableView.register(TableViewCellContent.self, forCellReuseIdentifier: cellId)
         tableView.tableFooterView = UIView()
@@ -93,6 +105,37 @@ class AddChallengeController: UITableViewController {
             }
         }
         self.hideKeyboardWhenTappedAround()
+    }
+    
+    func createAddChallenge(labelText : String, resultText : String, resultId : Int, resultBool : Bool, labelAtt : NSMutableAttributedString) -> AddChallenge {
+        let addChl = AddChallenge()
+        addChl.labelText = labelText
+        addChl.resultText = resultText
+        addChl.resultId = resultId
+        addChl.resultBool = resultBool
+        addChl.labelAtt = labelAtt
+        return addChl
+    }
+    
+    func getDateAsFormatted(date : Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy HH:mm"
+        let formattedDate = formatter.string(from: date)
+        return formattedDate
+    }
+    
+    func createAddChallengeInstance() {
+        addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Type", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Subject", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Home", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Away", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Deadline", resultText : getDateAsFormatted(date: Date()), resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Visibility", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Score", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Result", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
     
     func addChallenge() {
@@ -218,6 +261,7 @@ class AddChallengeController: UITableViewController {
             cellContent.datePicker.date = date!
         }
         let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
+        addChallengeIns[deadlineIndex].resultText = getDateAsFormatted(date: cellContent.datePicker.date)
         return daysBetween
     }
     
@@ -284,49 +328,49 @@ class AddChallengeController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
+        let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)        
         let cell = TableViewCellContent(frame: frameOfCell, cellRow: indexPath.row)
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         if indexPath == segControlIndexPath {
-            cell.label.text = "Type"
+            cell.label.text = addChallengeIns[typeIndex].labelText
+            cell.mySegControl.selectedSegmentIndex = addChallengeIns[typeIndex].resultId!
             cell.mySegControl.addTarget(self, action: #selector(self.segControlChange), for: UIControlEvents.valueChanged)
         } else if indexPath == subjectIndexPath {
-            cell.label.text = "Subject"
-            cell.labelOtherSide.text = selectText
+            cell.label.text = addChallengeIns[subjectIndex].labelText
+            cell.labelOtherSide.text = addChallengeIns[subjectIndex].resultText
         } else if indexPath == leftSideIndex {
-            cell.label.text = "Home"
-            cell.labelOtherSide.text = selectText
+            cell.label.text = addChallengeIns[homeIndex].labelText
+            cell.labelOtherSide.text = addChallengeIns[homeIndex].resultText
             cell.isHidden = !switchLeftPeopleCell
         } else if indexPath == rightSideIndex {
-            cell.label.text = "Away"
-            cell.labelOtherSide.text = selectText
+            cell.label.text = addChallengeIns[awayIndex].labelText
+            cell.labelOtherSide.text = addChallengeIns[awayIndex].resultText
             cell.isHidden = !switchRightPeopleCell
         } else if indexPath == deadlineIndexPath {
-            cell.label.text = "Deadline"
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd-MM-yyyy HH:mm"
-            let formattedDate = formatter.string(from: cell.datePicker.date)
-            cell.labelOtherSide.text = formattedDate
+            cell.label.text = addChallengeIns[deadlineIndex].labelText
+            cell.labelOtherSide.text = addChallengeIns[deadlineIndex].resultText
             cell.isHidden = !switchDeadline
         } else if indexPath == calenddarIndexPath {
             cell.isHidden = !switchDateP
         } else if indexPath == visibilityIndexPath {
-            cell.label.text = "Visibility"
+            cell.label.text = addChallengeIns[visibilityIndex].labelText
+            cell.visibilitySegControl.selectedSegmentIndex = addChallengeIns[visibilityIndex].resultId!
             cell.isHidden = !switchProofCell
         } else if indexPath == doneIndexPath {
-            cell.label.text = "Done"
+            cell.label.text = addChallengeIns[doneIndex].labelText
             cell.isHidden = !switchDone
+            cell.isDone.setOn(addChallengeIns[doneIndex].resultBool!, animated: false)
             cell.isDone.addTarget(self, action: #selector(self.doneSwitch), for: UIControlEvents.valueChanged)
         } else if indexPath == scoreIndexPath {
-            cell.label.text = "Score"
+            cell.label.text = addChallengeIns[scoreIndex].labelText
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             cell.isHidden = !switchScore
-            cell.labelOtherSide.attributedText = greaterThan
+            cell.labelOtherSide.attributedText = addChallengeIns[scoreIndex].labelAtt
         } else if indexPath == resultIndexPath {
-            cell.label.text = "Result"
+            cell.label.text = addChallengeIns[resultIndex].labelText
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             cell.isHidden = !switchResult
-            cell.labelOtherSide.attributedText = greaterThan
+            cell.labelOtherSide.attributedText = addChallengeIns[resultIndex].labelAtt
         }
         return cell
     }
@@ -355,6 +399,7 @@ class AddChallengeController: UITableViewController {
         tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
         tableView.reloadRows(at: [scoreIndexPath], with: .fade)
         tableView.reloadRows(at: [resultIndexPath], with: .fade)
+        addChallengeIns[doneIndex].resultBool = doneSwitch.isDone.isOn
     }
     
     func updateCell(result : [SelectedItems], popIndexPath : IndexPath) {
@@ -370,6 +415,7 @@ class AddChallengeController: UITableViewController {
             itemsCount += 1
         }
         cellContent.labelOtherSide.text = itemsResult.trim()
+        addChallengeIns[popIndexPath.row].resultText = itemsResult.trim()
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         let subjectContent = tableView.cellForRow(at: subjectIndexPath) as! TableViewCellContent
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
@@ -407,6 +453,7 @@ class AddChallengeController: UITableViewController {
         selItem.name = "unknown"
         selItems.append(selItem)
         addViewContent.addChallenge.firstOnePeopleImageView.contentMode = .scaleAspectFill
+        addChallengeIns[typeIndex].resultId = segControlContent.mySegControl.selectedSegmentIndex
         var doneContent : TableViewCellContent!
         if !isNotAction {
             switchProofCell = true
@@ -539,5 +586,12 @@ class AddChallengeController: UITableViewController {
             setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView, reset: reset)
             setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView)
         }
+    }
+    
+    func updateScoreAndResult() {
+        let scoreContent = tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
+        let resultContent = tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
+        addChallengeIns[scoreIndex].labelAtt = NSMutableAttributedString(string: scoreContent.labelOtherSide.text!, attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
+        addChallengeIns[resultIndex].labelAtt = NSMutableAttributedString(string: resultContent.labelOtherSide.text!, attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
     }
 }

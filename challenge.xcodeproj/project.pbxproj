@@ -47,6 +47,7 @@
 		A1B27B04209A2F8D00263E48 /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B27B03209A2F8D00263E48 /* NotificationsController.swift */; };
 		A1C13416207F212700C6A435 /* TrendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C13415207F212700C6A435 /* TrendsController.swift */; };
 		A1D2CAB720451C9F008782D3 /* OtherViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */; };
+		A1DA9CAB20A95236009200E3 /* AddChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DA9CAA20A95236009200E3 /* AddChallenge.swift */; };
 		A1DC3414207E2A1800F21232 /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3413207E2A1800F21232 /* Comments.swift */; };
 		A1DC3416207E2D9800F21232 /* CommentCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3415207E2D9800F21232 /* CommentCellView.swift */; };
 		A1DC3418207E402300F21232 /* ProfileCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3417207E402300F21232 /* ProfileCellView.swift */; };
@@ -91,13 +92,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = A680A778FA216840A3F28AD9BB8DE10E;
 			remoteInfo = "Pods-facebookfeed2";
-		};
-		A14F7870208505BB006E1BE8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A14F7860208505BB006E1BE8 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7E52474B1EB9A141C634A69B6DB31EF9;
-			remoteInfo = TLYShyNavBar;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -144,6 +138,7 @@
 		A1B27B03209A2F8D00263E48 /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		A1C13415207F212700C6A435 /* TrendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendsController.swift; sourceTree = "<group>"; };
 		A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewCellView.swift; sourceTree = "<group>"; };
+		A1DA9CAA20A95236009200E3 /* AddChallenge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddChallenge.swift; sourceTree = "<group>"; };
 		A1DC3413207E2A1800F21232 /* Comments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		A1DC3415207E2D9800F21232 /* CommentCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentCellView.swift; sourceTree = "<group>"; };
 		A1DC3417207E402300F21232 /* ProfileCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCellView.swift; sourceTree = "<group>"; };
@@ -273,6 +268,7 @@
 				A138F389204D9C4F00142231 /* Post.swift */,
 				A14A996A207530F500B1418D /* Subject.swift */,
 				A14A996C2075310D00B1418D /* Friends.swift */,
+				A1DA9CAA20A95236009200E3 /* AddChallenge.swift */,
 				A1DC3413207E2A1800F21232 /* Comments.swift */,
 				A17162C4209C42DC00061399 /* Notifications.swift */,
 				A1235D3D20870C3A0028738E /* Proofs.swift */,
@@ -293,7 +289,6 @@
 				A14F786B208505BB006E1BE8 /* FBSDKCoreKit.framework */,
 				A14F786D208505BB006E1BE8 /* FBSDKLoginKit.framework */,
 				A14F786F208505BB006E1BE8 /* Pods_facebookfeed2.framework */,
-				A14F7871208505BB006E1BE8 /* TLYShyNavBar.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -438,13 +433,6 @@
 			remoteRef = A14F786E208505BB006E1BE8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A14F7871208505BB006E1BE8 /* TLYShyNavBar.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = TLYShyNavBar.framework;
-			remoteRef = A14F7870208505BB006E1BE8 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -535,6 +523,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1DA9CAB20A95236009200E3 /* AddChallenge.swift in Sources */,
 				A1289CAA20A5562700CC66B0 /* UINavigationControllerExtension.swift in Sources */,
 				A1DC3418207E402300F21232 /* ProfileCellView.swift in Sources */,
 				C7A85F361C78C137007E9A00 /* ChallengesController.swift in Sources */,

@@ -48,7 +48,7 @@ class AddChallengeView: UIView {
         
         let screenSize = UIScreen.main.bounds
         
-        middleTopGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0).isActive = true
+        middleTopGuide.heightAnchor.constraint(equalToConstant: 0).isActive = true
         
         middleTopGuide.topAnchor.constraint(equalTo: challengeView.topAnchor, constant: 1).isActive = true
         

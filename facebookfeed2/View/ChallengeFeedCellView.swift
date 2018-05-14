@@ -99,6 +99,8 @@ class FeedCell: UICollectionViewCell {
                 if post?.secondTeamCount == "0" {
                     setImage(name: worldImage, imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.contentMode = .scaleAspectFit
+                } else {
+                    firstOnePeopleImageView.contentMode = .scaleAspectFill
                 }
                 for join in (post?.joinAttendanceList)! {
                     if (join.FacebookID != post?.challengerFBId) {
@@ -390,7 +392,6 @@ class FeedCell: UICollectionViewCell {
         addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
         untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         addHeightAnchor(untilDateLabel, multiplier: 1/6)
-        
         
         addTopAnchor(vsImageView, anchor: untilDateLabel.bottomAnchor, constant: 0)
         vsImageView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
@@ -784,6 +785,8 @@ class FeedCell: UICollectionViewCell {
         
         return button
     }
+    
+    let finishFlag = FeedCell.buttonForTitle("", imageName: "finishFlag")
     
     static func imageView() -> UIImageView {
         let imageView = UIImageView()

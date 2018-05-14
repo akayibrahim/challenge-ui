@@ -31,6 +31,22 @@
               {
               "name": "SWIMMING",
               "id" : ""
+              },
+              {
+              "name": "WALKING",
+              "id" : ""
+              },
+              {
+              "name": "SMILING",
+              "id" : ""
+              },
+              {
+              "name": "DRIVING",
+              "id" : ""
+              },
+              {
+              "name": "GAMING",
+              "id" : ""
               }
         ]
 }

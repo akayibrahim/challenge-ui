@@ -60,6 +60,7 @@ class FeedCell: UICollectionViewCell {
         self.insertTime.removeFromSuperview()
         self.nameAndStatusLabel.removeFromSuperview()
         self.challengerImageView.image = UIImage()
+        self.updateProgress.removeFromSuperview()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -277,8 +278,8 @@ class FeedCell: UICollectionViewCell {
                     supportButtonMatch.setImage(UIImage(named: support), for: .normal)
                 }
             }
-            if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount,  let isComeFromSelf = post?.isComeFromSelf {
-                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf)
+            if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount,  let isComeFromSelf = post?.isComeFromSelf, let isDone = post?.done {
+                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone)
             }
         }
     }
@@ -292,7 +293,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     let screenSize = UIScreen.main.bounds
-    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool) {
+    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -308,7 +309,7 @@ class FeedCell: UICollectionViewCell {
         addTrailingAnchor(dividerLineView, anchor: contentGuide.trailingAnchor, constant: 0)
         dividerLineView.heightAnchor.constraint(equalToConstant: 0).isActive = true
         
-        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf)
+        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done)
         
         if !isComeFromSelf {
             if(!thinksAboutChallengeView.text.isEmpty) {
@@ -372,7 +373,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool) {
+    func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool) {
         let middleTopGuide = UILayoutGuide()
         let middleCenterGuide = UILayoutGuide()
         let middleBottomGuide = UILayoutGuide()
@@ -449,6 +450,23 @@ class FeedCell: UICollectionViewCell {
                 likeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
                 addWidthAnchor(likeLabel, multiplier: 1/3)
                 addHeightAnchor(likeLabel, multiplier: 1/15)
+            }
+        } else {
+            if !done {
+                addSubview(updateProgress)
+                addTopAnchor(updateProgress, anchor: middleCenterGuide.bottomAnchor, constant: screenWidth * 0.1 / 6)
+                updateProgress.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                addWidthAnchor(updateProgress, multiplier: 0.6 / 6)
+                addHeightAnchor(updateProgress, multiplier: 0.6 / 6)
+                
+                addSubview(updateRefreshLabel)
+                addTopAnchor(updateRefreshLabel, anchor: updateProgress.bottomAnchor, constant: -(screenWidth * 0.5 / 6))
+                updateRefreshLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                addWidthAnchor(updateRefreshLabel, multiplier: 1/3)
+                addHeightAnchor(updateRefreshLabel, multiplier: 1/15)
+                updateRefreshLabel.text = "Update\nProgress"
+                updateRefreshLabel.numberOfLines = 2
+
             }
         }
         
@@ -730,6 +748,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     let likeLabel: UILabel = FeedCell.label(12)
+    let updateRefreshLabel: UILabel = FeedCell.label(5)
     let supportLabel: UILabel = FeedCell.label(12)
     let supportTextLabel: UILabel = FeedCell.label(8)
     let supportMatchLabel: UILabel = FeedCell.label(12)
@@ -769,6 +788,19 @@ class FeedCell: UICollectionViewCell {
     let supportButton = FeedCell.buttonForTitle("", imageName: support)
     let supportButtonMatch = FeedCell.buttonForTitle("", imageName: support)
     
+    static func subClasssButtonForTitle(_ title: String, imageName: String) -> subclasssedUIButton {
+        let button = subclasssedUIButton()
+        // button.semanticContentAttribute = .forceRightToLeft
+        button.setTitle(title, for: UIControlState())
+        button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
+        
+        button.setImage(UIImage(named: imageName), for: UIControlState())
+        button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        return button
+    }
+    let updateProgress = FeedCell.subClasssButtonForTitle("", imageName: "refresh")
+    
     static func buttonForTitleWithBorder(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: UIControlState())
@@ -785,8 +817,6 @@ class FeedCell: UICollectionViewCell {
         
         return button
     }
-    
-    let finishFlag = FeedCell.buttonForTitle("", imageName: "finishFlag")
     
     static func imageView() -> UIImageView {
         let imageView = UIImageView()
@@ -851,7 +881,10 @@ class FeedCell: UICollectionViewCell {
     let mySegControl: UISegmentedControl = FeedCell.segmentedControl()
 }
 
-
+class subclasssedUIButton : UIButton {
+    var challengeId: String?
+    var type: String?
+}
 
 
 

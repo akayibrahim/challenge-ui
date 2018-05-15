@@ -60,6 +60,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "profile")
+        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "selfCellId")
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
     }
@@ -235,9 +236,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             if section == 0 {
                 return 1
             } else if section == 1 {
-                return donePosts.count
-            } else if section == 2 {
                 return notDonePosts.count
+            } else if section == 2 {
+                return donePosts.count
             }
         }
         return posts.count
@@ -268,17 +269,24 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell.addSubview(profileCell)
                 return feedCell
             }
+            feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "selfCellId", for: indexPath) as! FeedCell
+            feedCell.prepareForReuse()
+            feedCell.feedController = self
             if indexPath.section == 1 {
-                feedCell.post = donePosts[indexPath.row]
-            } else if indexPath.section == 2 {
                 feedCell.post = notDonePosts[indexPath.row]
+                feedCell.updateProgress.type = notDonePosts[indexPath.row].type
+                feedCell.updateProgress.challengeId = notDonePosts[indexPath.row].id
+                feedCell.updateProgress.addTarget(self, action: #selector(self.updateProgress), for: UIControlEvents.touchUpInside)
+            } else if indexPath.section == 2 {
+                feedCell.post = donePosts[indexPath.row]
             }
+            return feedCell
         } else {
             feedCell.post = posts[indexPath.row]
         }
         feedCell.prepareForReuse()
-        feedCell.post = posts[indexPath.item]
         feedCell.feedController = self
+        feedCell.post = posts[indexPath.item]
         if feedCell.post?.type == SELF {
             feedCell.supportSelfButton.tag = indexPath.row
             feedCell.supportSelfButton.addTarget(self, action: #selector(self.likeSelfs), for: UIControlEvents.touchUpInside)
@@ -296,6 +304,16 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.addComments.addTarget(self, action: #selector(self.addComments), for: UIControlEvents.touchUpInside)
         feedCell.addProofs.addTarget(self, action: #selector(self.addProofs), for: UIControlEvents.touchUpInside)
         return feedCell
+    }
+    
+    func updateProgress(_ sender: subclasssedUIButton) {
+        let updateProgress = UpdateProgressController()
+        updateProgress.updateProgress = true
+        updateProgress.challengeId = sender.challengeId
+        updateProgress.challengeType = sender.type
+        updateProgress.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(updateProgress, animated: true)
     }
     
     func openOthers(sender: UIButton) {

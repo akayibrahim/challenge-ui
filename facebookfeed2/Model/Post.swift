@@ -9,6 +9,7 @@
 import UIKit
 
 class Post: SafeJsonObject {
+    var id: String?
     var name: String?
     var profileImageName: String?
     var thinksAboutChallenge: String?

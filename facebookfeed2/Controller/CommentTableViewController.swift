@@ -64,7 +64,12 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                 self.view.layoutIfNeeded()
             }, completion: { (completed) in
                 if isKeyboardShowing {
-                    let indexPath = IndexPath(item: self.comments.count - 1, section: 0)
+                    var indexPath : IndexPath
+                    if self.proof {
+                        indexPath = IndexPath(item: self.proofs.count - 1, section: 0)
+                    } else {
+                        indexPath = IndexPath(item: self.comments.count - 1, section: 0)
+                    }
                     self.tableView?.scrollToRow(at: indexPath as IndexPath, at: .bottom, animated: true)
                 }
             })
@@ -198,7 +203,11 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
      
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
-            textView.text = "Add a comment..."
+            if proof {
+                textView.text = "Add a proof..."
+            } else {
+                textView.text = "Add a comment..."
+            }
             textView.textColor = UIColor.lightGray
         }
     }

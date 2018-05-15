@@ -40,8 +40,8 @@ var selectText = "Select"
 var profileIndex : Int = 4
 var chanllengeIndex : Int = 0
 var navAndTabColor : UIColor = UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1)
+var blueColor : UIColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
 // UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1) coca-cola red
-// UIColor.rgb(70, green: 146, blue: 250)
 // UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
 var screenWidth = UIScreen.main.bounds.width
 var teamCountZero = "0"

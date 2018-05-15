@@ -11,22 +11,47 @@ import UIKit
 class UpdateProgressController : UIViewController {
     var result : Bool = false
     var score : Bool = false
+    var updateProgress : Bool = false
+    var challengeId : String?
+    var challengeType : String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Update Progress"
         self.view.backgroundColor = UIColor.white
+        let constraintOfY = screenWidth * 1.2 / 5
+        let constraintOfYForSecondText = (screenWidth * 1.2 / 5) + globalHeight + 5
         if result {
+            navigationItem.title = "Reult"
             view.addSubview(resultText)
-            resultText.frame = CGRect(x: 0, y: screenWidth * 1.2 / 5, width: view.frame.width, height: globalHeight)
+            resultText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
         } else if score {
+            navigationItem.title = "Scores"
             view.addSubview(homeScoreText)
-            homeScoreText.frame = CGRect(x: 0, y: screenWidth * 1.2 / 5, width: view.frame.width, height: globalHeight)
-            homeScoreText.placeholder = " Home Score..."
+            homeScoreText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
+            homeScoreText.placeholder = " Enter home score..."
             
             view.addSubview(awayScoreText)
-            awayScoreText.frame = CGRect(x: 0, y: (screenWidth * 1.2 / 5) + globalHeight + 5, width: view.frame.width, height: globalHeight)
-            awayScoreText.placeholder = " Away Score..."
+            awayScoreText.frame = CGRect(x: 0, y: constraintOfYForSecondText, width: view.frame.width, height: globalHeight)
+            awayScoreText.placeholder = " Enter away score..."
+        } else if updateProgress {
+            view.addSubview(isDone)
+            if challengeType == SELF {
+                view.addSubview(resultText)
+                resultText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
+                
+                isDone.frame = CGRect(x: 0, y: constraintOfY + (screenWidth * 0.8 / 5), width: view.frame.width / 5, height: globalHeight)
+            } else if challengeType == PRIVATE {
+                view.addSubview(homeScoreText)
+                homeScoreText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
+                homeScoreText.placeholder = " Enter home score..."
+                
+                view.addSubview(awayScoreText)
+                awayScoreText.frame = CGRect(x: 0, y: constraintOfYForSecondText, width: view.frame.width, height: globalHeight)
+                awayScoreText.placeholder = " Enter away score..."
+                
+                isDone.frame = CGRect(x: 0, y: constraintOfYForSecondText + (screenWidth * 0.8 / 5), width: view.frame.width / 5, height: globalHeight)
+            }
         }
         navigationItem.rightBarButtonItem = self.editButtonItem
         let rightButton = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.done))
@@ -63,4 +88,6 @@ class UpdateProgressController : UIViewController {
         textField.layer.backgroundColor = UIColor.white.cgColor
         return textField
     }
+    
+    var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
 }

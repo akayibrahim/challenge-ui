@@ -54,3 +54,5 @@ var globalHeight : CGFloat = 44
 var customSubjectLabel = "Custom Subject"
 var ok = "OK"
 var greaterThan = NSMutableAttributedString(string: ">", attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
+var proofed = "PROOFED"
+var scoreForPrivate = " | SCORE | "

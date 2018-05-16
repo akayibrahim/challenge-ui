@@ -66,11 +66,14 @@ class UpdateProgressController : UIViewController {
             if result {
                 let resultContent = controller.tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
                 resultContent.labelOtherSide.text = resultText.text
+                controller.updateScoreAndResult(indexPath: resultIndexPath)
             } else if score {
                 let scoreContent = controller.tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
+                let addViewContent = controller.tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
                 scoreContent.labelOtherSide.text = "\(homeScoreText.text!) - \(awayScoreText.text!)"
+                addViewContent.addChallenge.score.text = "\(homeScoreText.text!)\(scoreForPrivate)\(awayScoreText.text!)"
+                controller.updateScoreAndResult(indexPath: scoreIndexPath)
             }
-            controller.updateScoreAndResult()
         }
         navigationController?.popViewController(animated: true)
     }

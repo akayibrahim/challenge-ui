@@ -20,13 +20,15 @@
               "amILike" : false,
               "countOfProofs": 0,
               "insertTime" : "12 HOURS AGO",
-              "status": "has a new challenge"
+              "status": "has a new challenge",
+              "result": "10",
+              "goal":"10"
           },
           {
               "id": "87091823091283",
           "name": "Seher Can Akay",
           "profileImageName": "gandhi_profile",
-              "thinksAboutChallenge": "Seni bu defa yeneceğim :)",
+              "thinksAboutChallenge": "Seni bu defa yeneceğim :)",              
           "countOfLike": 13,
           "countOfComments": 4,
           "chlDate": "20/10/2017",
@@ -51,7 +53,7 @@
                                     }
                                     ],
           "type": "PRIVATE",
-          "done" : true,
+          "done" : false,
           "firstTeamCount" : "1",
           "secondTeamCount" : "1",
               "isComeFromSelf" : false,
@@ -61,7 +63,9 @@
               "secondTeamSupportCount" : 15,
               "countOfProofs": 0,
               "insertTime" : "14 HOURS AGO",
-              "status": "has a new challenge"
+              "status": "has finished challenge",
+              "firstTeamScore" : "2",
+              "secondTeamScore" : "4"
           },
           {
               "id": "87091823091283",
@@ -116,7 +120,9 @@
               "secondTeamSupportCount" : 25,
               "countOfProofs": 0,
               "insertTime" : "3 DAYS AGO",
-              "status": "has a new challenge"
+              "status": "has finished challenge",
+              "firstTeamScore" : "2",
+              "secondTeamScore" : "5"
           },
           {
               "id": "87091823091283",
@@ -185,7 +191,9 @@
               "secondTeamSupportCount" : 35,
               "countOfProofs": 0,
               "insertTime" : "18 HOURS AGO",
-              "status": "has a new challenge"
+              "status": "has finished challenge",
+              "firstTeamScore" : "2",
+              "secondTeamScore" : "3"
           },
           {
               "id": "87091823091283",
@@ -268,7 +276,9 @@
               "secondTeamSupportCount" : 45,
               "countOfProofs": 0,
               "insertTime" : "2 DAYS AGO",
-              "status": "has a new challenge"
+              "status": "has finished challenge",
+              "firstTeamScore" : "1",
+              "secondTeamScore" : "3"
           },
           {
               "id": "87091823091283",
@@ -481,7 +491,7 @@
               "isComeFromSelf" : false,
               "countOfProofs": 7,
               "insertTime" : "2 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "proofed challenge"
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -502,13 +512,13 @@
               "comments": [],
               "countOfComments": 0,
               "type": "SELF",
-              "score": "advance!",
-              "goal": "advance!",
+              "result": "10",
+              "goal": "10",
               "isComeFromSelf" : false,
               "amILike" : true,
               "countOfProofs": 0,
               "insertTime" : "23 HOURS AGO",
-              "status": "has a new challenge"
+              "status": "has finished challenge"
               }
         ]
 }

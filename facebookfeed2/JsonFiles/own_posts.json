@@ -15,7 +15,8 @@
           "firstTeamCount" : "1",
           "secondTeamCount" : "0",
           "challengerFBId" : "10156204749600712",
-              "isComeFromSelf" : true
+              "isComeFromSelf" : true,
+              "result": "11/Year"
           },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -36,7 +37,7 @@
               "comments": [],
               "countOfComments": 0,
               "type": "SELF",
-              "score": "advance!",
+              "result": "20K",
               "goal": "advance!",
               "isComeFromSelf" : true
               },
@@ -59,7 +60,7 @@
               "comments": [],
               "countOfComments": 0,
               "type": "SELF",
-              "score": "advance!",
+              "result": "ADVANCE!",
               "goal": "advance!",
               "isComeFromSelf" : true
               },
@@ -110,7 +111,7 @@
               "comments": [],
               "countOfComments": 0,
               "type": "SELF",
-              "score": "advance!",
+              "result": "10K",
               "goal": "advance!",
               "isComeFromSelf" : true
               },
@@ -133,7 +134,7 @@
               "comments": [],
               "countOfComments": 0,
               "type": "SELF",
-              "score": "advance!",
+              "result": "5K",
               "goal": "advance!",
               "isComeFromSelf" : true
               },
@@ -172,6 +173,44 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "challengerFBId": "10156204749600712"
+              },
+              {
+              "name": "İbrahim AKAY",
+              "thinksAboutChallenge": "Iphone will sell twice? n3",
+              "countOfLike": 333,
+              "countOfComments": 444,
+              "chlDate": "20/10/2017",
+              "untilDate": "20/10/2017",
+              "untilDateStr": "LAST 14 DAY",
+              "subject" : "TENNIS",
+              "versusAttendanceList" : [
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":true,
+                                        "secondTeamMember":false,
+                                        "facebookID": "634127860"
+                                        },
+                                        {
+                                        "memberId":"5a1f048318e6063778be8f78",
+                                        "accept":false,
+                                        "firstTeamMember":false,
+                                        "secondTeamMember":true,
+                                        "facebookID": "10156204749600712"
+                                        }
+                                        ],
+              "type": "PRIVATE",
+              "done" : true,
+              "firstTeamCount" : "1",
+              "secondTeamCount" : "1",
+              "isComeFromSelf" : true,
+              "supportFirstTeam" : true,
+              "supportSecondTeam" : false,
+              "firstTeamSupportCount" : 13,
+              "secondTeamSupportCount" : 15,
+              "challengerFBId": "10156204749600712",
+              "firstTeamScore" : "3",
+              "secondTeamScore" : "5"
               }
         ]
 }

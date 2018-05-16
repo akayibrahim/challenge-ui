@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TrendsController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class TrendsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
     let searchBar = UISearchBar()
     var trendRequest = [TrendRequest]()
     let cellId = "cellId"
@@ -19,6 +19,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         
         self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
         searchBar.placeholder = "Search"
+        searchBar.delegate = self
         self.navigationItem.titleView = searchBar
         collectionView!.register(TrendRequestCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
@@ -32,6 +33,46 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         loadTrends()
         
         self.hideKeyboardWhenTappedAround()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        self.searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBarCancelButton()
+        onRefesh()
+    }
+    
+    func searchBarCancelButton() {
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked( _ searchBar: UISearchBar) {
+        if let path = Bundle.main.path(forResource: "trend_request_1", ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    self.trendRequest = [TrendRequest]()
+                    for postDictionary in postsArray {
+                        let trendReq = TrendRequest()
+                        trendReq.setValuesForKeys(postDictionary)
+                        self.trendRequest.append(trendReq)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        self.collectionView?.reloadData()
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
     }
     
     func onRefesh() {

@@ -48,23 +48,49 @@ class AddChallengeView: UIView {
         
         let screenSize = UIScreen.main.bounds
         
-        middleTopGuide.heightAnchor.constraint(equalToConstant: 0).isActive = true
+        middleTopGuide.heightAnchor.constraint(equalToConstant: screenWidth * 1 / 6).isActive = true
         
         middleTopGuide.topAnchor.constraint(equalTo: challengeView.topAnchor, constant: 1).isActive = true
         
-        challengeView.addSubview(untilDateLabel)
-        challengeView.addTopAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
-        challengeView.addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
+        addSubview(finishFlag)
+        addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.1 / 6))
+        addWidthAnchor(finishFlag, multiplier: 0.8 / 6)
+        finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+        addHeightAnchor(finishFlag, multiplier: 0.8 / 6)
+        finishFlag.isHidden = true
+        
+        addSubview(untilDateLabel)
+        addBottomAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
+        addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
         untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        challengeView.addHeightAnchor(untilDateLabel, multiplier: 1/6)
+        addHeightAnchor(untilDateLabel, multiplier: 1/6)
         
         challengeView.addSubview(vsImageView)
-        challengeView.addTopAnchor(vsImageView, anchor: untilDateLabel.bottomAnchor, constant: 0)
+        challengeView.addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: 0)
         vsImageView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         challengeView.addHeightAnchor(vsImageView, multiplier: 1/6)
         
         middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
+        
+        addSubview(clapping)
+        addTopAnchor(clapping, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.3 / 18)
+        clapping.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+        addWidthAnchor(clapping, multiplier: 0.8 / 6)
+        addHeightAnchor(clapping, multiplier: 0.8 / 6)
+        clapping.isHidden = true
+        
+        addSubview(score)
+        addTopAnchor(score, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1/18)
+        score.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+        addWidthAnchor(score, multiplier: 1.2 / 6)
+        addHeightAnchor(score, multiplier: 0.4 / 6)
+        score.backgroundColor = navAndTabColor
+        score.textColor = UIColor.white
+        score.layer.cornerRadius = 5
+        score.layer.masksToBounds = true
+        score.font = UIFont.boldSystemFont(ofSize: 10)
+        score.isHidden = true
         
         middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0).isActive = true
         middleBottomGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor, constant: screenSize.width * 1/6).isActive = true
@@ -109,6 +135,15 @@ class AddChallengeView: UIView {
     
     func removeChlrFromChallengeView(challengeView : UIView) {
         self.firstOneChlrPeopleImageView.removeFromSuperview()
+        self.firstTwoChlrPeopleImageView.removeFromSuperview()
+        self.secondTwoChlrPeopleImageView.removeFromSuperview()
+        self.firstThreeChlrPeopleImageView.removeFromSuperview()
+        self.secondThreeChlrPeopleImageView.removeFromSuperview()
+        self.thirdThreePeopleImageView.removeFromSuperview()
+        self.firstFourPeopleImageView.removeFromSuperview()
+        self.secondFourPeopleImageView.removeFromSuperview()
+        self.thirdFourPeopleImageView.removeFromSuperview()
+        self.moreFourPeopleImageView.removeFromSuperview()
     }
     
     func generateFirstTeam(count : Int) {
@@ -193,7 +228,10 @@ class AddChallengeView: UIView {
     
     func removeFromChallengeView(challengeView : UIView) {
         self.firstOnePeopleImageView.removeFromSuperview()
+        self.firstTwoPeopleImageView.removeFromSuperview()
+        self.secondTwoPeopleImageView.removeFromSuperview()
         self.firstThreePeopleImageView.removeFromSuperview()
+        self.secondThreePeopleImageView.removeFromSuperview()
         self.secondThreePeopleImageView.removeFromSuperview()
         self.thirdThreePeopleImageView.removeFromSuperview()
         self.firstFourPeopleImageView.removeFromSuperview()
@@ -319,6 +357,7 @@ class AddChallengeView: UIView {
     let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Public", "Self", "Private"])
     
     let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
+    let finishFlag: UIButton = FeedCell.buttonForTitle("", imageName: "finishFlag")
     
     let vsImageView: UIImageView = {
         let imageView = UIImageView()
@@ -333,4 +372,7 @@ class AddChallengeView: UIView {
     let leftMiddleTopWidth = UILayoutGuide()
     let rightMiddleBottomWidth = UILayoutGuide()
     let leftMiddleBottomWidth = UILayoutGuide()
+    
+    let clapping = FeedCell.buttonForTitle("", imageName: "clap")
+    let score: UILabel = FeedCell.label(12)
 }

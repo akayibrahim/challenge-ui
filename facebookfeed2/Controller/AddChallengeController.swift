@@ -125,6 +125,7 @@ class AddChallengeController: UITableViewController {
     }
     
     func createAddChallengeInstance() {
+        addChallengeIns = [AddChallenge]()
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Type", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Subject", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
@@ -201,12 +202,13 @@ class AddChallengeController: UITableViewController {
             selectionTable.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath == deadlineIndexPath {
-            let addViewCellContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
+            let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
             if (switchDeadline) {                
-                addViewCellContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: true)) DAYS"
+                addViewContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: true)) DAYS"
                 self.tableView?.scrollToRow(at: resultIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
             } else {
-                addViewCellContent.addChallenge.untilDateLabel.text = "Done!"
+                addViewContent.addChallenge.untilDateLabel.isHidden = true
+                addViewContent.addChallenge.finishFlag.isHidden = false
             }
         } else if indexPath == resultIndexPath {
             let updateProgress = UpdateProgressController()
@@ -329,7 +331,7 @@ class AddChallengeController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)        
-        let cell = TableViewCellContent(frame: frameOfCell, cellRow: indexPath.row)
+        let cell = TableViewCellContent(frame: frameOfCell, cellRow: indexPath.row, typeIndex: addChallengeIns[typeIndex].resultId!)
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         if indexPath == segControlIndexPath {
             cell.label.text = addChallengeIns[typeIndex].labelText
@@ -381,14 +383,20 @@ class AddChallengeController: UITableViewController {
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
         if (doneSwitch.isDone.isOn) {
             switchDeadline = false
-            addViewContent.addChallenge.untilDateLabel.text = "Done!"
+            addViewContent.addChallenge.untilDateLabel.isHidden = true
+            addViewContent.addChallenge.finishFlag.isHidden = false
             if segControlContent.mySegControl.selectedSegmentIndex == 1 {
                 switchResult = true
+                addViewContent.addChallenge.clapping.isHidden = false
             } else if segControlContent.mySegControl.selectedSegmentIndex == 2 {
                 switchScore = true
+                addViewContent.addChallenge.score.isHidden = false
+                addViewContent.addChallenge.score.text = "-\(scoreForPrivate)-"
             }
         } else {
             switchDeadline = true
+            addViewContent.addChallenge.untilDateLabel.isHidden = false
+            addViewContent.addChallenge.finishFlag.isHidden = true
             addViewContent.addChallenge.untilDateLabel.text = "Deadline"
             if segControlContent.mySegControl.selectedSegmentIndex == 1 {
                 switchResult = false
@@ -415,7 +423,7 @@ class AddChallengeController: UITableViewController {
             itemsCount += 1
         }
         cellContent.labelOtherSide.text = itemsResult.trim()
-        addChallengeIns[popIndexPath.row].resultText = itemsResult.trim()
+        addChallengeIns[popIndexPath.row].resultText = itemsResult.trim()        
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         let subjectContent = tableView.cellForRow(at: subjectIndexPath) as! TableViewCellContent
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
@@ -446,6 +454,7 @@ class AddChallengeController: UITableViewController {
     }
     
     func segControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
+        createAddChallengeInstance()
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
         var selItems = [SelectedItems]()
@@ -497,11 +506,7 @@ class AddChallengeController: UITableViewController {
             tableView.reloadRows(at: [scoreIndexPath], with: .fade)
             tableView.reloadRows(at: [resultIndexPath], with: .fade)
             leftSide.removeAll()
-            rightSide.removeAll()
-            if segControlContent.mySegControl.selectedSegmentIndex == 1 {
-                let visibilityContent = tableView.cellForRow(at: visibilityIndexPath) as! TableViewCellContent
-                visibilityContent.visibilitySegControl.insertSegment(withTitle: justMe, at: 0, animated: true)
-            }
+            rightSide.removeAll()            
         } else if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex || (popIndexPath == subjectIndexPath && segControlContent.mySegControl.selectedSegmentIndex == 1) {
             tableView.reloadRows(at: [addViewIndexPath], with: .fade)
         }
@@ -543,7 +548,8 @@ class AddChallengeController: UITableViewController {
         if (switchDeadline) {
             addViewContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: false)) DAYS"
         } else {
-            addViewContent.addChallenge.untilDateLabel.text = "Done!"
+            addViewContent.addChallenge.untilDateLabel.isHidden = true
+            addViewContent.addChallenge.finishFlag.isHidden = false
         }
         addViewContent.addChallenge.generateSecondTeam(count: result.count)
         if result.count == 1 {
@@ -588,10 +594,14 @@ class AddChallengeController: UITableViewController {
         }
     }
     
-    func updateScoreAndResult() {
-        let scoreContent = tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
-        let resultContent = tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
-        addChallengeIns[scoreIndex].labelAtt = NSMutableAttributedString(string: scoreContent.labelOtherSide.text!, attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
-        addChallengeIns[resultIndex].labelAtt = NSMutableAttributedString(string: resultContent.labelOtherSide.text!, attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
+    func updateScoreAndResult(indexPath: IndexPath) {
+        if indexPath == scoreIndexPath {
+            let scoreContent = tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
+            addChallengeIns[scoreIndex].labelAtt = NSMutableAttributedString(string: scoreContent.labelOtherSide.text!, attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
+        }
+        if indexPath == resultIndexPath {
+            let resultContent = tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
+            addChallengeIns[resultIndex].labelAtt = NSMutableAttributedString(string: resultContent.labelOtherSide.text!, attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
+        }
     }
 }

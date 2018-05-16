@@ -299,6 +299,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             feedCell.supportButton.addTarget(self, action: #selector(self.supportChallenge), for: UIControlEvents.touchUpInside)
             feedCell.supportButtonMatch.addTarget(self, action: #selector(self.supportChallengeMatch), for: UIControlEvents.touchUpInside)
         }
+        if feedCell.post?.type != SELF {
+            if feedCell.post?.secondTeamCount == "0" {
+                feedCell.firstOnePeopleImageView.contentMode = .scaleAspectFit
+            } else if feedCell.post?.secondTeamCount == "1" {
+                feedCell.firstOnePeopleImageView.contentMode = .scaleAspectFill
+            }
+        }
         feedCell.viewComments.addTarget(self, action: #selector(self.viewComments), for: UIControlEvents.touchUpInside)
         feedCell.viewProofs.addTarget(self, action: #selector(self.viewProofs), for: UIControlEvents.touchUpInside)
         feedCell.addComments.addTarget(self, action: #selector(self.addComments), for: UIControlEvents.touchUpInside)

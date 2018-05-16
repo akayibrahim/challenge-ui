@@ -27,7 +27,7 @@ class TableViewCellContent: UITableViewCell {
     let screenSize = UIScreen.main.bounds
     var chlViewHeight: CGFloat = 17.5/30
     var tableRowHeightHeight: CGFloat = 44
-    init(frame: CGRect, cellRow : Int) {
+    init(frame: CGRect, cellRow : Int, typeIndex : Int) {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
         let contentGuide = self.readableContentGuide
         
@@ -51,10 +51,17 @@ class TableViewCellContent: UITableViewCell {
             datePicker.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             datePicker.minimumDate = Date()
         } else if cellRow == visibilityIndexPath.row {
-            visibilitySegControl.selectedSegmentIndex = 0
-            addSubview(visibilitySegControl)
-            addTrailingAnchor(visibilitySegControl, anchor: contentGuide.trailingAnchor, constant: 0)
-            visibilitySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            if typeIndex == 1 {
+                visibilitySegControlForSelf.selectedSegmentIndex = 0
+                addSubview(visibilitySegControlForSelf)
+                addTrailingAnchor(visibilitySegControlForSelf, anchor: contentGuide.trailingAnchor, constant: 0)
+                visibilitySegControlForSelf.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            } else {
+                visibilitySegControl.selectedSegmentIndex = 0
+                addSubview(visibilitySegControl)
+                addTrailingAnchor(visibilitySegControl, anchor: contentGuide.trailingAnchor, constant: 0)
+                visibilitySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            }
         } else if cellRow == doneIndexPath.row {
             addSubview(isDone)
             addTrailingAnchor(isDone, anchor: contentGuide.trailingAnchor, constant: 0)
@@ -82,8 +89,9 @@ class TableViewCellContent: UITableViewCell {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-        
-    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Friend", "Everyone"])
+    
+    let visibilitySegControlForSelf: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Everyone", "Friend", "Just Me"])
+    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Everyone", "Friend"])
     let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Public", "Self", "Private"])
     let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
     let labelOtherSide: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.gray)

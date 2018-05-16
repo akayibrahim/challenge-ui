@@ -61,6 +61,11 @@ class FeedCell: UICollectionViewCell {
         self.nameAndStatusLabel.removeFromSuperview()
         self.challengerImageView.image = UIImage()
         self.updateProgress.removeFromSuperview()
+        self.updateRefreshLabel.removeFromSuperview()
+        self.untilDateLabel.removeFromSuperview()
+        self.finishFlag.removeFromSuperview()
+        self.score.removeFromSuperview()
+        self.clapping.removeFromSuperview()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -100,8 +105,6 @@ class FeedCell: UICollectionViewCell {
                 if post?.secondTeamCount == "0" {
                     setImage(name: worldImage, imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.contentMode = .scaleAspectFit
-                } else {
-                    firstOnePeopleImageView.contentMode = .scaleAspectFill
                 }
                 for join in (post?.joinAttendanceList)! {
                     if (join.FacebookID != post?.challengerFBId) {
@@ -146,6 +149,11 @@ class FeedCell: UICollectionViewCell {
             } else if post?.type == PRIVATE {
                 if let subject = post?.subject {
                     subjectImageView.image = UIImage(named: subject)
+                }
+                if let done = post?.done, let firstTeamScore = post?.firstTeamScore, let secondTeamScore = post?.secondTeamScore {
+                    if done {
+                        score.text = "\(firstTeamScore)\(scoreForPrivate)\(secondTeamScore)"
+                    }
                 }
                 var firstImg: Bool = false;
                 var secondImg: Bool = false;
@@ -221,12 +229,15 @@ class FeedCell: UICollectionViewCell {
                     setImage(name: subject, imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.contentMode = .scaleAspectFill
                 }
-                if let countOfLike = post?.countOfLike {
-                    let countAtt = NSMutableAttributedString(string: "+\(countOfLike)", attributes: nil)
-                    let supportAtt = NSMutableAttributedString(string: " Likes", attributes: [NSForegroundColorAttributeName: UIColor.red, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 10)])
-                    countAtt.append(supportAtt)
-                    likeLabel.attributedText = countAtt
+                if let result = post?.result {
+                    score.text = result
                 }
+            }
+            if let countOfLike = post?.countOfLike {
+                let countAtt = NSMutableAttributedString(string: "+\(countOfLike)", attributes: nil)
+                let supportAtt = NSMutableAttributedString(string: " Likes", attributes: [NSForegroundColorAttributeName: UIColor.red, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 10)])
+                countAtt.append(supportAtt)
+                likeLabel.attributedText = countAtt
             }
             if let untilDate = post?.untilDateStr {
                 untilDateLabel.text = "\(untilDate)"
@@ -385,74 +396,99 @@ class FeedCell: UICollectionViewCell {
         
         generateFirstTeam(contentGuide, firstTeamCount: firstTeamCount);
         
-        middleTopGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0).isActive = true
+        middleTopGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 6).isActive = true
         
         middleTopGuide.topAnchor.constraint(equalTo: dividerLineView.bottomAnchor, constant: 1).isActive = true
         
-        addTopAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
-        addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
-        untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        addHeightAnchor(untilDateLabel, multiplier: 1/6)
+        if done {
+            addSubview(finishFlag)
+            addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.15 / 6))
+            addWidthAnchor(finishFlag, multiplier: 0.8 / 6)
+            finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            addHeightAnchor(finishFlag, multiplier: 0.8 / 6)
+            
+            addSubview(score)
+            addTopAnchor(score, anchor: finishFlag.bottomAnchor, constant: -(screenSize.width * 0.8 / 18))
+            score.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            addWidthAnchor(score, multiplier: 1.2 / 6)
+            addHeightAnchor(score, multiplier: 0.3 / 6)
+            score.backgroundColor = navAndTabColor
+            score.textColor = UIColor.white
+            score.layer.cornerRadius = 5
+            score.layer.masksToBounds = true
+            if type == PUBLIC {
+                score.font = UIFont.boldSystemFont(ofSize: 12)
+                score.text = proofed
+            } else {
+                score.font = UIFont.boldSystemFont(ofSize: 10)
+            }
+        } else {
+            addSubview(untilDateLabel)
+            addBottomAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
+            addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
+            untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            addHeightAnchor(untilDateLabel, multiplier: 1/6)
+        }
         
-        addTopAnchor(vsImageView, anchor: untilDateLabel.bottomAnchor, constant: 0)
+        addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: 0)
         vsImageView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         addHeightAnchor(vsImageView, multiplier: 1/6)
         
         middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
-        if !isComeFromSelf {
-            if type == PRIVATE {
-                addSubview(supportButton)
-                addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.3/18)
-                supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.35/3)).isActive = true
-                addWidthAnchor(supportButton, multiplier: 0.3/3)
-                addHeightAnchor(supportButton, multiplier: 1.8/18)
-                
-                addSubview(supportButtonMatch)
-                addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.3/18)
-                supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.35/3)).isActive = true
-                addWidthAnchor(supportButtonMatch, multiplier: 0.3/3)
-                addHeightAnchor(supportButtonMatch, multiplier: 1.8/18)
-                
-                addSubview(supportLabel)
-                addBottomAnchor(supportLabel, anchor: supportButton.topAnchor, constant: 0)
-                addTrailingAnchor(supportLabel, anchor: supportButton.trailingAnchor, constant: screenSize.width * 0.4/18)
-                addWidthAnchor(supportLabel, multiplier: 0.3/3)
-                addHeightAnchor(supportLabel, multiplier: 1/30)
-                
-                addSubview(supportMatchLabel)
-                addBottomAnchor(supportMatchLabel, anchor: supportButtonMatch.topAnchor, constant: 0)
-                addLeadingAnchor(supportMatchLabel, anchor: supportButtonMatch.leadingAnchor, constant: -(screenSize.width * 0.4/18))
-                addWidthAnchor(supportMatchLabel, multiplier: 0.3/3)
-                addHeightAnchor(supportMatchLabel, multiplier: 1/30)
-                
-                addSubview(supportTextLabel)
-                addTopAnchor(supportTextLabel, anchor: supportLabel.bottomAnchor, constant: -(screenSize.width * 0.4/18))
-                supportTextLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
-                addWidthAnchor(supportTextLabel, multiplier: 1/3)
-                addHeightAnchor(supportTextLabel, multiplier: 1/15)
-                supportTextLabel.textColor = UIColor.red
-            } else if type == PUBLIC {
-                addSubview(joinButton)
-                addTopAnchor(joinButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
-                joinButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                addWidthAnchor(joinButton, multiplier: 0.8/6)
-                addHeightAnchor(joinButton, multiplier: 0.8/6)
+        if done {
+            if isComeFromSelf {
+                addSubview(clapping)
+                addTopAnchor(clapping, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.3 / 18)
+                clapping.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                addWidthAnchor(clapping, multiplier: 0.8 / 6)
+                addHeightAnchor(clapping, multiplier: 0.8 / 6)
             } else {
-                addSubview(supportSelfButton)
-                addTopAnchor(supportSelfButton, anchor: middleCenterGuide.bottomAnchor, constant: 0)
-                supportSelfButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                addWidthAnchor(supportSelfButton, multiplier: 0.6/6)
-                addHeightAnchor(supportSelfButton, multiplier: 0.6/6)
-                
-                addSubview(likeLabel)
-                addTopAnchor(likeLabel, anchor: supportSelfButton.bottomAnchor, constant: 0)
-                likeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                addWidthAnchor(likeLabel, multiplier: 1/3)
-                addHeightAnchor(likeLabel, multiplier: 1/15)
+                selfTypeLikeButtonAndLabel(contentGuide, middleCenterGuide: middleCenterGuide)
             }
         } else {
-            if !done {
+            if !isComeFromSelf {
+                if type == PRIVATE {
+                    addSubview(supportButton)
+                    addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.3/18)
+                    supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.35/3)).isActive = true
+                    addWidthAnchor(supportButton, multiplier: 0.3/3)
+                    addHeightAnchor(supportButton, multiplier: 1.8/18)
+                    
+                    addSubview(supportButtonMatch)
+                    addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.3/18)
+                    supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.35/3)).isActive = true
+                    addWidthAnchor(supportButtonMatch, multiplier: 0.3/3)
+                    addHeightAnchor(supportButtonMatch, multiplier: 1.8/18)
+                    
+                    addSubview(supportLabel)
+                    addBottomAnchor(supportLabel, anchor: supportButton.topAnchor, constant: 0)
+                    addTrailingAnchor(supportLabel, anchor: supportButton.trailingAnchor, constant: screenSize.width * 0.4/18)
+                    addWidthAnchor(supportLabel, multiplier: 0.3/3)
+                    addHeightAnchor(supportLabel, multiplier: 1/30)
+                    
+                    addSubview(supportMatchLabel)
+                    addBottomAnchor(supportMatchLabel, anchor: supportButtonMatch.topAnchor, constant: 0)
+                    addLeadingAnchor(supportMatchLabel, anchor: supportButtonMatch.leadingAnchor, constant: -(screenSize.width * 0.4/18))
+                    addWidthAnchor(supportMatchLabel, multiplier: 0.3/3)
+                    addHeightAnchor(supportMatchLabel, multiplier: 1/30)
+                    
+                    addSubview(supportTextLabel)
+                    addTopAnchor(supportTextLabel, anchor: supportLabel.bottomAnchor, constant: -(screenSize.width * 0.4/18))
+                    supportTextLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
+                    addWidthAnchor(supportTextLabel, multiplier: 1/3)
+                    addHeightAnchor(supportTextLabel, multiplier: 1/15)
+                    supportTextLabel.textColor = UIColor.red
+                } else if type == PUBLIC {
+                    addSubview(joinButton)
+                    addTopAnchor(joinButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
+                    joinButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                    addWidthAnchor(joinButton, multiplier: 0.8/6)
+                    addHeightAnchor(joinButton, multiplier: 0.8/6)
+                } else {
+                    selfTypeLikeButtonAndLabel(contentGuide, middleCenterGuide: middleCenterGuide)
+                }
+            } else {
                 addSubview(updateProgress)
                 addTopAnchor(updateProgress, anchor: middleCenterGuide.bottomAnchor, constant: screenWidth * 0.1 / 6)
                 updateProgress.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
@@ -466,7 +502,6 @@ class FeedCell: UICollectionViewCell {
                 addHeightAnchor(updateRefreshLabel, multiplier: 1/15)
                 updateRefreshLabel.text = "Update\nProgress"
                 updateRefreshLabel.numberOfLines = 2
-
             }
         }
         
@@ -485,6 +520,20 @@ class FeedCell: UICollectionViewCell {
         }
         
         generateSecondTeam(contentGuide, secondTeamCount: secondTeamCount, type: type)
+    }
+    
+    func selfTypeLikeButtonAndLabel(_ contentGuide: UILayoutGuide, middleCenterGuide: UILayoutGuide) {
+        addSubview(supportSelfButton)
+        addTopAnchor(supportSelfButton, anchor: middleCenterGuide.bottomAnchor, constant: 0)
+        supportSelfButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+        addWidthAnchor(supportSelfButton, multiplier: 0.6/6)
+        addHeightAnchor(supportSelfButton, multiplier: 0.6/6)
+        
+        addSubview(likeLabel)
+        addTopAnchor(likeLabel, anchor: supportSelfButton.bottomAnchor, constant: 0)
+        likeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+        addWidthAnchor(likeLabel, multiplier: 1/3)
+        addHeightAnchor(likeLabel, multiplier: 1/15)
     }
     
     var widthOfImage: CGFloat = 1/3
@@ -626,8 +675,7 @@ class FeedCell: UICollectionViewCell {
     
     func addGeneralSubViews() {
         addSubview(profileImageView)
-        addSubview(nameAndStatusLabel)
-        addSubview(untilDateLabel)
+        addSubview(nameAndStatusLabel)        
         addSubview(vsImageView)
         addSubview(subjectImageView)
         addSubview(dividerLineView)
@@ -752,6 +800,7 @@ class FeedCell: UICollectionViewCell {
     let supportLabel: UILabel = FeedCell.label(12)
     let supportTextLabel: UILabel = FeedCell.label(8)
     let supportMatchLabel: UILabel = FeedCell.label(12)
+    let score: UILabel = FeedCell.label(12)
     
     static func lineForDivider() -> UIView {
         let view = UIView()
@@ -787,6 +836,8 @@ class FeedCell: UICollectionViewCell {
     let addProofs = FeedCell.buttonForTitle(addProofsVar, imageName: "")
     let supportButton = FeedCell.buttonForTitle("", imageName: support)
     let supportButtonMatch = FeedCell.buttonForTitle("", imageName: support)
+    let finishFlag = FeedCell.buttonForTitle("", imageName: "finishFlag")
+    let clapping = FeedCell.buttonForTitle("", imageName: "clap")
     
     static func subClasssButtonForTitle(_ title: String, imageName: String) -> subclasssedUIButton {
         let button = subclasssedUIButton()

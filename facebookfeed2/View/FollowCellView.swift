@@ -34,6 +34,7 @@ class FollowCellView: UITableViewCell {
         addLeadingAnchor(thinksAboutChallengeView, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.15/10)
         addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
         thinksAboutChallengeView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+        thinksAboutChallengeView.font = UIFont.boldSystemFont(ofSize: 12)
     }
 
     

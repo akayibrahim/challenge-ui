@@ -11,12 +11,9 @@ import UIKit
 class Post: SafeJsonObject {
     var id: String?
     var name: String?
-    var profileImageName: String?
     var thinksAboutChallenge: String?
     var countOfLike: NSNumber?
     var countOfComments: NSNumber?
-    var chlDate: NSDate?
-    var untilDate: NSDate?
     var untilDateStr: NSString?
     var type: String?
     var subject: String?
@@ -38,6 +35,5 @@ class Post: SafeJsonObject {
     var status : String?
     var firstTeamScore : String?
     var secondTeamScore : String?
-    var goal: String?
     var result: String?
 }

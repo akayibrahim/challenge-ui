@@ -124,9 +124,21 @@ class NotificationsController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
+        if indexPath.section == 0 && indexPath.row == 0 {
             followRequest()
+        } else {
+            viewComments()
         }
+    }
+    
+    func viewComments() {
+        let commentsTable = CommentTableViewController()
+        commentsTable.tableTitle = commentsTableTitle
+        // TODO commentsTable.comments = self.comments
+        commentsTable.comment = true
+        commentsTable.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
     func followRequest() {

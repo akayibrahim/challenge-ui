@@ -46,8 +46,9 @@ class NotificationCell: UITableViewCell {
         
         addSubview(contentText)
         addLeadingAnchor(contentText, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.15/10)
-        addTrailingAnchor(contentText, anchor: contentGuide.trailingAnchor, constant: 4)
+        addTrailingAnchor(contentText, anchor: contentGuide.trailingAnchor, constant: 4)        
         contentText.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+        contentText.isUserInteractionEnabled = false
     }
     
     let profileImageView: UIImageView = FeedCell().profileImageView

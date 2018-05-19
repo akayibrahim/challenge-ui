@@ -63,13 +63,14 @@ class UpdateProgressController : UIViewController {
     
     func done() {
         if let controller = navigationController?.viewController(class: AddChallengeController.self) {
+            let addViewContent = controller.tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
             if result {
                 let resultContent = controller.tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
                 resultContent.labelOtherSide.text = resultText.text
+                addViewContent.addChallenge.score.text = "\(resultText.text!)"
                 controller.updateScoreAndResult(indexPath: resultIndexPath)
             } else if score {
                 let scoreContent = controller.tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
-                let addViewContent = controller.tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
                 scoreContent.labelOtherSide.text = "\(homeScoreText.text!) - \(awayScoreText.text!)"
                 addViewContent.addChallenge.score.text = "\(homeScoreText.text!)\(scoreForPrivate)\(awayScoreText.text!)"
                 controller.updateScoreAndResult(indexPath: scoreIndexPath)

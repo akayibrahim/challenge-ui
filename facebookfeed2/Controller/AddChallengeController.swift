@@ -385,18 +385,21 @@ class AddChallengeController: UITableViewController {
             switchDeadline = false
             addViewContent.addChallenge.untilDateLabel.isHidden = true
             addViewContent.addChallenge.finishFlag.isHidden = false
+            addViewContent.addChallenge.clapping.isHidden = false
+            addViewContent.addChallenge.score.isHidden = false
             if segControlContent.mySegControl.selectedSegmentIndex == 1 {
                 switchResult = true
-                addViewContent.addChallenge.clapping.isHidden = false
+                addViewContent.addChallenge.score.text = "-"
             } else if segControlContent.mySegControl.selectedSegmentIndex == 2 {
                 switchScore = true
-                addViewContent.addChallenge.score.isHidden = false
                 addViewContent.addChallenge.score.text = "-\(scoreForPrivate)-"
             }
         } else {
             switchDeadline = true
             addViewContent.addChallenge.untilDateLabel.isHidden = false
             addViewContent.addChallenge.finishFlag.isHidden = true
+            addViewContent.addChallenge.clapping.isHidden = true
+            addViewContent.addChallenge.score.isHidden = true
             addViewContent.addChallenge.untilDateLabel.text = "Deadline"
             if segControlContent.mySegControl.selectedSegmentIndex == 1 {
                 switchResult = false

@@ -37,8 +37,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var posts = [Post]()
     var donePosts = [Post]()
     var notDonePosts = [Post]()
-    var comments = [Comments]()
-    var proofs = [Proofs]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,7 +85,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         } else {
             //        let samplePost = Post()
             //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
-            var jsonFileName = "trends_posts"
+            var jsonFileName = "explorer_posts"
             if self.tabBarController?.selectedIndex == profileIndex {
                 jsonFileName = "own_posts"
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
@@ -131,26 +129,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                                 self.notDonePosts.append(post)
                             }
                             // self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
-            }
-            if let path = Bundle.main.path(forResource: "comments", ofType: "json") {
-                do {
-                    let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                    let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                    if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                        self.comments = [Comments]()
-                        self.proofs = [Proofs]()
-                        for postDictionary in postsArray {
-                            let comment = Comments()
-                            let proof = Proofs()
-                            comment.setValuesForKeys(postDictionary)
-                            self.comments.append(comment)
-                            proof.setValuesForKeys(postDictionary)
-                            self.proofs.append(proof)
                         }
                     }
                 } catch let err {
@@ -266,6 +244,21 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
                 let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10))
                 profileCell.other.addTarget(self, action: #selector(self.openOthers), for: UIControlEvents.touchUpInside)
+                profileCell.followersCount.text = "\(countOffollowers)"
+                let followersCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowersCountTap))
+                profileCell.followersCount.isUserInteractionEnabled = true
+                profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
+                let followersLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowersCountTap))
+                profileCell.followersLabel.isUserInteractionEnabled = true
+                profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)
+                profileCell.followingCount.text = "\(countOffollowing)"
+                let followingCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowingCountTap))
+                profileCell.followingCount.isUserInteractionEnabled = true
+                profileCell.followingCount.addGestureRecognizer(followingCountTapGesture)
+                let followingLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowingCountTap))
+                profileCell.followingLabel.isUserInteractionEnabled = true
+                profileCell.followingLabel.addGestureRecognizer(followingLabelTapGesture)
+                profileCell.challangeCount.text = "\(notDonePosts.count + donePosts.count)"
                 feedCell.addSubview(profileCell)
                 return feedCell
             }
@@ -287,10 +280,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.prepareForReuse()
         feedCell.feedController = self
         feedCell.post = posts[indexPath.item]
-        if feedCell.post?.type == SELF {
-            feedCell.supportSelfButton.tag = indexPath.row
-            feedCell.supportSelfButton.addTarget(self, action: #selector(self.likeSelfs), for: UIControlEvents.touchUpInside)
-        } else if feedCell.post?.type == PUBLIC {
+        feedCell.supportSelfButton.tag = indexPath.row
+        feedCell.supportSelfButton.addTarget(self, action: #selector(self.likeSelfs), for: UIControlEvents.touchUpInside)
+        if feedCell.post?.type == PUBLIC {
             feedCell.joinButton.tag = indexPath.row
             feedCell.joinButton.addTarget(self, action: #selector(self.acceptChallenge), for: UIControlEvents.touchUpInside)
         } else if feedCell.post?.type == PRIVATE {
@@ -313,6 +305,24 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return feedCell
     }
     
+    func handleFollowersCountTap(sender:UILabel){
+        let selectionTable = SelectionTableViewController()
+        selectionTable.tableTitle = "Followers"
+        selectionTable.listMode = true
+        selectionTable.isFollower = true
+        selectionTable.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(selectionTable, animated: true)
+    }
+    
+    func handleFollowingCountTap(sender:UILabel){
+        let selectionTable = SelectionTableViewController()
+        selectionTable.tableTitle = "Following"
+        selectionTable.listMode = true
+        selectionTable.isFollowing = true
+        selectionTable.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(selectionTable, animated: true)
+    }
+    
     func updateProgress(_ sender: subclasssedUIButton) {
         let updateProgress = UpdateProgressController()
         updateProgress.updateProgress = true
@@ -332,7 +342,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func addComments(sender: UIButton) {
         let commentsTable = CommentTableViewController()        
         commentsTable.tableTitle = commentsTableTitle
-        commentsTable.comments = self.comments
+        // TODO commentsTable.comments = self.comments
         commentsTable.comment = true
         commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
@@ -343,7 +353,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func viewComments(sender: UIButton) {
         let commentsTable = CommentTableViewController()
         commentsTable.tableTitle = commentsTableTitle
-        commentsTable.comments = self.comments
+        // TODO commentsTable.comments = self.comments
         commentsTable.comment = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -353,7 +363,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func addProofs(sender: UIButton) {
         let commentsTable = CommentTableViewController()
         commentsTable.tableTitle = proofsTableTitle
-        commentsTable.proofs = self.proofs
+        // TODO commentsTable.proofs = self.proofs
         commentsTable.proof = true
         commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
@@ -364,7 +374,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func viewProofs(sender: UIButton) {
         let commentsTable = CommentTableViewController()
         commentsTable.tableTitle = proofsTableTitle
-        commentsTable.proofs = self.proofs
+        // TODO commentsTable.proofs = self.proofs
         commentsTable.proof = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)

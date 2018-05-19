@@ -17,22 +17,69 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     var otherSideCount : Int!
     var segmentIndex : Int!
     var switchCustomeSubject : Bool = false
+    var listMode : Bool = false
+    var isFollower : Bool = false
+    var followers = [Followers]()
+    var isFollowing : Bool = false
+    var following = [Following]()
+    var labelCell = "labelCell"
+    var followCell = "followCell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height), style: UITableViewStyle.plain)
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "LabelCell")
+        self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height), style: UITableViewStyle.plain)
         self.tableView.delegate = self
         self.tableView.dataSource = self
         tableView.tableFooterView = UIView()
         self.view.addSubview(tableView)
-        navigationItem.title = tableTitle
-        if popIndexPath.row == 3 || popIndexPath.row == 4 {
-            tableView.allowsMultipleSelection = true
-            navigationItem.rightBarButtonItem = self.editButtonItem
-            let rightButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.showEditing))
-            rightButton.tintColor = UIColor.white
-            navigationItem.rightBarButtonItem = rightButton
+        navigationItem.title = tableTitle        
+        if !listMode {
+            self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: labelCell)
+            if popIndexPath.row == 3 || popIndexPath.row == 4 {
+                tableView.allowsMultipleSelection = true
+                navigationItem.rightBarButtonItem = self.editButtonItem
+                let rightButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.showEditing))
+                rightButton.tintColor = UIColor.white
+                navigationItem.rightBarButtonItem = rightButton
+            }
+        } else {
+            self.tableView.register(FollowCellView.self, forCellReuseIdentifier: followCell)
+            if isFollower {
+                if let path = Bundle.main.path(forResource: "followers", ofType: "json") {
+                    do {
+                        let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                        let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                        if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                            self.followers = [Followers]()
+                            for postDictionary in postsArray {
+                                let follower = Followers()
+                                follower.setValuesForKeys(postDictionary)
+                                self.followers.append(follower)
+                            }
+                        }
+                    } catch let err {
+                        print(err)
+                    }
+                }
+            }
+            if isFollowing {
+                if let path = Bundle.main.path(forResource: "following", ofType: "json") {
+                    do {
+                        let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                        let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                        if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                            self.following = [Following]()
+                            for postDictionary in postsArray {
+                                let following = Following()
+                                following.setValuesForKeys(postDictionary)
+                                self.following.append(following)
+                            }
+                        }
+                    } catch let err {
+                        print(err)
+                    }
+                }
+            }
         }
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -85,20 +132,24 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if popIndexPath.row == 2 {
-            if (indexPath.row == (items.count + 2)) {
-                // nothing
-            } else if (indexPath.row == (items.count + 1)) {
-                switchCustomeSubject = !switchCustomeSubject
-                let customSubjectIndex = IndexPath(item: items.count + 2, section: 0)
-                tableView.reloadRows(at: [customSubjectIndex], with: .fade)
-                customeSubjectText.becomeFirstResponder()
-                tableView.scrollToRow(at: customSubjectIndex, at: UITableViewScrollPosition.bottom, animated: true)
-            } else if (indexPath.row == items.count) {
-                // nothing
-            } else {
-                updateAndPopViewController(subjectName: items[indexPath.row].name)
+        if !listMode {
+            if popIndexPath.row == 2 {
+                if (indexPath.row == (items.count + 2)) {
+                    // nothing
+                } else if (indexPath.row == (items.count + 1)) {
+                    switchCustomeSubject = !switchCustomeSubject
+                    let customSubjectIndex = IndexPath(item: items.count + 2, section: 0)
+                    tableView.reloadRows(at: [customSubjectIndex], with: .fade)
+                    customeSubjectText.becomeFirstResponder()
+                    tableView.scrollToRow(at: customSubjectIndex, at: UITableViewScrollPosition.bottom, animated: true)
+                } else if (indexPath.row == items.count) {
+                    // nothing
+                } else {
+                    updateAndPopViewController(subjectName: items[indexPath.row].name)
+                }
             }
+        } else {
+            
         }
     }
     
@@ -114,52 +165,77 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if (indexPath.row == (items.count + 2)) {
-            if !switchCustomeSubject {
-                return 0
+        if !listMode {
+            if (indexPath.row == (items.count + 2)) {
+                if !switchCustomeSubject {
+                    return 0
+                }
             }
         }
         return 44
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
-            return items.count
+        if !listMode {
+            if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
+                return items.count
+            } else {
+                return items.count + 3
+            }
         } else {
-            return items.count + 3
+            if isFollower {
+                return followers.count
+            } else if isFollowing {
+                return following.count
+            }
         }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath)
-        if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
-            cell.textLabel?.text = items[indexPath.row].name
-        } else {
-            if (indexPath.row == (items.count + 2)) {
-                let view = UIView()
-                view.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: globalHeight)
-                view.addSubview(customeSubjectText)
-                customeSubjectText.frame = CGRect(x: 0, y: 0, width: view.frame.width * 4 / 5, height: globalHeight)
-                customeSubjectText.placeholder = "Enter custom subject..."
-                customeSubjectText.autocapitalizationType = .allCharacters
-                view.addSubview(saveButton)
-                saveButton.frame = CGRect(x: view.frame.width * 4 / 5, y: 0, width: view.frame.width * 1 / 5, height: globalHeight)
-                saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)
-                saveButton.backgroundColor = navAndTabColor
-                saveButton.layer.borderWidth = 0
-                saveButton.setTitleColor(UIColor.white, for: UIControlState())
-                cell.addSubview(view)
-                cell.isHidden = !switchCustomeSubject
-            } else if (indexPath.row == (items.count + 1)) {
-                cell.textLabel?.text = customSubjectLabel
-            } else if (indexPath.row == items.count) {
-                cell.backgroundColor = pagesBackColor
-                cell.selectionStyle = UITableViewCellSelectionStyle.none
-            } else {
+        if !listMode {
+            let cell = tableView.dequeueReusableCell(withIdentifier: labelCell, for: indexPath as IndexPath)
+            if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
                 cell.textLabel?.text = items[indexPath.row].name
+            } else {
+                if (indexPath.row == (items.count + 2)) {
+                    let view = UIView()
+                    view.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: globalHeight)
+                    view.addSubview(customeSubjectText)
+                    customeSubjectText.frame = CGRect(x: 0, y: 0, width: view.frame.width * 4 / 5, height: globalHeight)
+                    customeSubjectText.placeholder = "Enter custom subject..."
+                    customeSubjectText.autocapitalizationType = .allCharacters
+                    view.addSubview(saveButton)
+                    saveButton.frame = CGRect(x: view.frame.width * 4 / 5, y: 0, width: view.frame.width * 1 / 5, height: globalHeight)
+                    saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)
+                    saveButton.backgroundColor = navAndTabColor
+                    saveButton.layer.borderWidth = 0
+                    saveButton.setTitleColor(UIColor.white, for: UIControlState())
+                    cell.addSubview(view)
+                    cell.isHidden = !switchCustomeSubject
+                } else if (indexPath.row == (items.count + 1)) {
+                    cell.textLabel?.text = customSubjectLabel
+                } else if (indexPath.row == items.count) {
+                    cell.backgroundColor = pagesBackColor
+                    cell.selectionStyle = UITableViewCellSelectionStyle.none
+                } else {
+                    cell.textLabel?.text = items[indexPath.row].name
+                }
             }
+            return cell
+        } else {
+            let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: globalHeight)
+            let cell = FollowCellView(frame: frameOfCell)
+            if isFollower {
+                setImage(fbID: followers[indexPath.row].id, imageView: cell.profileImageView)
+                cell.thinksAboutChallengeView.text = followers[indexPath.row].name
+            } else if isFollowing {
+                setImage(fbID: following[indexPath.row].id, imageView: cell.profileImageView)
+                cell.thinksAboutChallengeView.text = following[indexPath.row].name
+            }
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+            return cell
         }
-        return cell
     }
     
     func save() {

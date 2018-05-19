@@ -114,6 +114,19 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         return cell
     }
     
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        openExplorer()
+    }
+    
+    func openExplorer() {
+        let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        challengeController.navigationItem.title = "Explorer"
+        challengeController.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(challengeController, animated: true)
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return trendRequest.count
     }

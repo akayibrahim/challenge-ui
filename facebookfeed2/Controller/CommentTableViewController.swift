@@ -19,6 +19,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     var proof : Bool = false    
     var bottomConstraint: NSLayoutConstraint?
     var heightOfCommentView : CGFloat = 50
+    var challengeId : String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +44,27 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         self.textView.delegate = self
         if proof {
             textView.text = "Add a proof..."
+        }
+        
+        if let path = Bundle.main.path(forResource: "comments", ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    self.comments = [Comments]()
+                    self.proofs = [Proofs]()
+                    for postDictionary in postsArray {
+                        let comment = Comments()
+                        let proof = Proofs()
+                        comment.setValuesForKeys(postDictionary)
+                        self.comments.append(comment)
+                        proof.setValuesForKeys(postDictionary)
+                        self.proofs.append(proof)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
         }
     }
     

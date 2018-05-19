@@ -10,6 +10,9 @@ import UIKit
 
 var memberID = "10156204749600712"
 var memberName = "İbrahim AKAY"
+var countOffollowers = "126"
+var countOffollowing = "198"
+
 var supported = "supported"
 var support = "support"
 var acceptedRed = "acceptedRed"

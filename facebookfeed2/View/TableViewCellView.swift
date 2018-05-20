@@ -22,7 +22,7 @@ class TableViewCellContent: UITableViewCell {
     var myUIPicker: UIPickerView!
     var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
     var datePicker: UIDatePicker = UIDatePicker(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
-    var addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.width * 17.5/30) + 44))
+    var addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.width * 17.5/30) + 22))
     
     let screenSize = UIScreen.main.bounds
     var chlViewHeight: CGFloat = 17.5/30
@@ -97,4 +97,65 @@ class TableViewCellContent: UITableViewCell {
     let labelOtherSide: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.gray)
     let homeScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
     let awayScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
+}
+
+class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+    let screenSize = UIScreen.main.bounds
+    var chlViewHeight: CGFloat = 17.5/30
+    var tableRowHeightHeight: CGFloat = 44
+    init(frame: CGRect, cellRow : Int, typeIndex : Int) {
+        super.init(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
+        let contentGuide = self.readableContentGuide
+        /*
+        addSubview(label)
+        addTopAnchor(label, anchor: contentGuide.topAnchor, constant: 0)
+        addLeadingAnchor(label, anchor: contentGuide.leadingAnchor, constant: 6)
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor.gray
+        */
+        self.commentView.delegate = self
+        addSubview(commentView)
+        commentView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+        addLeadingAnchor(commentView, anchor: contentGuide.leadingAnchor, constant: 0)
+        addWidthAnchor(commentView, multiplier: 0.93)
+        commentView.heightAnchor.constraint(equalToConstant: globalHeight - 10).isActive = true
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if commentView.textColor == UIColor.lightGray {
+            commentView.text = nil
+            commentView.textColor = UIColor.gray
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if commentView.text.isEmpty {
+            commentView.text = "Comment"
+            commentView.textColor = UIColor.lightGray
+        }
+    }
+    
+    let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
+    
+    let commentView: UITextView = {
+        let textView = UITextView()
+        textView.textColor = UIColor.lightGray
+        textView.text = "Comment"
+        textView.isScrollEnabled = true
+        textView.showsVerticalScrollIndicator = false
+        textView.font = UIFont.boldSystemFont(ofSize: 16)
+        textView.alwaysBounceHorizontal = true
+        textView.layer.borderColor = UIColor (red:204.0/255.0, green:204.0/255.0, blue:204.0/255.0, alpha:1.0).cgColor;
+        textView.layer.borderWidth = 1.0;
+        textView.layer.cornerRadius = 5.0;
+        return textView
+    }()
+
 }

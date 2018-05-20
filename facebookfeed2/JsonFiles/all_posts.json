@@ -417,9 +417,9 @@
                                   "facebookID": "100001948011413"
                                   },
                                   {
-                                  "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "memberId":"10156204749600712",
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "10156204749600712"
                                   }
                                   ],
@@ -445,10 +445,10 @@
                                      {
                                      "id": "5a81bb6bf8b8e43ec9a81e2f",
                                      "challengeId": "5a81bb6bf8b8e43ec9a81e2e",
-                                     "memberId": "5a81b0f0f8b8e43e70325d3d",
+                                     "memberId": "10156204749600712",
                                      "facebookID": "100001948011413",
-                                     "join": true,
-                                     "proof": false
+                                     "join": false,
+                                     "proof": true
                                      }
                                      ],
               "isComeFromSelf" : false,

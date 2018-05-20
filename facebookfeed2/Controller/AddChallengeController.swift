@@ -19,6 +19,8 @@ var visibilityIndex : Int = 7
 var doneIndex : Int = 8
 var scoreIndex : Int = 9
 var resultIndex : Int = 10
+var proofIndex : Int = 11
+var commentIndex : Int = 12
 let addViewIndexPath = IndexPath(item: chlIndex, section: 0)
 let segControlIndexPath = IndexPath(item: typeIndex, section: 0)
 let subjectIndexPath = IndexPath(item: subjectIndex, section: 0)
@@ -30,6 +32,8 @@ let visibilityIndexPath = IndexPath(item: visibilityIndex, section: 0)
 let doneIndexPath = IndexPath(item: doneIndex, section: 0)
 let scoreIndexPath = IndexPath(item: scoreIndex, section: 0)
 let resultIndexPath = IndexPath(item: resultIndex, section: 0)
+let proofIndexPath = IndexPath(item: proofIndex, section: 0)
+let commentIndexPath = IndexPath(item: commentIndex, section: 0)
 
 class AddChallengeController: UITableViewController {    
     let screenSize = UIScreen.main.bounds
@@ -51,7 +55,7 @@ class AddChallengeController: UITableViewController {
         tableView.register(TableViewCellContent.self, forCellReuseIdentifier: cellId)
         tableView.tableFooterView = UIView()
         self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
-        let rightButton = UIBarButtonItem(title: "Add", style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.addChallenge))
+        let rightButton = UIBarButtonItem(title: "Share", style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.addChallenge))
         navigationItem.rightBarButtonItem = rightButton
         rightButton.tintColor = UIColor.white
         tableView?.showsVerticalScrollIndicator = false
@@ -137,6 +141,8 @@ class AddChallengeController: UITableViewController {
         addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Score", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Result", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Proof", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
     
     func addChallenge() {
@@ -275,58 +281,72 @@ class AddChallengeController: UITableViewController {
     var switchDone : Bool = false;
     var switchScore : Bool = false;
     var switchResult : Bool = false;
+    var switchProof : Bool = true;
+    var zeroHeight : CGFloat = 0
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath == calenddarIndexPath {
-            if switchDateP {
-                return 180
-            } else {
-                return 0
-            }
-        } else if indexPath == visibilityIndexPath {
-            if switchProofCell {
-                return tableRowHeightHeight
-            } else {
-                return 0
-            }
-        } else if indexPath == leftSideIndex {
+        if indexPath == leftSideIndex {
             if switchLeftPeopleCell {
                 return tableRowHeightHeight
             } else {
-                return 0
+                return zeroHeight
             }
         } else if indexPath == rightSideIndex {
             if switchRightPeopleCell {
                 return tableRowHeightHeight
             } else {
-                return 0
-            }
-        } else if indexPath == scoreIndexPath {
-            if switchScore {
-                return tableRowHeightHeight
-            } else {
-                return 0
-            }
-        } else if indexPath == resultIndexPath {
-            if switchResult {
-                return tableRowHeightHeight
-            } else {
-                return 0
+                return zeroHeight
             }
         } else if indexPath == deadlineIndexPath {
             if switchDeadline {
                 return tableRowHeightHeight
             } else {
-                return 0
+                return zeroHeight
+            }
+        } else if indexPath == calenddarIndexPath {
+            if switchDateP {
+                return 180
+            } else {
+                return zeroHeight
+            }
+        } else if indexPath == visibilityIndexPath {
+            if switchProofCell {
+                return tableRowHeightHeight
+            } else {
+                return zeroHeight
+            }
+        } else if indexPath == doneIndexPath {
+            if switchDone {
+                return tableRowHeightHeight
+            } else {
+                return zeroHeight
+            }
+        } else if indexPath == scoreIndexPath {
+            if switchScore {
+                return tableRowHeightHeight
+            } else {
+                return zeroHeight
+            }
+        } else if indexPath == resultIndexPath {
+            if switchResult {
+                return tableRowHeightHeight
+            } else {
+                return zeroHeight
+            }
+        } else if indexPath == proofIndexPath {
+            if switchProof {
+                return tableRowHeightHeight
+            } else {
+                return zeroHeight
             }
         } else if indexPath != addViewIndexPath {
             return tableRowHeightHeight
         } else {
-            return (screenSize.width * chlViewHeight) + tableRowHeightHeight
+            return (screenSize.width * chlViewHeight) + (tableRowHeightHeight / 2)
         }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 11
+        return 13
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -365,14 +385,23 @@ class AddChallengeController: UITableViewController {
             cell.isDone.addTarget(self, action: #selector(self.doneSwitch), for: UIControlEvents.valueChanged)
         } else if indexPath == scoreIndexPath {
             cell.label.text = addChallengeIns[scoreIndex].labelText
-            cell.selectionStyle = UITableViewCellSelectionStyle.none
             cell.isHidden = !switchScore
             cell.labelOtherSide.attributedText = addChallengeIns[scoreIndex].labelAtt
         } else if indexPath == resultIndexPath {
             cell.label.text = addChallengeIns[resultIndex].labelText
-            cell.selectionStyle = UITableViewCellSelectionStyle.none
             cell.isHidden = !switchResult
             cell.labelOtherSide.attributedText = addChallengeIns[resultIndex].labelAtt
+        } else if indexPath == proofIndexPath {
+            cell.label.text = addChallengeIns[proofIndex].labelText
+            cell.isHidden = !switchProof
+            cell.labelOtherSide.attributedText = addChallengeIns[proofIndex].labelAtt
+        } else if indexPath == commentIndexPath {
+            let frameOfCellComment : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
+            let cellComment = TableViewCommentCellContent(frame: frameOfCellComment, cellRow: indexPath.row, typeIndex: addChallengeIns[typeIndex].resultId!)
+            cellComment.label.text = addChallengeIns[commentIndex].labelText
+            cellComment.selectionStyle = UITableViewCellSelectionStyle.none
+            cellComment.commentView.text = addChallengeIns[commentIndex].resultText
+            return cellComment
         }
         return cell
     }
@@ -476,6 +505,7 @@ class AddChallengeController: UITableViewController {
             switchResult = false
             switchDeadline = true
             switchDateP = false
+            switchProof = false
             tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
             doneContent = tableView.cellForRow(at: doneIndexPath) as! TableViewCellContent
             doneContent.isDone.setOn(false, animated: false)
@@ -485,6 +515,7 @@ class AddChallengeController: UITableViewController {
                 switchDone = false
                 switchScore = false
                 switchResult = false
+                switchProof = true
             } else if segControlContent.mySegControl.selectedSegmentIndex == 1 {
                 switchLeftPeopleCell = false
                 switchRightPeopleCell = false
@@ -508,6 +539,8 @@ class AddChallengeController: UITableViewController {
             tableView.reloadRows(at: [doneIndexPath], with: .fade)
             tableView.reloadRows(at: [scoreIndexPath], with: .fade)
             tableView.reloadRows(at: [resultIndexPath], with: .fade)
+            tableView.reloadRows(at: [proofIndexPath], with: .fade)
+            tableView.reloadRows(at: [commentIndexPath], with: .fade)
             leftSide.removeAll()
             rightSide.removeAll()            
         } else if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex || (popIndexPath == subjectIndexPath && segControlContent.mySegControl.selectedSegmentIndex == 1) {

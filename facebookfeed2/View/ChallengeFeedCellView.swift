@@ -13,7 +13,7 @@ class FeedCell: UICollectionViewCell {
     var feedController: FeedController?
     
     func animate() {
-        feedController?.animateImageView(statusImageView)
+        feedController?.animateImageView(proofedMediaView)
     }
     
     override func prepareForReuse() {
@@ -66,12 +66,15 @@ class FeedCell: UICollectionViewCell {
         self.finishFlag.removeFromSuperview()
         self.score.removeFromSuperview()
         self.clapping.removeFromSuperview()
+        self.proofedMediaView.image = UIImage()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
     
     var post: Post? {
         didSet {
+            var isProofed = false
+            var isJoined = false
             if let name = post?.name, let status = post?.status {
                 let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
                 let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
@@ -139,8 +142,12 @@ class FeedCell: UICollectionViewCell {
                     }
                     setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
                     if memberID == join.memberId {
+                        if join.proof! {
+                            isProofed = true
+                        }
                         if join.join! {
                             joinButton.setImage(UIImage(named: acceptedRed), for: .normal)
+                            isJoined = true
                         } else {
                             joinButton.setImage(UIImage(named: acceptedBlack), for: .normal)
                         }
@@ -290,7 +297,7 @@ class FeedCell: UICollectionViewCell {
                 }
             }
             if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount,  let isComeFromSelf = post?.isComeFromSelf, let isDone = post?.done {
-                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone)
+                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: isProofed, joined: isJoined)
             }
         }
     }
@@ -304,7 +311,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     let screenSize = UIScreen.main.bounds
-    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool) {
+    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, joined: Bool) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -323,9 +330,14 @@ class FeedCell: UICollectionViewCell {
         generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done)
         
         if !isComeFromSelf {
+            let proofGuide = UILayoutGuide()
+            addLayoutGuide(proofGuide)
+            proofGuide.topAnchor.constraint(equalTo: dividerLineView1.bottomAnchor, constant: 0).isActive = true
+            proofGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0 / 6).isActive = false
+            
             if(!thinksAboutChallengeView.text.isEmpty) {
                 addSubview(thinksAboutChallengeView)
-                addTopAnchor(thinksAboutChallengeView, anchor: dividerLineView1.bottomAnchor, constant: screenSize.width * 0.05 / 10)
+                addTopAnchor(thinksAboutChallengeView, anchor: proofGuide.bottomAnchor, constant: screenSize.width * 0.05 / 10)
                 addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
                 addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
             }
@@ -355,12 +367,23 @@ class FeedCell: UICollectionViewCell {
                 addTrailingAnchor(viewProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
                 addHeightAnchor(viewProofs, multiplier: 0.7/10)
                 
-                addSubview(addProofs)
-                addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                addTopAnchor(addProofs, anchor: viewComments.bottomAnchor, constant: 0)
-                addTrailingAnchor(addProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
-                addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
-                addHeightAnchor(addProofs, multiplier: 0.7/10)
+                if proofed {
+                    addSubview(proofedMediaView)
+                    addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: screenSize.width * 0.02 / 10)
+                    addWidthAnchor(proofedMediaView, multiplier: 1)
+                    addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
+                    setImage(name: "gandhi", imageView: proofedMediaView)
+                    proofGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 2).isActive = true
+                }
+                
+                if joined {
+                    addSubview(addProofs)
+                    addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+                    addTopAnchor(addProofs, anchor: viewComments.bottomAnchor, constant: 0)
+                    addTrailingAnchor(addProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
+                    addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
+                    addHeightAnchor(addProofs, multiplier: 0.7/10)
+                }
             }
             
             addSubview(insertTime)
@@ -747,7 +770,7 @@ class FeedCell: UICollectionViewCell {
     let profileImageView: UIImageView = FeedCell.circleImageView()
     let challengerImageView: UIImageView = FeedCell.circleImageView()
     
-    let statusImageView: UIImageView = {
+    let proofedMediaView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true

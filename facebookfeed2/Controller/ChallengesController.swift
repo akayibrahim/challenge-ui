@@ -433,12 +433,28 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
         if posts[indexPath.item].isComeFromSelf == false {
             knownHeight += (screenSize.width / 26) + (screenSize.width / 5) + (screenWidth * 0.575 / 10)
+            if posts[indexPath.item].type == PUBLIC && isProofedChallenge(post: posts[indexPath.item]) {
+                knownHeight += screenWidth / 2
+            }
             if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
                 // let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
                 return CGSize(width: view.frame.width, height: thinksAboutChallenge.heightOf(withConstrainedWidth: screenWidth * 4 / 5, font: UIFont.systemFont(ofSize: 12)) + knownHeight)
             }
         }
         return CGSize(width: view.frame.width, height: knownHeight)
+    }
+    
+    func isProofedChallenge(post : Post) -> Bool {
+        if post.type == PUBLIC {
+            for join in (post.joinAttendanceList) {
+                if memberID == join.memberId {
+                    if join.proof! {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

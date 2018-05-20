@@ -25,7 +25,8 @@
               "isComeFromSelf" : false,
               "countOfProofs": 3,
               "insertTime" : "4 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "joined to challenge",
+              "proofed" : false
               },
               {
               "id": "87091823091283",
@@ -64,7 +65,8 @@
               "isComeFromSelf" : false,
               "countOfProofs": 4,
               "insertTime" : "1 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "joined to challenge",
+              "proofed" : false
               },
               {
               "id": "87091823091283",
@@ -109,7 +111,8 @@
               "isComeFromSelf" : false,
               "countOfProofs": 5,
               "insertTime" : "7 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "joined to challenge",
+              "proofed" : false
               },
               {
               "id": "87091823091283",
@@ -160,7 +163,8 @@
               "isComeFromSelf" : false,
               "countOfProofs": 6,
               "insertTime" : "9 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "joined to challenge",
+              "proofed" : false
               },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -188,7 +192,8 @@
               "isComeFromSelf" : false,
               "countOfProofs": 7,
               "insertTime" : "2 HOURS AGO",
-              "status": "proofed challenge"
+              "status": "proofed challenge",
+              "proofed" : true
               }
         ]
 }

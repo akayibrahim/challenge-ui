@@ -18,7 +18,8 @@
               "countOfProofs": 0,
               "insertTime" : "12 HOURS AGO",
               "status": "has a new challenge",
-              "result": "10"
+              "result": "10",
+              "proofed" : false
           },
           {
               "id": "87091823091283",
@@ -58,7 +59,8 @@
               "insertTime" : "14 HOURS AGO",
               "status": "has finished challenge",
               "firstTeamScore" : "2",
-              "secondTeamScore" : "4"
+              "secondTeamScore" : "4",
+              "proofed" : false
           },
           {
               "id": "87091823091283",
@@ -112,7 +114,8 @@
               "insertTime" : "3 DAYS AGO",
               "status": "has finished challenge",
               "firstTeamScore" : "2",
-              "secondTeamScore" : "5"
+              "secondTeamScore" : "5",
+              "proofed" : false
           },
           {
               "id": "87091823091283",
@@ -180,7 +183,8 @@
               "insertTime" : "18 HOURS AGO",
               "status": "has finished challenge",
               "firstTeamScore" : "2",
-              "secondTeamScore" : "3"
+              "secondTeamScore" : "3",
+              "proofed" : false
           },
           {
               "id": "87091823091283",
@@ -262,7 +266,8 @@
               "insertTime" : "2 DAYS AGO",
               "status": "has finished challenge",
               "firstTeamScore" : "1",
-              "secondTeamScore" : "3"
+              "secondTeamScore" : "3",
+              "proofed" : false
           },
           {
               "id": "87091823091283",
@@ -283,14 +288,15 @@
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":true,
-                                  "proof":true,
+                                  "proof":false,
                                   "facebookID": "689764048"
                                   }
                                   ],
               "isComeFromSelf" : false,
               "countOfProofs": 3,
               "insertTime" : "4 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "joined to challenge",
+              "proofed" : false
           },
           {
               "id": "87091823091283",
@@ -310,27 +316,28 @@
           "joinAttendanceList" : [
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "100002391996271"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":false,
-                                  "proof":true,
+                                  "proof":false,
                                   "facebookID": "100002408468624"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "696089910"
                                   }
                                   ],
               "isComeFromSelf" : false,
               "countOfProofs": 4,
               "insertTime" : "1 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "joined to challenge",
+              "proofed" : false
           },
           {
               "id": "87091823091283",
@@ -350,32 +357,33 @@
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
                                   "join":true,
-                                  "proof":true,
+                                  "proof":false,
                                   "facebookID": "689764048"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "100002391996271"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "100002408468624"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "100001948011413"
                                   }
                                   ],
               "isComeFromSelf" : false,
               "countOfProofs": 5,
               "insertTime" : "7 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "joined to challenge",
+              "proofed" : false
           },
           {
               "id": "87091823091283",
@@ -394,26 +402,26 @@
           "joinAttendanceList" : [
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "100002391996271"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "100002408468624"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "696089910"
                                   },
                                   {
                                   "memberId":"5a1f048318e6063778be8f78",
-                                  "join":false,
-                                  "proof":true,
+                                  "join":true,
+                                  "proof":false,
                                   "facebookID": "100001948011413"
                                   },
                                   {
@@ -426,7 +434,8 @@
               "isComeFromSelf" : false,
               "countOfProofs": 6,
               "insertTime" : "9 HOURS AGO",
-              "status": "joined to challenge"
+              "status": "joined to challenge",
+              "proofed" : false
           },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -454,7 +463,8 @@
               "isComeFromSelf" : false,
               "countOfProofs": 7,
               "insertTime" : "2 HOURS AGO",
-              "status": "proofed challenge"
+              "status": "proofed challenge",
+              "proofed" : true
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -474,7 +484,8 @@
               "amILike" : true,
               "countOfProofs": 0,
               "insertTime" : "23 HOURS AGO",
-              "status": "has finished challenge"
+              "status": "has finished challenge",
+              "proofed" : false
               }
         ]
 }

@@ -122,6 +122,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                             post.amILike = postDictionary["amILike"] as? Bool
                             post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
                             post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
+                            post.proofed = postDictionary["proofed"] as? Bool
                             self.posts.append(post)
                             if post.done == true {
                                 self.donePosts.append(post)
@@ -170,6 +171,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                             post.amILike = postDictionary["amILike"] as? Bool
                             post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
                             post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
+                            post.proofed = postDictionary["proofed"] as? Bool
                             self.posts.append(post)
                         }
                     }
@@ -433,7 +435,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
         if posts[indexPath.item].isComeFromSelf == false {
             knownHeight += (screenSize.width / 26) + (screenSize.width / 5) + (screenWidth * 0.575 / 10)
-            if posts[indexPath.item].type == PUBLIC && isProofedChallenge(post: posts[indexPath.item]) {
+            if posts[indexPath.item].proofed == true {
                 knownHeight += screenWidth / 2
             }
             if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
@@ -442,19 +444,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
         }
         return CGSize(width: view.frame.width, height: knownHeight)
-    }
-    
-    func isProofedChallenge(post : Post) -> Bool {
-        if post.type == PUBLIC {
-            for join in (post.joinAttendanceList) {
-                if memberID == join.memberId {
-                    if join.proof! {
-                        return true
-                    }
-                }
-            }
-        }
-        return false
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

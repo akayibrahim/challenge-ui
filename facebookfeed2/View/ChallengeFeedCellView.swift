@@ -73,7 +73,6 @@ class FeedCell: UICollectionViewCell {
     
     var post: Post? {
         didSet {
-            var isProofed = false
             var isJoined = false
             if let name = post?.name, let status = post?.status {
                 let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
@@ -142,9 +141,6 @@ class FeedCell: UICollectionViewCell {
                     }
                     setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
                     if memberID == join.memberId {
-                        if join.proof! {
-                            isProofed = true
-                        }
                         if join.join! {
                             joinButton.setImage(UIImage(named: acceptedRed), for: .normal)
                             isJoined = true
@@ -296,8 +292,9 @@ class FeedCell: UICollectionViewCell {
                     supportButtonMatch.setImage(UIImage(named: support), for: .normal)
                 }
             }
-            if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount,  let isComeFromSelf = post?.isComeFromSelf, let isDone = post?.done {
-                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: isProofed, joined: isJoined)
+            if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount,  let isComeFromSelf = post?.isComeFromSelf, let isDone = post?.done,
+                let proofed = post?.proofed {
+                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined)
             }
         }
     }
@@ -330,32 +327,35 @@ class FeedCell: UICollectionViewCell {
         generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done)
         
         if !isComeFromSelf {
-            let proofGuide = UILayoutGuide()
-            addLayoutGuide(proofGuide)
-            proofGuide.topAnchor.constraint(equalTo: dividerLineView1.bottomAnchor, constant: 0).isActive = true
-            proofGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0 / 6).isActive = false
+            if type == PUBLIC && proofed {
+                addSubview(proofedMediaView)
+                addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                addWidthAnchor(proofedMediaView, multiplier: 1)
+                addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
+                setImage(name: "gandhi", imageView: proofedMediaView)
+            }
             
             if(!thinksAboutChallengeView.text.isEmpty) {
                 addSubview(thinksAboutChallengeView)
-                addTopAnchor(thinksAboutChallengeView, anchor: proofGuide.bottomAnchor, constant: screenSize.width * 0.05 / 10)
+                addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.7 / 10))
                 addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
                 addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
+                thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
             }
             
             addSubview(viewComments)
             viewComments.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-            addTopAnchor(viewComments, anchor: thinksAboutChallengeView.bottomAnchor, constant: -(screenSize.width * 0.1/10))
+            addBottomAnchor(viewComments, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.15 / 10))
             addLeadingAnchor(viewComments, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addHeightAnchor(viewComments, multiplier: 0.7/10)
             
-            addTopAnchor(profileImageView, anchor: viewComments.bottomAnchor, constant: 0)
+            addBottomAnchor(profileImageView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 0.45 / 10))
             addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addWidthAnchor(profileImageView, multiplier: 0.7/10)
             addHeightAnchor(profileImageView, multiplier: 0.7/10)
             
             addSubview(addComments)
             addComments.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-            addTopAnchor(addComments, anchor: viewComments.bottomAnchor, constant: 0)
             addLeadingAnchor(addComments, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.15/10)
             addComments.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
             addHeightAnchor(addComments, multiplier: 0.7/10)
@@ -363,23 +363,13 @@ class FeedCell: UICollectionViewCell {
             if type == PUBLIC {
                 addSubview(viewProofs)
                 viewProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                addTopAnchor(viewProofs, anchor: thinksAboutChallengeView.bottomAnchor, constant: -(screenSize.width * 0.1/10))
                 addTrailingAnchor(viewProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
+                viewProofs.centerYAnchor.constraint(equalTo: viewComments.centerYAnchor, constant: 0).isActive = true
                 addHeightAnchor(viewProofs, multiplier: 0.7/10)
-                
-                if proofed {
-                    addSubview(proofedMediaView)
-                    addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: screenSize.width * 0.02 / 10)
-                    addWidthAnchor(proofedMediaView, multiplier: 1)
-                    addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
-                    setImage(name: "gandhi", imageView: proofedMediaView)
-                    proofGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 2).isActive = true
-                }
                 
                 if joined {
                     addSubview(addProofs)
                     addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                    addTopAnchor(addProofs, anchor: viewComments.bottomAnchor, constant: 0)
                     addTrailingAnchor(addProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
                     addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
                     addHeightAnchor(addProofs, multiplier: 0.7/10)
@@ -387,7 +377,7 @@ class FeedCell: UICollectionViewCell {
             }
             
             addSubview(insertTime)
-            addTopAnchor(insertTime, anchor: addComments.bottomAnchor, constant: 0)
+            addBottomAnchor(insertTime, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0.2/10))
             addLeadingAnchor(insertTime, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addHeightAnchor(insertTime, multiplier: 0.6/10)
         }

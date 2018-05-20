@@ -13,7 +13,8 @@
           "secondTeamCount" : "0",
           "challengerFBId" : "10156204749600712",
               "isComeFromSelf" : true,
-              "result": "11/Year"
+              "result": "11/Year",
+              "proofed" : false
           },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -29,7 +30,8 @@
               "countOfComments": 0,
               "type": "SELF",
               "result": "20K",
-              "isComeFromSelf" : true
+              "isComeFromSelf" : true,
+              "proofed" : false
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -45,7 +47,8 @@
               "countOfComments": 0,
               "type": "SELF",
               "result": "ADVANCE!",
-              "isComeFromSelf" : true
+              "isComeFromSelf" : true,
+              "proofed" : false
               },
               {
               "name": "İbrahim AKAY",
@@ -69,7 +72,8 @@
                                       "facebookID": "634127860"
                                       }
                                       ],
-              "isComeFromSelf" : true
+              "isComeFromSelf" : true,
+              "proofed" : false
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -85,7 +89,8 @@
               "countOfComments": 0,
               "type": "SELF",
               "result": "10K",
-              "isComeFromSelf" : true
+              "isComeFromSelf" : true,
+              "proofed" : false
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -101,7 +106,8 @@
               "countOfComments": 0,
               "type": "SELF",
               "result": "5K",
-              "isComeFromSelf" : true
+              "isComeFromSelf" : true,
+              "proofed" : false
               },
               {
               "name": "İbrahim AKAY",
@@ -135,7 +141,8 @@
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
-              "challengerFBId": "10156204749600712"
+              "challengerFBId": "10156204749600712",
+              "proofed" : false
               },
               {
               "name": "İbrahim AKAY",
@@ -171,7 +178,8 @@
               "secondTeamSupportCount" : 15,
               "challengerFBId": "10156204749600712",
               "firstTeamScore" : "3",
-              "secondTeamScore" : "5"
+              "secondTeamScore" : "5",
+              "proofed" : false
               }
         ]
 }

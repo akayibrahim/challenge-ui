@@ -80,7 +80,7 @@ extension UILabel {
 extension UIImageView {
     
     func roundedImage() {
-        self.layer.cornerRadius = screenWidth * 0.7 / 10 / 2
+        self.layer.cornerRadius = screenWidth * 0.6 / 10 / 2
         self.clipsToBounds = true
     }
     

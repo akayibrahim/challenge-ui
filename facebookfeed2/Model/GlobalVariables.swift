@@ -8,18 +8,19 @@
 
 import UIKit
 
-var memberID = "10156204749600712"
+var memberID = "10156204749600712" // "5a81b0f0f8b8e43e70325d3d"
 var memberName = "İbrahim AKAY"
 var countOffollowers = "126"
 var countOffollowing = "198"
 
+var dummyServiceCall : Bool = true
 var supported = "supported"
 var support = "support"
 var acceptedRed = "acceptedRed"
 var acceptedBlack = "acceptedBlack"
 var challengeTitle = "Challenge"
 var profileTitle = "Profile"
-var getChallengesURL = "http://localhost:8080/getChallenges?memberId=5a81b0f0f8b8e43e70325d3d"
+var getChallengesURL = "http://localhost:8080/getChallenges?memberId="
 var profileFirstHeader = "YOUR ACTIVE CHALLENGES"
 var profileSecondHeader = "YOUR PAST CHALLENGES"
 var SELF = "SELF"
@@ -36,12 +37,14 @@ var supportText = "SUPPORT"
 var viewAllComments = "View all 0 comments"
 var viewAllProofs = "View all 0 proofs"
 var addComents = "Add a comment"
-var addProofsVar = "Add a proof"
+var addProofsVar = "Proove It?"
+var joinToChlVar = "Join It?"
 var justMe = "Just Me"
 var pagesBackColor : UIColor = UIColor.rgb(229, green: 231, blue: 235)
 var selectText = "Select"
 var profileIndex : Int = 4
 var chanllengeIndex : Int = 0
+var trendsIndex : Int = 1
 var navAndTabColor : UIColor = UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1)
 var blueColor : UIColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
 // UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1) coca-cola red

@@ -57,6 +57,7 @@ class FeedCell: UICollectionViewCell {
         self.viewProofs.removeFromSuperview()
         self.addComments.removeFromSuperview()
         self.addProofs.removeFromSuperview()
+        self.joinToChl.removeFromSuperview()
         self.insertTime.removeFromSuperview()
         self.nameAndStatusLabel.removeFromSuperview()
         self.challengerImageView.image = UIImage()
@@ -64,7 +65,10 @@ class FeedCell: UICollectionViewCell {
         self.updateRefreshLabel.removeFromSuperview()
         self.untilDateLabel.removeFromSuperview()
         self.finishFlag.removeFromSuperview()
-        self.score.removeFromSuperview()
+        self.scoreHome.removeFromSuperview()
+        self.scoreAway.removeFromSuperview()
+        self.scoreText.removeFromSuperview()
+        self.proofText.removeFromSuperview()
         self.clapping.removeFromSuperview()
         self.proofedMediaView.image = UIImage()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
@@ -155,7 +159,12 @@ class FeedCell: UICollectionViewCell {
                 }
                 if let done = post?.done, let firstTeamScore = post?.firstTeamScore, let secondTeamScore = post?.secondTeamScore {
                     if done {
-                        score.text = "\(firstTeamScore)\(scoreForPrivate)\(secondTeamScore)"
+                        scoreText.text = "\(firstTeamScore)\(scoreForPrivate)\(secondTeamScore)"
+                        /*
+                        scoreHome.text = "\(firstTeamScore)"
+                        scoreText.text = "\(scoreForPrivate)"
+                        scoreAway.text = "\(secondTeamScore)"
+                        */
                     }
                 }
                 var firstImg: Bool = false;
@@ -232,16 +241,22 @@ class FeedCell: UICollectionViewCell {
                     setImage(name: subject, imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.contentMode = .scaleAspectFill
                 }
-                if let result = post?.result {
-                    score.text = result
-                }
+                scoreText.text = "10\(scoreForPrivate)10"
+                /*
+                scoreHome.text = "10"
+                scoreText.text = "\(scoreForPrivate)"
+                scoreAway.text = "GOAL 10"
+                */
+                // if let result = post?.result {}
             }
+            /*
             if let countOfLike = post?.countOfLike {
                 let countAtt = NSMutableAttributedString(string: "+\(countOfLike)", attributes: nil)
                 let supportAtt = NSMutableAttributedString(string: " Likes", attributes: [NSForegroundColorAttributeName: UIColor.red, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 10)])
                 countAtt.append(supportAtt)
                 likeLabel.attributedText = countAtt
             }
+             */
             if let untilDate = post?.untilDateStr {
                 untilDateLabel.text = "\(untilDate)"
                 untilDateLabel.font = UIFont (name: fontMarkerFelt, size: 24)
@@ -266,6 +281,7 @@ class FeedCell: UICollectionViewCell {
                 subjectLabel.numberOfLines = 2;
                 subjectLabel.textColor = UIColor.gray
             }
+            /* TODO
             if let amILike = post?.amILike {
                 if amILike {
                     supportSelfButton.setImage(UIImage(named: supported), for: .normal)
@@ -273,6 +289,7 @@ class FeedCell: UICollectionViewCell {
                     supportSelfButton.setImage(UIImage(named: support), for: .normal)
                 }
             }
+             */
             if let supportFirstTeam = post?.supportFirstTeam, let supportSecondTeam = post?.supportSecondTeam {
                 if let firstTeamSupportCount = post?.firstTeamSupportCount {
                     supportLabel.text = "+\(firstTeamSupportCount)"
@@ -337,7 +354,7 @@ class FeedCell: UICollectionViewCell {
             
             if(!thinksAboutChallengeView.text.isEmpty) {
                 addSubview(thinksAboutChallengeView)
-                addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.7 / 10))
+                addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.6 / 10))
                 addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
                 addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
                 thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
@@ -345,14 +362,14 @@ class FeedCell: UICollectionViewCell {
             
             addSubview(viewComments)
             viewComments.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-            addBottomAnchor(viewComments, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.15 / 10))
+            addBottomAnchor(viewComments, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.05 / 10))
             addLeadingAnchor(viewComments, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addHeightAnchor(viewComments, multiplier: 0.7/10)
             
             addBottomAnchor(profileImageView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 0.45 / 10))
             addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
-            addWidthAnchor(profileImageView, multiplier: 0.7/10)
-            addHeightAnchor(profileImageView, multiplier: 0.7/10)
+            addWidthAnchor(profileImageView, multiplier: 0.6/10)
+            addHeightAnchor(profileImageView, multiplier: 0.6/10)
             
             addSubview(addComments)
             addComments.titleLabel?.font = UIFont.systemFont(ofSize: 14)
@@ -367,12 +384,26 @@ class FeedCell: UICollectionViewCell {
                 viewProofs.centerYAnchor.constraint(equalTo: viewComments.centerYAnchor, constant: 0).isActive = true
                 addHeightAnchor(viewProofs, multiplier: 0.7/10)
                 
-                if joined {
-                    addSubview(addProofs)
-                    addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                    addTrailingAnchor(addProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
-                    addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
-                    addHeightAnchor(addProofs, multiplier: 0.7/10)
+                if secondTeamCount == "0" && !done {
+                    addSubview(joinButton)
+                    addLeadingAnchor(joinButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
+                    joinButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+                    addWidthAnchor(joinButton, multiplier: 0.6/10)
+                    addHeightAnchor(joinButton, multiplier: 0.6/10)
+                    
+                    if joined {
+                        addSubview(addProofs)
+                        addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+                        addLeadingAnchor(addProofs, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
+                        addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
+                        addHeightAnchor(addProofs, multiplier: 0.7/10)
+                    } else {
+                        addSubview(joinToChl)
+                        joinToChl.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+                        addLeadingAnchor(joinToChl, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
+                        joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
+                        addHeightAnchor(joinToChl, multiplier: 0.7/10)
+                    }
                 }
             }
             
@@ -390,7 +421,6 @@ class FeedCell: UICollectionViewCell {
             addLeadingAnchor(challengerImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(challengerImageView, multiplier: 0.6/10)
             addHeightAnchor(challengerImageView, multiplier: 0.6/10)
-            challengerImageView.layer.cornerRadius = screenWidth * 0.6 / 10 / 2
             
             nameAndStatusLabel.centerYAnchor.constraint(equalTo: challengerImageView.centerYAnchor).isActive = true
             addLeadingAnchor(nameAndStatusLabel, anchor: challengerImageView.trailingAnchor, constant: 5)
@@ -415,25 +445,78 @@ class FeedCell: UICollectionViewCell {
         
         if done {
             addSubview(finishFlag)
-            addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.15 / 6))
-            addWidthAnchor(finishFlag, multiplier: 0.8 / 6)
+            addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.5 / 6))
             finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addHeightAnchor(finishFlag, multiplier: 0.8 / 6)
+            addWidthAnchor(finishFlag, multiplier: 4 / 6)
+            addHeightAnchor(finishFlag, multiplier: 2 / 6)
+            finishFlag.alpha = 1
+            vsImageView.alpha = 0.5
             
-            addSubview(score)
-            addTopAnchor(score, anchor: finishFlag.bottomAnchor, constant: -(screenSize.width * 0.8 / 18))
-            score.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addWidthAnchor(score, multiplier: 1.2 / 6)
-            addHeightAnchor(score, multiplier: 0.3 / 6)
-            score.backgroundColor = navAndTabColor
-            score.textColor = UIColor.white
-            score.layer.cornerRadius = 5
-            score.layer.masksToBounds = true
+            /*
+            addSubview(scoreHome)
+            addTopAnchor(scoreHome, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.6 / 10))
+            scoreHome.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 1.3/10)).isActive = true
+            addWidthAnchor(scoreHome, multiplier: 0.5 / 6)
+            addHeightAnchor(scoreHome, multiplier: 0.25 / 6)
+            scoreHome.backgroundColor = UIColor.white
+            scoreHome.textColor = UIColor.black
+            scoreHome.layer.cornerRadius = 5
+            scoreHome.layer.masksToBounds = true
+            scoreHome.layer.borderColor = UIColor.black.cgColor
+            scoreHome.layer.borderWidth = 1.0
+            scoreHome.font = UIFont.boldSystemFont(ofSize: 14)
+            
+            addSubview(scoreAway)
+            addTopAnchor(scoreAway, anchor: vsImageView.topAnchor, constant: (screenWidth * 0.6 / 10))
+            scoreAway.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 1.3/10)).isActive = true
+            addWidthAnchor(scoreAway, multiplier: 0.5 / 6)
+            addHeightAnchor(scoreAway, multiplier: 0.25 / 6)
+            scoreAway.backgroundColor = UIColor.white
+            scoreAway.textColor = UIColor.black
+            scoreAway.layer.cornerRadius = 5
+            scoreAway.layer.masksToBounds = true
+            scoreAway.layer.borderColor = UIColor.black.cgColor
+            scoreAway.layer.borderWidth = 1.0
+            scoreAway.font = UIFont.boldSystemFont(ofSize: 14)
+            */
+            
+            addSubview(scoreText)
+            addTopAnchor(scoreText, anchor: vsImageView.topAnchor, constant: (screenWidth * 0.6 / 10))
+            scoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
+            addWidthAnchor(scoreText, multiplier: 1.7 / 6)
+            addHeightAnchor(scoreText, multiplier: 0.25 / 6)
+            addTopBorderWithColor(scoreText, color: UIColor.black, width: 1.0)
+            addBottomBorderWithColor(scoreText, color: UIColor.black, width: 1.0)
+            scoreText.backgroundColor = UIColor.white
+            scoreText.textColor = UIColor.black
+            scoreText.layer.cornerRadius = 5
+            scoreText.layer.masksToBounds = true
+            scoreText.font = UIFont.boldSystemFont(ofSize: 14)
+            
+            addSubview(proofText)
+            addTopAnchor(proofText, anchor: vsImageView.topAnchor, constant: (screenWidth * 0.6 / 10))
+            proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
+            addWidthAnchor(proofText, multiplier: 1.2 / 6)
+            addHeightAnchor(proofText, multiplier: 0.25 / 6)
+            addTopBorderWithColor(proofText, color: UIColor.black, width: 1.0)
+            addBottomBorderWithColor(proofText, color: UIColor.black, width: 1.0)
+            proofText.backgroundColor = UIColor.white
+            proofText.textColor = UIColor.black
+            proofText.layer.cornerRadius = 5
+            proofText.layer.masksToBounds = true
+            proofText.font = UIFont.boldSystemFont(ofSize: 14)
+            
             if type == PUBLIC {
-                score.font = UIFont.boldSystemFont(ofSize: 12)
-                score.text = proofed
+                // scoreHome.alpha = 0
+                // scoreAway.alpha = 0
+                scoreText.alpha = 0
+                proofText.alpha = 1
+                proofText.text = proofed
             } else {
-                score.font = UIFont.boldSystemFont(ofSize: 10)
+                // scoreHome.alpha = 1
+                // scoreAway.alpha = 1
+                scoreText.alpha = 1
+                proofText.alpha = 0
             }
         } else {
             addSubview(untilDateLabel)
@@ -441,6 +524,7 @@ class FeedCell: UICollectionViewCell {
             addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
             untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
             addHeightAnchor(untilDateLabel, multiplier: 1/6)
+            vsImageView.alpha = 1
         }
         
         addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: 0)
@@ -449,6 +533,52 @@ class FeedCell: UICollectionViewCell {
         
         middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
+        
+        if !isComeFromSelf {
+            addSubview(supportButton)
+            addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.2/18)
+            supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.35/3)).isActive = true
+            addWidthAnchor(supportButton, multiplier: 0.3/3)
+            addHeightAnchor(supportButton, multiplier: 1.8/18)
+            
+            addSubview(supportLabel)
+            addBottomAnchor(supportLabel, anchor: supportButton.topAnchor, constant: 0)
+            addTrailingAnchor(supportLabel, anchor: supportButton.trailingAnchor, constant: screenSize.width * 0.4/18)
+            addWidthAnchor(supportLabel, multiplier: 0.3/3)
+            addHeightAnchor(supportLabel, multiplier: 1/30)
+            
+            if type != SELF {
+                addSubview(supportButtonMatch)
+                addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.2/18)
+                supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.35/3)).isActive = true
+                addWidthAnchor(supportButtonMatch, multiplier: 0.3/3)
+                addHeightAnchor(supportButtonMatch, multiplier: 1.8/18)
+                
+                addSubview(supportMatchLabel)
+                addBottomAnchor(supportMatchLabel, anchor: supportButtonMatch.topAnchor, constant: 0)
+                addLeadingAnchor(supportMatchLabel, anchor: supportButtonMatch.leadingAnchor, constant: -(screenSize.width * 0.4/18))
+                addWidthAnchor(supportMatchLabel, multiplier: 0.3/3)
+                addHeightAnchor(supportMatchLabel, multiplier: 1/30)
+            }
+            /*
+             addSubview(supportTextLabel)
+             addTopAnchor(supportTextLabel, anchor: supportLabel.bottomAnchor, constant: -(screenSize.width * 0.4/18))
+             supportTextLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
+             addWidthAnchor(supportTextLabel, multiplier: 1/3)
+             addHeightAnchor(supportTextLabel, multiplier: 1/15)
+             supportTextLabel.textColor = UIColor.red
+             else if type == PUBLIC {
+             addSubview(joinButton)
+             addTopAnchor(joinButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
+             joinButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+             addWidthAnchor(joinButton, multiplier: 0.8/6)
+             addHeightAnchor(joinButton, multiplier: 0.8/6)
+             } else {
+             selfTypeLikeButtonAndLabel(contentGuide, middleCenterGuide: middleCenterGuide)
+             }
+             */
+        }
+        
         if done {
             if isComeFromSelf {
                 addSubview(clapping)
@@ -456,52 +586,9 @@ class FeedCell: UICollectionViewCell {
                 clapping.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
                 addWidthAnchor(clapping, multiplier: 0.8 / 6)
                 addHeightAnchor(clapping, multiplier: 0.8 / 6)
-            } else {
-                selfTypeLikeButtonAndLabel(contentGuide, middleCenterGuide: middleCenterGuide)
             }
         } else {
-            if !isComeFromSelf {
-                if type == PRIVATE {
-                    addSubview(supportButton)
-                    addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.3/18)
-                    supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.35/3)).isActive = true
-                    addWidthAnchor(supportButton, multiplier: 0.3/3)
-                    addHeightAnchor(supportButton, multiplier: 1.8/18)
-                    
-                    addSubview(supportButtonMatch)
-                    addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.3/18)
-                    supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.35/3)).isActive = true
-                    addWidthAnchor(supportButtonMatch, multiplier: 0.3/3)
-                    addHeightAnchor(supportButtonMatch, multiplier: 1.8/18)
-                    
-                    addSubview(supportLabel)
-                    addBottomAnchor(supportLabel, anchor: supportButton.topAnchor, constant: 0)
-                    addTrailingAnchor(supportLabel, anchor: supportButton.trailingAnchor, constant: screenSize.width * 0.4/18)
-                    addWidthAnchor(supportLabel, multiplier: 0.3/3)
-                    addHeightAnchor(supportLabel, multiplier: 1/30)
-                    
-                    addSubview(supportMatchLabel)
-                    addBottomAnchor(supportMatchLabel, anchor: supportButtonMatch.topAnchor, constant: 0)
-                    addLeadingAnchor(supportMatchLabel, anchor: supportButtonMatch.leadingAnchor, constant: -(screenSize.width * 0.4/18))
-                    addWidthAnchor(supportMatchLabel, multiplier: 0.3/3)
-                    addHeightAnchor(supportMatchLabel, multiplier: 1/30)
-                    
-                    addSubview(supportTextLabel)
-                    addTopAnchor(supportTextLabel, anchor: supportLabel.bottomAnchor, constant: -(screenSize.width * 0.4/18))
-                    supportTextLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
-                    addWidthAnchor(supportTextLabel, multiplier: 1/3)
-                    addHeightAnchor(supportTextLabel, multiplier: 1/15)
-                    supportTextLabel.textColor = UIColor.red
-                } else if type == PUBLIC {
-                    addSubview(joinButton)
-                    addTopAnchor(joinButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
-                    joinButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                    addWidthAnchor(joinButton, multiplier: 0.8/6)
-                    addHeightAnchor(joinButton, multiplier: 0.8/6)
-                } else {
-                    selfTypeLikeButtonAndLabel(contentGuide, middleCenterGuide: middleCenterGuide)
-                }
-            } else {
+             if isComeFromSelf {
                 addSubview(updateProgress)
                 addTopAnchor(updateProgress, anchor: middleCenterGuide.bottomAnchor, constant: screenWidth * 0.1 / 6)
                 updateProgress.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
@@ -673,7 +760,7 @@ class FeedCell: UICollectionViewCell {
             addWidthAnchor(secondFourPeopleImageView, multiplier: widthOfQuarterImage)
             addHeightAnchor(secondFourPeopleImageView, multiplier: heightOfHalfImage)
             middleHeight.topAnchor.constraint(equalTo: firstFourPeopleImageView.bottomAnchor)
-            addTopAnchor(thirdFourPeopleImageView, anchor: middleHeight.bottomAnchor, constant: 0)
+            addTopAnchor(thirdFourPeopleImageView, anchor: middleHeight.bottomAnchor, constant: -2)
             addTrailingAnchor(thirdFourPeopleImageView, anchor: rightMiddleBottomWidth.leadingAnchor, constant: 0)
             addWidthAnchor(thirdFourPeopleImageView, multiplier: widthOfQuarterImage)
             addHeightAnchor(thirdFourPeopleImageView, multiplier: heightOfHalfImage)
@@ -813,7 +900,10 @@ class FeedCell: UICollectionViewCell {
     let supportLabel: UILabel = FeedCell.label(12)
     let supportTextLabel: UILabel = FeedCell.label(8)
     let supportMatchLabel: UILabel = FeedCell.label(12)
-    let score: UILabel = FeedCell.label(12)
+    let scoreHome: UILabel = FeedCell.label(12)
+    let scoreAway: UILabel = FeedCell.label(12)
+    let scoreText: UILabel = FeedCell.label(12)
+    let proofText: UILabel = FeedCell.label(12)
     
     static func lineForDivider() -> UIView {
         let view = UIView()
@@ -847,6 +937,7 @@ class FeedCell: UICollectionViewCell {
     let viewProofs = FeedCell.buttonForTitle(viewAllProofs, imageName: "")
     let addComments = FeedCell.buttonForTitle(addComents, imageName: "")
     let addProofs = FeedCell.buttonForTitle(addProofsVar, imageName: "")
+    let joinToChl = FeedCell.buttonForTitle(joinToChlVar, imageName: "")
     let supportButton = FeedCell.buttonForTitle("", imageName: support)
     let supportButtonMatch = FeedCell.buttonForTitle("", imageName: support)
     let finishFlag = FeedCell.buttonForTitle("", imageName: "finishFlag")

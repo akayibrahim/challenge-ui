@@ -12,8 +12,7 @@
           "firstTeamCount" : "1",
           "secondTeamCount" : "0",
           "challengerFBId" : "10156204749600712",
-              "isComeFromSelf" : true,
-              "result": "11/Year",
+              "comeFromSelf" : true,              
               "proofed" : false
           },
               {
@@ -30,7 +29,7 @@
               "countOfComments": 0,
               "type": "SELF",
               "result": "20K",
-              "isComeFromSelf" : true,
+              "comeFromSelf" : true,
               "proofed" : false
               },
               {
@@ -47,7 +46,7 @@
               "countOfComments": 0,
               "type": "SELF",
               "result": "ADVANCE!",
-              "isComeFromSelf" : true,
+              "comeFromSelf" : true,
               "proofed" : false
               },
               {
@@ -59,7 +58,6 @@
               "challengerFBId" : "zuckprofile",
               "subject" : "FOOTBALL",
               "type": "PUBLIC",
-              "countOfJoins": 32,
               "done" : true,
               "firstTeamCount" : "1",
               "secondTeamCount" : "0",
@@ -72,7 +70,7 @@
                                       "facebookID": "634127860"
                                       }
                                       ],
-              "isComeFromSelf" : true,
+              "comeFromSelf" : true,
               "proofed" : false
               },
               {
@@ -88,8 +86,7 @@
               "countOfLike": 0,
               "countOfComments": 0,
               "type": "SELF",
-              "result": "10K",
-              "isComeFromSelf" : true,
+              "comeFromSelf" : true,
               "proofed" : false
               },
               {
@@ -105,8 +102,7 @@
               "countOfLike": 0,
               "countOfComments": 0,
               "type": "SELF",
-              "result": "5K",
-              "isComeFromSelf" : true,
+              "comeFromSelf" : true,
               "proofed" : false
               },
               {
@@ -136,7 +132,7 @@
               "done" : false,
               "firstTeamCount" : "1",
               "secondTeamCount" : "1",
-              "isComeFromSelf" : true,
+              "comeFromSelf" : true,
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
@@ -171,7 +167,7 @@
               "done" : true,
               "firstTeamCount" : "1",
               "secondTeamCount" : "1",
-              "isComeFromSelf" : true,
+              "comeFromSelf" : true,
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,

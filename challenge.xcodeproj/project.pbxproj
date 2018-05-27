@@ -49,19 +49,21 @@
 		A187996320AB7A86009FA6B6 /* trend_request_1.json in Resources */ = {isa = PBXBuildFile; fileRef = A187996220AB7A86009FA6B6 /* trend_request_1.json */; };
 		A19A31F6207D1ACD00DDC98C /* comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A19A31F5207D1ACD00DDC98C /* comments.json */; };
 		A19BBDFC206A07D700EC7B11 /* TableViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */; };
-		A1AB96C920ADD4E50059AC79 /* explorer_posts.json in Resources */ = {isa = PBXBuildFile; fileRef = A1AB96C820ADD4E50059AC79 /* explorer_posts.json */; };
+		A1AB96C920ADD4E50059AC79 /* getTrendChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = A1AB96C820ADD4E50059AC79 /* getTrendChallenges.json */; };
 		A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */; };
 		A1B27B04209A2F8D00263E48 /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B27B03209A2F8D00263E48 /* NotificationsController.swift */; };
 		A1C13416207F212700C6A435 /* TrendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C13415207F212700C6A435 /* TrendsController.swift */; };
+		A1C8D31420B7EE440018B781 /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C8D31320B7EE440018B781 /* ServiceLocator.swift */; };
+		A1C8D31620B832800018B781 /* getChallenges1.json in Resources */ = {isa = PBXBuildFile; fileRef = A1C8D31520B832800018B781 /* getChallenges1.json */; };
 		A1D2CAB720451C9F008782D3 /* OtherViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */; };
 		A1DA9CAB20A95236009200E3 /* AddChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DA9CAA20A95236009200E3 /* AddChallenge.swift */; };
 		A1DC3414207E2A1800F21232 /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3413207E2A1800F21232 /* Comments.swift */; };
 		A1DC3416207E2D9800F21232 /* CommentCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3415207E2D9800F21232 /* CommentCellView.swift */; };
 		A1DC3418207E402300F21232 /* ProfileCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3417207E402300F21232 /* ProfileCellView.swift */; };
 		A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */; };
-		A1E45A3E2074996800FD58E6 /* own_posts.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E45A3D2074996800FD58E6 /* own_posts.json */; };
+		A1E45A3E2074996800FD58E6 /* getOwnChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */; };
 		C780A7B21C88C582007023FD /* single_post.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B11C88C582007023FD /* single_post.json */; };
-		C780A7B41C88CEFB007023FD /* all_posts.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B31C88CEFB007023FD /* all_posts.json */; };
+		C780A7B41C88CEFB007023FD /* getChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B31C88CEFB007023FD /* getChallenges.json */; };
 		C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A85F331C78C137007E9A00 /* AppDelegate.swift */; };
 		C7A85F361C78C137007E9A00 /* ChallengesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A85F351C78C137007E9A00 /* ChallengesController.swift */; };
 		C7A85F3B1C78C137007E9A00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A85F3A1C78C137007E9A00 /* Assets.xcassets */; };
@@ -147,21 +149,23 @@
 		A187996220AB7A86009FA6B6 /* trend_request_1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trend_request_1.json; sourceTree = "<group>"; };
 		A19A31F5207D1ACD00DDC98C /* comments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = comments.json; sourceTree = "<group>"; };
 		A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellView.swift; sourceTree = "<group>"; };
-		A1AB96C820ADD4E50059AC79 /* explorer_posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = explorer_posts.json; sourceTree = "<group>"; };
+		A1AB96C820ADD4E50059AC79 /* getTrendChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getTrendChallenges.json; sourceTree = "<group>"; };
 		A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateProgressController.swift; sourceTree = "<group>"; };
 		A1B27B03209A2F8D00263E48 /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		A1C13415207F212700C6A435 /* TrendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendsController.swift; sourceTree = "<group>"; };
+		A1C8D31320B7EE440018B781 /* ServiceLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
+		A1C8D31520B832800018B781 /* getChallenges1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getChallenges1.json; sourceTree = "<group>"; };
 		A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewCellView.swift; sourceTree = "<group>"; };
 		A1DA9CAA20A95236009200E3 /* AddChallenge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddChallenge.swift; sourceTree = "<group>"; };
 		A1DC3413207E2A1800F21232 /* Comments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		A1DC3415207E2D9800F21232 /* CommentCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentCellView.swift; sourceTree = "<group>"; };
 		A1DC3417207E402300F21232 /* ProfileCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCellView.swift; sourceTree = "<group>"; };
 		A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewController.swift; sourceTree = "<group>"; };
-		A1E45A3D2074996800FD58E6 /* own_posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = own_posts.json; sourceTree = "<group>"; };
+		A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getOwnChallenges.json; sourceTree = "<group>"; };
 		A1ED4B1020404BAE00422544 /* facebookfeed2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = facebookfeed2.entitlements; path = facebookfeed2/facebookfeed2.entitlements; sourceTree = "<group>"; };
 		A97703B0D28FD3CB4B74C0ED /* Pods_facebookfeed2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_facebookfeed2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C780A7B11C88C582007023FD /* single_post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = single_post.json; sourceTree = "<group>"; };
-		C780A7B31C88CEFB007023FD /* all_posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = all_posts.json; sourceTree = "<group>"; };
+		C780A7B31C88CEFB007023FD /* getChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getChallenges.json; sourceTree = "<group>"; };
 		C7A85F301C78C137007E9A00 /* facebookfeed2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = facebookfeed2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A85F331C78C137007E9A00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C7A85F351C78C137007E9A00 /* ChallengesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengesController.swift; sourceTree = "<group>"; };
@@ -231,7 +235,6 @@
 				A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */,
 				A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */,
 				A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */,
-				C7A85F351C78C137007E9A00 /* ChallengesController.swift */,
 				C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */,
 				C7D879AD1C828B36008766AE /* FollowRequestController.swift */,
 				A1C13415207F212700C6A435 /* TrendsController.swift */,
@@ -239,6 +242,7 @@
 				A1274107200F38E60073BFF2 /* FacebookController.swift */,
 				A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */,
 				A113ABFF203BE1E9006E99F1 /* OtherController.swift */,
+				C7A85F351C78C137007E9A00 /* ChallengesController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -257,9 +261,10 @@
 				A15F875E207BBBB70035130D /* friend_request.json */,
 				A1592659209ACC2900D98923 /* trend_request.json */,
 				A187996220AB7A86009FA6B6 /* trend_request_1.json */,
-				C780A7B31C88CEFB007023FD /* all_posts.json */,
-				A1AB96C820ADD4E50059AC79 /* explorer_posts.json */,
-				A1E45A3D2074996800FD58E6 /* own_posts.json */,
+				A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */,
+				A1AB96C820ADD4E50059AC79 /* getTrendChallenges.json */,
+				C780A7B31C88CEFB007023FD /* getChallenges.json */,
+				A1C8D31520B832800018B781 /* getChallenges1.json */,
 			);
 			path = JsonFiles;
 			sourceTree = "<group>";
@@ -314,6 +319,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		A1C8D30C20B7EAAA0018B781 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				A11C823420499DDB0061A33F /* ImageService.swift */,
+				A1C8D31320B7EE440018B781 /* ServiceLocator.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		C7A85F271C78C137007E9A00 = {
 			isa = PBXGroup;
 			children = (
@@ -343,10 +357,10 @@
 				A13C70982043CD2D0076B989 /* JsonFiles */,
 				A13C70972043CD010076B989 /* Controller */,
 				A13C70962043CCE70076B989 /* Singleton */,
+				A1C8D30C20B7EAAA0018B781 /* Service */,
 				C7A85F3A1C78C137007E9A00 /* Assets.xcassets */,
 				C7A85F3C1C78C137007E9A00 /* LaunchScreen.storyboard */,
 				C7A85F3F1C78C137007E9A00 /* Info.plist */,
-				A11C823420499DDB0061A33F /* ImageService.swift */,
 			);
 			name = challenge;
 			path = facebookfeed2;
@@ -470,11 +484,12 @@
 				A15A30D4207B282D000C74A9 /* self_subject.json in Resources */,
 				A1715F4520B050D1003E7AFF /* following.json in Resources */,
 				C780A7B21C88C582007023FD /* single_post.json in Resources */,
-				A1E45A3E2074996800FD58E6 /* own_posts.json in Resources */,
-				A1AB96C920ADD4E50059AC79 /* explorer_posts.json in Resources */,
+				A1E45A3E2074996800FD58E6 /* getOwnChallenges.json in Resources */,
+				A1AB96C920ADD4E50059AC79 /* getTrendChallenges.json in Resources */,
 				C7A85F3B1C78C137007E9A00 /* Assets.xcassets in Resources */,
+				A1C8D31620B832800018B781 /* getChallenges1.json in Resources */,
 				A17162C3209C424D00061399 /* notifications.json in Resources */,
-				C780A7B41C88CEFB007023FD /* all_posts.json in Resources */,
+				C780A7B41C88CEFB007023FD /* getChallenges.json in Resources */,
 				A14A99692075306800B1418D /* friends.json in Resources */,
 				A159265A209ACC2900D98923 /* trend_request.json in Resources */,
 			);
@@ -584,6 +599,7 @@
 				A1289CAE20A5567600CC66B0 /* UIScrollViewExtension.swift in Sources */,
 				A113AC00203BE1E9006E99F1 /* OtherController.swift in Sources */,
 				A17162C5209C42DC00061399 /* Notifications.swift in Sources */,
+				A1C8D31420B7EE440018B781 /* ServiceLocator.swift in Sources */,
 				A17162C1209C420900061399 /* NotificationCell.swift in Sources */,
 				C7D879AC1C8289DD008766AE /* CustomTabBarController.swift in Sources */,
 				A14D75FE20752D430005B2F2 /* SelectedItems.swift in Sources */,

@@ -76,103 +76,35 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func loadChallenges() {
-        let httpCall: Bool = false
-        if httpCall == true {
+        if dummyServiceCall == false {
             // Asynchronous Http call to your api url, using NSURLSession:
-            // http://ip.jsontest.com
-            // http://localhost:8080/getChallenges?memberId=5a81b0f0f8b8e43e70325d3d
-            // self.fetchData()
+            fetchChallenges(url: getChallengesURL)
+            return
         } else {
-            //        let samplePost = Post()
-            //        samplePost.performSelector(Selector("setName:"), withObject: "my name")
-            var jsonFileName = "explorer_posts"
             if self.tabBarController?.selectedIndex == profileIndex {
-                jsonFileName = "own_posts"
+                self.donePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: true)
+                self.notDonePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: false)
+                self.posts = donePosts
+                self.posts.append(contentsOf: notDonePosts)
+                return
+            } else if self.tabBarController?.selectedIndex == trendsIndex {
+                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
+                return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
-                jsonFileName = "all_posts"
-            }
-            
-            if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
-                do {
-                    let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                    let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                    if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                        self.posts = [Post]()
-                        self.donePosts = [Post]()
-                        self.notDonePosts = [Post]()
-                        for postDictionary in postsArray {
-                            let post = Post()
-                            post.versusAttendanceList = [VersusAttendance]()
-                            if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {
-                                for versus in verAttenLis {
-                                    let versusAtten = VersusAttendance(data: versus)
-                                    post.versusAttendanceList.append(versusAtten)
-                                }
-                            }
-                            post.joinAttendanceList = [JoinAttendance]()
-                            if let joinAttenLis = postDictionary["joinAttendanceList"] as? [[String: AnyObject]] {
-                                for join in joinAttenLis {
-                                    let joinAtten = JoinAttendance(data: join)
-                                    post.joinAttendanceList.append(joinAtten)
-                                }
-                            }
-                            post.setValuesForKeys(postDictionary)
-                            post.done = postDictionary["done"] as? Bool
-                            post.isComeFromSelf = postDictionary["isComeFromSelf"] as? Bool
-                            post.amILike = postDictionary["amILike"] as? Bool
-                            post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
-                            post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
-                            post.proofed = postDictionary["proofed"] as? Bool
-                            self.posts.append(post)
-                            if post.done == true {
-                                self.donePosts.append(post)
-                            } else {
-                                self.notDonePosts.append(post)
-                            }
-                            // self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
+                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getChallenges")
+                return
             }
         }
     }
     
-    func fetchData() {
-        URLSession.shared.dataTask(with: NSURL(string: getChallengesURL)! as URL, completionHandler: { (data, response, error) -> Void in
-            // Check if data was received successfully
+    func fetchChallenges(url: String) {
+        URLSession.shared.dataTask(with: NSURL(string: getChallengesURL + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
                 do {
-                    // Convert NSData to Dictionary where keys are of type String, and values are of any type
-                    // Access specific key with value of type String
-                    // let str = json!["key"] as! String
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: Any]] {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
                         self.posts = [Post]()
                         for postDictionary in postsArray {
-                            let post = Post()
-                            post.versusAttendanceList = [VersusAttendance]()
-                            if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {
-                                for versus in verAttenLis {
-                                    let versusAtten = VersusAttendance(data: versus)
-                                    post.versusAttendanceList.append(versusAtten)
-                                }
-                            }
-                            post.joinAttendanceList = [JoinAttendance]()
-                            if let joinAttenLis = postDictionary["joinAttendanceList"] as? [[String: AnyObject]] {
-                                for join in joinAttenLis {
-                                    let joinAtten = JoinAttendance(data: join)
-                                    post.joinAttendanceList.append(joinAtten)
-                                }
-                            }
-                            post.setValuesForKeys(postDictionary)
-                            post.done = postDictionary["done"] as? Bool
-                            post.isComeFromSelf = postDictionary["isComeFromSelf"] as? Bool
-                            post.amILike = postDictionary["amILike"] as? Bool
-                            post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
-                            post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
-                            post.proofed = postDictionary["proofed"] as? Bool
-                            self.posts.append(post)
+                            self.posts.append(ServiceLocator.mappingOfPost(postDictionary: postDictionary))
                         }
                     }
                 } catch let err {

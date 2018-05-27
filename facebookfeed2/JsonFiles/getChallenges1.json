@@ -1,0 +1,207 @@
+{
+    "posts": [
+              {
+              "id": "5a81bae9f8b8e43ec9a81e2b",
+              "challengerId": "5a81b16ff8b8e43e70325d3f",
+              "challengerFBId": "634127860",
+              "name": "Seher Can Akay",
+              "thinksAboutChallenge": "Seni bu defa yeneceğim :)",
+              "firstTeamCount": "1",
+              "secondTeamCount": "1",
+              "subject": "READING",
+              "chlDate": 1512864000000,
+              "untilDate": 1512864000000,
+              "untilDateStr": "LAST 14 DAYS!",
+              "done": false,
+              "updateDate": 1511136000000,
+              "comeFromSelf": false,
+              "supportFirstTeam": false,
+              "supportSecondTeam": false,
+              "firstTeamSupportCount": 1,
+              "secondTeamSupportCount": 2,
+              "countOfProofs": 1,
+              "insertTime": "1 HOURS AGO",
+              "status": "has finished challenge",
+              "proofed": false,
+              "countOfComments": 0,
+              "type": "PRIVATE",
+              "versusAttendanceList": [
+                                       {
+                                       "id": "5a81bae9f8b8e43ec9a81e2c",
+                                       "challengeId": "5a81bae9f8b8e43ec9a81e2b",
+                                       "memberId": "10156204749600712",
+                                       "facebookID": "634127860",
+                                       "accept": false,
+                                       "firstTeamMember": true,
+                                       "secondTeamMember": false
+                                       },
+                                       {
+                                       "id": "5a81bae9f8b8e43ec9a81e2d",
+                                       "challengeId": "5a81bae9f8b8e43ec9a81e2b",
+                                       "memberId": "5a81b0f0f8b8e43e70325d3d",
+                                       "facebookID": "100001948011413",
+                                       "accept": false,
+                                       "firstTeamMember": false,
+                                       "secondTeamMember": true
+                                       }
+                                       ],
+              "firstTeamScore": "",
+              "secondTeamScore": ""
+              },
+              {
+              "id": "5a81bae9f8b8e43ec9a81e2b",
+              "challengerId": "5a81b16ff8b8e43e70325d3f",
+              "challengerFBId": "634127860",
+              "name": "seher Akay",
+              "firstTeamCount": "2",
+              "secondTeamCount": "2",
+              "thinksAboutChallenge": "Okuma?",
+              "subject": "READING",
+              "chlDate": 1512864000000,
+              "untilDate": 1512864000000,
+              "untilDateStr": "LAST 14 DAYS!",
+              "done": false,
+              "updateDate": 1511136000000,
+              "comeFromSelf": false,
+              "supportFirstTeam": false,
+              "supportSecondTeam": false,
+              "firstTeamSupportCount": 11,
+              "secondTeamSupportCount": 25,
+              "countOfProofs": 1,
+              "insertTime": "1 HOURS AGO",
+              "status": "has finished challenge",
+              "proofed": false,
+              "countOfComments": 0,
+              "type": "PRIVATE",
+              "versusAttendanceList": [
+                                       {
+                                       "memberId":"5a1f048318e6063778be8f78",
+                                       "accept":false,
+                                       "firstTeamMember":true,
+                                       "secondTeamMember":false,
+                                       "facebookID": "634127860"
+                                       },
+                                       {
+                                       "memberId":"5a1f048318e6063778be8f78",
+                                       "accept":false,
+                                       "firstTeamMember":true,
+                                       "secondTeamMember":false,
+                                       "facebookID": "689764048"
+                                       },
+                                       {
+                                       "memberId":"5a1f048318e6063778be8f78",
+                                       "accept":false,
+                                       "firstTeamMember":false,
+                                       "secondTeamMember":true,
+                                       "facebookID": "100002391996271"
+                                       },
+                                       {
+                                       "memberId":"5a1f048318e6063778be8f78",
+                                       "accept":false,
+                                       "firstTeamMember":false,
+                                       "secondTeamMember":true,
+                                       "facebookID": "100002408468624"
+                                       }
+                                       ],
+              "firstTeamScore": "",
+              "secondTeamScore": ""
+              },
+              {
+              "id": "5a81bae9f8b8e43ec9a81e2b",
+              "challengerId": "5a81b16ff8b8e43e70325d3f",
+              "challengerFBId": "634127860",
+              "name": "seher Akay",
+              "firstTeamCount": "2",
+              "secondTeamCount": "2",
+              "thinksAboutChallenge": "Okuma?",
+              "subject": "READING",
+              "chlDate": 1512864000000,
+              "untilDate": 1512864000000,
+              "untilDateStr": "LAST 14 DAYS!",
+              "done": false,
+              "updateDate": 1511136000000,
+              "comeFromSelf": false,
+              "supportFirstTeam": false,
+              "supportSecondTeam": false,
+              "firstTeamSupportCount": 11,
+              "secondTeamSupportCount": 25,
+              "countOfProofs": 1,
+              "insertTime": "1 HOURS AGO",
+              "status": "has finished challenge",
+              "proofed": false,
+              "countOfComments": 0,
+              "type": "PRIVATE",
+              "versusAttendanceList": [
+                                       {
+                                       "memberId":"5a1f048318e6063778be8f78",
+                                       "accept":false,
+                                       "firstTeamMember":true,
+                                       "secondTeamMember":false,
+                                       "facebookID": "634127860"
+                                       },
+                                       {
+                                       "memberId":"5a1f048318e6063778be8f78",
+                                       "accept":false,
+                                       "firstTeamMember":true,
+                                       "secondTeamMember":false,
+                                       "facebookID": "689764048"
+                                       },
+                                       {
+                                       "memberId":"5a1f048318e6063778be8f78",
+                                       "accept":false,
+                                       "firstTeamMember":false,
+                                       "secondTeamMember":true,
+                                       "facebookID": "100002391996271"
+                                       },
+                                       {
+                                       "memberId":"5a1f048318e6063778be8f78",
+                                       "accept":false,
+                                       "firstTeamMember":false,
+                                       "secondTeamMember":true,
+                                       "facebookID": "100002408468624"
+                                       }
+                                       ],
+              "firstTeamScore": "",
+              "secondTeamScore": ""
+              },
+              {
+              "id": "5a81bb6bf8b8e43ec9a81e2e",
+              "challengerId": "5a81b0f0f8b8e43e70325d3d",
+              "challengerFBId": "666376928hb83c9jfhd",
+              "name": "ibrahim Akay",
+              "firstTeamCount": "1",
+              "secondTeamCount": "1",
+              "thinksAboutChallenge": "Okuma?",
+              "subject": "read_book",
+              "chlDate": 1511136000000,
+              "untilDate": 1514505600000,
+              "untilDateStr": "LAST 14 DAYS!",
+              "done": true,
+              "updateDate": 1511136000000,
+              "comeFromSelf": false,
+              "supportFirstTeam": false,
+              "supportSecondTeam": false,
+              "firstTeamSupportCount": 1,
+              "secondTeamSupportCount": 2,
+              "countOfProofs": 1,
+              "insertTime": "1 HOURS AGO",
+              "status": "has finished challenge",
+              "proofed": false,
+              "countOfLike": 1,
+              "countOfComments": 0,
+              "type": "PUBLIC",
+              "joinAttendanceList": [
+                                     {
+                                     "id": "5a81bb6bf8b8e43ec9a81e2f",
+                                     "challengeId": "5a81bb6bf8b8e43ec9a81e2e",
+                                     "memberId": "5a81b0f0f8b8e43e70325d3d",
+                                     "facebookID": "666376928hb83c9jfhd",
+                                     "join": true,
+                                     "proof": false,
+                                     "challenger": true
+                                     }
+                                     ],
+              "goal": "10"
+              }
+              ]
+}

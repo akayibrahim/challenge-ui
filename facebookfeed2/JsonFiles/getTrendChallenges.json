@@ -10,7 +10,6 @@
               "challengerFBId" : "689764048",
               "subject" : "FOOTBALL",
               "type": "PUBLIC",
-              "countOfJoins": 32,
               "done" : false,
               "firstTeamCount" : "1",
               "secondTeamCount" : "0",
@@ -22,7 +21,7 @@
                                       "facebookID": "689764048"
                                       }
                                       ],
-              "isComeFromSelf" : false,
+              "comeFromSelf" : false,
               "countOfProofs": 3,
               "insertTime" : "4 HOURS AGO",
               "status": "joined to challenge",
@@ -37,8 +36,7 @@
               "challengerFBId" : "100002408468624",
               "untilDateStr": "LAST 5 DAYS",
               "subject" : "RUNNING",
-              "type": "PUBLIC",
-              "countOfJoins": 32,
+              "type": "PUBLIC",              
               "done" : false,
               "firstTeamCount" : "1",
               "secondTeamCount" : "2",
@@ -62,7 +60,7 @@
                                       "facebookID": "696089910"
                                       }
                                       ],
-              "isComeFromSelf" : false,
+              "comeFromSelf" : false,
               "countOfProofs": 4,
               "insertTime" : "1 HOURS AGO",
               "status": "joined to challenge",
@@ -78,7 +76,6 @@
               "untilDateStr": "LAST 2 DAYS",
               "subject" : "BOXING",
               "type": "PUBLIC",
-              "countOfJoins": 32,
               "done" : false,
               "firstTeamCount" : "1",
               "secondTeamCount" : "3",
@@ -108,7 +105,7 @@
                                       "facebookID": "100001948011413"
                                       }
                                       ],
-              "isComeFromSelf" : false,
+              "comeFromSelf" : false,
               "countOfProofs": 5,
               "insertTime" : "7 HOURS AGO",
               "status": "joined to challenge",
@@ -124,7 +121,6 @@
               "untilDateStr": "LAST 8 DAYS",
               "subject" : "LANGUAGE",
               "type": "PUBLIC",
-              "countOfJoins": 32,
               "done" : false,
               "firstTeamCount" : "1",
               "secondTeamCount" : "4",
@@ -160,7 +156,7 @@
                                       "facebookID": "10156204749600712"
                                       }
                                       ],
-              "isComeFromSelf" : false,
+              "comeFromSelf" : false,
               "countOfProofs": 6,
               "insertTime" : "9 HOURS AGO",
               "status": "joined to challenge",
@@ -189,7 +185,7 @@
                                      "proof": true
                                      }
                                      ],
-              "isComeFromSelf" : false,
+              "comeFromSelf" : false,
               "countOfProofs": 7,
               "insertTime" : "2 HOURS AGO",
               "status": "proofed challenge",

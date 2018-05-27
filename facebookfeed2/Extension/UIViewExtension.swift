@@ -71,4 +71,18 @@ extension UIView {
         let screenSize = UIScreen.main.bounds
         view.heightAnchor.constraint(equalToConstant: screenSize.width * multiplier).isActive = true
     }
+    
+    func addTopBorderWithColor(_ objView : UIView, color: UIColor, width: CGFloat) {
+        let border = CALayer()
+        border.backgroundColor = color.cgColor
+        border.frame = CGRect(x: 0, y: 0, width: objView.frame.size.width, height: width)
+        objView.layer.addSublayer(border)
+    }
+    
+    func addBottomBorderWithColor(_ objView : UIView, color: UIColor, width: CGFloat) {
+        let border = CALayer()
+        border.backgroundColor = color.cgColor
+        border.frame = CGRect(x: 0, y: objView.frame.size.height - width, width: objView.frame.size.width, height: width)
+        objView.layer.addSublayer(border)
+    }
 }

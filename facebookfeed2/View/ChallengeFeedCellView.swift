@@ -70,7 +70,9 @@ class FeedCell: UICollectionViewCell {
         self.scoreText.removeFromSuperview()
         self.proofText.removeFromSuperview()
         self.clapping.removeFromSuperview()
+        self.clappingHome.removeFromSuperview()
         self.proofedMediaView.image = UIImage()
+        self.multiplierSign.removeFromSuperview()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -273,7 +275,7 @@ class FeedCell: UICollectionViewCell {
                 moreFourChlrPeopleImageView.image = UIImage(named: more_icon)
                 moreFourChlrPeopleImageView.contentMode = .scaleAspectFit
             }
-            goalLabel.text = "GOAL: 10" // TODO
+            goalLabel.text = "GOAL"
             if let subject = post?.subject {
                 subjectLabel.text = subject
                 subjectLabel.font = UIFont (name: fontMarkerFelt, size: 20)
@@ -310,8 +312,8 @@ class FeedCell: UICollectionViewCell {
                 }
             }
             if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount,  let isComeFromSelf = post?.isComeFromSelf, let isDone = post?.done,
-                let proofed = post?.proofed {
-                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined)
+                let proofed = post?.proofed, let firstTeamScore = post?.firstTeamScore, let secondTeamScore = post?.secondTeamScore {
+                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore)
             }
         }
     }
@@ -325,7 +327,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     let screenSize = UIScreen.main.bounds
-    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, joined: Bool) {
+    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, joined: Bool, firstTeamScore: String, secondTeamScore: String) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -341,7 +343,7 @@ class FeedCell: UICollectionViewCell {
         addTrailingAnchor(dividerLineView, anchor: contentGuide.trailingAnchor, constant: 0)
         dividerLineView.heightAnchor.constraint(equalToConstant: 0).isActive = true
         
-        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done)
+        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore)
         
         if !isComeFromSelf {
             if type == PUBLIC && proofed {
@@ -380,7 +382,7 @@ class FeedCell: UICollectionViewCell {
             if type == PUBLIC {
                 addSubview(viewProofs)
                 viewProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                addTrailingAnchor(viewProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
+                addTrailingAnchor(viewProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.2/10))
                 viewProofs.centerYAnchor.constraint(equalTo: viewComments.centerYAnchor, constant: 0).isActive = true
                 addHeightAnchor(viewProofs, multiplier: 0.7/10)
                 
@@ -399,7 +401,7 @@ class FeedCell: UICollectionViewCell {
                         addHeightAnchor(addProofs, multiplier: 0.7/10)
                     } else {
                         addSubview(joinToChl)
-                        joinToChl.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+                        joinToChl.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
                         addLeadingAnchor(joinToChl, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
                         joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
                         addHeightAnchor(joinToChl, multiplier: 0.7/10)
@@ -427,7 +429,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool) {
+    func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String) {
         let middleTopGuide = UILayoutGuide()
         let middleCenterGuide = UILayoutGuide()
         let middleBottomGuide = UILayoutGuide()
@@ -445,12 +447,19 @@ class FeedCell: UICollectionViewCell {
         
         if done {
             addSubview(finishFlag)
-            addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.5 / 6))
+            addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0 / 6))
             finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addWidthAnchor(finishFlag, multiplier: 4 / 6)
-            addHeightAnchor(finishFlag, multiplier: 2 / 6)
+            addWidthAnchor(finishFlag, multiplier: 2 / 6)
+            addHeightAnchor(finishFlag, multiplier: 1 / 6)
             finishFlag.alpha = 1
             vsImageView.alpha = 0.5
+            
+            addSubview(multiplierSign)
+            addBottomAnchor(multiplierSign, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.3 / 6))
+            multiplierSign.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            addWidthAnchor(multiplierSign, multiplier: 2 / 6)
+            addHeightAnchor(multiplierSign, multiplier: 0.5 / 6)
+            multiplierSign.alpha = 0
             
             /*
             addSubview(scoreHome)
@@ -485,38 +494,48 @@ class FeedCell: UICollectionViewCell {
             scoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
             addWidthAnchor(scoreText, multiplier: 1.7 / 6)
             addHeightAnchor(scoreText, multiplier: 0.25 / 6)
-            addTopBorderWithColor(scoreText, color: UIColor.black, width: 1.0)
-            addBottomBorderWithColor(scoreText, color: UIColor.black, width: 1.0)
             scoreText.backgroundColor = UIColor.white
             scoreText.textColor = UIColor.black
             scoreText.layer.cornerRadius = 5
             scoreText.layer.masksToBounds = true
-            scoreText.font = UIFont.boldSystemFont(ofSize: 14)
+            scoreText.addBorders(edges: [.top, .bottom], width: 1)
             
             addSubview(proofText)
             addTopAnchor(proofText, anchor: vsImageView.topAnchor, constant: (screenWidth * 0.6 / 10))
             proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
             addWidthAnchor(proofText, multiplier: 1.2 / 6)
             addHeightAnchor(proofText, multiplier: 0.25 / 6)
-            addTopBorderWithColor(proofText, color: UIColor.black, width: 1.0)
-            addBottomBorderWithColor(proofText, color: UIColor.black, width: 1.0)
             proofText.backgroundColor = UIColor.white
             proofText.textColor = UIColor.black
             proofText.layer.cornerRadius = 5
             proofText.layer.masksToBounds = true
-            proofText.font = UIFont.boldSystemFont(ofSize: 14)
+            proofText.addBorders(edges: [.top, .bottom], width: 1)
             
             if type == PUBLIC {
                 // scoreHome.alpha = 0
                 // scoreAway.alpha = 0
                 scoreText.alpha = 0
                 proofText.alpha = 1
-                proofText.text = proofed
+                if proofed {
+                    proofText.text = proofedText
+                } else {
+                    proofText.text = "JOINED" // TODO
+                    if isComeFromSelf {
+                        multiplierSign.alpha = 1 // TODO implement for others
+                    }
+                }
             } else {
                 // scoreHome.alpha = 1
                 // scoreAway.alpha = 1
                 scoreText.alpha = 1
                 proofText.alpha = 0
+            }
+            if type == SELF {
+                addSubview(goalLabel)
+                addBottomAnchor(goalLabel, anchor: scoreText.topAnchor, constant: (screenWidth * 0.05 / 10))
+                goalLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: screenWidth * 1.1 / 10).isActive = true
+                addWidthAnchor(goalLabel, multiplier: 0.3 / 3)
+                addHeightAnchor(goalLabel, multiplier: 0.1 / 3)
             }
         } else {
             addSubview(untilDateLabel)
@@ -580,12 +599,32 @@ class FeedCell: UICollectionViewCell {
         }
         
         if done {
-            if isComeFromSelf {
-                addSubview(clapping)
-                addTopAnchor(clapping, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.3 / 18)
-                clapping.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                addWidthAnchor(clapping, multiplier: 0.8 / 6)
-                addHeightAnchor(clapping, multiplier: 0.8 / 6)
+            addSubview(clapping)
+            addTopAnchor(clapping, anchor: scoreText.bottomAnchor, constant: screenWidth * 0.1 / 10)
+            clapping.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: screenWidth * 1.2 / 10).isActive = true
+            addWidthAnchor(clapping, multiplier: 0.45 / 6)
+            addHeightAnchor(clapping, multiplier: 0.45 / 6)
+            clapping.alpha = 0
+            
+            addSubview(clappingHome)
+            addTopAnchor(clappingHome, anchor: scoreText.bottomAnchor, constant: screenWidth * 0.1 / 10)
+            clappingHome.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenWidth * 1.2 / 10)).isActive = true
+            addWidthAnchor(clappingHome, multiplier: 0.45 / 6)
+            addHeightAnchor(clappingHome, multiplier: 0.45 / 6)
+            clappingHome.alpha = 0
+            
+            if type == PUBLIC {
+                if proofed {
+                    clappingHome.alpha = 1
+                }
+            } else if type == PRIVATE {
+                if firstTeamScore > secondTeamScore {
+                    clappingHome.alpha = 1
+                } else {
+                    clapping.alpha = 1
+                }
+            } else {
+                clappingHome.alpha = 1 // TODO
             }
         } else {
              if isComeFromSelf {
@@ -883,7 +922,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
-    let goalLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor(red: 255/255, green: 90/255, blue: 51/255, alpha: 1), textColor: UIColor.white)
+    let goalLabel: UILabel = FeedCell.labelCreate(7, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
     let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
     let insertTime: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
     
@@ -900,10 +939,10 @@ class FeedCell: UICollectionViewCell {
     let supportLabel: UILabel = FeedCell.label(12)
     let supportTextLabel: UILabel = FeedCell.label(8)
     let supportMatchLabel: UILabel = FeedCell.label(12)
-    let scoreHome: UILabel = FeedCell.label(12)
-    let scoreAway: UILabel = FeedCell.label(12)
-    let scoreText: UILabel = FeedCell.label(12)
-    let proofText: UILabel = FeedCell.label(12)
+    let scoreHome: UILabel = FeedCell.label(14)
+    let scoreAway: UILabel = FeedCell.label(14)
+    let scoreText: UILabel = FeedCell.label(14)
+    let proofText: UILabel = FeedCell.label(14)
     
     static func lineForDivider() -> UIView {
         let view = UIView()
@@ -941,7 +980,9 @@ class FeedCell: UICollectionViewCell {
     let supportButton = FeedCell.buttonForTitle("", imageName: support)
     let supportButtonMatch = FeedCell.buttonForTitle("", imageName: support)
     let finishFlag = FeedCell.buttonForTitle("", imageName: "finishFlag")
+    let multiplierSign = FeedCell.buttonForTitle("", imageName: "multipliersign")
     let clapping = FeedCell.buttonForTitle("", imageName: "clap")
+    let clappingHome = FeedCell.buttonForTitle("", imageName: "clap")
     
     static func subClasssButtonForTitle(_ title: String, imageName: String) -> subclasssedUIButton {
         let button = subclasssedUIButton()

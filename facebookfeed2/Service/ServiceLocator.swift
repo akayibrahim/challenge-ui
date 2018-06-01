@@ -48,7 +48,7 @@ class ServiceLocator {
         return posts
     }
     
-    static func mappingOfPost(postDictionary : [String : AnyObject]) -> Post{
+    static func mappingOfPost(postDictionary : [String : AnyObject]) -> Post {
         let post = Post()
         post.versusAttendanceList = [VersusAttendance]()
         if let verAttenLis = postDictionary["versusAttendanceList"] as? [[String: AnyObject]] {

@@ -20,7 +20,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "87091823091283",
@@ -258,8 +260,8 @@
               "countOfProofs": 0,
               "insertTime" : "2 DAYS AGO",
               "status": "has finished challenge",
-              "firstTeamScore" : "1",
-              "secondTeamScore" : "3",
+              "firstTeamScore" : "2",
+              "secondTeamScore" : "1",
               "proofed" : false,
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
@@ -295,7 +297,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "87091823091283",
@@ -326,7 +330,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "87091823091283",
@@ -344,20 +350,20 @@
               "joinAttendanceList" : [
                                       {
                                       "memberId":"5a1f048318e6063778be8f78",
-                                      "join":true,
-                                      "proof":false,
+                                      "join":false,
+                                      "proof":true,
                                       "facebookID": "100002391996271"
                                       },
                                       {
                                       "memberId":"5a1f048318e6063778be8f78",
                                       "join":false,
-                                      "proof":false,
+                                      "proof":true,
                                       "facebookID": "100002408468624"
                                       },
                                       {
                                       "memberId":"5a1f048318e6063778be8f78",
-                                      "join":true,
-                                      "proof":false,
+                                      "join":false,
+                                      "proof":true,
                                       "facebookID": "696089910"
                                       }
                                       ],
@@ -365,11 +371,13 @@
               "countOfProofs": 4,
               "insertTime" : "1 HOURS AGO",
               "status": "joined to challenge",
-              "proofed" : false,
+              "proofed" : true,
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "87091823091283",
@@ -417,7 +425,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "87091823091283",
@@ -471,7 +481,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -504,7 +516,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -527,7 +541,9 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               }
               ]
 }

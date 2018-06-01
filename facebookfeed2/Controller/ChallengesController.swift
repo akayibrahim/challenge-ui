@@ -37,6 +37,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var posts = [Post]()
     var donePosts = [Post]()
     var notDonePosts = [Post]()
+    var explorer : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +46,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             refreshControl = UIRefreshControl()
             refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
             collectionView?.addSubview(refreshControl)
-        } else if self.tabBarController?.selectedIndex == profileIndex {
+        } else if self.tabBarController?.selectedIndex == profileIndex && !explorer {
             navigationItem.title = profileTitle
             selfRefreshControl = UIRefreshControl()
             selfRefreshControl.addTarget(self, action: #selector(self.onSelfRefesh), for: UIControlEvents.valueChanged)
@@ -78,17 +79,31 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func loadChallenges() {
         if dummyServiceCall == false {
             // Asynchronous Http call to your api url, using NSURLSession:
-            fetchChallenges(url: getChallengesURL)
-            return
+            if explorer {
+                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
+                return
+            } else if self.tabBarController?.selectedIndex == trendsIndex {
+                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
+                return
+            } else if self.tabBarController?.selectedIndex == profileIndex {
+                fetchChallenges(url: getChallengesOfMemberURL, profile: true)
+                return
+            } else if self.tabBarController?.selectedIndex == chanllengeIndex {
+                fetchChallenges(url: getChallengesURL, profile: false)
+                return
+            }
         } else {
-            if self.tabBarController?.selectedIndex == profileIndex {
+            if explorer {
+                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
+                return
+            } else if self.tabBarController?.selectedIndex == trendsIndex {
+                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
+                return
+            } else if self.tabBarController?.selectedIndex == profileIndex {
                 self.donePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: true)
                 self.notDonePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: false)
                 self.posts = donePosts
                 self.posts.append(contentsOf: notDonePosts)
-                return
-            } else if self.tabBarController?.selectedIndex == trendsIndex {
-                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
                 self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getChallenges")
@@ -97,14 +112,24 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func fetchChallenges(url: String) {
+    func fetchChallenges(url: String, profile : Bool) {
         URLSession.shared.dataTask(with: NSURL(string: getChallengesURL + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
                 do {
                     if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
                         self.posts = [Post]()
+                        self.donePosts = [Post]()
+                        self.notDonePosts = [Post]()
                         for postDictionary in postsArray {
-                            self.posts.append(ServiceLocator.mappingOfPost(postDictionary: postDictionary))
+                            let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                            self.posts.append(post)
+                            if profile {
+                                if post.done == true {
+                                    self.donePosts.append(post)
+                                } else {
+                                    self.notDonePosts.append(post)
+                                }
+                            }
                         }
                     }
                 } catch let err {
@@ -119,7 +144,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var reusableView : UICollectionReusableView? = nil
-        if self.tabBarController?.selectedIndex == profileIndex {
+        if self.tabBarController?.selectedIndex == profileIndex && !explorer {
             if kind == UICollectionElementKindSectionHeader {
                 let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "someRandonIdentifierString", for: indexPath as IndexPath) as! ChallengeHeader
                 if indexPath.section == 1 {
@@ -134,7 +159,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if self.tabBarController?.selectedIndex == profileIndex {
+        if self.tabBarController?.selectedIndex == profileIndex && !explorer {
             if section == 0 {
                 return CGSize(width: view.frame.width, height: 0)
             }
@@ -144,7 +169,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if self.tabBarController?.selectedIndex == profileIndex {
+        if self.tabBarController?.selectedIndex == profileIndex && !explorer  {
             if section == 0 {
                 return 1
             } else if section == 1 {
@@ -157,7 +182,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if self.tabBarController?.selectedIndex == profileIndex {
+        if self.tabBarController?.selectedIndex == profileIndex && !explorer  {
             return 3
         }
         return 1
@@ -173,7 +198,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
-        if self.tabBarController?.selectedIndex == profileIndex  {
+        if self.tabBarController?.selectedIndex == profileIndex  && !explorer  {
             if indexPath.section == 0 && indexPath.row == 0 {
                 feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
                 let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10))
@@ -192,6 +217,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let followingLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowingCountTap))
                 profileCell.followingLabel.isUserInteractionEnabled = true
                 profileCell.followingLabel.addGestureRecognizer(followingLabelTapGesture)
+                let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleChallengeCountTap))
+                profileCell.challangeCount.isUserInteractionEnabled = true
+                profileCell.challangeCount.addGestureRecognizer(challengeTapGesture)
                 profileCell.challangeCount.text = "\(notDonePosts.count + donePosts.count)"
                 feedCell.addSubview(profileCell)
                 return feedCell
@@ -219,12 +247,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if feedCell.post?.type == PUBLIC {
             feedCell.joinButton.tag = indexPath.row
             feedCell.joinButton.addTarget(self, action: #selector(self.acceptChallenge), for: UIControlEvents.touchUpInside)
-        } else if feedCell.post?.type == PRIVATE {
-            feedCell.supportButton.tag = indexPath.row
-            feedCell.supportButtonMatch.tag = indexPath.row
-            feedCell.supportButton.addTarget(self, action: #selector(self.supportChallenge), for: UIControlEvents.touchUpInside)
-            feedCell.supportButtonMatch.addTarget(self, action: #selector(self.supportChallengeMatch), for: UIControlEvents.touchUpInside)
         }
+        feedCell.supportButton.tag = indexPath.row
+        feedCell.supportButtonMatch.tag = indexPath.row
+        feedCell.supportButton.addTarget(self, action: #selector(self.supportChallenge), for: UIControlEvents.touchUpInside)
+        feedCell.supportButtonMatch.addTarget(self, action: #selector(self.supportChallengeMatch), for: UIControlEvents.touchUpInside)
         if feedCell.post?.type != SELF {
             if feedCell.post?.secondTeamCount == "0" {
                 feedCell.firstOnePeopleImageView.contentMode = .scaleAspectFit
@@ -237,6 +264,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.addComments.addTarget(self, action: #selector(self.addComments), for: UIControlEvents.touchUpInside)
         feedCell.addProofs.addTarget(self, action: #selector(self.addProofs), for: UIControlEvents.touchUpInside)
         return feedCell
+    }
+    
+    func handleChallengeCountTap(sender:UILabel){
+        let firstChlRow = IndexPath(item: 0, section: 1)
+        collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
     }
     
     func handleFollowersCountTap(sender:UILabel){
@@ -359,7 +391,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
     let screenSize = UIScreen.main.bounds
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if self.tabBarController?.selectedIndex == profileIndex  {
+        if self.tabBarController?.selectedIndex == profileIndex && !explorer {
             if indexPath.row == 0 && indexPath.section == 0 {
                 return CGSize(width: view.frame.width, height: screenSize.width * 2.5 / 10)
             }
@@ -454,6 +486,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if explorer {
+            return
+        }
         if self.tabBarController?.selectedIndex == chanllengeIndex || self.tabBarController?.selectedIndex == profileIndex {
             if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
                 // move down
@@ -486,6 +521,21 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
             self.lastContentOffSet = scrollView.contentOffset.y
         }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if self.tabBarController?.selectedIndex == profileIndex  && !explorer {
+            openExplorer()
+        }
+    }
+    
+    func openExplorer() {
+        let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        challengeController.navigationItem.title = "Explorer"
+        challengeController.explorer = true
+        challengeController.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(challengeController, animated: true)
     }
 }
 

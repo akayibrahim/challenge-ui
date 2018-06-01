@@ -25,7 +25,9 @@
               "countOfProofs": 3,
               "insertTime" : "4 HOURS AGO",
               "status": "joined to challenge",
-              "proofed" : false
+              "proofed" : false,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "87091823091283",
@@ -64,7 +66,9 @@
               "countOfProofs": 4,
               "insertTime" : "1 HOURS AGO",
               "status": "joined to challenge",
-              "proofed" : false
+              "proofed" : false,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "87091823091283",
@@ -109,7 +113,9 @@
               "countOfProofs": 5,
               "insertTime" : "7 HOURS AGO",
               "status": "joined to challenge",
-              "proofed" : false
+              "proofed" : false,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "87091823091283",
@@ -160,7 +166,9 @@
               "countOfProofs": 6,
               "insertTime" : "9 HOURS AGO",
               "status": "joined to challenge",
-              "proofed" : false
+              "proofed" : false,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -189,7 +197,9 @@
               "countOfProofs": 7,
               "insertTime" : "2 HOURS AGO",
               "status": "proofed challenge",
-              "proofed" : true
+              "proofed" : true,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
               }
         ]
 }

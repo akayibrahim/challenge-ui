@@ -8,7 +8,8 @@
 
 import UIKit
 
-var memberID = "10156204749600712" // "5a81b0f0f8b8e43e70325d3d"
+var memberID = "10156204749600712" // dummy
+// var memberID = "5a81b0f0f8b8e43e70325d3d"
 var memberName = "İbrahim AKAY"
 var countOffollowers = "126"
 var countOffollowing = "198"
@@ -20,7 +21,6 @@ var acceptedRed = "acceptedRed"
 var acceptedBlack = "acceptedBlack"
 var challengeTitle = "Challenge"
 var profileTitle = "Profile"
-var getChallengesURL = "http://localhost:8080/getChallenges?memberId="
 var profileFirstHeader = "YOUR ACTIVE CHALLENGES"
 var profileSecondHeader = "YOUR PAST CHALLENGES"
 var SELF = "SELF"
@@ -36,9 +36,9 @@ var more_icon = "more_icon"
 var supportText = "SUPPORT"
 var viewAllComments = "View all 0 comments"
 var viewAllProofs = "View all 0 proofs"
-var addComents = "Add a comment"
-var addProofsVar = "Proove It?"
-var joinToChlVar = "Join It?"
+var addComents = "Add a comment.."
+var addProofsVar = "Add a proof.."
+var joinToChlVar = "Join To It"
 var justMe = "Just Me"
 var pagesBackColor : UIColor = UIColor.rgb(229, green: 231, blue: 235)
 var selectText = "Select"
@@ -60,5 +60,9 @@ var globalHeight : CGFloat = 44
 var customSubjectLabel = "Custom Subject"
 var ok = "OK"
 var greaterThan = NSMutableAttributedString(string: ">", attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
-var proofed = "PROOFED"
+var proofedText = "PROOFED"
 var scoreForPrivate = " | SCORE | "
+
+// URL
+var getChallengesURL = "http://localhost:8080/getChallenges?memberId="
+var getChallengesOfMemberURL = "http://localhost:8080/getChallengesOfMember?memberId="

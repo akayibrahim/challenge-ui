@@ -14,7 +14,7 @@ var memberName = "İbrahim AKAY"
 var countOffollowers = "126"
 var countOffollowing = "198"
 
-var dummyServiceCall : Bool = true
+var dummyServiceCall : Bool = true  
 var supported = "supported"
 var support = "support"
 var acceptedRed = "acceptedRed"

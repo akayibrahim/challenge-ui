@@ -8,6 +8,7 @@
 
 import UIKit
 import FBSDKCoreKit
+import MediaPlayer
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -36,9 +37,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let barButtonColor  = UIBarButtonItem.appearance()
         barButtonColor.tintColor = UIColor.white
         
-        
         application.statusBarStyle = .lightContent
+        playAudioWithOther()
         return true
+    }
+    
+    func playAudioWithOther() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: AVAudioSessionCategoryOptions.mixWithOthers)
+            print("AVAudioSession Category Playback OK")
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+                print("AVAudioSession is Active")
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {

@@ -56,12 +56,15 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
     }
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        
         let fromView: UIView = tabBarController.selectedViewController!.view
         let toView  : UIView = viewController.view
         if fromView == toView {
             return false
         }
+        
+        let controllers = tabBarController.viewControllers
+        let navC = controllers![0] as! UINavigationController
+        let feedC = navC.viewController(class: FeedController.self)
         
         UIView.transition(from: fromView, to: toView, duration: 0.3, options: UIViewAnimationOptions.transitionCrossDissolve) { (finished:Bool) in
             
@@ -89,6 +92,6 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
             status.backgroundColor = navAndTabColor
         }
-        self.navigationController?.setNavigationBarHidden(true, animated: true)        
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
 }

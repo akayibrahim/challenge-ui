@@ -1,4 +1,4 @@
-//
+	//
 //  ViewController.swift
 //  chlfeed
 //
@@ -7,7 +7,9 @@
 //
 
 import UIKit
-
+import AVKit
+import AVFoundation
+    
 let cellId = "cellId"
 var chlScrollMoveDown : Bool = false
 var chlScrollMoveUp : Bool = false
@@ -194,54 +196,107 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if self.tabBarController?.selectedIndex == chanllengeIndex || self.tabBarController?.selectedIndex == profileIndex {
             // self.navigationController?.setNavigationBarHidden(false, animated: true)
         }
+        let indexPaths = collectionView?.indexPathsForVisibleItems
+        DispatchQueue.main.async {
+            for indexPath in indexPaths! {
+                let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
+                cell.avPlayerLayer.player?.play()
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        let indexPaths = collectionView?.indexPathsForVisibleItems
+        DispatchQueue.main.async {
+            for indexPath in indexPaths! {
+                let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
+                cell.avPlayerLayer.player?.pause()
+            }
+        }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+    }
+    
+    func createProfile() -> ProfileCellView{
+        let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10))
+        profileCell.other.addTarget(self, action: #selector(self.openOthers), for: UIControlEvents.touchUpInside)
+        profileCell.followersCount.text = "\(countOffollowers)"
+        let followersCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowersCountTap))
+        profileCell.followersCount.isUserInteractionEnabled = true
+        profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
+        let followersLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowersCountTap))
+        profileCell.followersLabel.isUserInteractionEnabled = true
+        profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)
+        profileCell.followingCount.text = "\(countOffollowing)"
+        let followingCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowingCountTap))
+        profileCell.followingCount.isUserInteractionEnabled = true
+        profileCell.followingCount.addGestureRecognizer(followingCountTapGesture)
+        let followingLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowingCountTap))
+        profileCell.followingLabel.isUserInteractionEnabled = true
+        profileCell.followingLabel.addGestureRecognizer(followingLabelTapGesture)
+        let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleChallengeCountTap))
+        profileCell.challangeCount.isUserInteractionEnabled = true
+        profileCell.challangeCount.addGestureRecognizer(challengeTapGesture)
+        profileCell.challangeCount.text = "\(self.notDonePosts.count + self.donePosts.count)"
+        return profileCell
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
-        if self.tabBarController?.selectedIndex == profileIndex  && !explorer  {
+        if self.tabBarController?.selectedIndex == profileIndex  && !self.explorer  {
             if indexPath.section == 0 && indexPath.row == 0 {
-                feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
-                let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10))
-                profileCell.other.addTarget(self, action: #selector(self.openOthers), for: UIControlEvents.touchUpInside)
-                profileCell.followersCount.text = "\(countOffollowers)"
-                let followersCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowersCountTap))
-                profileCell.followersCount.isUserInteractionEnabled = true
-                profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
-                let followersLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowersCountTap))
-                profileCell.followersLabel.isUserInteractionEnabled = true
-                profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)
-                profileCell.followingCount.text = "\(countOffollowing)"
-                let followingCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowingCountTap))
-                profileCell.followingCount.isUserInteractionEnabled = true
-                profileCell.followingCount.addGestureRecognizer(followingCountTapGesture)
-                let followingLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowingCountTap))
-                profileCell.followingLabel.isUserInteractionEnabled = true
-                profileCell.followingLabel.addGestureRecognizer(followingLabelTapGesture)
-                let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleChallengeCountTap))
-                profileCell.challangeCount.isUserInteractionEnabled = true
-                profileCell.challangeCount.addGestureRecognizer(challengeTapGesture)
-                profileCell.challangeCount.text = "\(notDonePosts.count + donePosts.count)"
-                feedCell.addSubview(profileCell)
-                return feedCell
+                let feedCellForProfile = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
+                let profileCell = createProfile()
+                feedCellForProfile.addSubview(profileCell)
+                return feedCellForProfile
             }
-            feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: "selfCellId", for: indexPath) as! FeedCell
-            feedCell.prepareForReuse()
-            feedCell.feedController = self
+            let feedCellForSelf = collectionView.dequeueReusableCell(withReuseIdentifier: "selfCellId", for: indexPath) as! FeedCell
+            feedCellForSelf.prepareForReuse()
+            feedCellForSelf.feedController = self
             if indexPath.section == 1 {
-                feedCell.post = notDonePosts[indexPath.row]
-                feedCell.updateProgress.type = notDonePosts[indexPath.row].type
-                feedCell.updateProgress.challengeId = notDonePosts[indexPath.row].id
-                feedCell.updateProgress.addTarget(self, action: #selector(self.updateProgress), for: UIControlEvents.touchUpInside)
+                feedCellForSelf.post = notDonePosts[indexPath.row]
+                feedCellForSelf.updateProgress.type = notDonePosts[indexPath.row].type
+                feedCellForSelf.updateProgress.challengeId = notDonePosts[indexPath.row].id
+                feedCellForSelf.updateProgress.addTarget(self, action: #selector(self.updateProgress), for: UIControlEvents.touchUpInside)
             } else if indexPath.section == 2 {
-                feedCell.post = donePosts[indexPath.row]
+                feedCellForSelf.post = donePosts[indexPath.row]
             }
-            return feedCell
-        } else {
-            feedCell.post = posts[indexPath.row]
+            return feedCellForSelf
         }
+        let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
+        feedCell.layer.shouldRasterize = true
+        feedCell.layer.rasterizationScale = UIScreen.main.scale
         feedCell.prepareForReuse()
         feedCell.feedController = self
         feedCell.post = posts[indexPath.item]
+        addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
+        DispatchQueue.main.async {
+            self.avPlayer = AVPlayer.init()
+            feedCell.avPlayerLayer.player = self.avPlayer
+            if (feedCell.post?.proofed)! {
+                var url : URL
+                if feedCell.post?.secondTeamCount == "0" {
+                    url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
+                } else {
+                    url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
+                }
+                self.avPlayer.replaceCurrentItem(with: AVPlayerItem(url: url))
+                feedCell.avPlayerLayer.player = self.avPlayer
+                feedCell.avPlayerLayer.player?.play()
+            }
+        }
+        return feedCell
+    }
+    
+    var avPlayer : AVPlayer = AVPlayer.init()
+    
+    func addTargetToFeedCell(feedCell: FeedCell, indexPath : IndexPath) {
         feedCell.supportSelfButton.tag = indexPath.row
         feedCell.supportSelfButton.addTarget(self, action: #selector(self.likeSelfs), for: UIControlEvents.touchUpInside)
         if feedCell.post?.type == PUBLIC {
@@ -263,7 +318,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.viewProofs.addTarget(self, action: #selector(self.viewProofs), for: UIControlEvents.touchUpInside)
         feedCell.addComments.addTarget(self, action: #selector(self.addComments), for: UIControlEvents.touchUpInside)
         feedCell.addProofs.addTarget(self, action: #selector(self.addProofs), for: UIControlEvents.touchUpInside)
-        return feedCell
     }
     
     func handleChallengeCountTap(sender:UILabel){

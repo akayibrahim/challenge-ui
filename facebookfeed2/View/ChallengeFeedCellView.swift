@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVKit
 
 class FeedCell: UICollectionViewCell {
     
@@ -72,7 +73,10 @@ class FeedCell: UICollectionViewCell {
         self.clapping.removeFromSuperview()
         self.clappingHome.removeFromSuperview()
         self.proofedMediaView.image = UIImage()
+        self.proofedVideoView.removeFromSuperview()
         self.multiplierSign.removeFromSuperview()
+        // self.playerController.player?.replaceCurrentItem(with: nil)
+        // self.playerController.view.removeFromSuperview()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -311,9 +315,9 @@ class FeedCell: UICollectionViewCell {
                     supportButtonMatch.setImage(UIImage(named: support), for: .normal)
                 }
             }
-            if let type = post?.type, let firstTeamCount = post?.firstTeamCount,  let secondTeamCount = post?.secondTeamCount,  let isComeFromSelf = post?.isComeFromSelf, let isDone = post?.done,
-                let proofed = post?.proofed, let firstTeamScore = post?.firstTeamScore, let secondTeamScore = post?.secondTeamScore {
-                setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore)
+            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done,
+                let proofed = self.post?.proofed, let firstTeamScore = self.post?.firstTeamScore, let secondTeamScore = self.post?.secondTeamScore {
+                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore)
             }
         }
     }
@@ -347,11 +351,32 @@ class FeedCell: UICollectionViewCell {
         
         if !isComeFromSelf {
             if type == PUBLIC && proofed {
-                addSubview(proofedMediaView)
-                addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
-                addWidthAnchor(proofedMediaView, multiplier: 1)
-                addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
-                setImage(name: "gandhi", imageView: proofedMediaView)
+                var url : URL
+                
+                if secondTeamCount == "0" {
+                    url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
+                } else {
+                    url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
+                    
+                    addSubview(proofedMediaView)
+                    addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                    addWidthAnchor(proofedMediaView, multiplier: 1)
+                    addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
+                    setImage(name: "gandhi", imageView: proofedMediaView)
+                    proofedMediaView.alpha = 0
+                }
+                addSubview(proofedVideoView)
+                addTopAnchor(proofedVideoView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                addWidthAnchor(proofedVideoView, multiplier: 1)
+                addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
+                proofedVideoView.alpha = 1
+                
+                DispatchQueue.main.async {
+                    self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+                    self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+                    self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    self.proofedVideoView.layer.masksToBounds = true
+                }
             }
             
             if(!thinksAboutChallengeView.text.isEmpty) {
@@ -452,7 +477,7 @@ class FeedCell: UICollectionViewCell {
             addWidthAnchor(finishFlag, multiplier: 2 / 6)
             addHeightAnchor(finishFlag, multiplier: 1 / 6)
             finishFlag.alpha = 1
-            vsImageView.alpha = 0.5
+            vsImageView.alpha = 0.75
             
             addSubview(multiplierSign)
             addBottomAnchor(multiplierSign, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.3 / 6))
@@ -629,11 +654,19 @@ class FeedCell: UICollectionViewCell {
         } else {
              if isComeFromSelf {
                 addSubview(updateProgress)
-                addTopAnchor(updateProgress, anchor: middleCenterGuide.bottomAnchor, constant: screenWidth * 0.1 / 6)
+                addBottomAnchor(updateProgress, anchor: middleBottomGuide.topAnchor, constant: -(screenWidth * 0.15 / 6))
                 updateProgress.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                addWidthAnchor(updateProgress, multiplier: 0.6 / 6)
+                addWidthAnchor(updateProgress, multiplier: 1.3 / 6)
                 addHeightAnchor(updateProgress, multiplier: 0.6 / 6)
+                updateProgress.titleLabel?.numberOfLines = 2
+                updateProgress.titleLabel?.textAlignment = .center
+                updateProgress.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
+                updateProgress.setTitleColor(UIColor.white, for: UIControlState())
+                updateProgress.backgroundColor = blueColor
+                updateProgress.layer.cornerRadius = 5.0
+                updateProgress.clipsToBounds = true
                 
+                /*
                 addSubview(updateRefreshLabel)
                 addTopAnchor(updateRefreshLabel, anchor: updateProgress.bottomAnchor, constant: -(screenWidth * 0.5 / 6))
                 updateRefreshLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
@@ -641,6 +674,7 @@ class FeedCell: UICollectionViewCell {
                 addHeightAnchor(updateRefreshLabel, multiplier: 1/15)
                 updateRefreshLabel.text = "Update\nProgress"
                 updateRefreshLabel.numberOfLines = 2
+                 */
             }
         }
         
@@ -964,7 +998,9 @@ class FeedCell: UICollectionViewCell {
         button.setTitle(title, for: UIControlState())
         button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
         
-        button.setImage(UIImage(named: imageName), for: UIControlState())
+        if imageName != "" {
+            button.setImage(UIImage(named: imageName), for: UIControlState())
+        }
         button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         return button
@@ -989,20 +1025,23 @@ class FeedCell: UICollectionViewCell {
         // button.semanticContentAttribute = .forceRightToLeft
         button.setTitle(title, for: UIControlState())
         button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
-        
-        button.setImage(UIImage(named: imageName), for: UIControlState())
+        if imageName != "" {
+            button.setImage(UIImage(named: imageName), for: UIControlState())
+        }
         button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         return button
     }
-    let updateProgress = FeedCell.subClasssButtonForTitle("", imageName: "refresh")
+    let updateProgress = FeedCell.subClasssButtonForTitle("UPDATE\nPROGRESS", imageName: "")
     
     static func buttonForTitleWithBorder(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: UIControlState())
         button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
         
-        button.setImage(UIImage(named: imageName), for: UIControlState())
+        if imageName != "" {
+            button.setImage(UIImage(named: imageName), for: UIControlState())
+        }
         button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
         
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -1063,6 +1102,7 @@ class FeedCell: UICollectionViewCell {
     let peopleView: UIView = FeedCell.viewFunc()
     let chlrPeopleView: UIView = FeedCell.viewFunc()
     let view: UIView = FeedCell.viewFunc()
+    let proofedVideoView: UIView = FeedCell.viewFunc()
     
     static func segmentedControl() -> UISegmentedControl {
         let myArray : NSArray = ["", ""]
@@ -1075,6 +1115,9 @@ class FeedCell: UICollectionViewCell {
     }
     
     let mySegControl: UISegmentedControl = FeedCell.segmentedControl()
+    
+    let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
+    // let avPlayer : AVPlayer = AVPlayer.init()
 }
 
 class subclasssedUIButton : UIButton {

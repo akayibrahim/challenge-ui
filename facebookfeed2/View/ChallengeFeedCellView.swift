@@ -77,6 +77,8 @@ class FeedCell: UICollectionViewCell {
         self.multiplierSign.removeFromSuperview()
         // self.playerController.player?.replaceCurrentItem(with: nil)
         // self.playerController.view.removeFromSuperview()
+        self.volumeUpImageView.image = UIImage()
+        self.volumeDownImageView.image = UIImage()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -96,7 +98,7 @@ class FeedCell: UICollectionViewCell {
                 commentAtt.append(nameAtt)
                 thinksAboutChallengeView.attributedText = commentAtt
             }
-            setImage(fbID: memberID, imageView: profileImageView)
+            setImage(fbID: memberFbID, imageView: profileImageView)
             if let countOfComments = post?.countOfComments {
                 viewComments.setTitle("View all \(countOfComments) comments", for: UIControlState())
             }
@@ -315,6 +317,13 @@ class FeedCell: UICollectionViewCell {
                     supportButtonMatch.setImage(UIImage(named: support), for: .normal)
                 }
             }
+            // CONSTANTS
+            if (self.post?.proofed)! {
+                setImage(name: volumeUp, imageView: volumeUpImageView)
+                setImage(name: volumeDown, imageView: volumeDownImageView)
+            }
+            // END CONSTANTS
+            
             if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done,
                 let proofed = self.post?.proofed, let firstTeamScore = self.post?.firstTeamScore, let secondTeamScore = self.post?.secondTeamScore {
                 self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore)
@@ -351,13 +360,11 @@ class FeedCell: UICollectionViewCell {
         
         if !isComeFromSelf {
             if type == PUBLIC && proofed {
-                var url : URL
                 
+                // TODO choose pic / video
                 if secondTeamCount == "0" {
-                    url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
-                } else {
-                    url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
                     
+                } else {
                     addSubview(proofedMediaView)
                     addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
                     addWidthAnchor(proofedMediaView, multiplier: 1)
@@ -377,6 +384,20 @@ class FeedCell: UICollectionViewCell {
                     self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
                     self.proofedVideoView.layer.masksToBounds = true
                 }
+                
+                addSubview(volumeUpImageView)
+                addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+                addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+                addWidthAnchor(volumeUpImageView, multiplier: 0.04)
+                addHeightAnchor(volumeUpImageView, multiplier: 0.04)
+                volumeUpImageView.alpha = 0
+                
+                addSubview(volumeDownImageView)
+                addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+                addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+                addWidthAnchor(volumeDownImageView, multiplier: 0.04)
+                addHeightAnchor(volumeDownImageView, multiplier: 0.04)
+                volumeDownImageView.alpha = 1
             }
             
             if(!thinksAboutChallengeView.text.isEmpty) {
@@ -919,6 +940,8 @@ class FeedCell: UICollectionViewCell {
     
     let profileImageView: UIImageView = FeedCell.circleImageView()
     let challengerImageView: UIImageView = FeedCell.circleImageView()
+    let volumeUpImageView: UIImageView = FeedCell.circleImageView()
+    let volumeDownImageView: UIImageView = FeedCell.circleImageView()
     
     let proofedMediaView: UIImageView = {
         let imageView = UIImageView()

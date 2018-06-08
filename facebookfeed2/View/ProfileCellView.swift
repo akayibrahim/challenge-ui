@@ -32,7 +32,7 @@ class ProfileCellView: UICollectionViewCell {
         addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: 0)
         addWidthAnchor(profileImageView, multiplier: 1.7/10)
         addHeightAnchor(profileImageView, multiplier: 2/10)                
-        setImage(fbID: memberID, imageView: profileImageView)
+        setImage(fbID: memberFbID, imageView: profileImageView)
         profileImageView.layer.cornerRadius = 4.0
         profileImageView.layer.masksToBounds = true
         profileImageView.contentMode = .scaleAspectFill

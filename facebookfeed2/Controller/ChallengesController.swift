@@ -54,7 +54,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             selfRefreshControl.addTarget(self, action: #selector(self.onSelfRefesh), for: UIControlEvents.valueChanged)
             collectionView?.addSubview(selfRefreshControl)
         }
-        collectionView?.alwaysBounceVertical = true        
+        collectionView?.alwaysBounceVertical = true
         
         loadChallenges()
         
@@ -287,11 +287,47 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
                 }
                 self.avPlayer.replaceCurrentItem(with: AVPlayerItem(url: url))
+                self.avPlayer.volume = volume
                 feedCell.avPlayerLayer.player = self.avPlayer
-                feedCell.avPlayerLayer.player?.play()
+                feedCell.avPlayerLayer.player?.play()                
             }
         }
         return feedCell
+    }
+    
+    func changeVolume(gesture: UITapGestureRecognizer) {
+        DispatchQueue.main.async {
+            let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
+            let feedCell = self.collectionView?.cellForItem(at: index) as! FeedCell
+            self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
+        }
+    }
+    
+    func changeVolumeOfFeedCell(feedCell : FeedCell, isSilentRing : Bool, silentRingSwitch : Int) {
+        DispatchQueue.main.async {
+            if !isSilentRing {
+                if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 0))! {
+                    feedCell.avPlayerLayer.player?.volume = 1
+                    self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 1)
+                } else {
+                    feedCell.avPlayerLayer.player?.volume = 0
+                    self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0)
+                }
+            } else {
+                feedCell.avPlayerLayer.player?.volume = Float(silentRingSwitch)
+                self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: silentRingSwitch )
+            }
+        }
+    }
+    
+    func changeVolumeUpDownView(feedCell : FeedCell, silentRingSwitch : Int) {
+        if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 1))! {
+            feedCell.volumeUpImageView.alpha = 1
+            feedCell.volumeDownImageView.alpha = 0
+        } else {
+            feedCell.volumeUpImageView.alpha = 0
+            feedCell.volumeDownImageView.alpha = 1
+        }
     }
     
     var avPlayer : AVPlayer = AVPlayer.init()
@@ -318,6 +354,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.viewProofs.addTarget(self, action: #selector(self.viewProofs), for: UIControlEvents.touchUpInside)
         feedCell.addComments.addTarget(self, action: #selector(self.addComments), for: UIControlEvents.touchUpInside)
         feedCell.addProofs.addTarget(self, action: #selector(self.addProofs), for: UIControlEvents.touchUpInside)
+        let volumeChangeGesture : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.changeVolume))
+        volumeChangeGesture.numberOfTapsRequired = 1
+        feedCell.proofedVideoView.tag = indexPath.row
+        feedCell.proofedVideoView.isUserInteractionEnabled = true
+        feedCell.proofedVideoView.addGestureRecognizer(volumeChangeGesture)
     }
     
     func handleChallengeCountTap(sender:UILabel){

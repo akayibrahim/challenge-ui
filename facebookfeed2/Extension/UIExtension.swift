@@ -21,6 +21,13 @@ extension String {
         let cs = CharacterSet.init(charactersIn: ", ")
         return self.trimmingCharacters(in: cs)
     }
+    
+    func toDate(dateFormat: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        let date: Date? = dateFormatter.date(from: self)
+        return date
+    }
 }
 
 fileprivate extension String {

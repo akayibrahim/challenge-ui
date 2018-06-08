@@ -9,6 +9,7 @@
 import UIKit
 import FBSDKCoreKit
 import MediaPlayer
+import AudioToolbox
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -45,10 +46,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func playAudioWithOther() {
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: AVAudioSessionCategoryOptions.mixWithOthers)
-            print("AVAudioSession Category Playback OK")
             do {
                 try AVAudioSession.sharedInstance().setActive(true)
-                print("AVAudioSession is Active")
             } catch let error as NSError {
                 print(error.localizedDescription)
             }

@@ -113,6 +113,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 let selItem = SelectedItems()
                 selItem.name = items[index.row].name
                 selItem.id = items[index.row].id
+                selItem.fbId = items[index.row].fbId
                 selItems.append(selItem)
             }
             if otherSideCount != -1 && otherSideCount != 0 && selItems.count != otherSideCount {

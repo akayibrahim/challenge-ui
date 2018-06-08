@@ -11,4 +11,5 @@ import UIKit
 class SelectedItems {
     var name : String!
     var id : String!
+    var fbId : String!
 }

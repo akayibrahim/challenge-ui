@@ -274,7 +274,7 @@ class AddChallengeView: UIView {
             addBottomAnchor(firstThreePeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
             rightMiddleTopWidth.trailingAnchor.constraint(equalTo: secondThreePeopleImageView.leadingAnchor)
             challengeView.addSubview(secondThreePeopleImageView)
-            addTopAnchor(secondThreePeopleImageView, anchor: middleTopGuide.bottomAnchor, constant: 2)
+            addTopAnchor(secondThreePeopleImageView, anchor: middleTopGuide.topAnchor, constant: 2)
             addLeadingAnchor(secondThreePeopleImageView, anchor: rightMiddleTopWidth.trailingAnchor, constant: 2)
             addTrailingAnchor(secondThreePeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addWidthAnchor(secondThreePeopleImageView, multiplier: widthOfQuarterImage)

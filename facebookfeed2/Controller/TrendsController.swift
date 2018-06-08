@@ -82,22 +82,35 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     func loadTrends() {
-        if let path = Bundle.main.path(forResource: "trend_request", ofType: "json") {
-            do {
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.trendRequest = [TrendRequest]()
-                    for postDictionary in postsArray {
-                        let trendReq = TrendRequest()
-                        trendReq.setValuesForKeys(postDictionary)
-                        self.trendRequest.append(trendReq)
-                    }
-                }
-            } catch let err {
-                print(err)
-            }
+        if dummyServiceCall == false {
+            fetchTrendChallenges()
+            return
+        } else {
+            self.trendRequest = ServiceLocator.getTrendChallengesFromDummy(jsonFileName: "trend_request")
+            return
         }
+    }
+    
+    func fetchTrendChallenges() {
+        URLSession.shared.dataTask(with: NSURL(string: getTrendChallengesURL + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        self.trendRequest = [TrendRequest]()
+                        for postDictionary in postsArray {
+                            let trend = TrendRequest()
+                            trend.setValuesForKeys(postDictionary)
+                            self.trendRequest.append(trend)
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+            DispatchQueue.main.async {
+                self.collectionView?.reloadData()
+            }
+        }).resume()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

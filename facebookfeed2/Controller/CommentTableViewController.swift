@@ -139,7 +139,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         
         profileImageView.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
         profileImageView.leadingAnchor.constraint(equalTo: topBorderView.leadingAnchor, constant : screenWidth * 0.2 / 10).isActive = true
-        setImage(fbID: memberID, imageView: profileImageView)
+        setImage(fbID: memberFbID, imageView: profileImageView)
         profileImageView.layer.cornerRadius = screenWidth * 1.1 / 10 / 2
         profileImageView.widthAnchor.constraint(equalToConstant: screenWidth * 1.1 / 10).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: screenWidth * 1.1 / 10).isActive = true

@@ -99,9 +99,9 @@ class AddChallengeController: UITableViewController {
                 if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
                     self.friends = [Friends]()
                     for postDictionary in postsArray {
-                        let friends = Friends()
-                        friends.setValuesForKeys(postDictionary)
-                        self.friends.append(friends)
+                        let friend = Friends()
+                        friend.setValuesForKeys(postDictionary)
+                        self.friends.append(friend)
                     }
                 }
             } catch let err {
@@ -145,13 +145,94 @@ class AddChallengeController: UITableViewController {
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
     
+    func popupAlert(message: String) {
+        DispatchQueue.main.async {
+            let selectAlert: UIAlertController = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.alert)
+            selectAlert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: nil))
+            self.present(selectAlert, animated: true, completion: nil)
+        }
+    }
+    
     func addChallenge() {
-        let addViewCellContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
-        let proofContent = tableView.cellForRow(at: visibilityIndexPath) as! TableViewCellContent
-        let segControlContent = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
-        let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "\(segControlContent.mySegControl.selectedSegmentIndex) \(addViewCellContent.addChallenge.subjectLabel.text!) \(leftSide) \(rightSide) \(deadLine) \(proofContent.isDone.isOn)", preferredStyle: UIAlertControllerStyle.alert)
-        selectAlert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: nil))
-        self.present(selectAlert, animated: true, completion: nil)
+        let commentCell = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
+        let addViewCell = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
+        let deadlineCell = tableView.cellForRow(at: deadlineIndexPath) as! TableViewCellContent
+        let doneCell = tableView.cellForRow(at: doneIndexPath) as! TableViewCellContent
+        
+        if rightSide.count == 0 {
+            popupAlert(message: "Away cannot be empty.")
+            return
+        }
+        if commentCell.commentView.text == "Comment" {
+            popupAlert(message: "Comment cannot be empty.")
+            return
+        }
+        if addViewCell.addChallenge.subjectLabel.text == selectText {
+            popupAlert(message: "Subject cannot be empty.")
+            return
+        }
+        var joinAttendanceListDummy: [[String: Any]] = []
+        for attendace in rightSide {
+            let joinAttendance: [String: Any] = ["memberId": attendace.id, "facebookID": attendace.fbId, "join": false, "proofed": true]
+            joinAttendanceListDummy.append(joinAttendance)
+        }
+        
+        let json: [String: Any] = ["challengerId": memberID,
+                                   "name": memberName,
+                                   "challengerFBId": memberFbID,
+                                   "firstTeamCount": "1",
+                                   "secondTeamCount": rightSide.count,
+                                   "thinksAboutChallenge": commentCell.commentView.text,
+                                   "subject": addViewCell.addChallenge.subjectLabel.text!,
+                                   "untilDate": deadlineCell.labelOtherSide.text!,
+                                   "done": doneCell.isDone.isOn,
+                                   "proofed": true,
+                                   "type": PUBLIC,
+                                   "joinAttendanceList": rightSide.count == 0 ? nil : joinAttendanceListDummy as Any
+        ]
+        //let joinAttendanceListDummy: [[String: Any]] = [["memberId": memberID, "join": true, "proofed": false]]
+        
+        let jsonDummy: [String: Any] = ["challengerId": memberID,
+                                   "name": memberName,
+                                   "challengerFBId": memberFbID,
+                                   "firstTeamCount": 1,
+                                   "secondTeamCount": 1,
+                                   "thinksAboutChallenge": "deneme",
+                                   "subject": "READ_BOOK",
+                                   "untilDate": getDateAsFormatted(date: Date()),
+                                   "done": false,
+                                   "proofed": true,
+                                   "type": PUBLIC,
+                                   "joinAttendanceList": rightSide.count == 0 ? nil : joinAttendanceListDummy
+        ]
+        // SELF goal
+        // PRIVATE firstTeamScore - secondTeamScore
+        // PUBLIC joinAttendanceList
+        // GENERAL chlDate - untilDateStr - comeFromSelf - supportFirstTeam - supportSecondTeam - firstTeamSupportCount - secondTeamSupportCount - countOfProofs - insertTime - status - countOfComments
+        
+        // "dict": ["1":"First", "2":"Second"]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        let url = URL(string: addJoinChallengeURL)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        // insert json data to the request
+        request.httpBody = jsonData
+        
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String)
+                }
+            }
+            self.popupAlert(message: "Your challange ready!")
+        }).resume()
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -182,7 +263,8 @@ class AddChallengeController: UITableViewController {
             for fri in self.friends {
                 let selItem = SelectedItems()
                 selItem.name = fri.name
-                selItem.id = fri.id
+                selItem.id = fri.memberId
+                selItem.fbId = fri.fbID
                 selItems.append(selItem)
             }
             var selItemsWithoutWorld = [SelectedItems]()
@@ -591,20 +673,20 @@ class AddChallengeController: UITableViewController {
         if result.count == 1 {
             setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView, reset: reset)
             if result[0].name == "To World" {
-                setImage(name: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
+                setImage(name: result[0].fbId, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
                 addViewContent.addChallenge.firstOnePeopleImageView.contentMode = .scaleAspectFit
             }
         } else if result.count == 2 {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstTwoPeopleImageView, reset: reset)
-            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondTwoPeopleImageView, reset: reset)
+            setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstTwoPeopleImageView, reset: reset)
+            setImage(fbID: result[1].fbId, imageView: addViewContent.addChallenge.secondTwoPeopleImageView, reset: reset)
         } else if result.count == 3 {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstThreePeopleImageView, reset: reset)
-            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondThreePeopleImageView, reset: reset)
-            setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdThreePeopleImageView, reset: reset)
+            setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstThreePeopleImageView, reset: reset)
+            setImage(fbID: result[1].fbId, imageView: addViewContent.addChallenge.secondThreePeopleImageView, reset: reset)
+            setImage(fbID: result[2].fbId, imageView: addViewContent.addChallenge.thirdThreePeopleImageView, reset: reset)
         } else {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstFourPeopleImageView, reset: reset)
-            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondFourPeopleImageView, reset: reset)
-            setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdFourPeopleImageView, reset: reset)
+            setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstFourPeopleImageView, reset: reset)
+            setImage(fbID: result[1].fbId, imageView: addViewContent.addChallenge.secondFourPeopleImageView, reset: reset)
+            setImage(fbID: result[2].fbId, imageView: addViewContent.addChallenge.thirdFourPeopleImageView, reset: reset)
             setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourPeopleImageView)
         }
     }
@@ -614,18 +696,18 @@ class AddChallengeController: UITableViewController {
         let addViewContent = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         addViewContent.addChallenge.generateFirstTeam(count: result.count)
         if result.count == 1 {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOneChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstOneChlrPeopleImageView, reset: reset)
         } else if result.count == 2 {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstTwoChlrPeopleImageView, reset: reset)
-            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondTwoChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstTwoChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[1].fbId, imageView: addViewContent.addChallenge.secondTwoChlrPeopleImageView, reset: reset)
         } else if result.count == 3 {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstThreeChlrPeopleImageView, reset: reset)
-            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondThreeChlrPeopleImageView, reset: reset)
-            setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdThreeChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstThreeChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[1].fbId, imageView: addViewContent.addChallenge.secondThreeChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[2].fbId, imageView: addViewContent.addChallenge.thirdThreeChlrPeopleImageView, reset: reset)
         } else {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstFourChlrPeopleImageView, reset: reset)
-            setImage(fbID: result[1].id, imageView: addViewContent.addChallenge.secondFourChlrPeopleImageView, reset: reset)
-            setImage(fbID: result[2].id, imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstFourChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[1].fbId, imageView: addViewContent.addChallenge.secondFourChlrPeopleImageView, reset: reset)
+            setImage(fbID: result[2].fbId, imageView: addViewContent.addChallenge.thirdFourChlrPeopleImageView, reset: reset)
             setImage(name: "more_icon", imageView: addViewContent.addChallenge.moreFourChlrPeopleImageView)
         }
     }

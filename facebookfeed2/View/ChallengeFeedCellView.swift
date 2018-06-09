@@ -267,7 +267,7 @@ class FeedCell: UICollectionViewCell {
              */
             if let untilDate = post?.untilDateStr {
                 untilDateLabel.text = "\(untilDate)"
-                untilDateLabel.font = UIFont (name: fontMarkerFelt, size: 24)
+                untilDateLabel.font = UIFont (name: fontMarkerFelt, size: 23)
                 untilDateLabel.textAlignment = .center
                 untilDateLabel.numberOfLines = 2;
                 untilDateLabel.textColor = UIColor.gray

@@ -53,12 +53,13 @@ class AddChallengeView: UIView {
         middleTopGuide.topAnchor.constraint(equalTo: challengeView.topAnchor, constant: 1).isActive = true
         
         addSubview(finishFlag)
-        addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.15 / 6))
-        addWidthAnchor(finishFlag, multiplier: 0.8 / 6)
+        addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0 / 10))
         finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        addHeightAnchor(finishFlag, multiplier: 0.8 / 6)
+        addWidthAnchor(finishFlag, multiplier: 2 / 6)
+        addHeightAnchor(finishFlag, multiplier: 1 / 6)
         finishFlag.isHidden = true
         
+        /*
         addSubview(score)
         addTopAnchor(score, anchor: finishFlag.bottomAnchor, constant: -(screenSize.width * 0.8 / 18))
         score.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
@@ -70,6 +71,7 @@ class AddChallengeView: UIView {
         score.layer.masksToBounds = true
         score.font = UIFont.boldSystemFont(ofSize: 10)
         score.isHidden = true
+        */
         
         addSubview(untilDateLabel)
         addBottomAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)

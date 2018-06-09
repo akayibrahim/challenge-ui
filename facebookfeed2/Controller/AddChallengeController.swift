@@ -135,7 +135,8 @@ class AddChallengeController: UITableViewController {
         addChallengeIns.append(createAddChallenge(labelText: "Subject", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Home", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Away", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Deadline", resultText : getDateAsFormatted(date: Date()), resultId: -1, resultBool: false, labelAtt: greaterThan))
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())
+        addChallengeIns.append(createAddChallenge(labelText: "Deadline", resultText : getDateAsFormatted(date: tomorrow!), resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Visibility", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
@@ -145,53 +146,85 @@ class AddChallengeController: UITableViewController {
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
     
-    func popupAlert(message: String) {
+    func popupAlert(message: String, willDelay: Bool) {
         DispatchQueue.main.async {
             let selectAlert: UIAlertController = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.alert)
-            selectAlert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: nil))
+            selectAlert.addAction(UIAlertAction(title: willDelay ? "" : "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(selectAlert, animated: true, completion: nil)
+            if willDelay {
+                let when = DispatchTime.now() + 2
+                DispatchQueue.main.asyncAfter(deadline: when){
+                    // your code with delay
+                    selectAlert.dismiss(animated: true, completion: nil)
+                }
+            }
         }
     }
     
     func addChallenge() {
+        let typeCell = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
         let commentCell = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
         let addViewCell = tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
         let deadlineCell = tableView.cellForRow(at: deadlineIndexPath) as! TableViewCellContent
         let doneCell = tableView.cellForRow(at: doneIndexPath) as! TableViewCellContent
+        let visibilityCell = tableView.cellForRow(at: visibilityIndexPath) as! TableViewCellContent
+        let resultCell = tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
         
-        if rightSide.count == 0 {
-            popupAlert(message: "Away cannot be empty.")
+        let type = typeCell.mySegControl.selectedSegmentIndex == 0 ? PUBLIC : (typeCell.mySegControl.selectedSegmentIndex == 1 ? SELF : PRIVATE)
+        if type != SELF && rightSide.count == 0 {
+            popupAlert(message: "Away cannot be empty.", willDelay: false)
             return
         }
         if commentCell.commentView.text == "Comment" {
-            popupAlert(message: "Comment cannot be empty.")
+            popupAlert(message: "Comment cannot be empty.", willDelay: false)
             return
         }
         if addViewCell.addChallenge.subjectLabel.text == selectText {
-            popupAlert(message: "Subject cannot be empty.")
+            popupAlert(message: "Subject cannot be empty.", willDelay: false)
             return
         }
-        var joinAttendanceListDummy: [[String: Any]] = []
-        for attendace in rightSide {
-            let joinAttendance: [String: Any] = ["memberId": attendace.id, "facebookID": attendace.fbId, "join": false, "proofed": true]
-            joinAttendanceListDummy.append(joinAttendance)
-        }
         
-        let json: [String: Any] = ["challengerId": memberID,
+        var json: [String: Any] = ["challengerId": memberID,
                                    "name": memberName,
                                    "challengerFBId": memberFbID,
-                                   "firstTeamCount": "1",
-                                   "secondTeamCount": rightSide.count,
                                    "thinksAboutChallenge": commentCell.commentView.text,
                                    "subject": addViewCell.addChallenge.subjectLabel.text!,
                                    "untilDate": deadlineCell.labelOtherSide.text!,
-                                   "done": doneCell.isDone.isOn,
-                                   "proofed": true,
-                                   "type": PUBLIC,
-                                   "joinAttendanceList": rightSide.count == 0 ? nil : joinAttendanceListDummy as Any
+                                   "done": doneCell.isDone.isOn
         ]
-        //let joinAttendanceListDummy: [[String: Any]] = [["memberId": memberID, "join": true, "proofed": false]]
+        json["firstTeamCount"] = type != PRIVATE ? "1" : leftSide.count
+        json["secondTeamCount"] = rightSide.count
+        json["type"] = type
         
+        if type == PUBLIC {
+            var joinAttendanceList: [[String: Any]] = []
+            for attendace in rightSide {
+                let joinAttendance: [String: Any] = ["memberId": attendace.id, "facebookID": attendace.fbId, "join": false, "proofed": false, "challenger": false]
+                joinAttendanceList.append(joinAttendance)
+            }
+            json["proofed"] = true
+            json["joinAttendanceList"] = rightSide.count == 0 ? nil : joinAttendanceList as Any
+        } else {
+            // TODO json["visibility"] = ""
+        }
+        if type == SELF {
+            json["goal"] = "10" // TODO
+            // TODO json["result"] = "10"
+        }
+        if type == PRIVATE {
+            var versusAttendanceList: [[String: Any]] = []
+            for attendace in leftSide {
+                let versusAttendance: [String: Any] = ["memberId": attendace.id, "facebookID": attendace.fbId, "accept" : false, "firstTeamMember" : true, "secondTeamMember" : false]
+                versusAttendanceList.append(versusAttendance)
+            }
+            for attendace in rightSide {
+                let versusAttendance: [String: Any] = ["memberId": attendace.id, "facebookID": attendace.fbId, "accept" : false, "firstTeamMember" : false, "secondTeamMember" : true]
+                versusAttendanceList.append(versusAttendance)
+            }
+            json["versusAttendanceList"] = versusAttendanceList as Any
+            // TODO json["score"] = "10"
+        }
+        let joinAttendanceListDummy: [[String: Any]] = [["memberId": memberID, "join": true, "proofed": false]]
         let jsonDummy: [String: Any] = ["challengerId": memberID,
                                    "name": memberName,
                                    "challengerFBId": memberFbID,
@@ -212,7 +245,7 @@ class AddChallengeController: UITableViewController {
         
         // "dict": ["1":"First", "2":"Second"]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
-        let url = URL(string: addJoinChallengeURL)!
+        let url = URL(string: type == PUBLIC ? addJoinChallengeURL : (type == PRIVATE ? addVersusChallengeURL : addSelfChallengeURL))!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
@@ -228,10 +261,10 @@ class AddChallengeController: UITableViewController {
             if let responseJSON = responseJSON as? [String: Any] {
                 print(responseJSON)
                 if responseJSON["message"] != nil {
-                    self.popupAlert(message: responseJSON["message"] as! String)
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
                 }
             }
-            self.popupAlert(message: "Your challange ready!")
+            self.popupAlert(message: "Your challange ready!", willDelay: true)
         }).resume()
     }
     

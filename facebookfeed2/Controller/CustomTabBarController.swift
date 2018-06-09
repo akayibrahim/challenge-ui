@@ -59,12 +59,15 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         let fromView: UIView = tabBarController.selectedViewController!.view
         let toView  : UIView = viewController.view
         if fromView == toView {
+            if tabBarController.selectedIndex == chanllengeIndex {
+                let controllers = tabBarController.viewControllers
+                let navC = controllers![0] as! UINavigationController
+                let feedC = navC.viewController(class: FeedController.self)
+                feedC?.onRefesh()
+                return true
+            }
             return false
         }
-        
-        let controllers = tabBarController.viewControllers
-        let navC = controllers![0] as! UINavigationController
-        let feedC = navC.viewController(class: FeedController.self)
         
         UIView.transition(from: fromView, to: toView, duration: 0.3, options: UIViewAnimationOptions.transitionCrossDissolve) { (finished:Bool) in
             

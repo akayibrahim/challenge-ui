@@ -68,6 +68,86 @@ class ServiceLocator {
         return trends
     }
     
+    static func getSubjectFromDummy(jsonFileName : String) -> [Subject] {
+        var subjects = [Subject]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    for postDictionary in postsArray {
+                        let subject = Subject()
+                        subject.setValuesForKeys(postDictionary)
+                        subjects.append(subject)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return subjects
+    }
+    
+    static func getFriendsFromDummy(jsonFileName : String) -> [Friends] {
+        var friends = [Friends]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    for postDictionary in postsArray {
+                        let friend = Friends()
+                        friend.setValuesForKeys(postDictionary)
+                        friends.append(friend)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return friends
+    }
+    
+    static func getCommentFromDummy(jsonFileName : String) -> [Comments] {
+        var comments = [Comments]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    for postDictionary in postsArray {
+                        let comment = Comments()
+                        comment.setValuesForKeys(postDictionary)
+                        comments.append(comment)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return comments
+    }
+    
+    static func getProofsFromDummy(jsonFileName : String) -> [Proofs] {
+        var proofs = [Proofs]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    for postDictionary in postsArray {
+                        let proof = Proofs()
+                        proof.setValuesForKeys(postDictionary)
+                        proofs.append(proof)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return proofs
+    }
+    
     static func mappingOfPost(postDictionary : [String : AnyObject]) -> Post {
         let post = Post()
         post.versusAttendanceList = [VersusAttendance]()
@@ -91,5 +171,14 @@ class ServiceLocator {
         post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
         post.proofed = postDictionary["proofed"] as? Bool
         return post
+    }
+    
+    static func prepareRequest(url: URL, json: [String: Any]) -> URLRequest {
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        return request
     }
 }

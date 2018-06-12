@@ -44,13 +44,11 @@ class FeedCell: UICollectionViewCell {
         self.thinksAboutChallengeView.text = nil
         self.goalLabel.removeFromSuperview()
         self.joinButton.removeFromSuperview()
-        self.supportSelfButton.removeFromSuperview()
         self.supportButtonMatch.removeFromSuperview()
         self.supportButton.removeFromSuperview()
         self.subjectLabel.removeFromSuperview()
         self.countOfLikeAndCommentLabel.removeFromSuperview()
         self.mySegControl.removeFromSuperview()
-        self.likeLabel.removeFromSuperview()
         self.supportLabel.removeFromSuperview()
         self.supportTextLabel.removeFromSuperview()
         self.supportMatchLabel.removeFromSuperview()
@@ -257,14 +255,6 @@ class FeedCell: UICollectionViewCell {
                 */
                 // if let result = post?.result {}
             }
-            /*
-            if let countOfLike = post?.countOfLike {
-                let countAtt = NSMutableAttributedString(string: "+\(countOfLike)", attributes: nil)
-                let supportAtt = NSMutableAttributedString(string: " Likes", attributes: [NSForegroundColorAttributeName: UIColor.red, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 10)])
-                countAtt.append(supportAtt)
-                likeLabel.attributedText = countAtt
-            }
-             */
             if let untilDate = post?.untilDateStr {
                 untilDateLabel.text = "\(untilDate)"
                 untilDateLabel.font = UIFont (name: fontMarkerFelt, size: 23)
@@ -289,21 +279,14 @@ class FeedCell: UICollectionViewCell {
                 subjectLabel.numberOfLines = 2;
                 subjectLabel.textColor = UIColor.gray
             }
-            /* TODO
-            if let amILike = post?.amILike {
-                if amILike {
-                    supportSelfButton.setImage(UIImage(named: supported), for: .normal)
-                } else {
-                    supportSelfButton.setImage(UIImage(named: support), for: .normal)
-                }
-            }
-             */
             if let supportFirstTeam = post?.supportFirstTeam, let supportSecondTeam = post?.supportSecondTeam {
                 if let firstTeamSupportCount = post?.firstTeamSupportCount {
                     supportLabel.text = "+\(firstTeamSupportCount)"
+                    supportLabel.tag = Int(firstTeamSupportCount)
                 }
                 if let secondTeamSupportCount = post?.secondTeamSupportCount {
                     supportMatchLabel.text = "+\(secondTeamSupportCount)"
+                    supportMatchLabel.tag = Int(secondTeamSupportCount)
                 }
                 supportTextLabel.text = supportText
                 if supportFirstTeam {
@@ -439,18 +422,24 @@ class FeedCell: UICollectionViewCell {
                     addWidthAnchor(joinButton, multiplier: 0.6/10)
                     addHeightAnchor(joinButton, multiplier: 0.6/10)
                     
+                    addSubview(addProofs)
+                    addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+                    addLeadingAnchor(addProofs, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
+                    addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
+                    addHeightAnchor(addProofs, multiplier: 0.7/10)
+                    addProofs.alpha = 0
+                    
+                    addSubview(joinToChl)
+                    joinToChl.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+                    addLeadingAnchor(joinToChl, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
+                    joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
+                    addHeightAnchor(joinToChl, multiplier: 0.7/10)
+                    joinToChl.alpha = 0
+                    
                     if joined {
-                        addSubview(addProofs)
-                        addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                        addLeadingAnchor(addProofs, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
-                        addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
-                        addHeightAnchor(addProofs, multiplier: 0.7/10)
+                        addProofs.alpha = 1
                     } else {
-                        addSubview(joinToChl)
-                        joinToChl.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-                        addLeadingAnchor(joinToChl, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
-                        joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
-                        addHeightAnchor(joinToChl, multiplier: 0.7/10)
+                        joinToChl.alpha = 1
                     }
                 }
             }
@@ -716,20 +705,6 @@ class FeedCell: UICollectionViewCell {
         generateSecondTeam(contentGuide, secondTeamCount: secondTeamCount, type: type)
     }
     
-    func selfTypeLikeButtonAndLabel(_ contentGuide: UILayoutGuide, middleCenterGuide: UILayoutGuide) {
-        addSubview(supportSelfButton)
-        addTopAnchor(supportSelfButton, anchor: middleCenterGuide.bottomAnchor, constant: 0)
-        supportSelfButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        addWidthAnchor(supportSelfButton, multiplier: 0.6/6)
-        addHeightAnchor(supportSelfButton, multiplier: 0.6/6)
-        
-        addSubview(likeLabel)
-        addTopAnchor(likeLabel, anchor: supportSelfButton.bottomAnchor, constant: 0)
-        likeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        addWidthAnchor(likeLabel, multiplier: 1/3)
-        addHeightAnchor(likeLabel, multiplier: 1/15)
-    }
-    
     var widthOfImage: CGFloat = 1/3
     var heightOfFullImage: CGFloat = 1/2
     var heightOfHalfImage: CGFloat = 0.975/4
@@ -991,7 +966,6 @@ class FeedCell: UICollectionViewCell {
         return label
     }
     
-    let likeLabel: UILabel = FeedCell.label(12)
     let updateRefreshLabel: UILabel = FeedCell.label(5)
     let supportLabel: UILabel = FeedCell.label(12)
     let supportTextLabel: UILabel = FeedCell.label(8)
@@ -1029,15 +1003,7 @@ class FeedCell: UICollectionViewCell {
         return button
     }
     
-    let supportSelfButton = FeedCell.buttonForTitle("", imageName: support)
     let joinButton = FeedCell.buttonForTitle("", imageName: acceptedBlack)
-    let viewComments = FeedCell.buttonForTitle(viewAllComments, imageName: "")
-    let viewProofs = FeedCell.buttonForTitle(viewAllProofs, imageName: "")
-    let addComments = FeedCell.buttonForTitle(addComents, imageName: "")
-    let addProofs = FeedCell.buttonForTitle(addProofsVar, imageName: "")
-    let joinToChl = FeedCell.buttonForTitle(joinToChlVar, imageName: "")
-    let supportButton = FeedCell.buttonForTitle("", imageName: support)
-    let supportButtonMatch = FeedCell.buttonForTitle("", imageName: support)
     let finishFlag = FeedCell.buttonForTitle("", imageName: "finishFlag")
     let multiplierSign = FeedCell.buttonForTitle("", imageName: "multipliersign")
     let clapping = FeedCell.buttonForTitle("", imageName: "clap")
@@ -1056,6 +1022,13 @@ class FeedCell: UICollectionViewCell {
         return button
     }
     let updateProgress = FeedCell.subClasssButtonForTitle("UPDATE\nPROGRESS", imageName: "")
+    let viewComments = FeedCell.subClasssButtonForTitle(viewAllComments, imageName: "")
+    let viewProofs = FeedCell.subClasssButtonForTitle(viewAllProofs, imageName: "")
+    let addComments = FeedCell.subClasssButtonForTitle(addComents, imageName: "")
+    let addProofs = FeedCell.subClasssButtonForTitle(addProofsVar, imageName: "")
+    let joinToChl = FeedCell.subClasssButtonForTitle(joinToChlVar, imageName: "")
+    let supportButton = FeedCell.subClasssButtonForTitle("", imageName: support)
+    let supportButtonMatch = FeedCell.subClasssButtonForTitle("", imageName: support)
     
     static func buttonForTitleWithBorder(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()

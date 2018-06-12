@@ -332,15 +332,16 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     var avPlayer : AVPlayer = AVPlayer.init()
     
-    func addTargetToFeedCell(feedCell: FeedCell, indexPath : IndexPath) {
-        feedCell.supportSelfButton.tag = indexPath.row
-        feedCell.supportSelfButton.addTarget(self, action: #selector(self.likeSelfs), for: UIControlEvents.touchUpInside)
+    func addTargetToFeedCell(feedCell: FeedCell, indexPath : IndexPath) {        
         if feedCell.post?.type == PUBLIC {
-            feedCell.joinButton.tag = indexPath.row
-            feedCell.joinButton.addTarget(self, action: #selector(self.acceptChallenge), for: UIControlEvents.touchUpInside)
+            feedCell.joinToChl.tag = indexPath.row
+            feedCell.joinToChl.challengeId = posts[indexPath.item].id
+            feedCell.joinToChl.addTarget(self, action: #selector(self.joinToChallenge), for: UIControlEvents.touchUpInside)
         }
         feedCell.supportButton.tag = indexPath.row
         feedCell.supportButtonMatch.tag = indexPath.row
+        feedCell.supportButton.challengeId = posts[indexPath.item].id
+        feedCell.supportButtonMatch.challengeId = posts[indexPath.item].id
         feedCell.supportButton.addTarget(self, action: #selector(self.supportChallenge), for: UIControlEvents.touchUpInside)
         feedCell.supportButtonMatch.addTarget(self, action: #selector(self.supportChallengeMatch), for: UIControlEvents.touchUpInside)
         if feedCell.post?.type != SELF {
@@ -350,6 +351,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell.firstOnePeopleImageView.contentMode = .scaleAspectFill
             }
         }
+        feedCell.viewComments.challengeId = posts[indexPath.item].id
+        feedCell.viewProofs.challengeId = posts[indexPath.item].id
+        feedCell.addComments.challengeId = posts[indexPath.item].id
+        feedCell.addProofs.challengeId = posts[indexPath.item].id
         feedCell.viewComments.addTarget(self, action: #selector(self.viewComments), for: UIControlEvents.touchUpInside)
         feedCell.viewProofs.addTarget(self, action: #selector(self.viewProofs), for: UIControlEvents.touchUpInside)
         feedCell.addComments.addTarget(self, action: #selector(self.addComments), for: UIControlEvents.touchUpInside)
@@ -400,10 +405,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(other, animated: true)
     }
     
-    func addComments(sender: UIButton) {
+    func addComments(sender: subclasssedUIButton) {
         let commentsTable = CommentTableViewController()        
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
+        commentsTable.challengeId = sender.challengeId
         commentsTable.comment = true
         commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
@@ -411,10 +417,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
-    func viewComments(sender: UIButton) {
+    func viewComments(sender: subclasssedUIButton) {
         let commentsTable = CommentTableViewController()
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
+        commentsTable.challengeId = sender.challengeId
         commentsTable.comment = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -442,46 +449,112 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
-    func supportChallenge(sender: UIButton) {
+    func supportChallenge(sender: subclasssedUIButton) {
         let index = IndexPath(item: sender.tag, section: 0)
-        let feedCcell = collectionView?.cellForItem(at: index) as! FeedCell
+        let feedCell = collectionView?.cellForItem(at: index) as! FeedCell
         let currentImage = sender.currentImage
         if currentImage == UIImage(named:support) {
             sender.setImage(UIImage(named: supported), for: .normal)
-            feedCcell.supportButtonMatch.setImage(UIImage(named:support), for: .normal)
+            if feedCell.supportButtonMatch.currentImage == UIImage(named: supported) {
+                feedCell.supportButtonMatch.setImage(UIImage(named:support), for: .normal)
+                feedCell.supportMatchLabel.text = "+\(feedCell.supportMatchLabel.tag + (-1))"
+                feedCell.supportMatchLabel.tag = Int(feedCell.supportMatchLabel.tag + (-1))
+            }
+            supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: true)
         } else {
             sender.setImage(UIImage(named: support), for: .normal)
+            supportChallengeService(support: false, challengeId: sender.challengeId!, feedCell: feedCell, isHome: true)
         }
     }
     
-    func supportChallengeMatch(sender: UIButton) {
+    func supportChallengeService(support:Bool, challengeId: String, feedCell: FeedCell, isHome: Bool) {
+        var json: [String: Any] = ["challengeId": challengeId,
+                                   "memberId": memberID
+        ]
+        json["supportFirstTeam"] = isHome ? support : false
+        json["supportSecondTeam"] = !isHome ? support : false
+        let url = URL(string: supportChallengeURL)!
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                }
+            } else {
+                DispatchQueue.main.async { // Correct
+                    if isHome {
+                        feedCell.supportLabel.text = "+\(feedCell.supportLabel.tag + (support ? 1 : -1))"
+                        feedCell.supportLabel.tag = Int(feedCell.supportLabel.tag + (support ? 1 : -1))
+                    } else {
+                        feedCell.supportMatchLabel.text = "+\(feedCell.supportMatchLabel.tag + (support ? 1 : -1))"
+                        feedCell.supportMatchLabel.tag = Int(feedCell.supportMatchLabel.tag + (support ? 1 : -1))
+                    }
+                }
+            }
+        }).resume()
+    }
+    
+    func supportChallengeMatch(sender: subclasssedUIButton) {
         let index = IndexPath(item: sender.tag, section: 0)
-        let feedCcell = collectionView?.cellForItem(at: index) as! FeedCell
+        let feedCell = collectionView?.cellForItem(at: index) as! FeedCell
         let currentImage = sender.currentImage
         if currentImage == UIImage(named: support) {
             sender.setImage(UIImage(named: supported), for: .normal)
-            feedCcell.supportButton.setImage(UIImage(named: support), for: .normal)
+            if feedCell.supportButton.currentImage == UIImage(named: supported) {
+                feedCell.supportButton.setImage(UIImage(named:support), for: .normal)
+                feedCell.supportLabel.text = "+\(feedCell.supportLabel.tag + (-1))"
+                feedCell.supportLabel.tag = Int(feedCell.supportLabel.tag + (-1))
+            }
+            supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: false)
         } else {
             sender.setImage(UIImage(named: support), for: .normal)
+            supportChallengeService(support: false, challengeId: sender.challengeId!, feedCell: feedCell, isHome: false)
         }
     }
     
-    func likeSelfs(sender: UIButton) {
-        let currentImage = sender.currentImage
-        if currentImage == UIImage(named: support) {
-            sender.setImage(UIImage(named: supported), for: .normal)
-        } else {
-            sender.setImage(UIImage(named: support), for: .normal)
-        }
-    }
-    
-    func acceptChallenge(sender: UIButton) {
-        let currentImage = sender.currentImage
+    func joinToChallenge(sender: subclasssedUIButton) {
+        let index = IndexPath(item: sender.tag, section: 0)
+        let feedCell = collectionView?.cellForItem(at: index) as! FeedCell
+        let currentImage = feedCell.joinButton.currentImage
         if currentImage == UIImage(named: acceptedRed) {
-            sender.setImage(UIImage(named: acceptedBlack), for: .normal)
+            feedCell.joinButton.setImage(UIImage(named: acceptedBlack), for: .normal)
+            joinToChallengeService(challengeId: sender.challengeId!, feedCell: feedCell)
         } else {
-            sender.setImage(UIImage(named: acceptedRed), for: .normal)
+            feedCell.joinButton.setImage(UIImage(named: acceptedRed), for: .normal)
         }
+    }
+    
+    func joinToChallengeService(challengeId: String, feedCell: FeedCell) {
+        let json: [String: Any] = ["challengeId": challengeId,
+                                   "memberId": memberID,
+                                   "join": true
+        ]
+        let url = URL(string: joinToChallengeURL)!
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                }
+            } else {
+                DispatchQueue.main.async { // Correct
+                    feedCell.joinToChl.alpha = 0
+                    feedCell.addProofs.alpha = 1
+                }
+            }
+        }).resume()
     }
 
     let screenSize = UIScreen.main.bounds

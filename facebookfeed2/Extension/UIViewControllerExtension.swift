@@ -38,4 +38,19 @@ extension UIViewController
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
+    
+    func popupAlert(message: String, willDelay: Bool) {
+        DispatchQueue.main.async {
+            let selectAlert: UIAlertController = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.alert)
+            selectAlert.addAction(UIAlertAction(title: willDelay ? "" : "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(selectAlert, animated: true, completion: nil)
+            if willDelay {
+                let when = DispatchTime.now() + 2
+                DispatchQueue.main.asyncAfter(deadline: when){
+                    // your code with delay
+                    selectAlert.dismiss(animated: true, completion: nil)
+                }
+            }
+        }
+    }
 }

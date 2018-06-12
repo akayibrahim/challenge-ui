@@ -60,55 +60,50 @@ class AddChallengeController: UITableViewController {
         rightButton.tintColor = UIColor.white
         tableView?.showsVerticalScrollIndicator = false
         
-        if let path = Bundle.main.path(forResource: "subject", ofType: "json") {
-            do {
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.subjects = [Subject]()
-                    for postDictionary in postsArray {
-                        let subject = Subject()
-                        subject.setValuesForKeys(postDictionary)
-                        self.subjects.append(subject)
-                    }
-                }
-            } catch let err {
-                print(err)
-            }
+        if dummyServiceCall == false {
+            fetchData(url: getSubjectsURL, type: "SUBJECT")
+            fetchData(url: getSelfSubjectsURL, type: "SELF_SUBJECT")
+        } else {
+            self.subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "subject")
+            self.self_subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "self_subject")
         }
-        if let path = Bundle.main.path(forResource: "self_subject", ofType: "json") {
-            do {
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.self_subjects = [Subject]()
-                    for postDictionary in postsArray {
-                        let subject = Subject()
-                        subject.setValuesForKeys(postDictionary)
-                        self.self_subjects.append(subject)
-                    }
-                }
-            } catch let err {
-                print(err)
-            }
-        }
-        if let path = Bundle.main.path(forResource: "friends", ofType: "json") {
-            do {
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.friends = [Friends]()
-                    for postDictionary in postsArray {
-                        let friend = Friends()
-                        friend.setValuesForKeys(postDictionary)
-                        self.friends.append(friend)
-                    }
-                }
-            } catch let err {
-                print(err)
-            }
-        }
+        
+        self.friends = ServiceLocator.getFriendsFromDummy(jsonFileName: "friends")
         self.hideKeyboardWhenTappedAround()
+    }
+    
+    func fetchData(url: String, type: String) {
+        if type == "FRIENDS" {
+            self.friends = [Friends]()
+        } else {
+            self.subjects = [Subject]()
+            self.self_subjects = [Subject]()
+        }
+        URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        for postDictionary in postsArray {
+                            if type == "SUBJECT" {
+                                let subject = Subject()
+                                subject.setValuesForKeys(postDictionary)
+                                self.subjects.append(subject)
+                            } else if type == "SELF_SUBJECT" {
+                                let subject = Subject()
+                                subject.setValuesForKeys(postDictionary)
+                                self.self_subjects.append(subject)
+                            } else if type == "FRIENDS" {
+                                let friend = Friends()
+                                friend.setValuesForKeys(postDictionary)
+                                self.friends.append(friend)
+                            }
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+        }).resume()
     }
     
     func createAddChallenge(labelText : String, resultText : String, resultId : Int, resultBool : Bool, labelAtt : NSMutableAttributedString) -> AddChallenge {
@@ -146,21 +141,6 @@ class AddChallengeController: UITableViewController {
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
     
-    func popupAlert(message: String, willDelay: Bool) {
-        DispatchQueue.main.async {
-            let selectAlert: UIAlertController = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.alert)
-            selectAlert.addAction(UIAlertAction(title: willDelay ? "" : "OK", style: UIAlertActionStyle.default, handler: nil))
-            self.present(selectAlert, animated: true, completion: nil)
-            if willDelay {
-                let when = DispatchTime.now() + 2
-                DispatchQueue.main.asyncAfter(deadline: when){
-                    // your code with delay
-                    selectAlert.dismiss(animated: true, completion: nil)
-                }
-            }
-        }
-    }
-    
     func addChallenge() {
         let typeCell = tableView.cellForRow(at: segControlIndexPath) as! TableViewCellContent
         let commentCell = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
@@ -169,6 +149,7 @@ class AddChallengeController: UITableViewController {
         let doneCell = tableView.cellForRow(at: doneIndexPath) as! TableViewCellContent
         let visibilityCell = tableView.cellForRow(at: visibilityIndexPath) as! TableViewCellContent
         let resultCell = tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
+        let scoreCell = tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
         
         let type = typeCell.mySegControl.selectedSegmentIndex == 0 ? PUBLIC : (typeCell.mySegControl.selectedSegmentIndex == 1 ? SELF : PRIVATE)
         if type != SELF && rightSide.count == 0 {
@@ -204,12 +185,15 @@ class AddChallengeController: UITableViewController {
             }
             json["proofed"] = true
             json["joinAttendanceList"] = rightSide.count == 0 ? nil : joinAttendanceList as Any
-        } else {
-            // TODO json["visibility"] = ""
         }
         if type == SELF {
+            json["visibility"] = visibilityCell.visibilitySegControlForSelf.selectedSegmentIndex
             json["goal"] = "10" // TODO
-            // TODO json["result"] = "10"
+            if doneCell.isDone.isOn {
+                json["result"] = resultCell.labelOtherSide
+            } else {
+                json["result"] = "-1"
+            }
         }
         if type == PRIVATE {
             var versusAttendanceList: [[String: Any]] = []
@@ -222,36 +206,18 @@ class AddChallengeController: UITableViewController {
                 versusAttendanceList.append(versusAttendance)
             }
             json["versusAttendanceList"] = versusAttendanceList as Any
-            // TODO json["score"] = "10"
+            json["visibility"] = visibilityCell.visibilitySegControl.selectedSegmentIndex
+            if doneCell.isDone.isOn {
+                json["score"] = scoreCell.labelOtherSide
+            } else {
+                json["score"] = "-1"
+            }
+            
         }
-        let joinAttendanceListDummy: [[String: Any]] = [["memberId": memberID, "join": true, "proofed": false]]
-        let jsonDummy: [String: Any] = ["challengerId": memberID,
-                                   "name": memberName,
-                                   "challengerFBId": memberFbID,
-                                   "firstTeamCount": 1,
-                                   "secondTeamCount": 1,
-                                   "thinksAboutChallenge": "deneme",
-                                   "subject": "READ_BOOK",
-                                   "untilDate": getDateAsFormatted(date: Date()),
-                                   "done": false,
-                                   "proofed": true,
-                                   "type": PUBLIC,
-                                   "joinAttendanceList": rightSide.count == 0 ? nil : joinAttendanceListDummy
-        ]
-        // SELF goal
-        // PRIVATE firstTeamScore - secondTeamScore
-        // PUBLIC joinAttendanceList
+        // PRIVATE firstTeamScore - secondTeamScore    ???
         // GENERAL chlDate - untilDateStr - comeFromSelf - supportFirstTeam - supportSecondTeam - firstTeamSupportCount - secondTeamSupportCount - countOfProofs - insertTime - status - countOfComments
-        
-        // "dict": ["1":"First", "2":"Second"]
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
         let url = URL(string: type == PUBLIC ? addJoinChallengeURL : (type == PRIVATE ? addVersusChallengeURL : addSelfChallengeURL))!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        // insert json data to the request
-        request.httpBody = jsonData
-        
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
         URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
@@ -273,16 +239,19 @@ class AddChallengeController: UITableViewController {
         if indexPath == subjectIndexPath {
             let selectionTable = SelectionTableViewController()
             var selItems = [SelectedItems]()
-            var subjs = [Subject]()
+            
             if segControlContent.mySegControl.selectedSegmentIndex != 1 {
-                subjs = self.subjects
+                for subj in self.subjects {
+                    let selItem = SelectedItems()
+                    selItem.name = subj.name
+                    selItems.append(selItem)
+                }
             } else {
-                subjs = self.self_subjects
-            }
-            for subj in subjs {
-                let selItem = SelectedItems()
-                selItem.name = subj.name
-                selItems.append(selItem)
+                for subj in self.self_subjects {
+                    let selItem = SelectedItems()
+                    selItem.name = subj.name
+                    selItems.append(selItem)
+                }
             }
             selectionTable.items = selItems
             selectionTable.tableTitle = "Subjects"

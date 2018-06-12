@@ -32,8 +32,8 @@
               },
               {
               "name": "To World",
-              "memberId" : "",
-              "fbID" : "worldImage"
+              "memberId" : "TO_WORLD",
+              "fbID" : ""
               }
         ]
 }

@@ -20,6 +20,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     var bottomConstraint: NSLayoutConstraint?
     var heightOfCommentView : CGFloat = 50
     var challengeId : String!
+    var refreshControl : UIRefreshControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,27 +46,57 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         if proof {
             textView.text = "Add a proof..."
         }
+        loadChallenges()
         
-        if let path = Bundle.main.path(forResource: "comments", ofType: "json") {
-            do {
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.comments = [Comments]()
-                    self.proofs = [Proofs]()
-                    for postDictionary in postsArray {
-                        let comment = Comments()
-                        let proof = Proofs()
-                        comment.setValuesForKeys(postDictionary)
-                        self.comments.append(comment)
-                        proof.setValuesForKeys(postDictionary)
-                        self.proofs.append(proof)
-                    }
-                }
-            } catch let err {
-                print(err)
-            }
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(self.onRefresh), for: UIControlEvents.valueChanged)
+        tableView?.addSubview(refreshControl)
+    }
+    
+    func loadChallenges() {
+        if dummyServiceCall == false {
+            fetchData(url: getCommentsURL)
+        } else {
+            self.comments = ServiceLocator.getCommentFromDummy(jsonFileName: "comments")
+            self.proofs = ServiceLocator.getProofsFromDummy(jsonFileName: "comments")
         }
+    }
+    
+    func onRefresh() {
+        loadChallenges()
+        refreshControl.endRefreshing()
+    }
+    
+    func fetchData(url: String) {
+        URLSession.shared.dataTask(with: NSURL(string: url + self.challengeId)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        if self.comment {
+                            self.comments = [Comments]()
+                        } else {
+                            self.proofs = [Proofs]()
+                        }
+                        for postDictionary in postsArray {
+                            if self.comment {
+                                let comment = Comments()
+                                comment.setValuesForKeys(postDictionary)
+                                self.comments.append(comment)
+                            } else {
+                                let proof = Proofs()
+                                proof.setValuesForKeys(postDictionary)
+                                self.proofs.append(proof)
+                            }
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
+        }).resume()
     }
     
     func textViewDidChange(_ textView: UITextView) {
@@ -156,6 +187,35 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         sendButton.widthAnchor.constraint(equalToConstant: screenWidth * 1.5 / 10).isActive = true
         sendButton.heightAnchor.constraint(equalToConstant: globalHeight).isActive = true
+        sendButton.addTarget(self, action: #selector(self.addComment), for: UIControlEvents.touchUpInside)
+    }
+    
+    func addComment() {
+        var json: [String: Any] = ["challengeId": self.challengeId,
+                                   "memberId": memberID
+        ]
+        json["comment"] = self.textView.text
+        let url = URL(string: commentToChallangeURL)!
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                }
+            }
+            // self.popupAlert(message: "Comment Added!", willDelay: true)
+            DispatchQueue.main.async {
+                self.refreshControl.beginRefreshingManually()
+                self.onRefresh()
+                self.textView.text = ""
+            }
+        }).resume()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -71,7 +71,7 @@ class NotificationsController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 && indexPath.row == 0 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
-            let attributeText = NSMutableAttributedString(string: "Following Requests   ", attributes: nil)
+            let attributeText = NSMutableAttributedString(string: "Find Friends   ", attributes: nil)
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
             return cell
@@ -127,15 +127,16 @@ class NotificationsController: UITableViewController {
         if indexPath.section == 0 && indexPath.row == 0 {
             followRequest()
         } else {
-            viewComments()
+            viewComments(challengeId: notifications[indexPath.row].challengeId!)
         }
     }
     
-    func viewComments() {
+    func viewComments(challengeId: String) {
         let commentsTable = CommentTableViewController()
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
         commentsTable.comment = true
+        commentsTable.challengeId = challengeId
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)

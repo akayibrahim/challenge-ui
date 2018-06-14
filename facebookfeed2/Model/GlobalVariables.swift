@@ -10,9 +10,9 @@ import UIKit
 
 //var memberFbID = "10156204749600712" // dummy
 //var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
-var memberFbID = "10156204749600712"
+var memberFbID = "634127860"
 var memberID = "5b1a97bbcb353e79ca335a38"
-var memberName = "İbrahim AKAY"
+var memberName = "Seher Can"
 var countOffollowers = "126"
 var countOffollowing = "198"
 
@@ -89,3 +89,5 @@ var commentToChallangeURL = defaultURL + "/commentToChallange"
 var getCommentsURL = defaultURL + "/getComments?challengeId="
 var supportChallengeURL = defaultURL + "/supportChallenge"
 var joinToChallengeURL = defaultURL + "/joinToChallenge"
+var getSuggestionsForFollowingURL = defaultURL + "/getSuggestionsForFollowing?memberId="
+var getFollowingListURL = defaultURL + "/getFollowingList?memberId="

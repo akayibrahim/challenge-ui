@@ -63,27 +63,42 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 }
             }
             if isFollowing {
-                if let path = Bundle.main.path(forResource: "following", ofType: "json") {
-                    do {
-                        let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                        let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                        if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                            self.following = [Following]()
-                            for postDictionary in postsArray {
-                                let following = Following()
-                                following.setValuesForKeys(postDictionary)
-                                self.following.append(following)
-                            }
-                        }
-                    } catch let err {
-                        print(err)
-                    }
-                }
+                loadFollowings()
             }
         }
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.hideKeyboardWhenTappedAround()
+    }
+    
+    func loadFollowings() {
+        if dummyServiceCall == false {
+            fetchFollowingsData(url: getFollowingListURL)
+        } else {
+            self.following = ServiceLocator.getFollowingsFromDummy(jsonFileName: "following")
+        }
+    }
+    
+    func fetchFollowingsData(url: String) {
+        URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        self.following = [Following]()
+                        for postDictionary in postsArray {
+                            let following = Following()
+                            following.setValuesForKeys(postDictionary)
+                            self.following.append(following)
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
+        }).resume()
     }
     
     func keyboardWasShown (notification: NSNotification) {
@@ -231,8 +246,8 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 setImage(fbID: followers[indexPath.row].id, imageView: cell.profileImageView)
                 cell.thinksAboutChallengeView.text = followers[indexPath.row].name
             } else if isFollowing {
-                setImage(fbID: following[indexPath.row].id, imageView: cell.profileImageView)
-                cell.thinksAboutChallengeView.text = following[indexPath.row].name
+                setImage(fbID: following[indexPath.row].facebookID, imageView: cell.profileImageView)
+                cell.thinksAboutChallengeView.text = "\(following[indexPath.row].name!) \(following[indexPath.row].surname!)"
             }
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             return cell

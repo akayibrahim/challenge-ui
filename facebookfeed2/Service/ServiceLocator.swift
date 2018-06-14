@@ -148,6 +148,46 @@ class ServiceLocator {
         return proofs
     }
     
+    static func getSuggestionFriendsFromDummy(jsonFileName : String) -> [SuggestionFriends] {
+        var friendRequest = [SuggestionFriends]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    for postDictionary in postsArray {
+                        let friendReq = SuggestionFriends()
+                        friendReq.setValuesForKeys(postDictionary)
+                        friendRequest.append(friendReq)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return friendRequest
+    }
+    
+    static func getFollowingsFromDummy(jsonFileName : String) -> [Following] {
+        var followings = [Following]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    for postDictionary in postsArray {
+                        let following = Following()
+                        following.setValuesForKeys(postDictionary)
+                        followings.append(following)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return followings
+    }
+    
     static func mappingOfPost(postDictionary : [String : AnyObject]) -> Post {
         let post = Post()
         post.versusAttendanceList = [VersusAttendance]()

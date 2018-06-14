@@ -12,7 +12,7 @@ class FollowRequestController: UITableViewController {
     
     let cellId = "cellId"
     let headerId = "headerId"
-    var friendRequest = [FriendRequest]()
+    var friendRequest = [SuggestionFriends]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,26 +20,41 @@ class FollowRequestController: UITableViewController {
         tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
         tableView.sectionHeaderHeight = 26
         tableView.tableFooterView = UIView()
-        navigationItem.title = "Friend Requests"
+        navigationItem.title = "Find Friends"
         tableView.register(FriendRequestCell.self, forCellReuseIdentifier: cellId)
         tableView.register(RequestHeader.self, forHeaderFooterViewReuseIdentifier: headerId)
         
-        if let path = Bundle.main.path(forResource: "friend_request", ofType: "json") {
-            do {
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.friendRequest = [FriendRequest]()
-                    for postDictionary in postsArray {
-                        let friendReq = FriendRequest()
-                        friendReq.setValuesForKeys(postDictionary)
-                        self.friendRequest.append(friendReq)
-                    }
-                }
-            } catch let err {
-                print(err)
-            }
+        loadFollowRequest()
+    }
+    
+    func loadFollowRequest() {
+        if dummyServiceCall == false {
+            fetchData(url: getSuggestionsForFollowingURL)
+        } else {
+            self.friendRequest = ServiceLocator.getSuggestionFriendsFromDummy(jsonFileName: "friend_request")
         }
+    }
+    
+    func fetchData(url: String) {
+        URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        self.friendRequest = [SuggestionFriends]()
+                        for postDictionary in postsArray {
+                            let friend = SuggestionFriends()
+                            friend.setValuesForKeys(postDictionary)
+                            self.friendRequest.append(friend)
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
+        }).resume()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -47,13 +62,13 @@ class FollowRequestController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return friendRequest.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! FriendRequestCell
-        cell.nameLabel.text = friendRequest[indexPath.row].name
-        setImage(fbID: friendRequest[indexPath.row].id!, imageView: cell.requestImageView, reset: false)
+        cell.nameLabel.text = "\(friendRequest[indexPath.row].name!) \(friendRequest[indexPath.row].surname!)"
+        setImage(fbID: friendRequest[indexPath.row].facebookID!, imageView: cell.requestImageView, reset: false)
         cell.imageView?.backgroundColor = UIColor.black
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell

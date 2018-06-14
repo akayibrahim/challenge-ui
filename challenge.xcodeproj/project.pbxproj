@@ -35,7 +35,7 @@
 		A159265E209ACDEC00D98923 /* TrendRequestCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A159265D209ACDEC00D98923 /* TrendRequestCellView.swift */; };
 		A15A30D4207B282D000C74A9 /* self_subject.json in Resources */ = {isa = PBXBuildFile; fileRef = A15A30D3207B282D000C74A9 /* self_subject.json */; };
 		A15F875F207BBBB70035130D /* friend_request.json in Resources */ = {isa = PBXBuildFile; fileRef = A15F875E207BBBB70035130D /* friend_request.json */; };
-		A15F8765207BBBF30035130D /* FriendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15F8764207BBBF30035130D /* FriendRequest.swift */; };
+		A15F8765207BBBF30035130D /* SuggestionFriends.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15F8764207BBBF30035130D /* SuggestionFriends.swift */; };
 		A16584402077A69400842F10 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165843F2077A69400842F10 /* GlobalVariables.swift */; };
 		A1715F3B20B047A4003E7AFF /* followers.json in Resources */ = {isa = PBXBuildFile; fileRef = A1715F3A20B047A4003E7AFF /* followers.json */; };
 		A1715F4120B0481A003E7AFF /* Followers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715F4020B0481A003E7AFF /* Followers.swift */; };
@@ -135,7 +135,7 @@
 		A159265D209ACDEC00D98923 /* TrendRequestCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendRequestCellView.swift; sourceTree = "<group>"; };
 		A15A30D3207B282D000C74A9 /* self_subject.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = self_subject.json; sourceTree = "<group>"; };
 		A15F875E207BBBB70035130D /* friend_request.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = friend_request.json; sourceTree = "<group>"; };
-		A15F8764207BBBF30035130D /* FriendRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequest.swift; sourceTree = "<group>"; };
+		A15F8764207BBBF30035130D /* SuggestionFriends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuggestionFriends.swift; sourceTree = "<group>"; };
 		A165843F2077A69400842F10 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		A1715F3A20B047A4003E7AFF /* followers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = followers.json; sourceTree = "<group>"; };
 		A1715F4020B0481A003E7AFF /* Followers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Followers.swift; sourceTree = "<group>"; };
@@ -296,7 +296,7 @@
 				A1DC3413207E2A1800F21232 /* Comments.swift */,
 				A17162C4209C42DC00061399 /* Notifications.swift */,
 				A1235D3D20870C3A0028738E /* Proofs.swift */,
-				A15F8764207BBBF30035130D /* FriendRequest.swift */,
+				A15F8764207BBBF30035130D /* SuggestionFriends.swift */,
 				A1715F4020B0481A003E7AFF /* Followers.swift */,
 				A1715F4620B050DD003E7AFF /* Following.swift */,
 				A159265B209ACCFD00D98923 /* TrendRequest.swift */,
@@ -585,7 +585,7 @@
 				A1715F4120B0481A003E7AFF /* Followers.swift in Sources */,
 				A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */,
 				A138F38A204D9C4F00142231 /* Post.swift in Sources */,
-				A15F8765207BBBF30035130D /* FriendRequest.swift in Sources */,
+				A15F8765207BBBF30035130D /* SuggestionFriends.swift in Sources */,
 				A1B27B04209A2F8D00263E48 /* NotificationsController.swift in Sources */,
 				C7D879AE1C828B36008766AE /* FollowRequestController.swift in Sources */,
 				A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */,

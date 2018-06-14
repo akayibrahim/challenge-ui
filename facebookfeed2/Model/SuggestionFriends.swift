@@ -8,7 +8,9 @@
 
 import UIKit
 
-class FriendRequest: SafeJsonObject {
+class SuggestionFriends: SafeJsonObject {
     var name: String?
+    var surname: String?
+    var facebookID : String?
     var id : String?
 }

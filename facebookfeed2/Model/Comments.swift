@@ -12,4 +12,5 @@ class Comments: SafeJsonObject {
     var name: String?
     var comment : String?
     var fbID : String?
+    var challengeId: String?
 }

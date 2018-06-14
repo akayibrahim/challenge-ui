@@ -13,4 +13,5 @@ class Notifications: SafeJsonObject {
     var content : String?
     var fbID : String?
     var type : Int?
+    var challengeId: String?
 }

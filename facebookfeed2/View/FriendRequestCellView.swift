@@ -34,8 +34,8 @@ class FriendRequestCell: UITableViewCell {
         return imageView
     }()
     
-    let confirmButton: UIButton = {
-        let button = UIButton()
+    let confirmButton: subclasssedUIButton = {
+        let button = subclasssedUIButton()
         button.setTitle(followButtonText, for: UIControlState())
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.backgroundColor = UIColor.rgb(87, green: 143, blue: 255)
@@ -44,8 +44,8 @@ class FriendRequestCell: UITableViewCell {
         return button
     }()
     
-    let deleteButton: UIButton = {
-        let button = UIButton()
+    let deleteButton: subclasssedUIButton = {
+        let button = subclasssedUIButton()
         button.setTitle("Remove", for: UIControlState())
         button.setTitleColor(UIColor(white: 0.3, alpha: 1), for: UIControlState())
         button.layer.cornerRadius = 2

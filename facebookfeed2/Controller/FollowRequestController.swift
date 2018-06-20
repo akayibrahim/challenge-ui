@@ -24,7 +24,17 @@ class FollowRequestController: UITableViewController {
         tableView.register(FriendRequestCell.self, forCellReuseIdentifier: cellId)
         tableView.register(RequestHeader.self, forHeaderFooterViewReuseIdentifier: headerId)
         
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
+        tableView?.addSubview(refreshControl!)
+        
         loadFollowRequest()
+    }
+    
+    func onRefesh() {
+        self.loadFollowRequest()
+        self.tableView?.reloadData()
+        refreshControl?.endRefreshing()
     }
     
     func loadFollowRequest() {
@@ -71,7 +81,45 @@ class FollowRequestController: UITableViewController {
         setImage(fbID: friendRequest[indexPath.row].facebookID!, imageView: cell.requestImageView, reset: false)
         cell.imageView?.backgroundColor = UIColor.black
         cell.selectionStyle = UITableViewCellSelectionStyle.none
+        cell.confirmButton.memberId = friendRequest[indexPath.row].id
+        cell.deleteButton.memberId = friendRequest[indexPath.row].id
+        cell.confirmButton.addTarget(self, action: #selector(self.followFriend), for: UIControlEvents.touchUpInside)
+        cell.deleteButton.addTarget(self, action: #selector(self.unFollowFriend), for: UIControlEvents.touchUpInside)
         return cell
+    }
+    
+    func followFriend(sender: subclasssedUIButton) {
+        let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
+        deleteOrFollowFriend(url: url, isDelete: false, friendMemberId: sender.memberId!)
+    }
+    
+    func unFollowFriend(sender: subclasssedUIButton) {
+        let url = deleteSuggestionURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId!
+        deleteOrFollowFriend(url: url, isDelete: true, friendMemberId: sender.memberId!)
+    }
+    
+    func deleteOrFollowFriend(url: String, isDelete: Bool, friendMemberId: String) {
+        URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                }
+            }
+            DispatchQueue.main.async {
+                self.onRefesh()
+                if !isDelete {
+                    self.popupAlert(message: "Start To Following!", willDelay: true)
+                } else {
+                    self.popupAlert(message: "Removed!", willDelay: true)
+                }
+            }
+        }).resume()
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

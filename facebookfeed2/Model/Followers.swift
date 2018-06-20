@@ -11,4 +11,6 @@ import UIKit
 class Followers: SafeJsonObject {
     var name: String?
     var id : String?
+    var surname: String?
+    var facebookID: String?
 }

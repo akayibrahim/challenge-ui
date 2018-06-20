@@ -1119,6 +1119,7 @@ class FeedCell: UICollectionViewCell {
 class subclasssedUIButton : UIButton {
     var challengeId: String?
     var type: String?
+    var memberId: String?
 }
 
 

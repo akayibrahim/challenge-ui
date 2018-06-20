@@ -45,22 +45,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         } else {
             self.tableView.register(FollowCellView.self, forCellReuseIdentifier: followCell)
             if isFollower {
-                if let path = Bundle.main.path(forResource: "followers", ofType: "json") {
-                    do {
-                        let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                        let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                        if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                            self.followers = [Followers]()
-                            for postDictionary in postsArray {
-                                let follower = Followers()
-                                follower.setValuesForKeys(postDictionary)
-                                self.followers.append(follower)
-                            }
-                        }
-                    } catch let err {
-                        print(err)
-                    }
-                }
+                loadFollowers()
             }
             if isFollowing {
                 loadFollowings()
@@ -79,6 +64,14 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
+    func loadFollowers() {
+        if dummyServiceCall == false {
+            fetchFollowersData(url: getFollowerListURL)
+        } else {
+            self.followers = ServiceLocator.getFollowersFromDummy(jsonFileName: "followers")
+        }
+    }
+    
     func fetchFollowingsData(url: String) {
         URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
@@ -89,6 +82,28 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                             let following = Following()
                             following.setValuesForKeys(postDictionary)
                             self.following.append(following)
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
+        }).resume()
+    }
+    
+    func fetchFollowersData(url: String) {
+        URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        self.followers = [Followers]()
+                        for postDictionary in postsArray {
+                            let follower = Followers()
+                            follower.setValuesForKeys(postDictionary)
+                            self.followers.append(follower)
                         }
                     }
                 } catch let err {
@@ -243,8 +258,8 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: globalHeight)
             let cell = FollowCellView(frame: frameOfCell)
             if isFollower {
-                setImage(fbID: followers[indexPath.row].id, imageView: cell.profileImageView)
-                cell.thinksAboutChallengeView.text = followers[indexPath.row].name
+                setImage(fbID: followers[indexPath.row].facebookID, imageView: cell.profileImageView)
+                cell.thinksAboutChallengeView.text = "\(followers[indexPath.row].name!) \(followers[indexPath.row].surname!)"
             } else if isFollowing {
                 setImage(fbID: following[indexPath.row].facebookID, imageView: cell.profileImageView)
                 cell.thinksAboutChallengeView.text = "\(following[indexPath.row].name!) \(following[indexPath.row].surname!)"

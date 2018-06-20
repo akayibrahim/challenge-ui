@@ -188,6 +188,26 @@ class ServiceLocator {
         return followings
     }
     
+    static func getFollowersFromDummy(jsonFileName : String) -> [Followers] {
+        var followers = [Followers]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    for postDictionary in postsArray {
+                        let follower = Followers()
+                        follower.setValuesForKeys(postDictionary)
+                        followers.append(follower)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return followers
+    }
+    
     static func mappingOfPost(postDictionary : [String : AnyObject]) -> Post {
         let post = Post()
         post.versusAttendanceList = [VersusAttendance]()

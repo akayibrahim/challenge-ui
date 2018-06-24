@@ -113,6 +113,11 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         }).resume()
     }
     
+    var downImage: UIImage?
+    func downloadImage(requestImageView: UIImageView, challengeId: String) {
+        getTrendImage(imageView: requestImageView, challengeId: challengeId)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width, height: self.view.frame.width * 1.3 / 2)
     }
@@ -124,6 +129,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TrendRequestCell
         cell.trendRequest = trendRequest[indexPath.row]
+        downloadImage(requestImageView: cell.requestImageView, challengeId: trendRequest[indexPath.row].challengeId!)
         return cell
     }
     

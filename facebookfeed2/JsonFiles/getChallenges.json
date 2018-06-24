@@ -313,6 +313,39 @@
               "type": "PUBLIC",
               "done" : false,
               "firstTeamCount" : "1",
+              "secondTeamCount" : "1",
+              "joinAttendanceList" : [
+                                      {
+                                      "memberId":"5a1f048318e6063778be8f78",
+                                      "join":false,
+                                      "proof":false,
+                                      "facebookID": "634127860"
+                                      }
+                                      ],
+              "comeFromSelf" : false,
+              "countOfProofs": 3,
+              "insertTime" : "4 HOURS AGO",
+              "status": "joined to challenge",
+              "proofed" : false,
+              "supportFirstTeam" : true,
+              "supportSecondTeam" : false,
+              "firstTeamSupportCount" : 13,
+              "secondTeamSupportCount" : 15,
+              "firstTeamScore" : "-",
+              "secondTeamScore" : "-"
+              },
+              {
+              "id": "87091823091283",
+              "name": "Serkan Aykut",
+              "thinksAboutChallenge": "Tek rakibim messi!",
+              "countOfComments": 3,
+              "untilDateStr": "LAST 12 DAYS",
+              "challengerFBId" : "689764048",
+              "untilDate" : "LAST 8 WEEKS",
+              "subject" : "FOOTBALL",
+              "type": "PUBLIC",
+              "done" : false,
+              "firstTeamCount" : "1",
               "secondTeamCount" : "0",
               "joinAttendanceList" : [
                                       {

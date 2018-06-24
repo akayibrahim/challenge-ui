@@ -280,6 +280,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             self.avPlayer = AVPlayer.init()
             feedCell.avPlayerLayer.player = self.avPlayer
             if (feedCell.post?.proofed)! {
+                /**
                 var url : URL
                 if feedCell.post?.secondTeamCount == "0" {
                     url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
@@ -289,7 +290,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.avPlayer.replaceCurrentItem(with: AVPlayerItem(url: url))
                 self.avPlayer.volume = volume
                 feedCell.avPlayerLayer.player = self.avPlayer
-                feedCell.avPlayerLayer.player?.play()                
+                feedCell.avPlayerLayer.player?.play()
+                 */
+                feedCell.proofedVideoView.alpha = 0
+                feedCell.volumeUpImageView.alpha = 0
+                feedCell.volumeDownImageView.alpha = 0
+                feedCell.proofedMediaView.alpha = 1                
+                self.getTrendImage(imageView: feedCell.proofedMediaView, challengeId: self.posts[indexPath.item].id!)
             }
         }
         return feedCell

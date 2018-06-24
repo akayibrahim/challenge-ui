@@ -35,7 +35,7 @@ let resultIndexPath = IndexPath(item: resultIndex, section: 0)
 let proofIndexPath = IndexPath(item: proofIndex, section: 0)
 let commentIndexPath = IndexPath(item: commentIndex, section: 0)
 
-class AddChallengeController: UITableViewController {    
+class AddChallengeController: UITableViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     let screenSize = UIScreen.main.bounds
     var tableRowHeightHeight: CGFloat = 44
     var chlViewHeight: CGFloat = 17.5/30
@@ -150,6 +150,7 @@ class AddChallengeController: UITableViewController {
         let visibilityCell = tableView.cellForRow(at: visibilityIndexPath) as! TableViewCellContent
         let resultCell = tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
         let scoreCell = tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
+        let proofCell = tableView.cellForRow(at: proofIndexPath) as! TableViewCellContent
         
         let type = typeCell.mySegControl.selectedSegmentIndex == 0 ? PUBLIC : (typeCell.mySegControl.selectedSegmentIndex == 1 ? SELF : PRIVATE)
         if type != SELF && rightSide.count == 0 {
@@ -162,6 +163,10 @@ class AddChallengeController: UITableViewController {
         }
         if addViewCell.addChallenge.subjectLabel.text == selectText {
             popupAlert(message: "Subject cannot be empty.", willDelay: false)
+            return
+        }
+        if type == PUBLIC && proofCell.proofImageView.image == nil {
+            popupAlert(message: "Proof cannot be empty.", willDelay: false)
             return
         }
         
@@ -218,19 +223,57 @@ class AddChallengeController: UITableViewController {
         // GENERAL chlDate - untilDateStr - comeFromSelf - supportFirstTeam - supportSecondTeam - firstTeamSupportCount - secondTeamSupportCount - countOfProofs - insertTime - status - countOfComments
         let url = URL(string: type == PUBLIC ? addJoinChallengeURL : (type == PRIVATE ? addVersusChallengeURL : addSelfChallengeURL))!
         let request = ServiceLocator.prepareRequest(url: url, json: json)
+        
         URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
                 return
             }
-            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-            if let responseJSON = responseJSON as? [String: Any] {
-                print(responseJSON)
-                if responseJSON["message"] != nil {
-                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    DispatchQueue.main.async {
+                        let result = NSString(data: data, encoding: String.Encoding.ascii.rawValue)!
+                        self.addMedia(result: result, image: proofCell.proofImageView.image!)
+                    }
+                } else {
+                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+                    if let responseJSON = responseJSON as? [String: Any] {
+                        print(responseJSON)
+                        if responseJSON["message"] != nil {
+                            self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                        }
+                    }
                 }
             }
-            self.popupAlert(message: "Your challange ready!", willDelay: true)
+        }).resume()
+    }
+    
+    func addMedia(result: NSString, image: UIImage) {
+        let parameters = ["challengeId": result as String, "memberId": memberID as String]
+        let urlOfUpload = URL(string: uploadImageURL)!
+        let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: image)
+        
+        URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    self.createAddChallengeInstance()
+                    self.tableView.reloadData()
+                    self.popupAlert(message: "Your challange ready!", willDelay: true)
+                } else {
+                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+                    if let responseJSON = responseJSON as? [String: Any] {
+                        print(responseJSON)
+                        if responseJSON["message"] != nil {
+                            self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                            return
+                        }
+                    }
+                }
+            }
         }).resume()
     }
     
@@ -335,7 +378,26 @@ class AddChallengeController: UITableViewController {
             }))
             self.present(alert, animated: true, completion: nil)
             */
+        } else if indexPath == proofIndexPath {
+            imagePickerForProofUpload()
         }
+    }
+    
+    let imagePickerController = UIImagePickerController()
+    func imagePickerForProofUpload() {
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
+        imagePickerController.allowsEditing = false
+        self.present(imagePickerController, animated: true, completion: nil)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            let proofCell = self.tableView.cellForRow(at: proofIndexPath) as! TableViewCellContent
+            proofCell.proofImageView.image = pickedImage
+            proofCell.proofImageView.alpha = 1
+        }
+        dismiss(animated: true, completion: nil)
     }
     
     func getDayBetweenDates(isSelect : Bool) -> Int {
@@ -673,7 +735,7 @@ class AddChallengeController: UITableViewController {
         }
         addViewContent.addChallenge.generateSecondTeam(count: result.count)
         if result.count == 1 {
-            setImage(fbID: result[0].id, imageView: addViewContent.addChallenge.firstOnePeopleImageView, reset: reset)
+            setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstOnePeopleImageView, reset: reset)
             if result[0].name == "To World" {
                 setImage(name: result[0].fbId, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
                 addViewContent.addChallenge.firstOnePeopleImageView.contentMode = .scaleAspectFit

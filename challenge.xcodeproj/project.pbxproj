@@ -56,6 +56,7 @@
 		A1C8D31420B7EE440018B781 /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C8D31320B7EE440018B781 /* ServiceLocator.swift */; };
 		A1C8D31620B832800018B781 /* getChallenges1.json in Resources */ = {isa = PBXBuildFile; fileRef = A1C8D31520B832800018B781 /* getChallenges1.json */; };
 		A1D2CAB720451C9F008782D3 /* OtherViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */; };
+		A1DA5F0220DFA44D00044E1E /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DA5F0120DFA44D00044E1E /* Media.swift */; };
 		A1DA9CAB20A95236009200E3 /* AddChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DA9CAA20A95236009200E3 /* AddChallenge.swift */; };
 		A1DC3414207E2A1800F21232 /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3413207E2A1800F21232 /* Comments.swift */; };
 		A1DC3416207E2D9800F21232 /* CommentCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3415207E2D9800F21232 /* CommentCellView.swift */; };
@@ -156,6 +157,7 @@
 		A1C8D31320B7EE440018B781 /* ServiceLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		A1C8D31520B832800018B781 /* getChallenges1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getChallenges1.json; sourceTree = "<group>"; };
 		A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewCellView.swift; sourceTree = "<group>"; };
+		A1DA5F0120DFA44D00044E1E /* Media.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		A1DA9CAA20A95236009200E3 /* AddChallenge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddChallenge.swift; sourceTree = "<group>"; };
 		A1DC3413207E2A1800F21232 /* Comments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		A1DC3415207E2D9800F21232 /* CommentCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentCellView.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 			isa = PBXGroup;
 			children = (
 				A138F389204D9C4F00142231 /* Post.swift */,
+				A1DA5F0120DFA44D00044E1E /* Media.swift */,
 				A14A996A207530F500B1418D /* Subject.swift */,
 				A14A996C2075310D00B1418D /* Friends.swift */,
 				A1DA9CAA20A95236009200E3 /* AddChallenge.swift */,
@@ -572,6 +575,7 @@
 				C7A85F361C78C137007E9A00 /* ChallengesController.swift in Sources */,
 				A1289CA820A555F100CC66B0 /* UIExtension.swift in Sources */,
 				A159265E209ACDEC00D98923 /* TrendRequestCellView.swift in Sources */,
+				A1DA5F0220DFA44D00044E1E /* Media.swift in Sources */,
 				A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */,
 				A1C13416207F212700C6A435 /* TrendsController.swift in Sources */,
 				A159265C209ACCFD00D98923 /* TrendRequest.swift in Sources */,

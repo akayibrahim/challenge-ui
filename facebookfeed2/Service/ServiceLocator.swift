@@ -241,4 +241,39 @@ class ServiceLocator {
         request.httpBody = jsonData
         return request
     }
+    
+    static func prepareRequestForMedia(url: URL, parameters: [String: String], image: UIImage) -> URLRequest {
+        var request = URLRequest(url: url)
+        let boundary = "Boundary-\(NSUUID().uuidString)"
+        let mediaImage = Media(withImage: image, forKey: "file")
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        let dataBody = createDataBody(withParameters: parameters , media: [mediaImage!], boundary: boundary)
+        request.httpBody = dataBody
+        return request
+    }
+    
+    typealias Parameters = [String: String]
+    static func createDataBody(withParameters params: Parameters?, media: [Media]?, boundary: String) -> Data {
+        let lineBreak = "\r\n"
+        var body = Data()
+        if let parameters = params {
+            for (key, value) in parameters {
+                body.append("--\(boundary + lineBreak)")
+                body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)")
+                body.append("\(value + lineBreak)")
+            }
+        }
+        if let media = media {
+            for photo in media {
+                body.append("--\(boundary + lineBreak)")
+                body.append("Content-Disposition: form-data; name=\"\(photo.key)\"; filename=\"\(photo.filename)\"\(lineBreak)")
+                body.append("Content-Type: \(photo.mimeType + lineBreak + lineBreak)")
+                body.append(photo.data)
+                body.append(lineBreak)
+            }
+        }
+        body.append("--\(boundary)--\(lineBreak)")
+        return body
+    }
 }

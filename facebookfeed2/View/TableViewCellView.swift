@@ -67,6 +67,18 @@ class TableViewCellContent: UITableViewCell {
             addSubview(isDone)
             addTrailingAnchor(isDone, anchor: contentGuide.trailingAnchor, constant: 0)
             isDone.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+        } else if cellRow == proofIndexPath.row {
+            addSubview(proofImageView)
+            addTrailingAnchor(proofImageView, anchor: contentGuide.trailingAnchor, constant: -(screenWidth * 0.3 / 10))
+            addWidthAnchor(proofImageView, multiplier: 2 / 10)
+            addHeightAnchor(proofImageView, multiplier: 1 / 10)
+            proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            proofImageView.alpha = 0
+            
+            addSubview(labelOtherSide)
+            addTrailingAnchor(labelOtherSide, anchor: contentGuide.trailingAnchor, constant: 0)
+            labelOtherSide.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            labelOtherSide.font = UIFont.systemFont(ofSize: 14)
         } else {
             addSubview(labelOtherSide)
             addTrailingAnchor(labelOtherSide, anchor: contentGuide.trailingAnchor, constant: 0)
@@ -90,6 +102,13 @@ class TableViewCellContent: UITableViewCell {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
+    
+    let proofImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.semanticContentAttribute = .forceRightToLeft
+        return imageView
+    }()
     
     let visibilitySegControlForSelf: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Everyone", "Friend", "Just Me"])
     let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Everyone", "Friend"])

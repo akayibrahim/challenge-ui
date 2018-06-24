@@ -307,9 +307,10 @@ class FeedCell: UICollectionViewCell {
             }
             // END CONSTANTS
             
-            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done,
-                let proofed = self.post?.proofed, let firstTeamScore = self.post?.firstTeamScore, let secondTeamScore = self.post?.secondTeamScore {
-                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore)
+            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed {
+                let firstTeamScore = self.post?.firstTeamScore != nil ? self.post?.firstTeamScore : "-"
+                let secondTeamScore = self.post?.secondTeamScore != nil ? self.post?.secondTeamScore : "-"
+                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!)
             }
         }
     }
@@ -352,7 +353,7 @@ class FeedCell: UICollectionViewCell {
                     addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
                     addWidthAnchor(proofedMediaView, multiplier: 1)
                     addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
-                    setImage(name: "gandhi", imageView: proofedMediaView)
+                    // setImage(name: "gandhi", imageView: proofedMediaView)
                     proofedMediaView.alpha = 0
                 }
                 addSubview(proofedVideoView)

@@ -25,9 +25,9 @@ class TrendRequestCell: UICollectionViewCell {
                 nameLabel.attributedText = nameAtt
             }
             if let proof = trendRequest?.proof {
-                requestImageView.image = UIImage(named: proof)
+                // requestImageView.image = UIImage(named: proof)
             }
-            if let prooferFBId = trendRequest?.prooferFBId {
+            if let prooferFBId = trendRequest?.prooferFbID {
                 setImage(fbID: prooferFBId, imageView: profileImageView)
             }
             setupViews()

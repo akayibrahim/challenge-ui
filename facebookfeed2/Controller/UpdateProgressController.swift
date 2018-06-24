@@ -35,8 +35,8 @@ class UpdateProgressController : UIViewController {
             awayScoreText.frame = CGRect(x: 0, y: constraintOfYForSecondText, width: view.frame.width, height: globalHeight)
             awayScoreText.placeholder = " Enter away score..."
         } else if updateProgress {
-            view.addSubview(isDone)
             if challengeType == SELF {
+                view.addSubview(isDone)
                 view.addSubview(resultText)
                 resultText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
                 
@@ -50,7 +50,7 @@ class UpdateProgressController : UIViewController {
                 awayScoreText.frame = CGRect(x: 0, y: constraintOfYForSecondText, width: view.frame.width, height: globalHeight)
                 awayScoreText.placeholder = " Enter away score..."
                 
-                isDone.frame = CGRect(x: 0, y: constraintOfYForSecondText + (screenWidth * 0.8 / 5), width: view.frame.width / 5, height: globalHeight)
+                // isDone.frame = CGRect(x: 0, y: constraintOfYForSecondText + (screenWidth * 0.8 / 5), width: view.frame.width / 5, height: globalHeight)
             }
         }
         navigationItem.rightBarButtonItem = self.editButtonItem
@@ -62,6 +62,15 @@ class UpdateProgressController : UIViewController {
     }
     
     func done() {
+        if updateProgress {
+            var url : String?
+            if challengeType == SELF {
+                url = updateProgressOrDoneForSelfURL  + "?challengeId=" + challengeId! + "&result=" + resultText.text! + "&done=" + (isDone.isOn ? "true" : "false")
+            } else if challengeType == PRIVATE {
+                url = updateResultsOfVersusURL  + "?challengeId=" + challengeId! + "&firstTeamScore=" + homeScoreText.text! + "&secondTeamScore=" + awayScoreText.text!
+            }
+            updateProgres(url: url!)
+        }
         if let controller = navigationController?.viewController(class: AddChallengeController.self) {
             let addViewContent = controller.tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
             if result {
@@ -77,6 +86,25 @@ class UpdateProgressController : UIViewController {
             }
         }
         navigationController?.popViewController(animated: true)
+    }
+    
+    func updateProgres(url: String) {
+        URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                }
+            }
+            DispatchQueue.main.async {
+                self.popupAlert(message: "Challenge Updated!", willDelay: true)
+            }
+        }).resume()
     }
     
     let resultText: UITextField = UpdateProgressController.textField()

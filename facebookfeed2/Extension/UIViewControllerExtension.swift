@@ -23,6 +23,19 @@ extension UIViewController
         }
     }
     
+    func getTrendImage(imageView: UIImageView, challengeId: String) {
+        let url = URL(string: defaultURL + "/downloadImage?challengeId=\(challengeId)&memberId=\(memberID)")
+        if let urlOfImage = url {
+            ImageService.getImage(withURL: urlOfImage) { image in
+                if image != nil {
+                    imageView.image = image
+                } else {
+                    self.setImage(name: unknown, imageView: imageView)
+                }
+            }
+        }
+    }
+    
     func setImage(name: String?, imageView: UIImageView) {
         if let peopleImage = name {
             imageView.image = UIImage(named: peopleImage)

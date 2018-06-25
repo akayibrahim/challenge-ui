@@ -135,13 +135,14 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        openExplorer()
+        openExplorer(challengeId: trendRequest[indexPath.row].challengeId!)
     }
     
-    func openExplorer() {
+    func openExplorer(challengeId: String) {
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.hidesBottomBarWhenPushed = true
+        challengeController.challengIdForTrendAndExplorer = challengeId
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }

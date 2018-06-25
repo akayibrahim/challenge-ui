@@ -8,12 +8,12 @@
 
 import UIKit
 
-class CommentTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
+class ProofTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     let screenSize = UIScreen.main.bounds
     var tableTitle : String!
     var tableView : UITableView!
-    var comments = [Comments]()
-    var commentCellView = CommentCellView()
+    var proofs = [Proofs]()
+    var proofCellView = ProofCellView()
     var bottomConstraint: NSLayoutConstraint?
     var heightOfCommentView : CGFloat = 50
     var challengeId : String!
@@ -26,7 +26,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         self.tableView.delegate = self
         self.tableView.dataSource = self
         tableView.tableFooterView = UIView()
-        tableView.addSubview(commentCellView)
+        tableView.addSubview(proofCellView)
         self.view.addSubview(tableView)
         navigationItem.title = tableTitle
         view.addSubview(messageInputContainerView)
@@ -39,7 +39,6 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.hideKeyboardWhenTappedAround()
-        self.textView.delegate = self
         loadChallenges()
         
         refreshControl = UIRefreshControl()
@@ -49,9 +48,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     
     func loadChallenges() {
         if dummyServiceCall == false {
-            fetchData(url: getCommentsURL)
+            fetchData(url: getProofInfoListByChallengeURL)
         } else {
-            self.comments = ServiceLocator.getCommentFromDummy(jsonFileName: "comments")
+            self.proofs = ServiceLocator.getProofsFromDummy(jsonFileName: "comments")
         }
     }
     
@@ -65,11 +64,11 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
             if error == nil && data != nil {
                 do {
                     if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.comments = [Comments]()
+                        self.proofs = [Proofs]()
                         for postDictionary in postsArray {
-                            let comment = Comments()
-                            comment.setValuesForKeys(postDictionary)
-                            self.comments.append(comment)
+                            let proof = Proofs()
+                            proof.setValuesForKeys(postDictionary)
+                            self.proofs.append(proof)
                         }
                     }
                 } catch let err {
@@ -100,7 +99,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                 self.view.layoutIfNeeded()
             }, completion: { (completed) in
                 if isKeyboardShowing {
-                    let indexPath = IndexPath(item: self.comments.count - 1, section: 0)
+                    let indexPath = IndexPath(item: self.proofs.count - 1, section: 0)
                     self.tableView?.scrollToRow(at: indexPath as IndexPath, at: .bottom, animated: true)
                 }
             })
@@ -115,7 +114,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     
     let inputTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Add a comment..."
+        textField.placeholder = "Add a proof..."
         return textField
     }()
     
@@ -128,7 +127,16 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         return button
     }()
     
+    let proofImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = UIColor.blue
+        imageView.layer.masksToBounds = true
+        return imageView
+    }()
+    
     let profileImageView: UIImageView = FeedCell().profileImageView
+    let addProofBtn = FeedCell.subClasssButtonForTitle("Add your proof..", imageName: "")
     
     private func setupInputComponents() {
         let topBorderView = UIView()
@@ -138,7 +146,8 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         
         messageInputContainerView.addSubview(topBorderView)
         messageInputContainerView.addSubview(profileImageView)
-        messageInputContainerView.addSubview(textView)
+        messageInputContainerView.addSubview(addProofBtn)
+        messageInputContainerView.addSubview(proofImageView)
         messageInputContainerView.addSubview(sendButton)
         
         topBorderView.widthAnchor.constraint(equalToConstant: screenWidth).isActive = true
@@ -154,44 +163,83 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         profileImageView.heightAnchor.constraint(equalToConstant: screenWidth * 1.1 / 10).isActive = true
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        textView.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
-        textView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant : screenWidth * 0.2 / 10).isActive = true
-        textView.widthAnchor.constraint(equalToConstant: screenWidth * 6.8 / 10).isActive = true
-        textView.heightAnchor.constraint(equalToConstant: heightOfCommentView - 10).isActive = true
-        textView.translatesAutoresizingMaskIntoConstraints = false
+        addProofBtn.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
+        addProofBtn.leadingAnchor.constraint(equalTo: topBorderView.leadingAnchor, constant : (screenWidth * 1.7 / 10)).isActive = true
+        addProofBtn.widthAnchor.constraint(equalToConstant: screenWidth * 4 / 10).isActive = true
+        addProofBtn.heightAnchor.constraint(equalToConstant: screenWidth * 0.9 / 10).isActive = true
+        addProofBtn.translatesAutoresizingMaskIntoConstraints = false
+        addProofBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        addProofBtn.setTitleColor(UIColor.white, for: UIControlState())
+        addProofBtn.layer.backgroundColor = navAndTabColor.cgColor
+        addProofBtn.layer.cornerRadius = 5.0
+        addProofBtn.clipsToBounds = true
+        addProofBtn.addTarget(self, action: #selector(self.addProof), for: UIControlEvents.touchUpInside)
+        
+        proofImageView.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
+        proofImageView.trailingAnchor.constraint(equalTo: topBorderView.trailingAnchor, constant : -(screenWidth * 1.8 / 10)).isActive = true
+        proofImageView.widthAnchor.constraint(equalToConstant: screenWidth * 2 / 10).isActive = true
+        proofImageView.heightAnchor.constraint(equalToConstant: screenWidth * 1 / 10).isActive = true
+        proofImageView.translatesAutoresizingMaskIntoConstraints = false
+        proofImageView.alpha = 0
         
         sendButton.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
         sendButton.trailingAnchor.constraint(equalTo: topBorderView.trailingAnchor, constant : -(screenWidth * 0.2 / 10)).isActive = true
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         sendButton.widthAnchor.constraint(equalToConstant: screenWidth * 1.5 / 10).isActive = true
         sendButton.heightAnchor.constraint(equalToConstant: globalHeight).isActive = true
-        sendButton.addTarget(self, action: #selector(self.addComment), for: UIControlEvents.touchUpInside)
+        sendButton.addTarget(self, action: #selector(self.sendProof), for: UIControlEvents.touchUpInside)
     }
     
-    func addComment() {
-        var json: [String: Any] = ["challengeId": self.challengeId,
-                                   "memberId": memberID
-        ]
-        json["comment"] = self.textView.text
-        let url = URL(string: commentToChallangeURL)!
-        let request = ServiceLocator.prepareRequest(url: url, json: json)
-        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+    func addProof() {
+        imagePickerForProofUpload()
+    }
+    
+    let imagePickerController = UIImagePickerController()
+    func imagePickerForProofUpload() {
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
+        imagePickerController.allowsEditing = false
+        self.present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            proofImageView.image = pickedImage
+            proofImageView.alpha = 1
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func sendProof() {
+        if proofImageView.image == nil {
+            popupAlert(message: "You have to add your poor first.", willDelay: false)
+            return
+        }
+        let parameters = ["challengeId": challengeId as String, "memberId": memberID as String]
+        let urlOfUpload = URL(string: uploadImageURL)!
+        let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: self.proofImageView.image!)
+        
+        URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
                 return
             }
-            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-            if let responseJSON = responseJSON as? [String: Any] {
-                print(responseJSON)
-                if responseJSON["message"] != nil {
-                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                    self.popupAlert(message: "Your Proof Added!", willDelay: true)
+                } else {
+                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+                    if let responseJSON = responseJSON as? [String: Any] {
+                        print(responseJSON)
+                        if responseJSON["message"] != nil {
+                            self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                            return
+                        }
+                    }
                 }
-            }
-            // self.popupAlert(message: "Comment Added!", willDelay: true)
-            DispatchQueue.main.async {
-                self.refreshControl.beginRefreshingManually()
-                self.onRefresh()
-                self.textView.text = ""
             }
         }).resume()
     }
@@ -200,30 +248,25 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         
     }
     
-    let heighForRow : CGFloat = UIScreen.main.bounds.width * 0.9 / 10
+    let heighForRow : CGFloat = (screenWidth * 0.7 / 10) + (screenWidth / 2) + (screenWidth * 0.1 / 2)
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let thinksAboutChl = comments[indexPath.item].comment
-        if let thinksAboutChallenge = thinksAboutChl {
-            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
-            return rect.height + heighForRow
-        }
         return heighForRow
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return comments.count
+        return proofs.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath) as! CommentCellView
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
-        let cell = CommentCellView(frame: frameOfCell, cellRow: indexPath.row)
-        let fbID = comments[indexPath.item].fbID
-        let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
-        let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
-        commentAtt.append(nameAtt)
-        cell.thinksAboutChallengeView.attributedText = commentAtt
-        setImage(fbID: fbID, imageView: cell.profileImageView)        
+        let cell = ProofCellView(frame: frameOfCell, cellRow: indexPath.row)
+        let nameAtt = NSMutableAttributedString(string: "\(String(describing: proofs[indexPath.row].name!))", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
+        cell.thinksAboutChallengeView.attributedText = nameAtt
+        let fbID = proofs[indexPath.item].fbID
+        setImage(fbID: fbID, imageView: cell.profileImageView)
+        getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofs[indexPath.item].proofObjectId!)
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell
     }
     
@@ -234,32 +277,4 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // scrollView.keyboardDismissMode = .interactive
     }
- 
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == UIColor.lightGray {
-            textView.text = nil
-            textView.textColor = UIColor.black
-        }
-    }
-     
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty {
-            textView.text = "Add a comment..."
-            textView.textColor = UIColor.lightGray
-        }
-    }
- 
-    let textView: UITextView = {
-        let textView = UITextView()
-        textView.textColor = UIColor.lightGray
-        textView.text = "Add a comment..."
-        textView.isScrollEnabled = true
-        textView.showsVerticalScrollIndicator = false
-        textView.font = UIFont.systemFont(ofSize: 16)
-        textView.alwaysBounceHorizontal = true
-        textView.layer.borderColor = UIColor (red:204.0/255.0, green:204.0/255.0, blue:204.0/255.0, alpha:1.0).cgColor;
-        textView.layer.borderWidth = 1.0;
-        textView.layer.cornerRadius = 5.0;
-        return textView
-    }()
 }

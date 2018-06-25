@@ -10,6 +10,7 @@ import UIKit
 
 class Friends: SafeJsonObject {
     var name: String?
-    var memberId : String?
-    var fbID : String?
+    var surname: String?
+    var id : String?
+    var facebookID : String?
 }

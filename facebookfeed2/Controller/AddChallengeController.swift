@@ -63,12 +63,12 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         if dummyServiceCall == false {
             fetchData(url: getSubjectsURL, type: "SUBJECT")
             fetchData(url: getSelfSubjectsURL, type: "SELF_SUBJECT")
+            fetchData(url: getFollowingListURL + memberID, type: "FRIENDS")
         } else {
             self.subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "subject")
             self.self_subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "self_subject")
+            self.friends = ServiceLocator.getFriendsFromDummy(jsonFileName: "friends")
         }
-        
-        self.friends = ServiceLocator.getFriendsFromDummy(jsonFileName: "friends")
         self.hideKeyboardWhenTappedAround()
     }
     
@@ -260,8 +260,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             }
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    self.createAddChallengeInstance()
-                    self.tableView.reloadData()
+                    DispatchQueue.main.async {
+                        self.createAddChallengeInstance()
+                        self.tableView.reloadData()
+                    }
                     self.popupAlert(message: "Your challange ready!", willDelay: true)
                 } else {
                     let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
@@ -307,9 +309,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             var selItems = [SelectedItems]()
             for fri in self.friends {
                 let selItem = SelectedItems()
-                selItem.name = fri.name
-                selItem.id = fri.memberId
-                selItem.fbId = fri.fbID
+                selItem.name = "\(fri.name!) \(fri.surname!)"
+                selItem.id = fri.id
+                selItem.fbId = fri.facebookID
                 selItems.append(selItem)
             }
             var selItemsWithoutWorld = [SelectedItems]()

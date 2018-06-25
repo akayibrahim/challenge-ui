@@ -47,6 +47,8 @@
 		A17162C5209C42DC00061399 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17162C4209C42DC00061399 /* Notifications.swift */; };
 		A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */; };
 		A187996320AB7A86009FA6B6 /* trend_request_1.json in Resources */ = {isa = PBXBuildFile; fileRef = A187996220AB7A86009FA6B6 /* trend_request_1.json */; };
+		A18D947A20E0AB9000FA1679 /* ProofTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */; };
+		A18D948020E0AE2E00FA1679 /* ProofCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */; };
 		A19A31F6207D1ACD00DDC98C /* comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A19A31F5207D1ACD00DDC98C /* comments.json */; };
 		A19BBDFC206A07D700EC7B11 /* TableViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */; };
 		A1AB96C920ADD4E50059AC79 /* getTrendChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = A1AB96C820ADD4E50059AC79 /* getTrendChallenges.json */; };
@@ -148,6 +150,8 @@
 		A17162C4209C42DC00061399 /* Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewController.swift; sourceTree = "<group>"; };
 		A187996220AB7A86009FA6B6 /* trend_request_1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trend_request_1.json; sourceTree = "<group>"; };
+		A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofTableViewController.swift; sourceTree = "<group>"; };
+		A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofCellView.swift; sourceTree = "<group>"; };
 		A19A31F5207D1ACD00DDC98C /* comments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = comments.json; sourceTree = "<group>"; };
 		A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellView.swift; sourceTree = "<group>"; };
 		A1AB96C820ADD4E50059AC79 /* getTrendChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getTrendChallenges.json; sourceTree = "<group>"; };
@@ -236,6 +240,7 @@
 			children = (
 				A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */,
 				A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */,
+				A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */,
 				A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */,
 				C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */,
 				C7D879AD1C828B36008766AE /* FollowRequestController.swift */,
@@ -279,6 +284,7 @@
 				A159265D209ACDEC00D98923 /* TrendRequestCellView.swift */,
 				A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */,
 				A1DC3415207E2D9800F21232 /* CommentCellView.swift */,
+				A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */,
 				A1715F4220B04997003E7AFF /* FollowCellView.swift */,
 				A17162C0209C420900061399 /* NotificationCell.swift */,
 				A14BDFEC204E5E780095875F /* AddChallengeView.swift */,
@@ -584,6 +590,7 @@
 				A1289CB220A557BF00CC66B0 /* UIViewExtension.swift in Sources */,
 				A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */,
 				A14A996D2075310D00B1418D /* Friends.swift in Sources */,
+				A18D948020E0AE2E00FA1679 /* ProofCellView.swift in Sources */,
 				C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */,
 				A1715F4320B04997003E7AFF /* FollowCellView.swift in Sources */,
 				A1715F4120B0481A003E7AFF /* Followers.swift in Sources */,
@@ -591,6 +598,7 @@
 				A138F38A204D9C4F00142231 /* Post.swift in Sources */,
 				A15F8765207BBBF30035130D /* SuggestionFriends.swift in Sources */,
 				A1B27B04209A2F8D00263E48 /* NotificationsController.swift in Sources */,
+				A18D947A20E0AB9000FA1679 /* ProofTableViewController.swift in Sources */,
 				C7D879AE1C828B36008766AE /* FollowRequestController.swift in Sources */,
 				A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */,
 				A14A996B207530F500B1418D /* Subject.swift in Sources */,

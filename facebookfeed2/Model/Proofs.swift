@@ -10,6 +10,8 @@ import UIKit
 
 class Proofs: SafeJsonObject {
     var name: String?
-    var comment : String?
-    var fbID : String?
+    var fbID: String?
+    var proofObjectId: String?
+    var challangeId: String?
+    var memberId: String?
 }

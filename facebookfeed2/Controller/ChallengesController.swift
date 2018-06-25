@@ -40,6 +40,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var donePosts = [Post]()
     var notDonePosts = [Post]()
     var explorer : Bool = false
+    var challengIdForTrendAndExplorer: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,16 +83,16 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if dummyServiceCall == false {
             // Asynchronous Http call to your api url, using NSURLSession:
             if explorer {
-                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
+                fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallanges=false", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == trendsIndex {
-                self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
+                fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallanges=true", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == profileIndex {
-                fetchChallenges(url: getChallengesOfMemberURL, profile: true)
+                fetchChallenges(url: getChallengesOfMemberURL + memberID, profile: true)
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
-                fetchChallenges(url: getChallengesURL, profile: false)
+                fetchChallenges(url: getChallengesURL + memberID, profile: false)
                 return
             }
         } else {
@@ -115,7 +116,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func fetchChallenges(url: String, profile : Bool) {
-        URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
+        URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
                 do {
                     if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
@@ -207,11 +208,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let indexPaths = collectionView?.indexPathsForVisibleItems
         DispatchQueue.main.async {
+            let indexPaths = self.collectionView?.indexPathsForVisibleItems
             for indexPath in indexPaths! {
                 let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
-                cell.avPlayerLayer.player?.pause()
+                if let player = cell.avPlayerLayer.player {
+                    player.pause()
+                }
             }
         }
     }
@@ -417,7 +420,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
         commentsTable.challengeId = sender.challengeId
-        commentsTable.comment = true
         commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -429,28 +431,24 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
         commentsTable.challengeId = sender.challengeId
-        commentsTable.comment = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
-    func addProofs(sender: UIButton) {
-        let commentsTable = CommentTableViewController()
+    func addProofs(sender: subclasssedUIButton) {
+        let commentsTable = ProofTableViewController()
         commentsTable.tableTitle = proofsTableTitle
-        // TODO commentsTable.proofs = self.proofs
-        commentsTable.proof = true
-        commentsTable.textView.becomeFirstResponder()
+        commentsTable.challengeId = sender.challengeId
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
-    func viewProofs(sender: UIButton) {
-        let commentsTable = CommentTableViewController()
+    func viewProofs(sender: subclasssedUIButton) {
+        let commentsTable = ProofTableViewController()
         commentsTable.tableTitle = proofsTableTitle
-        // TODO commentsTable.proofs = self.proofs
-        commentsTable.proof = true
+        commentsTable.challengeId = sender.challengeId
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
@@ -700,14 +698,15 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if self.tabBarController?.selectedIndex == profileIndex  && !explorer {
-            openExplorer()
+            openExplorer(challengeId: posts[indexPath.row].id!)
         }
     }
     
-    func openExplorer() {
+    func openExplorer(challengeId: String) {
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
+        challengeController.challengIdForTrendAndExplorer = challengeId
         challengeController.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(challengeController, animated: true)

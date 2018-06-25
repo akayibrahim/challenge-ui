@@ -134,8 +134,7 @@ class NotificationsController: UITableViewController {
     func viewComments(challengeId: String) {
         let commentsTable = CommentTableViewController()
         commentsTable.tableTitle = commentsTableTitle
-        // TODO commentsTable.comments = self.comments
-        commentsTable.comment = true
+        // TODO commentsTable.comments = self.comments        
         commentsTable.challengeId = challengeId
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)

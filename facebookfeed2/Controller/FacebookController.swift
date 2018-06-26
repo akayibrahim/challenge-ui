@@ -35,9 +35,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                 print("Cancelled")
             } else if(FBSDKAccessToken.current() != nil) {
                 print("LoggedIn")
+                self.fetchFacebookProfile()
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.window?.rootViewController = CustomTabBarController()
-                self.fetchFacebookProfile()
             }
         })
         print("true")
@@ -80,24 +80,61 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         
         connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
             if error == nil {
-                print(result!)
-                print("https://graph.facebook.com/10156204749600712/invitable_friends?access_token=\(FBSDKAccessToken.current().tokenString)")
-/*                let data = result as! [String : Any]
+                // print(result!)
+                //print("https://graph.facebook.com/10156204749600712/invitable_friends?access_token=\(FBSDKAccessToken.current().tokenString)")
+                let data = result as! [String : Any]
                 // self.label.text = data["name"] as? String
-                print(data["name"] as? String)
+                // let name = data["name"] as? String
+                // print("name: " + name!)
+                let first_name = data["first_name"] as? String
+                // print("first_name: " + first_name!)
+                let last_name = data["last_name"] as? String
+                // print("last_name: " + last_name!)
+                let email = data["email"] as? String
+                // print("email: " + email!)
                 let FBid = data["id"] as? String
-                print(FBid)
-                let url = NSURL(string: "https://graph.facebook.com/\(FBid!)/picture?type=large&return_ssl_resources=1")
-                print(url)
-                let user_friends = data["friends"] as? Any
-                let friends = user_friends as! [String : Any]
-                print(friends)
-*/
+                // print("facebook ID: " + FBid!)
+                // let url = NSURL(string: "https://graph.facebook.com/\(FBid!)/picture?type=large&return_ssl_resources=1")
+                // print("picture url: \(url!)")
+                // let user_friends = data["friends"]
+                // TODO let friends = user_friends as! [String : Any]
+                // print(friends)
                 // self.imageView.image = UIImage(data: NSData(contentsOf: url! as URL)! as Data)
+                self.addMember(firstName: first_name!, surname: last_name!, email: email!, facebookID: FBid!)
             } else {
                 print("Error Getting Friends \(error!)");
             }
         })
         connection.start()
+    }
+    
+    func addMember(firstName: String, surname: String, email: String, facebookID: String) {
+        let json: [String: Any] = ["name": firstName,
+                                   "surname": surname,
+                                   "email": email,
+                                   "facebookID": facebookID
+                                ]
+        
+        let url = URL(string: addMemberURL)!
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    DispatchQueue.main.async {
+                        let idOfMember = NSString(data: data, encoding: String.Encoding.ascii.rawValue)!
+                        memberID = idOfMember as String
+                        memberFbID = facebookID
+                        memberName = "\(firstName) \(surname)"                        
+                    }
+                } else {
+                    let error = ServiceLocator.getErrorMessage(data: data)
+                    self.popupAlert(message: error, willDelay: false)
+                }
+            }
+        }).resume()
     }
 }

@@ -25,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if(FBSDKAccessToken.current() != nil) {
         // if (true) {
+            getMemberInfo(memberId: memberID)
             window?.rootViewController = CustomTabBarController()
         } else {
             window?.rootViewController = FacebookController()
@@ -78,6 +79,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    
+    func getMemberInfo(memberId: String) {
+        let url = URL(string: getMemberInfoURL + memberId)!
+        URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                        do {
+                            if let post = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: String] {
+                                memberFbID = post["facebookID"]!
+                                memberName = "\(post["name"]!) \(post["surname"]!)"
+                            }
+                        } catch let err {
+                            print(err)
+                        }
+                    } else {
+                        let error = ServiceLocator.getErrorMessage(data: data!)
+                        print(error)
+                        // TODO self.popupAlert(message: error, willDelay: false)
+                    }
+                }
+            }
+        }).resume()
     }
 }
 

@@ -276,4 +276,16 @@ class ServiceLocator {
         body.append("--\(boundary)--\(lineBreak)")
         return body
     }
+    
+    static func getErrorMessage(data: Data) -> String {
+        var errorMessage: String = ""
+        let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+        if let responseJSON = responseJSON as? [String: Any] {
+            print(responseJSON)
+            if responseJSON["message"] != nil {
+                errorMessage = (responseJSON["message"] as? String)!
+            }
+        }
+        return errorMessage
+    }
 }

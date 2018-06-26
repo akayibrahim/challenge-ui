@@ -8,11 +8,11 @@
 
 import UIKit
 
-//var memberFbID = "10156204749600712" // dummy
-//var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
-var memberFbID = "634127860"
+// var memberFbID = "10156204749600712" // dummy
+// var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
+var memberFbID = "" // "634127860"
 var memberID = "5b3152821cb199f1fadc0fab"
-var memberName = "Seher Can"
+var memberName = "" // "Seher Can"
 var countOffollowers = "126"
 var countOffollowing = "198"
 
@@ -101,3 +101,5 @@ var uploadImageURL = defaultURL + "/uploadImage"
 var downloadImageURL = defaultURL + "/downloadImage"
 var getProofInfoListByChallengeURL = defaultURL + "/getProofInfoListByChallenge?challengeId="
 var downloadProofImageByObjectIdURL = defaultURL + "/downloadProofImageByObjectId"
+var addMemberURL = defaultURL + "/addMember"
+var getMemberInfoURL = defaultURL + "/getMemberInfo?memberId="

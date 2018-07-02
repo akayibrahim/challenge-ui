@@ -9,7 +9,7 @@
 import UIKit
 import FBSDKLoginKit
 
-class NotificationCell: UITableViewCell {
+class ActivityCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
@@ -18,12 +18,12 @@ class NotificationCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var notification : Notifications? {
+    var activity : Activities? {
         didSet {
-            if let fbID = notification?.fbID {
+            if let fbID = activity?.facebookID {
                 setImage(fbID: fbID, imageView: profileImageView)
             }
-            if let content = notification?.content, let name = notification?.name {
+            if let content = activity?.content, let name = activity?.name {
                 let nameAtt = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
                 let contentAtt = NSMutableAttributedString(string: " \(content)", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
                 nameAtt.append(contentAtt)

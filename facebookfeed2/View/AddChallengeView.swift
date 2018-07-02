@@ -356,7 +356,7 @@ class AddChallengeView: UIView {
         return mySegControl
     }
     
-    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Public", "Self", "Private"])
+    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["AS A TEAM", "TO PEOPLE", "TO MYSELF", "TO WORLD"])    
     
     let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
     let finishFlag: UIButton = FeedCell.buttonForTitle("", imageName: "finishFlag")

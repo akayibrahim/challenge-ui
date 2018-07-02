@@ -168,6 +168,26 @@ class ServiceLocator {
         return friendRequest
     }
     
+    static func getChallengeRequestsFromDummy(jsonFileName : String) -> [ChallengeRequest] {
+        var challengeRequest = [ChallengeRequest]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    for postDictionary in postsArray {
+                        let challengeReq = ChallengeRequest()
+                        challengeReq.setValuesForKeys(postDictionary)
+                        challengeRequest.append(challengeReq)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return challengeRequest
+    }
+    
     static func getFollowingsFromDummy(jsonFileName : String) -> [Following] {
         var followings = [Following]()
         if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
@@ -287,5 +307,26 @@ class ServiceLocator {
             }
         }
         return errorMessage
+    }
+    
+    static func getActivitiesFromDummy(jsonFileName : String) -> [Activities] {
+        var activities = [Activities]()
+        if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
+            do {
+                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
+                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
+                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
+                    activities = [Activities]()
+                    for postDictionary in postsArray {
+                        let activity = Activities()
+                        activity.setValuesForKeys(postDictionary)
+                        activities.append(activity)
+                    }
+                }
+            } catch let err {
+                print(err)
+            }
+        }
+        return activities
     }
 }

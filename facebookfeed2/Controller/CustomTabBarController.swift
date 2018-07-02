@@ -33,8 +33,8 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         addNavigationController.title = "Add"
         addNavigationController.tabBarItem.image = UIImage(named: "add_icon")
         
-        let notifyController = NotificationsController()
-        let notifyNavController = UINavigationController(rootViewController: notifyController)
+        let activiiesController = ActivitiesController()
+        let notifyNavController = UINavigationController(rootViewController: activiiesController)
         notifyNavController.title = "Activity"
         notifyNavController.tabBarItem.image = UIImage(named: "activity")
         

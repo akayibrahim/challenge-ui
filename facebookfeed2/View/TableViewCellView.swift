@@ -31,20 +31,25 @@ class TableViewCellContent: UITableViewCell {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
         let contentGuide = self.readableContentGuide
         
-        addSubview(label)
-        addLeadingAnchor(label, anchor: contentGuide.leadingAnchor, constant: 6)
-        label.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor.gray
+        if cellRow != segControlIndexPath.row {
+            addSubview(label)
+            addLeadingAnchor(label, anchor: contentGuide.leadingAnchor, constant: 6)
+            label.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            label.font = UIFont.systemFont(ofSize: 16)
+            label.textColor = UIColor.gray
+        } else {
+            addSubview(mySegControl)
+            mySegControl.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
+            mySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            mySegControl.selectedSegmentIndex = 0
+            let font = UIFont.systemFont(ofSize: 12)
+            mySegControl.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
+            mySegControl.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         if cellRow == addViewIndexPath.row {
             addChallenge.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
             addSubview(addChallenge)
-        } else if cellRow == segControlIndexPath.row {
-            addSubview(mySegControl)
-            addTrailingAnchor(mySegControl, anchor: contentGuide.trailingAnchor, constant: 0)
-            mySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
-            mySegControl.selectedSegmentIndex = 0
         } else if cellRow == calenddarIndexPath.row {
             addSubview(datePicker)
             addTrailingAnchor(datePicker, anchor: contentGuide.trailingAnchor, constant: 0)
@@ -52,16 +57,19 @@ class TableViewCellContent: UITableViewCell {
             let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())
             datePicker.minimumDate = tomorrow
         } else if cellRow == visibilityIndexPath.row {
-            if typeIndex == 1 {
+            if typeIndex == 2 {
                 visibilitySegControlForSelf.selectedSegmentIndex = 0
                 addSubview(visibilitySegControlForSelf)
                 addTrailingAnchor(visibilitySegControlForSelf, anchor: contentGuide.trailingAnchor, constant: 0)
                 visibilitySegControlForSelf.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             } else {
-                visibilitySegControl.selectedSegmentIndex = 0
+                visibilitySegControl.selectedSegmentIndex = 1
                 addSubview(visibilitySegControl)
                 addTrailingAnchor(visibilitySegControl, anchor: contentGuide.trailingAnchor, constant: 0)
                 visibilitySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            }
+            if typeIndex == 0 {
+                visibilitySegControl.selectedSegmentIndex = 0
             }
         } else if cellRow == doneIndexPath.row {
             addSubview(isDone)
@@ -74,6 +82,17 @@ class TableViewCellContent: UITableViewCell {
             addHeightAnchor(proofImageView, multiplier: 1 / 10)
             proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             proofImageView.alpha = 0
+            
+            addSubview(labelOtherSide)
+            addTrailingAnchor(labelOtherSide, anchor: contentGuide.trailingAnchor, constant: 0)
+            labelOtherSide.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            labelOtherSide.font = UIFont.systemFont(ofSize: 14)
+        } else if cellRow == deadlineIndexPath.row {
+            addSubview(deadLines)
+            addLeadingAnchor(deadLines, anchor: label.trailingAnchor, constant: (screenWidth * 0.1 / 10))
+            let font = UIFont.systemFont(ofSize: 10)
+            deadLines.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
+            deadLines.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             
             addSubview(labelOtherSide)
             addTrailingAnchor(labelOtherSide, anchor: contentGuide.trailingAnchor, constant: 0)
@@ -110,9 +129,10 @@ class TableViewCellContent: UITableViewCell {
         return imageView
     }()
     
-    let visibilitySegControlForSelf: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Everyone", "Friend", "Just Me"])
-    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Everyone", "Friend"])
-    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Public", "Self", "Private"])
+    let visibilitySegControlForSelf: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Just Me", "Friend", "Everyone"])
+    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Friend", "Everyone"])
+    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["AS A TEAM", "TO PEOPLE", "TO MYSELF", "TO WORLD"])
+    let deadLines: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["DAY", "WEEK", "MONTH", "CUSTOM"])
     let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
     let labelOtherSide: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.gray)
     let homeScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)

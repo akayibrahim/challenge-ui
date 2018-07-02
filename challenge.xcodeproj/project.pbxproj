@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		A113ABFC203BE01B006E99F1 /* AddChallengeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */; };
 		A113AC00203BE1E9006E99F1 /* OtherController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ABFF203BE1E9006E99F1 /* OtherController.swift */; };
+		A119611120E8EC510022E965 /* ChallengeRequestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A119611020E8EC510022E965 /* ChallengeRequestController.swift */; };
+		A119611720E8EC5D0022E965 /* ChallengeRequestCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A119611620E8EC5D0022E965 /* ChallengeRequestCellView.swift */; };
+		A119611920E8F1070022E965 /* challenge_request.json in Resources */ = {isa = PBXBuildFile; fileRef = A119611820E8F1070022E965 /* challenge_request.json */; };
+		A119611B20E8F1900022E965 /* ChallengeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A119611A20E8F1900022E965 /* ChallengeRequest.swift */; };
 		A11C823520499DDB0061A33F /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11C823420499DDB0061A33F /* ImageService.swift */; };
 		A1235D3E20870C3A0028738E /* Proofs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1235D3D20870C3A0028738E /* Proofs.swift */; };
 		A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1274107200F38E60073BFF2 /* FacebookController.swift */; };
@@ -42,9 +46,9 @@
 		A1715F4320B04997003E7AFF /* FollowCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715F4220B04997003E7AFF /* FollowCellView.swift */; };
 		A1715F4520B050D1003E7AFF /* following.json in Resources */ = {isa = PBXBuildFile; fileRef = A1715F4420B050D1003E7AFF /* following.json */; };
 		A1715F4720B050DD003E7AFF /* Following.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715F4620B050DD003E7AFF /* Following.swift */; };
-		A17162C1209C420900061399 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17162C0209C420900061399 /* NotificationCell.swift */; };
-		A17162C3209C424D00061399 /* notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = A17162C2209C424D00061399 /* notifications.json */; };
-		A17162C5209C42DC00061399 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17162C4209C42DC00061399 /* Notifications.swift */; };
+		A17162C1209C420900061399 /* ActivityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17162C0209C420900061399 /* ActivityCell.swift */; };
+		A17162C3209C424D00061399 /* activities.json in Resources */ = {isa = PBXBuildFile; fileRef = A17162C2209C424D00061399 /* activities.json */; };
+		A17162C5209C42DC00061399 /* Activities.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17162C4209C42DC00061399 /* Activities.swift */; };
 		A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */; };
 		A187996320AB7A86009FA6B6 /* trend_request_1.json in Resources */ = {isa = PBXBuildFile; fileRef = A187996220AB7A86009FA6B6 /* trend_request_1.json */; };
 		A18D947A20E0AB9000FA1679 /* ProofTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */; };
@@ -53,7 +57,7 @@
 		A19BBDFC206A07D700EC7B11 /* TableViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */; };
 		A1AB96C920ADD4E50059AC79 /* getTrendChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = A1AB96C820ADD4E50059AC79 /* getTrendChallenges.json */; };
 		A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */; };
-		A1B27B04209A2F8D00263E48 /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B27B03209A2F8D00263E48 /* NotificationsController.swift */; };
+		A1B27B04209A2F8D00263E48 /* ActivitiesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B27B03209A2F8D00263E48 /* ActivitiesController.swift */; };
 		A1C13416207F212700C6A435 /* TrendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C13415207F212700C6A435 /* TrendsController.swift */; };
 		A1C8D31420B7EE440018B781 /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C8D31320B7EE440018B781 /* ServiceLocator.swift */; };
 		A1C8D31620B832800018B781 /* getChallenges1.json in Resources */ = {isa = PBXBuildFile; fileRef = A1C8D31520B832800018B781 /* getChallenges1.json */; };
@@ -111,6 +115,10 @@
 		976BF351127C8F413F3EEBE3 /* Pods-facebookfeed2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-facebookfeed2.release.xcconfig"; path = "Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2.release.xcconfig"; sourceTree = "<group>"; };
 		A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddChallengeController.swift; sourceTree = "<group>"; };
 		A113ABFF203BE1E9006E99F1 /* OtherController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherController.swift; sourceTree = "<group>"; };
+		A119611020E8EC510022E965 /* ChallengeRequestController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChallengeRequestController.swift; sourceTree = "<group>"; };
+		A119611620E8EC5D0022E965 /* ChallengeRequestCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChallengeRequestCellView.swift; sourceTree = "<group>"; };
+		A119611820E8F1070022E965 /* challenge_request.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = challenge_request.json; sourceTree = "<group>"; };
+		A119611A20E8F1900022E965 /* ChallengeRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChallengeRequest.swift; sourceTree = "<group>"; };
 		A11C823420499DDB0061A33F /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		A1235D3D20870C3A0028738E /* Proofs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proofs.swift; sourceTree = "<group>"; };
 		A1274107200F38E60073BFF2 /* FacebookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookController.swift; sourceTree = "<group>"; };
@@ -145,9 +153,9 @@
 		A1715F4220B04997003E7AFF /* FollowCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowCellView.swift; sourceTree = "<group>"; };
 		A1715F4420B050D1003E7AFF /* following.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = following.json; sourceTree = "<group>"; };
 		A1715F4620B050DD003E7AFF /* Following.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Following.swift; sourceTree = "<group>"; };
-		A17162C0209C420900061399 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
-		A17162C2209C424D00061399 /* notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = notifications.json; sourceTree = "<group>"; };
-		A17162C4209C42DC00061399 /* Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		A17162C0209C420900061399 /* ActivityCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityCell.swift; sourceTree = "<group>"; };
+		A17162C2209C424D00061399 /* activities.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = activities.json; sourceTree = "<group>"; };
+		A17162C4209C42DC00061399 /* Activities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Activities.swift; sourceTree = "<group>"; };
 		A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewController.swift; sourceTree = "<group>"; };
 		A187996220AB7A86009FA6B6 /* trend_request_1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trend_request_1.json; sourceTree = "<group>"; };
 		A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofTableViewController.swift; sourceTree = "<group>"; };
@@ -156,7 +164,7 @@
 		A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellView.swift; sourceTree = "<group>"; };
 		A1AB96C820ADD4E50059AC79 /* getTrendChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getTrendChallenges.json; sourceTree = "<group>"; };
 		A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateProgressController.swift; sourceTree = "<group>"; };
-		A1B27B03209A2F8D00263E48 /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
+		A1B27B03209A2F8D00263E48 /* ActivitiesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivitiesController.swift; sourceTree = "<group>"; };
 		A1C13415207F212700C6A435 /* TrendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendsController.swift; sourceTree = "<group>"; };
 		A1C8D31320B7EE440018B781 /* ServiceLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		A1C8D31520B832800018B781 /* getChallenges1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getChallenges1.json; sourceTree = "<group>"; };
@@ -244,8 +252,9 @@
 				A1ACBF8E20A746650019D6C5 /* UpdateProgressController.swift */,
 				C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */,
 				C7D879AD1C828B36008766AE /* FollowRequestController.swift */,
+				A119611020E8EC510022E965 /* ChallengeRequestController.swift */,
 				A1C13415207F212700C6A435 /* TrendsController.swift */,
-				A1B27B03209A2F8D00263E48 /* NotificationsController.swift */,
+				A1B27B03209A2F8D00263E48 /* ActivitiesController.swift */,
 				A1274107200F38E60073BFF2 /* FacebookController.swift */,
 				A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */,
 				A113ABFF203BE1E9006E99F1 /* OtherController.swift */,
@@ -262,10 +271,11 @@
 				A1715F3A20B047A4003E7AFF /* followers.json */,
 				A1715F4420B050D1003E7AFF /* following.json */,
 				A19A31F5207D1ACD00DDC98C /* comments.json */,
-				A17162C2209C424D00061399 /* notifications.json */,
+				A17162C2209C424D00061399 /* activities.json */,
 				A15A30D3207B282D000C74A9 /* self_subject.json */,
 				A14A99682075306800B1418D /* friends.json */,
 				A15F875E207BBBB70035130D /* friend_request.json */,
+				A119611820E8F1070022E965 /* challenge_request.json */,
 				A1592659209ACC2900D98923 /* trend_request.json */,
 				A187996220AB7A86009FA6B6 /* trend_request_1.json */,
 				A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */,
@@ -281,12 +291,13 @@
 			children = (
 				A13C709A2043CE000076B989 /* ChallengeFeedCellView.swift */,
 				A13C709C2043CE6E0076B989 /* FriendRequestCellView.swift */,
+				A119611620E8EC5D0022E965 /* ChallengeRequestCellView.swift */,
 				A159265D209ACDEC00D98923 /* TrendRequestCellView.swift */,
 				A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */,
 				A1DC3415207E2D9800F21232 /* CommentCellView.swift */,
 				A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */,
 				A1715F4220B04997003E7AFF /* FollowCellView.swift */,
-				A17162C0209C420900061399 /* NotificationCell.swift */,
+				A17162C0209C420900061399 /* ActivityCell.swift */,
 				A14BDFEC204E5E780095875F /* AddChallengeView.swift */,
 				A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */,
 				A1DC3417207E402300F21232 /* ProfileCellView.swift */,
@@ -301,9 +312,10 @@
 				A1DA5F0120DFA44D00044E1E /* Media.swift */,
 				A14A996A207530F500B1418D /* Subject.swift */,
 				A14A996C2075310D00B1418D /* Friends.swift */,
+				A119611A20E8F1900022E965 /* ChallengeRequest.swift */,
 				A1DA9CAA20A95236009200E3 /* AddChallenge.swift */,
 				A1DC3413207E2A1800F21232 /* Comments.swift */,
-				A17162C4209C42DC00061399 /* Notifications.swift */,
+				A17162C4209C42DC00061399 /* Activities.swift */,
 				A1235D3D20870C3A0028738E /* Proofs.swift */,
 				A15F8764207BBBF30035130D /* SuggestionFriends.swift */,
 				A1715F4020B0481A003E7AFF /* Followers.swift */,
@@ -500,10 +512,11 @@
 				A1AB96C920ADD4E50059AC79 /* getTrendChallenges.json in Resources */,
 				C7A85F3B1C78C137007E9A00 /* Assets.xcassets in Resources */,
 				A1C8D31620B832800018B781 /* getChallenges1.json in Resources */,
-				A17162C3209C424D00061399 /* notifications.json in Resources */,
+				A17162C3209C424D00061399 /* activities.json in Resources */,
 				C780A7B41C88CEFB007023FD /* getChallenges.json in Resources */,
 				A14A99692075306800B1418D /* friends.json in Resources */,
 				A159265A209ACC2900D98923 /* trend_request.json in Resources */,
+				A119611920E8F1070022E965 /* challenge_request.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -586,6 +599,7 @@
 				A1C13416207F212700C6A435 /* TrendsController.swift in Sources */,
 				A159265C209ACCFD00D98923 /* TrendRequest.swift in Sources */,
 				A113ABFC203BE01B006E99F1 /* AddChallengeController.swift in Sources */,
+				A119611120E8EC510022E965 /* ChallengeRequestController.swift in Sources */,
 				A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */,
 				A1289CB220A557BF00CC66B0 /* UIViewExtension.swift in Sources */,
 				A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */,
@@ -594,10 +608,11 @@
 				C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */,
 				A1715F4320B04997003E7AFF /* FollowCellView.swift in Sources */,
 				A1715F4120B0481A003E7AFF /* Followers.swift in Sources */,
+				A119611720E8EC5D0022E965 /* ChallengeRequestCellView.swift in Sources */,
 				A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */,
 				A138F38A204D9C4F00142231 /* Post.swift in Sources */,
 				A15F8765207BBBF30035130D /* SuggestionFriends.swift in Sources */,
-				A1B27B04209A2F8D00263E48 /* NotificationsController.swift in Sources */,
+				A1B27B04209A2F8D00263E48 /* ActivitiesController.swift in Sources */,
 				A18D947A20E0AB9000FA1679 /* ProofTableViewController.swift in Sources */,
 				C7D879AE1C828B36008766AE /* FollowRequestController.swift in Sources */,
 				A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */,
@@ -613,9 +628,9 @@
 				A19BBDFC206A07D700EC7B11 /* TableViewCellView.swift in Sources */,
 				A1289CAE20A5567600CC66B0 /* UIScrollViewExtension.swift in Sources */,
 				A113AC00203BE1E9006E99F1 /* OtherController.swift in Sources */,
-				A17162C5209C42DC00061399 /* Notifications.swift in Sources */,
+				A17162C5209C42DC00061399 /* Activities.swift in Sources */,
 				A1C8D31420B7EE440018B781 /* ServiceLocator.swift in Sources */,
-				A17162C1209C420900061399 /* NotificationCell.swift in Sources */,
+				A17162C1209C420900061399 /* ActivityCell.swift in Sources */,
 				C7D879AC1C8289DD008766AE /* CustomTabBarController.swift in Sources */,
 				A14D75FE20752D430005B2F2 /* SelectedItems.swift in Sources */,
 				A16584402077A69400842F10 /* GlobalVariables.swift in Sources */,
@@ -623,6 +638,7 @@
 				A13C709B2043CE000076B989 /* ChallengeFeedCellView.swift in Sources */,
 				A138F392204D9CFA00142231 /* JoinAttendance.swift in Sources */,
 				A1DC3414207E2A1800F21232 /* Comments.swift in Sources */,
+				A119611B20E8F1900022E965 /* ChallengeRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

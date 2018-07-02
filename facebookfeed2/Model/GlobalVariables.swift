@@ -8,11 +8,10 @@
 
 import UIKit
 
-// var memberFbID = "10156204749600712" // dummy
+var memberID = "5b3152c51cb199f1fadc0faf"
 // var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
-var memberFbID = "" // "634127860"
-var memberID = "5b3152821cb199f1fadc0fab"
-var memberName = "" // "Seher Can"
+var memberFbID = "10156204749600712" // dummy
+var memberName = "Seher Can" // dummy
 var countOffollowers = "126"
 var countOffollowing = "198"
 
@@ -38,6 +37,13 @@ var teamCountOne = "1"
 var teamCountTwo = "2"
 var teamCountThree = "3"
 var teamCountFour = "4"
+var comment = "COMMENT"
+var proof = "PROOF"
+var supportType = "SUPPORT"
+var following = "FOLLOWING"
+var follower = "FOLLOWER"
+var join = "JOIN"
+var accept = "ACCEPT"
 
 // Assets Name
 var supported = "supported"
@@ -103,3 +109,7 @@ var getProofInfoListByChallengeURL = defaultURL + "/getProofInfoListByChallenge?
 var downloadProofImageByObjectIdURL = defaultURL + "/downloadProofImageByObjectId"
 var addMemberURL = defaultURL + "/addMember"
 var getMemberInfoURL = defaultURL + "/getMemberInfo?memberId="
+var getActivitiesURL = defaultURL + "/getActivities?toMemberId="
+var getChallengeRequestURL = defaultURL + "/getChallengeRequest?memberId="
+var acceptOrRejectChlURL = defaultURL + "/acceptOrRejectChl"
+var deleteChallengeURL = defaultURL + "/deleteChallenge?challengeId="

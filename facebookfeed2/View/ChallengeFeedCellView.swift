@@ -77,6 +77,7 @@ class FeedCell: UICollectionViewCell {
         // self.playerController.view.removeFromSuperview()
         self.volumeUpImageView.image = UIImage()
         self.volumeDownImageView.image = UIImage()
+        self.others.removeFromSuperview()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -346,16 +347,17 @@ class FeedCell: UICollectionViewCell {
             if type == PUBLIC && proofed {
                 
                 // TODO choose pic / video
-                if secondTeamCount == "0" {
-                    
+                if secondTeamCount == "0" {                    
                 } else {
-                    addSubview(proofedMediaView)
-                    addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
-                    addWidthAnchor(proofedMediaView, multiplier: 1)
-                    addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
-                    // setImage(name: "gandhi", imageView: proofedMediaView)
-                    proofedMediaView.alpha = 0
                 }
+                
+                addSubview(proofedMediaView)
+                addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                addWidthAnchor(proofedMediaView, multiplier: 1)
+                addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
+                // setImage(name: "gandhi", imageView: proofedMediaView)
+                proofedMediaView.alpha = 0
+                
                 addSubview(proofedVideoView)
                 addTopAnchor(proofedVideoView, anchor: dividerLineView1.bottomAnchor, constant: 0)
                 addWidthAnchor(proofedVideoView, multiplier: 1)
@@ -416,12 +418,13 @@ class FeedCell: UICollectionViewCell {
                 viewProofs.centerYAnchor.constraint(equalTo: viewComments.centerYAnchor, constant: 0).isActive = true
                 addHeightAnchor(viewProofs, multiplier: 0.7/10)
                 
-                if secondTeamCount == "0" && !done {
+                if !done {
                     addSubview(joinButton)
                     addLeadingAnchor(joinButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
                     joinButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
                     addWidthAnchor(joinButton, multiplier: 0.6/10)
                     addHeightAnchor(joinButton, multiplier: 0.6/10)
+                    joinButton.alpha = 0
                     
                     addSubview(addProofs)
                     addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
@@ -438,9 +441,13 @@ class FeedCell: UICollectionViewCell {
                     joinToChl.alpha = 0
                     
                     if joined {
-                        addProofs.alpha = 1
+                        if !proofed {
+                            addProofs.alpha = 1
+                            joinButton.alpha = 1
+                        }
                     } else {
                         joinToChl.alpha = 1
+                        joinButton.alpha = 1
                     }
                 }
             }
@@ -462,6 +469,14 @@ class FeedCell: UICollectionViewCell {
             
             nameAndStatusLabel.centerYAnchor.constraint(equalTo: challengerImageView.centerYAnchor).isActive = true
             addLeadingAnchor(nameAndStatusLabel, anchor: challengerImageView.trailingAnchor, constant: 5)
+            
+            addSubview(others)
+            addTopAnchor(others, anchor: contentGuide.topAnchor, constant: -(screenWidth * 0 / 10))
+            addTrailingAnchor(others, anchor: contentGuide.trailingAnchor, constant: -(screenWidth * 0.1 / 10))
+            addWidthAnchor(others, multiplier: 1.5/10)
+            addHeightAnchor(others, multiplier: 0.5/10)
+            others.titleLabel?.font = UIFont.systemFont(ofSize: 10)
+            others.alpha = 0
         }
     }
     
@@ -1049,6 +1064,27 @@ class FeedCell: UICollectionViewCell {
         
         return button
     }
+    
+    static func subClassbuttonForTitleWithBorder(_ title: String, imageName: String) -> subclasssedUIButton {
+        let button = subclasssedUIButton()
+        button.setTitle(title, for: UIControlState())
+        button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
+        
+        if imageName != "" {
+            button.setImage(UIImage(named: imageName), for: UIControlState())
+        }
+        button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
+        
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.layer.borderColor = UIColor.gray.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 3.0
+        button.clipsToBounds = true
+        
+        return button
+    }
+    
+    let others = FeedCell.subClassbuttonForTitleWithBorder("Remove!", imageName: "")
     
     static func imageView() -> UIImageView {
         let imageView = UIImageView()

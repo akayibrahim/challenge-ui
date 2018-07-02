@@ -4,43 +4,37 @@
               "name": "Sehar",
               "surname": "Can",
               "id" : "5b3152821cb199f1fadc0fab",
-              "fbID" : "634127860"
+              "facebookID" : "634127860"
               },
               {
               "name": "Serkan",
               "surname": "Aykut",
               "id" : "5b3152d31cb199f1fadc0fb0",
-              "fbID" : "689764048"
+              "facebookID" : "689764048"
               },
               {
               "name": "Melisa",
               "surname": "Bahçıvan",
               "id" : "5b3152c51cb199f1fadc0faf",
-              "fbID" : "100002391996271"
+              "facebookID" : "100002391996271"
               },
               {
               "name": "Umut",
               "surname": "Akay",
               "id" : "5b1aa070cb353e7a49a93f28",
-              "fbID" : "100001948011413"
+              "facebookID" : "100001948011413"
               },
               {
               "name": "Tamer",
               "surname": "Uzun",
               "id" : "5b3152a71cb199f1fadc0fad",
-              "fbID" : "696089910"
+              "facebookID" : "696089910"
               },
               {
               "name": "Berkay",
               "surname": "Bahçıvan",
               "id" : "5b3152b91cb199f1fadc0fae",
-              "fbID" : "100002408468624"
-              },
-              {
-              "name": "To World",
-              "surname": "",
-              "id" : "TO_WORLD",
-              "fbID" : ""
+              "facebookID" : "100002408468624"
               }
         ]
 }

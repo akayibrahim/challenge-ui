@@ -1,0 +1,21 @@
+{
+    "posts": [
+              {
+              "name": "Sehar",
+              "surname": "Can",
+              "facebookID" : "634127860",
+              "challengeId": "",
+              "type": "JOIN",
+              "subject": "SWIMMING"
+              },
+              {
+              "name": "Serkan",
+              "surname": "Aykut",
+              "facebookID" : "689764048",
+              "challengeId": "",
+              "type": "ACCEPT",
+              "subject": "READING"
+              }
+        ]
+}
+

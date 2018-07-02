@@ -8,15 +8,15 @@
 
 import UIKit
 
-class NotificationsController: UITableViewController {
+class ActivitiesController: UITableViewController {
     let cellId = "cellId"
     let followCellId = "followCellId"
-    var notifications = [Notifications]()
+    var activities = [Activities]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Activities"
-        tableView.register(NotificationCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(ActivityCell.self, forCellReuseIdentifier: cellId)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: followCellId)
         tableView.tableFooterView = UIView()
         tableView.delegate = self;
@@ -28,44 +28,56 @@ class NotificationsController: UITableViewController {
         refreshControl?.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl!)
         
-        loadNotifications()
+        loadActivities()
     }
 
     func onRefesh() {
-        self.loadNotifications()
+        self.loadActivities()
         self.tableView?.reloadData()
         refreshControl?.endRefreshing()
     }
 
-    func loadNotifications() {
-        if let path = Bundle.main.path(forResource: "notifications", ofType: "json") {
-            do {
-                let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
-                let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
-                if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
-                    self.notifications = [Notifications]()
-                    for postDictionary in postsArray {
-                        let notification = Notifications()
-                        notification.setValuesForKeys(postDictionary)
-                        self.notifications.append(notification)
-                    }
-                }
-            } catch let err {
-                print(err)
-            }
+    func loadActivities() {
+        if dummyServiceCall == false {
+            fetchActivities()
+            return
+        } else {
+            self.activities = ServiceLocator.getActivitiesFromDummy(jsonFileName: "activities")
+            return
         }
     }
 
+    func fetchActivities() {
+        URLSession.shared.dataTask(with: NSURL(string: getActivitiesURL + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        self.activities = [Activities]()
+                        for postDictionary in postsArray {
+                            let activity = Activities()
+                            activity.setValuesForKeys(postDictionary)
+                            self.activities.append(activity)
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+            DispatchQueue.main.async {
+                self.tableView?.reloadData()
+            }
+        }).resume()
+    }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
+        if section == 0 || section == 1 {
             return 1
         }
-        return notifications.count
+        return activities.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -75,9 +87,15 @@ class NotificationsController: UITableViewController {
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
             return cell
-        } else if indexPath.section == 1 {
-            let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! NotificationCell
-            cell.notification = notifications[indexPath.row]
+        } else if indexPath.section == 1 && indexPath.row == 0 {
+            let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
+            let attributeText = NSMutableAttributedString(string: "Challenge Requests   ", attributes: nil)
+            attributeText.append(greaterThan)
+            cell.textLabel?.attributedText = attributeText
+            return cell
+        } else if indexPath.section == 2 {
+            let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ActivityCell
+            cell.activity = activities[indexPath.row]
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             return cell
         }
@@ -86,10 +104,10 @@ class NotificationsController: UITableViewController {
     
     let heighForRow : CGFloat = UIScreen.main.bounds.width * 1 / 10
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 && indexPath.row == 0 {
+        if (indexPath.section == 0 || indexPath.section == 1) && indexPath.row == 0 {
             return UIScreen.main.bounds.width * 1.2 / 10
         }
-        if let thinksAboutChallenge = notifications[indexPath.row].content {
+        if let thinksAboutChallenge = activities[indexPath.row].content {
             let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
             return rect.height + heighForRow
         }
@@ -126,9 +144,36 @@ class NotificationsController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 && indexPath.row == 0 {
             followRequest()
+        } else if indexPath.section == 1 && indexPath.row == 0 {
+            challengeRequest()
         } else {
-            viewComments(challengeId: notifications[indexPath.row].challengeId!)
+            let type = activities[indexPath.row].type
+            if type == comment {
+                viewComments(challengeId: activities[indexPath.row].challengeId!)
+            } else if type == proof {
+                viewProofs(challengeId: activities[indexPath.row].challengeId!)
+            } else if type == supportType {
+                openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            } else if type == join {
+                openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            } else if type == accept {
+                openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            } else if type == following {
+                // nothing
+            } else if type == follower {
+                // nothing
+            }
         }
+    }
+    
+    func openExplorer(challengeId: String) {
+        let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        challengeController.navigationItem.title = "Explorer"
+        challengeController.explorer = true
+        challengeController.challengIdForTrendAndExplorer = challengeId
+        challengeController.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(challengeController, animated: true)
     }
     
     func viewComments(challengeId: String) {
@@ -141,10 +186,27 @@ class NotificationsController: UITableViewController {
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
+    func viewProofs(challengeId: String) {
+        let proofsTable = ProofTableViewController()
+        proofsTable.tableTitle = commentsTableTitle
+        // TODO commentsTable.comments = self.comments
+        proofsTable.challengeId = challengeId
+        proofsTable.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(proofsTable, animated: true)
+    }
+    
     func followRequest() {
         let followRequest = FollowRequestController()
         followRequest.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(followRequest, animated: true)
+    }
+    
+    func challengeRequest() {
+        let challengeRequest = ChallengeRequestController()
+        challengeRequest.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(challengeRequest, animated: true)
     }
 }

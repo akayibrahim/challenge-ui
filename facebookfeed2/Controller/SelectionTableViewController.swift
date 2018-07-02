@@ -206,9 +206,21 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         return 44
     }
     
+    func isSelf() -> Bool {
+        return segmentIndex == 2
+    }
+    
+    func isPrivate() -> Bool {
+        return segmentIndex == 0
+    }
+    
+    func isPublic() -> Bool {
+        return segmentIndex == 1 || segmentIndex == 3
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if !listMode {
-            if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
+            if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && isSelf())) {
                 return items.count
             } else {
                 return items.count + 3
@@ -226,7 +238,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if !listMode {
             let cell = tableView.dequeueReusableCell(withIdentifier: labelCell, for: indexPath as IndexPath)
-            if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && segmentIndex == 1)) {
+            if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && isSelf())) {
                 cell.textLabel?.text = items[indexPath.row].name
             } else {
                 if (indexPath.row == (items.count + 2)) {

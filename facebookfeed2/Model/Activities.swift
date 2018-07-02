@@ -8,10 +8,14 @@
 
 import UIKit
 
-class Notifications: SafeJsonObject {
+class Activities: SafeJsonObject {
     var name: String?
     var content : String?
-    var fbID : String?
-    var type : Int?
+    var facebookID : String?    
     var challengeId: String?
+    var fromMemberId: String?
+    var toMemberId: String?
+    var type: String?
+    var activityTableId: String?
+    var mediaObjectId: String?
 }

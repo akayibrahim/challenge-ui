@@ -203,6 +203,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
                 cell.avPlayerLayer.player?.play()
             }
+            self.loadChallenges()
         }
     }
     
@@ -374,6 +375,21 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.proofedVideoView.tag = indexPath.row
         feedCell.proofedVideoView.isUserInteractionEnabled = true
         feedCell.proofedVideoView.addGestureRecognizer(volumeChangeGesture)
+        if explorer {
+            feedCell.others.alpha = 1
+            feedCell.others.addTarget(self, action: #selector(self.deleteChallenge), for: UIControlEvents.touchUpInside)
+            feedCell.others.challengeId = posts[indexPath.item].id
+        }
+    }
+    
+    func deleteChallenge(_ sender: subclasssedUIButton) {
+        URLSession.shared.dataTask(with: NSURL(string: deleteChallengeURL + sender.challengeId!)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+            }
+            DispatchQueue.main.async {
+                self.navigationController?.popViewController(animated: true)
+            }
+        }).resume()
     }
     
     func handleChallengeCountTap(sender:UILabel){
@@ -529,9 +545,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let currentImage = feedCell.joinButton.currentImage
         if currentImage == UIImage(named: acceptedRed) {
             feedCell.joinButton.setImage(UIImage(named: acceptedBlack), for: .normal)
-            joinToChallengeService(challengeId: sender.challengeId!, feedCell: feedCell)
         } else {
             feedCell.joinButton.setImage(UIImage(named: acceptedRed), for: .normal)
+            joinToChallengeService(challengeId: sender.challengeId!, feedCell: feedCell)
         }
     }
     

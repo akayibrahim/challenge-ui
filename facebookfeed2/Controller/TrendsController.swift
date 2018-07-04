@@ -20,6 +20,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
         searchBar.placeholder = "Search"
         searchBar.delegate = self
+        searchBar.autocapitalizationType = UITextAutocapitalizationType.allCharacters
+        
         self.navigationItem.titleView = searchBar
         collectionView!.register(TrendRequestCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
@@ -51,6 +53,20 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     func searchBarSearchButtonClicked( _ searchBar: UISearchBar) {
+        if dummyServiceCall == false {
+            fetchTrendChallenges(key: searchBar.text!)
+            return
+        } else {
+            searchDummy()
+            return
+        }
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+    }
+    
+    func searchDummy() {
         if let path = Bundle.main.path(forResource: "trend_request_1", ofType: "json") {
             do {
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
@@ -71,10 +87,6 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         searchBar.resignFirstResponder()
     }
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
-    }
-    
     func onRefesh() {
         self.loadTrends()
         self.collectionView?.reloadData()
@@ -83,7 +95,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     func loadTrends() {
         if dummyServiceCall == false {
-            fetchTrendChallenges()
+            fetchTrendChallenges(key: "")
             return
         } else {
             self.trendRequest = ServiceLocator.getTrendChallengesFromDummy(jsonFileName: "trend_request")
@@ -91,8 +103,11 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         }
     }
     
-    func fetchTrendChallenges() {
-        URLSession.shared.dataTask(with: NSURL(string: getTrendChallengesURL + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
+    func fetchTrendChallenges(key: String) {
+        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=" + key
+        let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        let url = NSURL(string: urlStrWithPerm!)!
+        URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
                 do {
                     if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {

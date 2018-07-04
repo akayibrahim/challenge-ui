@@ -16,59 +16,82 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     var window: UIWindow?
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
-        
-    }
-    
-    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
-        FBSDKAccessToken.setCurrent(nil)
-        FBSDKProfile.setCurrent(nil)
-        print("logout")
-    }
-    
-    func loginButtonWillLogin(_ loginButton: FBSDKLoginButton!) -> Bool {
-        let loginManager = FBSDKLoginManager()
-        loginManager.loginBehavior = FBSDKLoginBehavior.systemAccount
-        loginManager.logIn(withReadPermissions: ["public_profile", "email", "user_friends"], from: self.parent, handler: { (result, error) -> Void in
-            if error != nil {
-                print(error as Any)
-            } else if (result?.isCancelled)! {
-                print("Cancelled")
-            } else if(FBSDKAccessToken.current() != nil) {
+        print("User Logged In")
+        if ((error) != nil) {
+            print(error as Any)
+        } else if result.isCancelled {
+            FBSDKLoginManager().logOut()
+            print("Cancelled")
+        } else {
+            // If you ask for multiple permissions at once, you should check if specific permissions missing
+            if result.grantedPermissions.contains("email") {
                 print("LoggedIn")
                 self.fetchFacebookProfile()
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.window?.rootViewController = CustomTabBarController()
             }
-        })
-        print("true")
+        }
+    }
+    
+    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {        
+        print("logout")
+    }
+    
+    lazy var loginManager: FBSDKLoginManager = {
+        return FBSDKLoginManager()
+    }()
+            
+    func loginButtonWillLogin(_ loginButton: FBSDKLoginButton!) -> Bool {
         return true
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        self.view.backgroundColor = navAndTabColor
         
-        let loginButton = FBSDKLoginButton()
-        view.addSubview(loginButton)
-        
-        //frame's are obselete, please use constraints instead because its 2016 after all
-        loginButton.frame = CGRect(x: 16, y: screenWidth / 2, width: view.frame.width - 32, height: 50)
-        loginButton.delegate = self
-        /*
-        imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-        imageView.center = CGPoint(x: view.center.x, y: 200)
-        imageView.image = UIImage(named: "fb-art.jpg")
-        view.addSubview(imageView)
-        
-        label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
-        label.center = CGPoint(x: view.center.x, y: 300)
-        label.text = "Logged In"
+        label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
+        label.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
+        label.text = "Challenge"
         label.textAlignment = NSTextAlignment.center
         label.textColor = UIColor.white
+        label.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 44)
         view.addSubview(label)
- 
-        navigationItem.title = "CHL"
-         */
+        
+        let labelSlogan = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
+        labelSlogan.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.65 / 2)
+        labelSlogan.text = "Now, It's your time!"
+        labelSlogan.textAlignment = NSTextAlignment.center
+        labelSlogan.textColor = UIColor.white
+        labelSlogan.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)
+        view.addSubview(labelSlogan)
+        
+        imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
+        imageView.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.85 / 2)
+        imageView.image = UIImage(named: "AppIcon")
+        view.addSubview(imageView)
+        
+        let labelSlogan2 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
+        labelSlogan2.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 1.05 / 2)
+        labelSlogan2.text = "Proof yourself!"
+        labelSlogan2.textAlignment = NSTextAlignment.center
+        labelSlogan2.textColor = UIColor.white
+        labelSlogan2.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)
+        view.addSubview(labelSlogan2)
+        
+        let loginButton = FBSDKLoginButton()
+        loginButton.readPermissions = ["public_profile", "email", "user_friends"]
+        view.addSubview(loginButton)
+        //frame's are obselete, please use constraints instead because its 2016 after all
+        loginButton.frame = CGRect(x: 16, y: UIScreen.main.bounds.height * 1.4 / 2, width: view.frame.width - 32, height: 50)
+        loginButton.delegate = self
+        
+        let label2018 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
+        label2018.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 1.9 / 2)
+        label2018.text = "@2018"
+        label2018.textAlignment = NSTextAlignment.center
+        label2018.textColor = UIColor.white
+        label2018.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 14)
+        view.addSubview(label2018)
     }
     
     func fetchFacebookProfile() {
@@ -112,7 +135,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         let json: [String: Any] = ["name": firstName,
                                    "surname": surname,
                                    "email": email,
-                                   "facebookID": facebookID
+                                   "facebookID": facebookID,
+                                   "phoneModel":"\(UIDevice().type)",
+                                   "region": Locale.current.regionCode!
                                 ]
         
         let url = URL(string: addMemberURL)!
@@ -125,7 +150,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     DispatchQueue.main.async {
-                        let idOfMember = NSString(data: data, encoding: String.Encoding.ascii.rawValue)!
+                        let idOfMember = NSString(data: data, encoding: String.Encoding.utf8.rawValue)!
                         memberID = idOfMember as String
                         memberFbID = facebookID
                         memberName = "\(firstName) \(surname)"                        

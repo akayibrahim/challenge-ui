@@ -69,13 +69,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func onRefesh() {
         self.loadChallenges()
-        self.collectionView?.reloadData()
         refreshControl.endRefreshing()
     }
     
     func onSelfRefesh() {
         self.loadChallenges()
-        self.collectionView?.reloadData()
         selfRefreshControl.endRefreshing()
     }
     
@@ -112,6 +110,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getChallenges")
                 return
             }
+            self.collectionView?.reloadData()
         }
     }
     

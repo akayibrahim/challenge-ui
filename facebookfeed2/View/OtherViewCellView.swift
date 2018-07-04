@@ -59,10 +59,14 @@ class OtherViewCell: UITableViewCell {
     func support() {
     }
     
+    lazy var loginManager: FBSDKLoginManager = {
+        return FBSDKLoginManager()
+    }()
+    
     func logout() {
-        let loginManager = FBSDKLoginManager()
-        loginManager.logOut()
+        FBSDKLoginManager().logOut()
         window?.rootViewController = FacebookController()
+        print("logout")
     }
     
     let logoutButton: UIButton = OtherViewCell.button("Log Out", titleColor: UIColor.red)

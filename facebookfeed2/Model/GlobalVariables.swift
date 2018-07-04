@@ -8,7 +8,7 @@
 
 import UIKit
 
-var memberID = "5b3152c51cb199f1fadc0faf"
+var memberID = "5b3152701cb199f1fadc0faa"
 // var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
 var memberFbID = "10156204749600712" // dummy
 var memberName = "Seher Can" // dummy

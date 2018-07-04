@@ -13,4 +13,6 @@ class Friends: SafeJsonObject {
     var surname: String?
     var id : String?
     var facebookID : String?
+    var phoneModel: String?
+    var region: String?
 }

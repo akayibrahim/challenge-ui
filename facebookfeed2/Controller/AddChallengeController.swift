@@ -276,7 +276,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         var json: [String: Any] = ["challengerId": memberID,
                                    "name": memberName,
                                    "challengerFBId": memberFbID,
-                                   "thinksAboutChallenge": commentCell.commentView.text == "Comment" ? nil : commentCell.commentView.text,
+                                   "thinksAboutChallenge": commentCell.commentView.text == "Comment" ? nil : commentCell.commentView.text!,
                                    "subject": addViewCell.addChallenge.subjectLabel.text!,
                                    "untilDate": deadlineCell.labelOtherSide.text!,
                                    "done": doneCell.isDone.isOn

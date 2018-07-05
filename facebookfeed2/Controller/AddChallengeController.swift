@@ -76,6 +76,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.friends = ServiceLocator.getFriendsFromDummy(jsonFileName: "friends")
         }
         self.hideKeyboardWhenTappedAround()
+        self.leftSide.append(getMember())
     }
     
     func nextPage() {
@@ -93,12 +94,14 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
         navigationItem.setRightBarButton(rightButton, animated: true)
         navigationItem.leftBarButtonItem = cancelButton
+        firstPage = false
         enableDisableCells(disable: false)
     }
     
     func cancel() {
         navigationItem.setRightBarButton(nextButton, animated: true)
         navigationItem.leftBarButtonItem = nil
+        firstPage = true
         enableDisableCells(disable: true)
     }
     
@@ -236,10 +239,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Type", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Subject", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Home", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Home", resultText : memberName, resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Away", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
-        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())
-        addChallengeIns.append(createAddChallenge(labelText: "Deadline", resultText : getDateAsFormatted(date: tomorrow!), resultId: -1, resultBool: false, labelAtt: greaterThan))
+        let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: Date())
+        addChallengeIns.append(createAddChallenge(labelText: "Deadline", resultText : getDateAsFormatted(date: nextWeek!), resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Visibility", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
@@ -335,8 +338,12 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     DispatchQueue.main.async {
-                        let result = NSString(data: data, encoding: String.Encoding.ascii.rawValue)!
-                        self.addMedia(result: result, image: proofCell.proofImageView.image!)
+                        if self.isPublic() {
+                            let result = NSString(data: data, encoding: String.Encoding.ascii.rawValue)!
+                            self.addMedia(result: result, image: proofCell.proofImageView.image!)
+                        } else {
+                            self.clear()
+                        }
                     }
                 } else {
                     let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
@@ -351,6 +358,15 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }).resume()
     }
     
+    func clear() {
+        DispatchQueue.main.async {
+            self.createAddChallengeInstance()
+            self.tableView.reloadData()
+            self.cancel()
+        }
+        self.popupAlert(message: "Your challange ready!", willDelay: true)
+    }
+    
     func addMedia(result: NSString, image: UIImage) {
         let parameters = ["challengeId": result as String, "memberId": memberID as String]
         let urlOfUpload = URL(string: uploadImageURL)!
@@ -363,12 +379,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             }
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    DispatchQueue.main.async {
-                        self.createAddChallengeInstance()
-                        self.tableView.reloadData()
-                        self.cancel()
-                    }
-                    self.popupAlert(message: "Your challange ready!", willDelay: true)
+                    self.clear()
                 } else {
                     let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
                     if let responseJSON = responseJSON as? [String: Any] {
@@ -388,7 +399,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         if indexPath == subjectIndexPath {
             let selectionTable = SelectionTableViewController()
             var selItems = [SelectedItems]()
-            
             if isPublic() || isPrivate() {
                 for subj in self.subjects {
                     let selItem = SelectedItems()
@@ -416,13 +426,27 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 selItem.name = "\(fri.name!) \(fri.surname!)"
                 selItem.id = fri.id
                 selItem.fbId = fri.facebookID
-                selItems.append(selItem)
+                if indexPath == leftSideIndex {
+                    if getIDs(side: self.leftSide).contains(selItem.id) {
+                        selItem.selected = true
+                    }
+                    if !getIDs(side: self.rightSide).contains(selItem.id) {
+                        selItems.append(selItem)
+                    }
+                } else if indexPath == rightSideIndex {
+                    if getIDs(side: self.rightSide).contains(selItem.id) {
+                        selItem.selected = true
+                    }
+                    if !getIDs(side: self.leftSide).contains(selItem.id) {
+                        selItems.append(selItem)
+                    }
+                }
+                
             }
-            if !isPublic() || indexPath.row == 3 {
-                selectionTable.items = selItems
-            } else {
-                selectionTable.items = selItems
+            if indexPath == leftSideIndex {
+                selItems.append(getMember())
             }
+            selectionTable.items = selItems
             if !isPublic() {
                 if indexPath == leftSideIndex {
                     selectionTable.otherSideCount = rightSide.count
@@ -439,14 +463,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath == deadlineIndexPath {
             let addViewContent = getCell(path: addViewIndexPath)
-            if !firstPage {
-                if (!isDone()) {
-                    addViewContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: true)) DAYS"
-                    self.tableView?.scrollToRow(at: resultIndexPath, at: UITableViewScrollPosition.bottom, animated: true)
-                } else {
-                    addViewContent.addChallenge.untilDateLabel.isHidden = true
-                    addViewContent.addChallenge.finishFlag.isHidden = false
-                }
+            if !firstPage {                
+                addViewContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: true)) DAYS"
             }
         } else if indexPath == resultIndexPath {
             let updateProgress = UpdateProgressController()
@@ -463,6 +481,24 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else if indexPath == proofIndexPath {
             imagePickerForProofUpload()
         }
+    }
+    
+    func getMember() -> SelectedItems {
+        let selItem = SelectedItems()
+        selItem.name = memberName
+        selItem.id = memberID
+        selItem.fbId = memberFbID
+        selItem.selected = true
+        selItem.user = true
+        return selItem
+    }
+    
+    func getIDs(side: [SelectedItems]) -> [String] {
+        var ids : [String] = []
+        for si in side {
+            ids.append(si.id)
+        }
+        return ids
     }
     
     let imagePickerController = UIImagePickerController()
@@ -547,7 +583,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             return getHeight(switchOfCell: switchProof)
         } else if indexPath == calenddarIndexPath {
             if switchDateP {
-                return 180
+                return 214
             } else {
                 return zeroHeight
             }
@@ -589,6 +625,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             cell.isHidden = !switchDeadline
         } else if indexPath == calenddarIndexPath {
             cell.isHidden = !switchDateP
+            let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: Date())
+            cell.datePicker.date = nextWeek!
+            cell.deadLines.selectedSegmentIndex = 1
+            cell.deadLines.addTarget(self, action: #selector(self.deadlinesChanged), for: UIControlEvents.valueChanged)
         } else if indexPath == visibilityIndexPath {
             cell.label.text = addChallengeIns[visibilityIndex].labelText
             // cell.visibilitySegControl.selectedSegmentIndex = addChallengeIns[visibilityIndex].resultId!
@@ -620,6 +660,13 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             return cellComment
         }
         return cell
+    }
+    
+    func deadlinesChanged() {
+        let calendarContent = getCell(path: calenddarIndexPath)
+        let selectedIndex = calendarContent.deadLines.selectedSegmentIndex
+        let day : Int = selectedIndex == 0 ? 1 : (selectedIndex == 1 ? 7 : (selectedIndex == 2 ? 30 : 365) )
+        calendarContent.datePicker.date = Calendar.current.date(byAdding: .day, value: day, to: Date())!
     }
     
     func doneSwitch() {
@@ -692,7 +739,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     
     func segControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
         createAddChallengeInstance()
-        let addViewContent = getCell(path: addViewIndexPath)
         let segControlContent = getCell(path: segControlIndexPath)
         var selItems = [SelectedItems]()
         let selItem = SelectedItems()
@@ -760,7 +806,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     func setPeopleImages(result : [SelectedItems], reset : Bool) {
         let addViewContent = getCell(path: addViewIndexPath)
         let subjectContent = getCell(path: subjectIndexPath)
-        addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
+        if subjectContent.labelOtherSide.text != selectText {
+            addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
+        }
         if !firstPage {
             if (!isDone()) {
                 addViewContent.addChallenge.untilDateLabel.text = "LAST \(getDayBetweenDates(isSelect: false)) DAYS"

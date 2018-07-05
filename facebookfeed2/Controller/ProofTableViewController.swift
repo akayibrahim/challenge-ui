@@ -60,25 +60,25 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     func fetchData(url: String) {
-        URLSession.shared.dataTask(with: NSURL(string: url + self.challengeId)! as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.proofs = [Proofs]()
-                        for postDictionary in postsArray {
-                            let proof = Proofs()
-                            proof.setValuesForKeys(postDictionary)
-                            self.proofs.append(proof)
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
+        let jsonURL = URL(string: url + self.challengeId)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!), willDelay: false)
+                    return
             }
             DispatchQueue.main.async {
+                self.proofs = [Proofs]()
+                for postDictionary in postsArray! {
+                    let proof = Proofs()
+                    proof.setValuesForKeys(postDictionary)
+                    self.proofs.append(proof)
+                }
                 self.tableView?.reloadData()
             }
-        }).resume()
+        }
     }
     
     func textViewDidChange(_ textView: UITextView) {

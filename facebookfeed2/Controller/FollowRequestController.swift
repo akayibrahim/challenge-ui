@@ -46,25 +46,25 @@ class FollowRequestController: UITableViewController {
     }
     
     func fetchData(url: String) {
-        URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.friendRequest = [SuggestionFriends]()
-                        for postDictionary in postsArray {
-                            let friend = SuggestionFriends()
-                            friend.setValuesForKeys(postDictionary)
-                            self.friendRequest.append(friend)
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
+        let jsonURL = URL(string: url + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!), willDelay: false)
+                    return
             }
             DispatchQueue.main.async {
+                self.friendRequest = [SuggestionFriends]()
+                for postDictionary in postsArray! {
+                    let friend = SuggestionFriends()
+                    friend.setValuesForKeys(postDictionary)
+                    self.friendRequest.append(friend)
+                }
                 self.tableView?.reloadData()
             }
-        }).resume()
+        }
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {

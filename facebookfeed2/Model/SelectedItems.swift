@@ -12,4 +12,6 @@ class SelectedItems {
     var name : String!
     var id : String!
     var fbId : String!
+    var selected: Bool = false
+    var user: Bool = false
 }

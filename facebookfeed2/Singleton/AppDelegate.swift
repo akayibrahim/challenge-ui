@@ -89,9 +89,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if let httpResponse = response as? HTTPURLResponse {
                     if httpResponse.statusCode == 200 {
                         do {
-                            if let post = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: String] {
-                                memberFbID = post["facebookID"]!
-                                memberName = "\(post["name"]!) \(post["surname"]!)"
+                            if let post = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: Any] {
+                                memberFbID = (post["facebookID"] as? String)!
+                                memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
                             }
                         } catch let err {
                             print(err)

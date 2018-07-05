@@ -8,6 +8,14 @@
 
 import UIKit
 
+extension URL {
+    func get(completion: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> ()) {
+        URLSession.shared.dataTask(with: self) {            
+            completion($0, $1, $2)
+        }.resume()
+    }
+}
+
 extension String {
     func heightOf(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)

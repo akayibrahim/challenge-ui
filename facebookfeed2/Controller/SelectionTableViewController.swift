@@ -73,47 +73,47 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     func fetchFollowingsData(url: String) {
-        URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.following = [Following]()
-                        for postDictionary in postsArray {
-                            let following = Following()
-                            following.setValuesForKeys(postDictionary)
-                            self.following.append(following)
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
+        let jsonURL = URL(string: url + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!), willDelay: false)
+                    return
             }
             DispatchQueue.main.async {
+                self.following = [Following]()
+                for postDictionary in postsArray! {
+                    let following = Following()
+                    following.setValuesForKeys(postDictionary)
+                    self.following.append(following)
+                }
                 self.tableView?.reloadData()
             }
-        }).resume()
+        }
     }
     
     func fetchFollowersData(url: String) {
-        URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.followers = [Followers]()
-                        for postDictionary in postsArray {
-                            let follower = Followers()
-                            follower.setValuesForKeys(postDictionary)
-                            self.followers.append(follower)
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
+        let jsonURL = URL(string: url + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!), willDelay: false)
+                    return
             }
             DispatchQueue.main.async {
+                self.followers = [Followers]()
+                for postDictionary in postsArray! {
+                    let follower = Followers()
+                    follower.setValuesForKeys(postDictionary)
+                    self.followers.append(follower)
+                }
                 self.tableView?.reloadData()
             }
-        }).resume()
+        }
     }
     
     func keyboardWasShown (notification: NSNotification) {
@@ -147,7 +147,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 selItems.append(selItem)
             }
             if otherSideCount != -1 && otherSideCount != 0 && selItems.count != otherSideCount {
-                let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "You select \(otherSideCount) people at the other side, you have to select same count. So if you you choose different count, you have to select again at the other side.", preferredStyle: UIAlertControllerStyle.alert)
+                let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "You select \(otherSideCount!) people at the other side, you have to select same count. So if you you choose different count, you have to select again at the other side.", preferredStyle: UIAlertControllerStyle.alert)
                 selectAlert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: nil))
                 selectAlert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.default, handler: {
                     action in
@@ -160,6 +160,22 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             controller.updateCell(result: selItems, popIndexPath: popIndexPath)
         }
         navigationController?.popViewController(animated: true)
+    }
+    
+    func isHome() -> Bool {
+        return popIndexPath == leftSideIndex
+    }
+    
+    func isAway() -> Bool {
+        return popIndexPath == rightSideIndex
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if isHome() {
+            if items[indexPath.row].user {
+                tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -240,6 +256,9 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             let cell = tableView.dequeueReusableCell(withIdentifier: labelCell, for: indexPath as IndexPath)
             if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && isSelf())) {
                 cell.textLabel?.text = items[indexPath.row].name
+                if items[indexPath.row].selected {                    
+                    tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+                }
             } else {
                 if (indexPath.row == (items.count + 2)) {
                     let view = UIView()

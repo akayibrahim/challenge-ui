@@ -32,8 +32,8 @@ class OtherController: UITableViewController {
         cell.imageView?.backgroundColor = UIColor.black
         if indexPath.row == 3 {
             cell.backgroundColor = pagesBackColor
-            cell.selectionStyle = UITableViewCellSelectionStyle.none
         }
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell
     }
     

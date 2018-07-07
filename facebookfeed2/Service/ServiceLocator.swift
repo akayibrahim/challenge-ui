@@ -128,15 +128,15 @@ class ServiceLocator {
         return comments
     }
     
-    static func getProofsFromDummy(jsonFileName : String) -> [Proofs] {
-        var proofs = [Proofs]()
+    static func getProofsFromDummy(jsonFileName : String) -> [Proove] {
+        var proofs = [Proove]()
         if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
             do {
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
                 let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
                 if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
                     for postDictionary in postsArray {
-                        let proof = Proofs()
+                        let proof = Proove()
                         proof.setValuesForKeys(postDictionary)
                         proofs.append(proof)
                     }
@@ -297,13 +297,34 @@ class ServiceLocator {
         return body
     }
     
-    static func getErrorMessage(data: Data) -> String {
+    static func getErrorMessage(data: Data, chlId: String, sUrl: String, inputs: String) -> String {
         var errorMessage: String = ""
         let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
         if let responseJSON = responseJSON as? [String: Any] {
-            print(responseJSON)
             if responseJSON["message"] != nil {
                 errorMessage = (responseJSON["message"] as? String)!
+                
+                let parameters = ["challengeId": chlId, "memberId": memberID as String, "errorMessage": errorMessage, "serviceURL": sUrl, "inputs": inputs]
+                let url = URL(string: errorLogURL)!
+                let requestOfUpload = prepareRequest(url: url, json: parameters)
+                URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
+                    guard let data = data, error == nil else {
+                        print(error?.localizedDescription ?? "No data")
+                        return
+                    }
+                    if let httpResponse = response as? HTTPURLResponse {
+                        if httpResponse.statusCode == 200 {
+                        } else {
+                            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+                            if let responseJSON = responseJSON as? [String: Any] {
+                                if responseJSON["message"] != nil {
+                                    print((responseJSON["message"] as? String)!)
+                                }
+                            }
+                            return
+                        }
+                    }
+                }).resume()
             }
         }
         return errorMessage

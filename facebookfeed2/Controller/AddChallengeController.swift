@@ -80,16 +80,15 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     func nextPage() {
-        let commentCell = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
-        let addViewCell = getCell(path: addViewIndexPath)
+        let subjectCell = getCell(path: subjectIndexPath)
         /*
         if commentCell.commentView.text == "Comment" {
             popupAlert(message: "Comment cannot be empty.", willDelay: false)
             return
         }
          */
-        if addViewCell.addChallenge.subjectLabel.text == selectText {
-            popupAlert(message: "Subject cannot be empty.", willDelay: false)
+        if subjectCell.labelOtherSide.text == selectText {
+            popupAlert(message: "Please select subject!", willDelay: false)
             return
         }
         navigationItem.setRightBarButton(rightButton, animated: true)
@@ -137,7 +136,13 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         return typeCell.mySegControl.selectedSegmentIndex == 3
     }
     
+    func closeCalendar() {
+        switchDateP = false
+        tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
+    }
+    
     func enableDisableCells(disable: Bool) {
+        closeCalendar()
         let doneCell = getCell(path: doneIndexPath)
         switchType = disable
         tableView.reloadRows(at: [segControlIndexPath], with: .fade)
@@ -159,7 +164,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             switchRightPeopleCell = !disable
             tableView.reloadRows(at: [rightSideIndex], with: .fade)
         }
-        if isPublic() {
+        if firstPage {
+            switchProof = false
+            tableView.reloadRows(at: [proofIndexPath], with: .fade)
+        } else if !firstPage && isPublic() {
             switchProof = !disable
             tableView.reloadRows(at: [proofIndexPath], with: .fade)
         }
@@ -184,37 +192,41 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     func fetchData(url: String, type: String) {
-        if type == "FRIENDS" {
-            self.friends = [Friends]()
-        } else {
-            self.subjects = [Subject]()
-            self.self_subjects = [Subject]()
-        }
-        URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        for postDictionary in postsArray {
-                            if type == "SUBJECT" {
-                                let subject = Subject()
-                                subject.setValuesForKeys(postDictionary)
-                                self.subjects.append(subject)
-                            } else if type == "SELF_SUBJECT" {
-                                let subject = Subject()
-                                subject.setValuesForKeys(postDictionary)
-                                self.self_subjects.append(subject)
-                            } else if type == "FRIENDS" {
-                                let friend = Friends()
-                                friend.setValuesForKeys(postDictionary)
-                                self.friends.append(friend)
-                            }
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: ""), willDelay: false)
+                    return
             }
-        }).resume()
+            DispatchQueue.main.async {
+                if type == "FRIENDS" {
+                    self.friends = [Friends]()
+                } else if type == "SELF_SUBJECT" {
+                    self.self_subjects = [Subject]()
+                } else {
+                    self.subjects = [Subject]()
+                }
+                for postDictionary in postsArray! {
+                    if type == "SUBJECT" {
+                        let subject = Subject()
+                        subject.setValuesForKeys(postDictionary)
+                        self.subjects.append(subject)
+                    } else if type == "SELF_SUBJECT" {
+                        let subject = Subject()
+                        subject.setValuesForKeys(postDictionary)
+                        self.self_subjects.append(subject)
+                    } else if type == "FRIENDS" {
+                        let friend = Friends()
+                        friend.setValuesForKeys(postDictionary)
+                        self.friends.append(friend)
+                    }
+                }
+                self.tableView?.reloadData()
+            }
+        }
     }
     
     func createAddChallenge(labelText : String, resultText : String, resultId : Int, resultBool : Bool, labelAtt : NSMutableAttributedString) -> AddChallenge {
@@ -298,7 +310,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             json["joinAttendanceList"] = rightSide.count == 0 ? nil : joinAttendanceList as Any
         }
         if isSelf() {
-            json["visibility"] = visibilityCell.visibilitySegControlForSelf.selectedSegmentIndex
+            let index = visibilityCell.visibilitySegControlForSelf.selectedSegmentIndex
+            json["visibility"] = index == 0 ? 3 : (index == 1 ? 2 : 1)
             json["goal"] = "10" // TODO
             if doneCell.isDone.isOn {
                 json["result"] = resultCell.labelOtherSide
@@ -317,7 +330,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 versusAttendanceList.append(versusAttendance)
             }
             json["versusAttendanceList"] = versusAttendanceList as Any
-            json["visibility"] = visibilityCell.visibilitySegControl.selectedSegmentIndex
+            let indexPri = visibilityCell.visibilitySegControlForSelf.selectedSegmentIndex
+            json["visibility"] = indexPri == 0 ? 2 : 1
             if doneCell.isDone.isOn {
                 json["score"] = scoreCell.labelOtherSide
             } else {
@@ -361,8 +375,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     func clear() {
         DispatchQueue.main.async {
             self.createAddChallengeInstance()
-            self.tableView.reloadData()
             self.cancel()
+            self.tableView.reloadData()
         }
         self.popupAlert(message: "Your challange ready!", willDelay: true)
     }
@@ -370,8 +384,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     func addMedia(result: NSString, image: UIImage) {
         let parameters = ["challengeId": result as String, "memberId": memberID as String]
         let urlOfUpload = URL(string: uploadImageURL)!
-        let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: image)
-        
+        let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: image)        
         URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
@@ -381,14 +394,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 if httpResponse.statusCode == 200 {
                     self.clear()
                 } else {
-                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                    if let responseJSON = responseJSON as? [String: Any] {
-                        print(responseJSON)
-                        if responseJSON["message"] != nil {
-                            self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
-                            return
-                        }
-                    }
+                    let error = ServiceLocator.getErrorMessage(data: data, chlId: "", sUrl: uploadImageURL, inputs: "challengeId:\(result as String), memberID:\(memberID)")
+                    self.popupAlert(message: error, willDelay: false)
                 }
             }
         }).resume()
@@ -503,10 +510,17 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     
     let imagePickerController = UIImagePickerController()
     func imagePickerForProofUpload() {
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
-        imagePickerController.allowsEditing = false
-        self.present(imagePickerController, animated: true, completion: nil)
+        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)  {
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = UIImagePickerControllerSourceType.photoLibrary
+            imagePickerController.allowsEditing = false
+            self.present(imagePickerController, animated: true, completion: nil)
+        } else {
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = UIImagePickerControllerSourceType.camera
+            imagePickerController.allowsEditing = false
+            self.present(imagePickerController, animated: true, completion: nil)
+        }
     }
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -528,6 +542,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             cCellContent.labelOtherSide.text = formattedDate
             switchDateP = !switchDateP
             tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
+            tableView.scrollToRow(at: calenddarIndexPath, at: .bottom, animated: true)
         } else {
             let date = formatter.date(from: cCellContent.labelOtherSide.text!)
             cellContent.datePicker.date = date!
@@ -583,7 +598,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             return getHeight(switchOfCell: switchProof)
         } else if indexPath == calenddarIndexPath {
             if switchDateP {
-                return 214
+                return 224
             } else {
                 return zeroHeight
             }
@@ -663,7 +678,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     func deadlinesChanged() {
-        let calendarContent = getCell(path: calenddarIndexPath)
+        let calendarContent = tableView.cellForRow(at: calenddarIndexPath) as! TableViewCellContent
         let selectedIndex = calendarContent.deadLines.selectedSegmentIndex
         let day : Int = selectedIndex == 0 ? 1 : (selectedIndex == 1 ? 7 : (selectedIndex == 2 ? 30 : 365) )
         calendarContent.datePicker.date = Calendar.current.date(byAdding: .day, value: day, to: Date())!
@@ -696,6 +711,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     func updateCell(result : [SelectedItems], popIndexPath : IndexPath) {
+        closeCalendar()
         let cellContent = getCell(path: popIndexPath)
         var itemsResult : String = ""
         var itemsCount : Int = 1

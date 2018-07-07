@@ -8,15 +8,15 @@
 
 import UIKit
 
-var memberID = "5b3152701cb199f1fadc0faa"
-// var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
+// var memberID = ""
+var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
 var memberFbID = "10156204749600712" // dummy
 var memberName = "Seher Can" // dummy
 var countOffollowers = "126"
 var countOffollowing = "198"
 
 // CONSTANTS
-var dummyServiceCall : Bool = false
+var dummyServiceCall : Bool = true
 var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"
@@ -62,13 +62,13 @@ var profileTitle = "Profile"
 var profileFirstHeader = "YOUR ACTIVE CHALLENGES"
 var profileSecondHeader = "YOUR PAST CHALLENGES"
 var commentsTableTitle = "Comments"
-var proofsTableTitle = "Proofs"
+var proofsTableTitle = "Prooves"
 var addChallengeTitle = "Add Challenge"
 
 // BUTTON OR LABEL NAME
 var supportText = "SUPPORT"
 var viewAllComments = "View all 0 comments"
-var viewAllProofs = "View all 0 proofs"
+var viewAllProofs = "View all 0 prooves"
 var addComents = "Add a comment.."
 var addProofsVar = "Add a proof.."
 var joinToChlVar = "Join To It"
@@ -113,3 +113,5 @@ var getActivitiesURL = defaultURL + "/getActivities?toMemberId="
 var getChallengeRequestURL = defaultURL + "/getChallengeRequest?memberId="
 var acceptOrRejectChlURL = defaultURL + "/acceptOrRejectChl"
 var deleteChallengeURL = defaultURL + "/deleteChallenge?challengeId="
+var errorLogURL = defaultURL + "/errorLog"
+

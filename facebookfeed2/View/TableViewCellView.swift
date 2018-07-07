@@ -42,7 +42,7 @@ class TableViewCellContent: UITableViewCell {
             mySegControl.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
             mySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             mySegControl.selectedSegmentIndex = 0
-            let font = UIFont.systemFont(ofSize: 12)
+            let font = UIFont.systemFont(ofSize: 11)
             mySegControl.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
             mySegControl.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -59,7 +59,7 @@ class TableViewCellContent: UITableViewCell {
             deadLines.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
             
             addSubview(datePicker)
-            addTopAnchor(datePicker, anchor: deadLines.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+            addTopAnchor(datePicker, anchor: deadLines.bottomAnchor, constant: -(screenWidth * 0.25 / 10))
             addTrailingAnchor(datePicker, anchor: contentGuide.trailingAnchor, constant: 0)
             // datePicker.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())

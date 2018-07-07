@@ -10,12 +10,13 @@ import UIKit
 import FBSDKCoreKit
 import MediaPlayer
 import AudioToolbox
+import FBSDKLoginKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -25,8 +26,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if(FBSDKAccessToken.current() != nil) {
         // if (true) {
-            getMemberInfo(memberId: memberID)
-            window?.rootViewController = CustomTabBarController()
+            if let memberId = UserDefaults.standard.object(forKey: "memberID") {
+                memberID = memberId as! String
+                getMemberInfo(memberId: memberID)
+                window?.rootViewController = CustomTabBarController()
+            } else {
+                FBSDKLoginManager().logOut()
+                window?.rootViewController = FacebookController()
+            }
         } else {
             window?.rootViewController = FacebookController()
         }
@@ -97,7 +104,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             print(err)
                         }
                     } else {
-                        let error = ServiceLocator.getErrorMessage(data: data!)
+                        let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID:\(memberId)")
                         print(error)
                         // TODO self.popupAlert(message: error, willDelay: false)
                     }

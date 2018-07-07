@@ -58,31 +58,31 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         view.addSubview(label)
         
         let labelSlogan = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
-        labelSlogan.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.65 / 2)
+        labelSlogan.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.7 / 2)
         labelSlogan.text = "Now, It's your time!"
         labelSlogan.textAlignment = NSTextAlignment.center
         labelSlogan.textColor = UIColor.white
-        labelSlogan.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)
+        labelSlogan.font = UIFont(name: "Copperplate", size: 19)
         view.addSubview(labelSlogan)
         
-        imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
-        imageView.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.85 / 2)
-        imageView.image = UIImage(named: "AppIcon")
-        view.addSubview(imageView)
-        
         let labelSlogan2 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
-        labelSlogan2.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 1.05 / 2)
-        labelSlogan2.text = "Proof yourself!"
+        labelSlogan2.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.78 / 2)
+        labelSlogan2.text = "Proove yourself!"
         labelSlogan2.textAlignment = NSTextAlignment.center
         labelSlogan2.textColor = UIColor.white
-        labelSlogan2.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)
+        labelSlogan2.font = UIFont(name: "Copperplate", size: 17)
         view.addSubview(labelSlogan2)
+        
+        imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
+        imageView.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.94 / 2)
+        imageView.image = UIImage(named: "AppIconLogin")
+        view.addSubview(imageView)
         
         let loginButton = FBSDKLoginButton()
         loginButton.readPermissions = ["public_profile", "email", "user_friends"]
         view.addSubview(loginButton)
         //frame's are obselete, please use constraints instead because its 2016 after all
-        loginButton.frame = CGRect(x: 16, y: UIScreen.main.bounds.height * 1.4 / 2, width: view.frame.width - 32, height: 50)
+        loginButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.4 / 2, width: view.frame.width - 64, height: 44)
         loginButton.delegate = self
         
         let label2018 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
@@ -91,7 +91,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         label2018.textAlignment = NSTextAlignment.center
         label2018.textColor = UIColor.white
         label2018.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 14)
-        view.addSubview(label2018)
+        // view.addSubview(label2018)
     }
     
     func fetchFacebookProfile() {
@@ -137,7 +137,8 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                                    "email": email,
                                    "facebookID": facebookID,
                                    "phoneModel":"\(UIDevice().type)",
-                                   "region": Locale.current.regionCode!
+                                   "region": Locale.current.regionCode!,
+                                   "language":Locale.current.languageCode!
                                 ]
         
         let url = URL(string: addMemberURL)!
@@ -153,10 +154,14 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                         let idOfMember = NSString(data: data, encoding: String.Encoding.utf8.rawValue)!
                         memberID = idOfMember as String
                         memberFbID = facebookID
-                        memberName = "\(firstName) \(surname)"                        
+                        memberName = "\(firstName) \(surname)"
+                        
+                        let defaults = UserDefaults.standard
+                        defaults.set(memberID, forKey: "memberID")
+                        defaults.synchronize()
                     }
                 } else {
-                    let error = ServiceLocator.getErrorMessage(data: data)
+                    let error = ServiceLocator.getErrorMessage(data: data, chlId: "", sUrl: addMemberURL, inputs: "name:\(firstName), surname: \(surname), email:\(email), facebookID:\(facebookID), phoneModel:\(UIDevice().type), region:\(Locale.current.regionCode!), language:\(Locale.current.languageCode!)")
                     self.popupAlert(message: error, willDelay: false)
                 }
             }

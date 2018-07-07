@@ -12,7 +12,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     let screenSize = UIScreen.main.bounds
     var tableTitle : String!
     var tableView : UITableView!
-    var proofs = [Proofs]()
+    var proofs = [Proove]()
     var proofCellView = ProofCellView()
     var bottomConstraint: NSLayoutConstraint?
     var heightOfCommentView : CGFloat = 50
@@ -66,13 +66,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!), willDelay: false)
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: self.challengeId, sUrl: url, inputs: "challengeId=\(self.challengeId)"), willDelay: false)
                     return
             }
             DispatchQueue.main.async {
-                self.proofs = [Proofs]()
+                self.proofs = [Proove]()
                 for postDictionary in postsArray! {
-                    let proof = Proofs()
+                    let proof = Proove()
                     proof.setValuesForKeys(postDictionary)
                     self.proofs.append(proof)
                 }

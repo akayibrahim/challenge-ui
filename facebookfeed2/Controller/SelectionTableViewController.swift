@@ -79,7 +79,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!), willDelay: false)
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
                     return
             }
             DispatchQueue.main.async {
@@ -101,7 +101,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!), willDelay: false)
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberID=\(memberID)"), willDelay: false)
                     return
             }
             DispatchQueue.main.async {

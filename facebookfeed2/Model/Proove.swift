@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Proofs: SafeJsonObject {
+class Proove: SafeJsonObject {
     var name: String?
     var fbID: String?
     var proofObjectId: String?

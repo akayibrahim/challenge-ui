@@ -14,7 +14,7 @@
 		A119611920E8F1070022E965 /* challenge_request.json in Resources */ = {isa = PBXBuildFile; fileRef = A119611820E8F1070022E965 /* challenge_request.json */; };
 		A119611B20E8F1900022E965 /* ChallengeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A119611A20E8F1900022E965 /* ChallengeRequest.swift */; };
 		A11C823520499DDB0061A33F /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11C823420499DDB0061A33F /* ImageService.swift */; };
-		A1235D3E20870C3A0028738E /* Proofs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1235D3D20870C3A0028738E /* Proofs.swift */; };
+		A1235D3E20870C3A0028738E /* Proove.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1235D3D20870C3A0028738E /* Proove.swift */; };
 		A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1274107200F38E60073BFF2 /* FacebookController.swift */; };
 		A1289CA820A555F100CC66B0 /* UIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CA720A555F100CC66B0 /* UIExtension.swift */; };
 		A1289CAA20A5562700CC66B0 /* UINavigationControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */; };
@@ -120,7 +120,7 @@
 		A119611820E8F1070022E965 /* challenge_request.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = challenge_request.json; sourceTree = "<group>"; };
 		A119611A20E8F1900022E965 /* ChallengeRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChallengeRequest.swift; sourceTree = "<group>"; };
 		A11C823420499DDB0061A33F /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
-		A1235D3D20870C3A0028738E /* Proofs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proofs.swift; sourceTree = "<group>"; };
+		A1235D3D20870C3A0028738E /* Proove.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proove.swift; sourceTree = "<group>"; };
 		A1274107200F38E60073BFF2 /* FacebookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookController.swift; sourceTree = "<group>"; };
 		A1289CA720A555F100CC66B0 /* UIExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIExtension.swift; sourceTree = "<group>"; };
 		A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigationControllerExtension.swift; sourceTree = "<group>"; };
@@ -316,7 +316,7 @@
 				A1DA9CAA20A95236009200E3 /* AddChallenge.swift */,
 				A1DC3413207E2A1800F21232 /* Comments.swift */,
 				A17162C4209C42DC00061399 /* Activities.swift */,
-				A1235D3D20870C3A0028738E /* Proofs.swift */,
+				A1235D3D20870C3A0028738E /* Proove.swift */,
 				A15F8764207BBBF30035130D /* SuggestionFriends.swift */,
 				A1715F4020B0481A003E7AFF /* Followers.swift */,
 				A1715F4620B050DD003E7AFF /* Following.swift */,
@@ -621,7 +621,7 @@
 				A1289CAC20A5564900CC66B0 /* UIViewControllerExtension.swift in Sources */,
 				A14BDFED204E5E780095875F /* AddChallengeView.swift in Sources */,
 				A1715F4720B050DD003E7AFF /* Following.swift in Sources */,
-				A1235D3E20870C3A0028738E /* Proofs.swift in Sources */,
+				A1235D3E20870C3A0028738E /* Proove.swift in Sources */,
 				A1289CB020A556F500CC66B0 /* UITableViewControllerExtension.swift in Sources */,
 				A1D2CAB720451C9F008782D3 /* OtherViewCellView.swift in Sources */,
 				A13C709D2043CE6E0076B989 /* FriendRequestCellView.swift in Sources */,

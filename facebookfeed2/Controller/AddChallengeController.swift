@@ -510,17 +510,29 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     
     let imagePickerController = UIImagePickerController()
     func imagePickerForProofUpload() {
-        if !UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)  {
-            imagePickerController.delegate = self
-            imagePickerController.sourceType = UIImagePickerControllerSourceType.photoLibrary
-            imagePickerController.allowsEditing = false
-            self.present(imagePickerController, animated: true, completion: nil)
-        } else {
-            imagePickerController.delegate = self
-            imagePickerController.sourceType = UIImagePickerControllerSourceType.camera
-            imagePickerController.allowsEditing = false
-            self.present(imagePickerController, animated: true, completion: nil)
-        }
+        imagePickerController.delegate = self
+        imagePickerController.mediaTypes = ["public.image", "public.movie"]
+        let actionsheet = UIAlertController(title: "", message: "Choose a photo source", preferredStyle :.actionSheet)
+        actionsheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: {(action: UIAlertAction) in
+            if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)  {
+                self.imagePickerController.sourceType = UIImagePickerControllerSourceType.camera
+                self.imagePickerController.allowsEditing = false
+                self.imagePickerController.showsCameraControls = true
+                self.imagePickerController.videoMaximumDuration = 20
+                self.present(self.imagePickerController, animated: true, completion: nil)
+            } else {
+                self.popupAlert(message: "Device has not camera.", willDelay: false)
+            }
+            
+        }))
+        
+        actionsheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: {(action: UIAlertAction) in
+            self.imagePickerController.sourceType = UIImagePickerControllerSourceType.photoLibrary
+            self.imagePickerController.allowsEditing = false
+            self.present(self.imagePickerController, animated: true, completion: nil)
+        }))
+        
+        self.present(actionsheet, animated: true, completion: nil)
     }
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -528,6 +540,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             let proofCell = self.getCell(path: proofIndexPath)
             proofCell.proofImageView.image = pickedImage
             proofCell.proofImageView.alpha = 1
+        } else {
+            let videoURL = info["UIImagePickerControllerMediaURL"] as? NSURL
+            print(videoURL!)
         }
         dismiss(animated: true, completion: nil)
     }

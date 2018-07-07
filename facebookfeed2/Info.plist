@@ -71,5 +71,8 @@
     
     <key>NSCameraUsageDescription</key>
     <string>Camera usage description</string>
+    
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Microphone usage description</string>
 </dict>
 </plist>

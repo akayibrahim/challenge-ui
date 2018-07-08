@@ -49,7 +49,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         super.viewDidLoad()
         self.view.backgroundColor = navAndTabColor
         
-        label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
+        label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 60))
         label.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
         label.text = "Challenge"
         label.textAlignment = NSTextAlignment.center
@@ -59,7 +59,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         
         let labelSlogan = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
         labelSlogan.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.7 / 2)
-        labelSlogan.text = "Now, It's your time!"
+        labelSlogan.text = "Now, It's your time."
         labelSlogan.textAlignment = NSTextAlignment.center
         labelSlogan.textColor = UIColor.white
         labelSlogan.font = UIFont(name: "Copperplate", size: 19)
@@ -67,7 +67,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         
         let labelSlogan2 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
         labelSlogan2.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.78 / 2)
-        labelSlogan2.text = "Proove yourself!"
+        labelSlogan2.text = "Prove yourself!"
         labelSlogan2.textAlignment = NSTextAlignment.center
         labelSlogan2.textColor = UIColor.white
         labelSlogan2.font = UIFont(name: "Copperplate", size: 17)

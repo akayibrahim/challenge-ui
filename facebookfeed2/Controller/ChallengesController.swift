@@ -68,13 +68,17 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func onRefesh() {
-        self.loadChallenges()
-        refreshControl.endRefreshing()
+        if !refreshControl.isRefreshing {
+            self.loadChallenges()
+            refreshControl.endRefreshing()
+        }
     }
     
     func onSelfRefesh() {
-        self.loadChallenges()
-        selfRefreshControl.endRefreshing()
+        if !selfRefreshControl.isRefreshing {
+            self.loadChallenges()
+            selfRefreshControl.endRefreshing()
+        }
     }
     
     func loadChallenges() {

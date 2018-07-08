@@ -66,6 +66,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         rightButton?.tintColor = UIColor.white
         tableView?.showsVerticalScrollIndicator = false
         
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
         if dummyServiceCall == false {
             fetchData(url: getSubjectsURL, type: "SUBJECT")
             fetchData(url: getSelfSubjectsURL, type: "SELF_SUBJECT")

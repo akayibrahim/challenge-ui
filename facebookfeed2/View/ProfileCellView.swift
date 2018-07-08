@@ -82,8 +82,8 @@ class ProfileCellView: UICollectionViewCell {
         addSubview(other)
         other.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         addTrailingAnchor(other, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.05 / 10))
-        addHeightAnchor(other, multiplier: 0.8 / 10)
-        addWidthAnchor(other, multiplier: 0.8 / 10)
+        addHeightAnchor(other, multiplier: 0.7 / 10)
+        addWidthAnchor(other, multiplier: 0.7 / 10)
         
         /*
         addSubview(activity)

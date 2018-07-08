@@ -12,7 +12,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     let screenSize = UIScreen.main.bounds
     var tableTitle : String!
     var tableView : UITableView!
-    var proofs = [Proove]()
+    var proofs = [Prove]()
     var proofCellView = ProofCellView()
     var bottomConstraint: NSLayoutConstraint?
     var heightOfCommentView : CGFloat = 50
@@ -70,24 +70,15 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     return
             }
             DispatchQueue.main.async {
-                self.proofs = [Proove]()
+                self.proofs = [Prove]()
                 for postDictionary in postsArray! {
-                    let proof = Proove()
+                    let proof = Prove()
                     proof.setValuesForKeys(postDictionary)
                     self.proofs.append(proof)
                 }
                 self.tableView?.reloadData()
             }
         }
-    }
-    
-    func textViewDidChange(_ textView: UITextView) {
-        let fixedWidth = textView.frame.size.width
-        textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
-        let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
-        var newFrame = textView.frame
-        newFrame.size = CGSize(width: max(newSize.width, fixedWidth), height: newSize.height)
-        textView.frame = newFrame
     }
     
     func handleKeyboardNotification(notification: NSNotification) {
@@ -174,6 +165,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         addProofBtn.layer.cornerRadius = 5.0
         addProofBtn.clipsToBounds = true
         addProofBtn.addTarget(self, action: #selector(self.addProof), for: UIControlEvents.touchUpInside)
+        addProofBtn.titleLabel?.adjustsFontSizeToFitWidth = true
         
         proofImageView.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
         proofImageView.trailingAnchor.constraint(equalTo: topBorderView.trailingAnchor, constant : -(screenWidth * 1.8 / 10)).isActive = true
@@ -265,7 +257,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         cell.thinksAboutChallengeView.attributedText = nameAtt
         let fbID = proofs[indexPath.item].fbID
         setImage(fbID: fbID, imageView: cell.profileImageView)
-        getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofs[indexPath.item].proofObjectId!)
+        if let proofObjectId = proofs[indexPath.item].proofObjectId {
+            getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofObjectId)
+        }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell
     }

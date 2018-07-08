@@ -128,15 +128,15 @@ class ServiceLocator {
         return comments
     }
     
-    static func getProofsFromDummy(jsonFileName : String) -> [Proove] {
-        var proofs = [Proove]()
+    static func getProofsFromDummy(jsonFileName : String) -> [Prove] {
+        var proofs = [Prove]()
         if let path = Bundle.main.path(forResource: jsonFileName, ofType: "json") {
             do {
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
                 let jsonDictionary = try(JSONSerialization.jsonObject(with: data, options: .mutableContainers)) as? [String: Any]
                 if let postsArray = jsonDictionary?["posts"] as? [[String: AnyObject]] {
                     for postDictionary in postsArray {
-                        let proof = Proove()
+                        let proof = Prove()
                         proof.setValuesForKeys(postDictionary)
                         proofs.append(proof)
                     }

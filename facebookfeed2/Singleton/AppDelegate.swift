@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // if (true) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 memberID = memberId as! String
-                getMemberInfo(memberId: memberID)
+                getMemberInfo(memberId: memberID)                
                 window?.rootViewController = CustomTabBarController()
             } else {
                 FBSDKLoginManager().logOut()
@@ -99,6 +99,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             if let post = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: Any] {
                                 memberFbID = (post["facebookID"] as? String)!
                                 memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
+                                countOffollowers = (post["followerCount"] as? Int)!
+                                countOffollowing = (post["followingCount"] as? Int)!
                             }
                         } catch let err {
                             print(err)

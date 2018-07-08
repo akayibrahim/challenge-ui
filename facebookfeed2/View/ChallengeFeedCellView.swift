@@ -262,6 +262,7 @@ class FeedCell: UICollectionViewCell {
                 untilDateLabel.textAlignment = .center
                 untilDateLabel.numberOfLines = 2;
                 untilDateLabel.textColor = UIColor.gray
+                untilDateLabel.adjustsFontSizeToFitWidth = true
             }
             vsImageView.image = UIImage(named: "vs")
             if post?.secondTeamCount == "4" {
@@ -399,6 +400,7 @@ class FeedCell: UICollectionViewCell {
             addBottomAnchor(viewComments, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.05 / 10))
             addLeadingAnchor(viewComments, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addHeightAnchor(viewComments, multiplier: 0.7/10)
+            viewComments.titleLabel?.adjustsFontSizeToFitWidth = true
             
             addBottomAnchor(profileImageView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 0.45 / 10))
             addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
@@ -417,6 +419,7 @@ class FeedCell: UICollectionViewCell {
                 addTrailingAnchor(viewProofs, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.2/10))
                 viewProofs.centerYAnchor.constraint(equalTo: viewComments.centerYAnchor, constant: 0).isActive = true
                 addHeightAnchor(viewProofs, multiplier: 0.7/10)
+                viewProofs.titleLabel?.adjustsFontSizeToFitWidth = true
                 
                 if !done {
                     addSubview(joinButton)
@@ -550,6 +553,7 @@ class FeedCell: UICollectionViewCell {
             scoreText.layer.cornerRadius = 5
             scoreText.layer.masksToBounds = true
             scoreText.addBorders(edges: [.top, .bottom], width: 1)
+            scoreText.adjustsFontSizeToFitWidth = true
             
             addSubview(proofText)
             addTopAnchor(proofText, anchor: vsImageView.topAnchor, constant: (screenWidth * 0.6 / 10))
@@ -561,6 +565,7 @@ class FeedCell: UICollectionViewCell {
             proofText.layer.cornerRadius = 5
             proofText.layer.masksToBounds = true
             proofText.addBorders(edges: [.top, .bottom], width: 1)
+            proofText.adjustsFontSizeToFitWidth = true
             
             if type == PUBLIC {
                 // scoreHome.alpha = 0
@@ -691,6 +696,7 @@ class FeedCell: UICollectionViewCell {
                 updateProgress.backgroundColor = blueColor
                 updateProgress.layer.cornerRadius = 5.0
                 updateProgress.clipsToBounds = true
+                updateProgress.titleLabel?.adjustsFontSizeToFitWidth = true
                 
                 /*
                 addSubview(updateRefreshLabel)
@@ -711,6 +717,8 @@ class FeedCell: UICollectionViewCell {
         addTopAnchor(subjectLabel, anchor: middleBottomGuide.bottomAnchor, constant: 0)
         subjectLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         addHeightAnchor(subjectLabel, multiplier: 1/15)
+        subjectLabel.adjustsFontSizeToFitWidth = true
+        
         if !isComeFromSelf {
             addTopAnchor(dividerLineView1, anchor: middleBottomGuide.bottomAnchor, constant: (screenSize.width * 1/15)) // CGSIZE
             addLeadingAnchor(dividerLineView1, anchor: contentGuide.leadingAnchor, constant: 1)

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CommentTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
+class CommentTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
     let screenSize = UIScreen.main.bounds
     var tableTitle : String!
     var tableView : UITableView!
@@ -21,6 +21,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor.white
         tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height), style: UITableViewStyle.plain)
         self.tableView.register(CommentCellView.self, forCellReuseIdentifier: "LabelCell")
         self.tableView.delegate = self
@@ -31,7 +32,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         navigationItem.title = tableTitle
         view.addSubview(messageInputContainerView)
         messageInputContainerView.widthAnchor.constraint(equalToConstant: screenWidth).isActive = true
-        messageInputContainerView.heightAnchor.constraint(equalToConstant: heightOfCommentView).isActive = true
+        messageInputContainerView.heightAnchor.constraint(equalToConstant: heightOfCommentView + 10).isActive = true
         messageInputContainerView.translatesAutoresizingMaskIntoConstraints = false
         bottomConstraint = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint!)
@@ -78,17 +79,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                     self.comments.append(comment)
                 }
                 self.tableView?.reloadData()
+                self.scrollToLastRow()
             }
         }
-    }
-    
-    func textViewDidChange(_ textView: UITextView) {
-        let fixedWidth = textView.frame.size.width
-        textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
-        let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
-        var newFrame = textView.frame
-        newFrame.size = CGSize(width: max(newSize.width, fixedWidth), height: newSize.height)
-        textView.frame = newFrame
     }
     
     func handleKeyboardNotification(notification: NSNotification) {
@@ -96,14 +89,23 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
             let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
             bottomConstraint?.constant = isKeyboardShowing ? -keyboardFrame!.height : 0
+            self.tableView.frame.size.height = (keyboardFrame?.origin.y)! - (self.heightOfCommentView + 10)
+            self.scrollToLastRow()
+            /*
             UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { (completed) in
                 if isKeyboardShowing {
-                    let indexPath = IndexPath(item: self.comments.count - 1, section: 0)
-                    self.tableView?.scrollToRow(at: indexPath as IndexPath, at: .bottom, animated: true)
                 }
             })
+             */
+        }
+    }
+    
+    func scrollToLastRow() {
+        if self.comments.count != 0 {
+            let indexPath = IndexPath(item: self.comments.count - 1, section: 0)
+            self.tableView?.scrollToRow(at: indexPath as IndexPath, at: .bottom, animated: true)
         }
     }
     
@@ -111,12 +113,6 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         let view = UIView()
         view.backgroundColor = UIColor.white
         return view
-    }()
-    
-    let inputTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "Add a comment..."
-        return textField
     }()
     
     let sendButton: UIButton = {
@@ -131,37 +127,33 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     let profileImageView: UIImageView = FeedCell().profileImageView
     
     private func setupInputComponents() {
-        let topBorderView = UIView()
-        topBorderView.backgroundColor = UIColor(white: 1, alpha: 0.5)
-        topBorderView.layer.borderColor = UIColor.gray.cgColor
-        topBorderView.layer.borderWidth = 0.25
+        profileImageView.removeFromSuperview()
+        textView.removeFromSuperview()
+        sendButton.removeFromSuperview()
         
-        messageInputContainerView.addSubview(topBorderView)
         messageInputContainerView.addSubview(profileImageView)
         messageInputContainerView.addSubview(textView)
         messageInputContainerView.addSubview(sendButton)
         
-        topBorderView.widthAnchor.constraint(equalToConstant: screenWidth).isActive = true
-        topBorderView.heightAnchor.constraint(equalToConstant: heightOfCommentView).isActive = true
-        topBorderView.bottomAnchor.constraint(equalTo: messageInputContainerView.bottomAnchor, constant: 0).isActive = true
-        topBorderView.translatesAutoresizingMaskIntoConstraints = false
-        
-        profileImageView.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
-        profileImageView.leadingAnchor.constraint(equalTo: topBorderView.leadingAnchor, constant : screenWidth * 0.2 / 10).isActive = true
+        // profileImageView.centerYAnchor.constraint(equalTo: messageInputContainerView.centerYAnchor).isActive = true
+        profileImageView.bottomAnchor.constraint(equalTo: textView.bottomAnchor, constant: 0).isActive = true
+        profileImageView.leadingAnchor.constraint(equalTo: messageInputContainerView.leadingAnchor, constant : screenWidth * 0.2 / 10).isActive = true
         setImage(fbID: memberFbID, imageView: profileImageView)
         profileImageView.layer.cornerRadius = screenWidth * 1.1 / 10 / 2
         profileImageView.widthAnchor.constraint(equalToConstant: screenWidth * 1.1 / 10).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: screenWidth * 1.1 / 10).isActive = true
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        textView.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
+        // textView.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
+        textView.bottomAnchor.constraint(equalTo: messageInputContainerView.bottomAnchor, constant: -(screenWidth * 0.2 / 10)).isActive = true
         textView.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant : screenWidth * 0.2 / 10).isActive = true
-        textView.widthAnchor.constraint(equalToConstant: screenWidth * 6.8 / 10).isActive = true
+        textView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant : screenWidth * 0 / 10).isActive = true
+        // textView.widthAnchor.constraint(equalToConstant: screenWidth * 6.8 / 10).isActive = true
         textView.heightAnchor.constraint(equalToConstant: heightOfCommentView - 10).isActive = true
         textView.translatesAutoresizingMaskIntoConstraints = false
         
-        sendButton.centerYAnchor.constraint(equalTo: topBorderView.centerYAnchor).isActive = true
-        sendButton.trailingAnchor.constraint(equalTo: topBorderView.trailingAnchor, constant : -(screenWidth * 0.2 / 10)).isActive = true
+        sendButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+        sendButton.trailingAnchor.constraint(equalTo: messageInputContainerView.trailingAnchor, constant : -(screenWidth * 0.2 / 10)).isActive = true
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         sendButton.widthAnchor.constraint(equalToConstant: screenWidth * 1.5 / 10).isActive = true
         sendButton.heightAnchor.constraint(equalToConstant: globalHeight).isActive = true
@@ -169,6 +161,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     }
     
     func addComment() {
+        if textView.text == addComents {
+            self.popupAlert(message: "Please enter your comment!", willDelay: false)
+        }
         var json: [String: Any] = ["challengeId": self.challengeId,
                                    "memberId": memberID
         ]
@@ -191,7 +186,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
             DispatchQueue.main.async {
                 self.refreshControl.beginRefreshingManually()
                 self.onRefresh()
-                self.textView.text = ""
+                self.setupInputComponents()
+                self.setTextViewToDefault()
+                self.scrollToLastRow()
             }
         }).resume()
     }
@@ -223,7 +220,8 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
         commentAtt.append(nameAtt)
         cell.thinksAboutChallengeView.attributedText = commentAtt
-        setImage(fbID: fbID, imageView: cell.profileImageView)        
+        setImage(fbID: fbID, imageView: cell.profileImageView)
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell
     }
     
@@ -244,19 +242,24 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
      
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
-            textView.text = "Add a comment..."
-            textView.textColor = UIColor.lightGray
+            setTextViewToDefault()
         }
     }
  
+    func setTextViewToDefault() {
+        self.textView.text = addComents
+        self.textView.textColor = UIColor.lightGray
+    }
+    
     let textView: UITextView = {
         let textView = UITextView()
         textView.textColor = UIColor.lightGray
-        textView.text = "Add a comment..."
-        textView.isScrollEnabled = true
-        textView.showsVerticalScrollIndicator = false
-        textView.font = UIFont.systemFont(ofSize: 16)
-        textView.alwaysBounceHorizontal = true
+        textView.text = addComents
+        textView.isScrollEnabled = false
+        // textView.showsVerticalScrollIndicator = false
+        // textView.font = UIFont.systemFont(ofSize: 16)
+        textView.font = UIFont.preferredFont(forTextStyle: .headline)
+        // textView.alwaysBounceHorizontal = true
         textView.layer.borderColor = UIColor (red:204.0/255.0, green:204.0/255.0, blue:204.0/255.0, alpha:1.0).cgColor;
         textView.layer.borderWidth = 1.0;
         textView.layer.cornerRadius = 5.0;

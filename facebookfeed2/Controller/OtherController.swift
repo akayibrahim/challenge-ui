@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import FBSDKLoginKit
 
 class OtherController: UITableViewController {
     static let headerId = "headerId"
     static let cellId = "cellId"
     let screenSize = UIScreen.main.bounds
+    var logoutIndex : Int = 4
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +39,19 @@ class OtherController: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 0 {
+            settings()
+        } else if indexPath.row == 1 {
+            privacy()
+        } else if indexPath.row == 2 {
+            support()
+        } else if indexPath.row == 3 {
+        } else if indexPath.row == logoutIndex {
+            logout()
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableRowHeightHeight
     }
@@ -60,6 +75,25 @@ class OtherController: UITableViewController {
          }
          */
         return header
+    }
+    
+    lazy var loginManager: FBSDKLoginManager = {
+        return FBSDKLoginManager()
+    }()
+    
+    func logout() {
+        FBSDKLoginManager().logOut()
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = FacebookController()
+    }
+    
+    func settings() {
+    }
+    
+    func privacy() {
+    }
+    
+    func support() {
     }
 }
 

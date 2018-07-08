@@ -8,15 +8,15 @@
 
 import UIKit
 
-// var memberID = ""
-var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
+var memberID = ""
+// var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
 var memberFbID = "10156204749600712" // dummy
 var memberName = "Seher Can" // dummy
-var countOffollowers = "126"
-var countOffollowing = "198"
+var countOffollowers: Int = 0
+var countOffollowing: Int = 0
 
 // CONSTANTS
-var dummyServiceCall : Bool = true
+var dummyServiceCall : Bool = false
 var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"
@@ -38,7 +38,7 @@ var teamCountTwo = "2"
 var teamCountThree = "3"
 var teamCountFour = "4"
 var comment = "COMMENT"
-var proof = "PROOF"
+var proof = "PROVE"
 var supportType = "SUPPORT"
 var following = "FOLLOWING"
 var follower = "FOLLOWER"
@@ -62,13 +62,13 @@ var profileTitle = "Profile"
 var profileFirstHeader = "YOUR ACTIVE CHALLENGES"
 var profileSecondHeader = "YOUR PAST CHALLENGES"
 var commentsTableTitle = "Comments"
-var proofsTableTitle = "Prooves"
+var proofsTableTitle = "Proofs"
 var addChallengeTitle = "Add Challenge"
 
 // BUTTON OR LABEL NAME
 var supportText = "SUPPORT"
 var viewAllComments = "View all 0 comments"
-var viewAllProofs = "View all 0 prooves"
+var viewAllProofs = "View all 0 proofs"
 var addComents = "Add a comment.."
 var addProofsVar = "Add a proof.."
 var joinToChlVar = "Join To It"
@@ -78,7 +78,7 @@ var followButtonText = "Follow"
 var customSubjectLabel = "Custom Subject"
 var ok = "OK"
 var greaterThan = NSMutableAttributedString(string: ">", attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
-var proofedText = "PROOFED"
+var proofedText = "PROVED"
 var scoreForPrivate = " | SCORE | "
 
 // URL's

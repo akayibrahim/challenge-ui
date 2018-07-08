@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import FBSDKLoginKit
 
 class OtherViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -27,46 +26,23 @@ class OtherViewCell: UITableViewCell {
             settingsButton.translatesAutoresizingMaskIntoConstraints = false
             settingsButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
             settingsButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            settingsButton.addTarget(self, action: #selector(OtherViewCell.settings), for: .touchUpInside)
         } else if cellRow == 1 {
             addSubview(privacyButton)
             privacyButton.translatesAutoresizingMaskIntoConstraints = false
             privacyButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
             privacyButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            privacyButton.addTarget(self, action: #selector(OtherViewCell.privacy), for: .touchUpInside)
         } else if cellRow == 2 {
             addSubview(supportButton)
             supportButton.translatesAutoresizingMaskIntoConstraints = false
             supportButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
             supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            supportButton.addTarget(self, action: #selector(OtherViewCell.support), for: .touchUpInside)
         } else if cellRow == 3 {
         } else if cellRow == 4 {
             addSubview(logoutButton)
             logoutButton.translatesAutoresizingMaskIntoConstraints = false
             logoutButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
-            logoutButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            logoutButton.addTarget(self, action: #selector(OtherViewCell.logout), for: .touchUpInside)
+            logoutButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true            
         }
-    }
-    
-    func settings() {
-    }
-    
-    func privacy() {
-    }
-    
-    func support() {
-    }
-    
-    lazy var loginManager: FBSDKLoginManager = {
-        return FBSDKLoginManager()
-    }()
-    
-    func logout() {
-        FBSDKLoginManager().logOut()
-        window?.rootViewController = FacebookController()
-        print("logout")
     }
     
     let logoutButton: UIButton = OtherViewCell.button("Log Out", titleColor: UIColor.red)

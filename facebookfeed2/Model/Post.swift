@@ -21,6 +21,7 @@ class Post: SafeJsonObject {
     var firstTeamCount : String?
     var secondTeamCount : String?
     var challengerFBId : String?
+    var challengerId : String?
     @nonobjc var versusAttendanceList = [VersusAttendance]()
     @nonobjc var joinAttendanceList = [JoinAttendance]()
     var supportFirstTeam : Bool?

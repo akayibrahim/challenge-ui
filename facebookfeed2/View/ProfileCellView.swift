@@ -9,10 +9,13 @@
 import UIKit
 
 class ProfileCellView: UICollectionViewCell {
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
+    }
+    
+    init(frame: CGRect, memberFbId: String, name: String) {
+        super.init(frame: frame)
+        setupViews(memberFbId: memberFbId, name: name)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -20,33 +23,33 @@ class ProfileCellView: UICollectionViewCell {
     }
     
     let screenSize = UIScreen.main.bounds
-    func setupViews() {
+    func setupViews(memberFbId: String, name: String) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
-        generateProfile(contentGuide)
+        generateProfile(contentGuide, memberFbId: memberFbId, name: name)
     }
     
-    func generateProfile(_ contentGuide: UILayoutGuide) {
+    func generateProfile(_ contentGuide: UILayoutGuide, memberFbId: String, name: String) {
         addSubview(profileImageView)
         addTopAnchor(profileImageView, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: 0)
         addWidthAnchor(profileImageView, multiplier: 1.7/10)
         addHeightAnchor(profileImageView, multiplier: 2/10)                
-        setImage(fbID: memberFbID, imageView: profileImageView)
+        setImage(fbID: memberFbId, imageView: profileImageView)
         profileImageView.layer.cornerRadius = 4.0
         profileImageView.layer.masksToBounds = true
         profileImageView.contentMode = .scaleAspectFill
         
         addSubview(nameLabel)
-        let attributedText = NSMutableAttributedString(string: "\(memberName)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 18)])
+        let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 18)])
         nameLabel.attributedText = attributedText
-        addTopAnchor(nameLabel, anchor: profileImageView.topAnchor, constant: screenSize.width * 0.2 / 10)
+        addTopAnchor(nameLabel, anchor: profileImageView.topAnchor, constant: screenSize.width * 0.15 / 10)
         addLeadingAnchor(nameLabel, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.5 / 10)
-        nameLabel.text = memberName
+        nameLabel.text = name
         
         addSubview(followersLabel)
         followersLabel.text = "Followers"
-        followersLabel.font = UIFont.systemFont(ofSize: 10)
+        followersLabel.font = UIFont.boldSystemFont(ofSize: 11)
         addBottomAnchor(followersLabel, anchor: profileImageView.bottomAnchor, constant: -(screenSize.width * 0.1 / 10))
         addLeadingAnchor(followersLabel, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.5 / 10)
         
@@ -57,24 +60,24 @@ class ProfileCellView: UICollectionViewCell {
         
         addSubview(followingLabel)
         followingLabel.text = "Following"
-        followingLabel.font = UIFont.systemFont(ofSize: 10)
+        followingLabel.font = UIFont.boldSystemFont(ofSize: 11)
         addBottomAnchor(followingLabel, anchor: followersLabel.bottomAnchor, constant: 0)
         addLeadingAnchor(followingLabel, anchor: followersLabel.trailingAnchor, constant: screenSize.width * 0.3 / 10)
         
         addSubview(followingCount)
-        followingCount.text = "117"
+        followingCount.text = "0"
         followingCount.font = UIFont.boldSystemFont(ofSize: 14)
         addBottomAnchor(followingCount, anchor: followingLabel.topAnchor, constant: 0)
         followingCount.centerXAnchor.constraint(equalTo: followingLabel.centerXAnchor).isActive = true
         
         addSubview(challangeLabel)
         challangeLabel.text = "Challange"
-        challangeLabel.font = UIFont.systemFont(ofSize: 10)
+        challangeLabel.font = UIFont.boldSystemFont(ofSize: 11)
         addBottomAnchor(challangeLabel, anchor: followingLabel.bottomAnchor, constant: 0)
         addLeadingAnchor(challangeLabel, anchor: followingLabel.trailingAnchor, constant: screenSize.width * 0.3 / 10)
         
         addSubview(challangeCount)
-        challangeCount.text = "8"
+        challangeCount.text = "0"
         challangeCount.font = UIFont.boldSystemFont(ofSize: 14)
         addBottomAnchor(challangeCount, anchor: challangeLabel.topAnchor, constant: 0)
         challangeCount.centerXAnchor.constraint(equalTo: challangeLabel.centerXAnchor).isActive = true
@@ -84,6 +87,26 @@ class ProfileCellView: UICollectionViewCell {
         addTrailingAnchor(other, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.05 / 10))
         addHeightAnchor(other, multiplier: 0.7 / 10)
         addWidthAnchor(other, multiplier: 0.7 / 10)
+        
+        addSubview(follow)
+        addTopAnchor(follow, anchor: profileImageView.topAnchor, constant: 0)
+        addTrailingAnchor(follow, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.2 / 10))
+        addWidthAnchor(follow, multiplier: 2.4 / 10)
+        addHeightAnchor(follow, multiplier: 0.8 / 10)
+        follow.alpha = 0
+        
+        addSubview(unfollow)
+        addTopAnchor(unfollow, anchor: profileImageView.topAnchor, constant: 0)
+        addTrailingAnchor(unfollow, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.2 / 10))
+        addWidthAnchor(unfollow, multiplier: 2.4 / 10)
+        addHeightAnchor(unfollow, multiplier: 0.8 / 10)
+        unfollow.alpha = 0
+        
+        addSubview(privateLabel)
+        privateLabel.text = "(Private Account)"
+        addTopAnchor(privateLabel, anchor: nameLabel.bottomAnchor, constant: screenSize.width * 0.0 / 10)
+        addLeadingAnchor(privateLabel, anchor: nameLabel.leadingAnchor, constant: -(screenSize.width * 0.0 / 10))
+        privateLabel.alpha = 0
         
         /*
         addSubview(activity)
@@ -103,4 +126,18 @@ class ProfileCellView: UICollectionViewCell {
     let followingLabel: UILabel = FeedCell.labelCreateDef(1)
     let challangeCount: UILabel = FeedCell.labelCreateDef(1)
     let challangeLabel: UILabel = FeedCell.labelCreateDef(1)
+    
+    static func followButton(text: String) -> subclasssedUIButton {
+        let button = subclasssedUIButton()
+        button.setTitle(text, for: UIControlState())
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.backgroundColor = UIColor.rgb(87, green: 143, blue: 255)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.layer.cornerRadius = 2
+        return button
+    }
+    
+    let follow: subclasssedUIButton = ProfileCellView.followButton(text: followButtonText)
+    let unfollow: subclasssedUIButton = ProfileCellView.followButton(text: "Unfollow")
+    let privateLabel : UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.red)
 }

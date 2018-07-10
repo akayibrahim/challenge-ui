@@ -84,21 +84,36 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         }
     }
     
+    var tableBottomHeight : CGFloat = 0
     func handleKeyboardNotification(notification: NSNotification) {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
             let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
             bottomConstraint?.constant = isKeyboardShowing ? -keyboardFrame!.height : 0
-            self.tableView.frame.size.height = (keyboardFrame?.origin.y)! - (self.heightOfCommentView + 10)
+            self.tableView.frame.size.height = (keyboardFrame?.origin.y)! - (self.textView.frame.height + 10)
+            if !isKeyboardShowing {
+            }
+            tableBottomHeight = (keyboardFrame?.origin.y)!
             self.scrollToLastRow()
+            
             /*
             UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { (completed) in
-                if isKeyboardShowing {
-                }
+             
             })
              */
+        }
+    }
+    
+    override func textViewDidChange(_ textView: UITextView) {
+        let size = CGSize(width: textView.frame.width, height: .infinity)
+        let estimatedSize = textView.sizeThatFits(size)
+        textView.constraints.forEach{ (constraint) in
+            if constraint.firstAttribute == .height {
+                constraint.constant = estimatedSize.height
+                self.tableView.frame.size.height = tableBottomHeight - 10 - estimatedSize.height
+            }
         }
     }
     
@@ -216,15 +231,25 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
         let cell = CommentCellView(frame: frameOfCell, cellRow: indexPath.row)
         let fbID = comments[indexPath.item].fbID
-        let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
+        let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])        
         let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
         commentAtt.append(nameAtt)
         cell.thinksAboutChallengeView.attributedText = commentAtt
         setImage(fbID: fbID, imageView: cell.profileImageView)
+        
         cell.selectionStyle = UITableViewCellSelectionStyle.none
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
+        cell.profileImageView.tag = indexPath.row
+        cell.profileImageView.isUserInteractionEnabled = true
+        cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
         return cell
     }
     
+    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! UIImageView
+        openProfile(name: comments[tappedImage.tag].name!, memberId: comments[tappedImage.tag].memberId!, memberFbId: comments[tappedImage.tag].fbID!)
+    }
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 44
     }
@@ -265,4 +290,46 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         textView.layer.cornerRadius = 5.0;
         return textView
     }()
+    
+    func openProfile(name: String, memberId: String, memberFbId:String) {
+        let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        getMemberInfo(memberId: memberId)
+        group.wait()
+        profileController.navigationItem.title = name
+        profileController.memberIdForFriendProfile = memberId
+        profileController.memberNameForFriendProfile = name
+        profileController.memberFbIdForFriendProfile = memberFbId
+        profileController.memberCountOfFollowerForFriendProfile = countOfFollowersForFriend
+        profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForFriend
+        profileController.memberIsPrivateForFriendProfile = friendIsPrivate
+        profileController.profile = true
+        profileController.isProfileFriend = false
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(profileController, animated: true)
+    }
+    
+    var countOfFollowersForFriend = 0
+    var countOfFollowingForFriend = 0
+    var friendIsPrivate = false
+    let group = DispatchGroup()
+    func getMemberInfo(memberId: String) {
+        let jsonURL = URL(string: getMemberInfoURL + memberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            if let post = postOfMember {
+                self.countOfFollowersForFriend = (post["followerCount"] as? Int)!
+                self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
+                self.friendIsPrivate = (post["privateMember"] as? Bool)!
+            }
+        }
+    }
 }

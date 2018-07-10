@@ -24,6 +24,9 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     var following = [Following]()
     var labelCell = "labelCell"
     var followCell = "followCell"
+    var profile: Bool = false
+    var memberIdForFriendProfile: String?
+    var isProfileFriend: Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,7 +76,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     func fetchFollowingsData(url: String) {
-        let jsonURL = URL(string: url + memberID)!
+        let jsonURL = URL(string: url + (profile ? memberIdForFriendProfile! : memberID))!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
@@ -95,7 +98,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     func fetchFollowersData(url: String) {
-        let jsonURL = URL(string: url + memberID)!
+        let jsonURL = URL(string: url + (profile ? memberIdForFriendProfile! : memberID))!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
@@ -163,7 +166,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     func isHome() -> Bool {
-        return popIndexPath == leftSideIndex
+        return popIndexPath != nil ? popIndexPath == leftSideIndex : false
     }
     
     func isAway() -> Bool {
@@ -196,7 +199,71 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 }
             }
         } else {
-            
+            if isFollower {
+                self.openProfile(name: "\(followers[indexPath.row].name!) \(followers[indexPath.row].surname!)", memberId: followers[indexPath.row].id!, memberFbId: followers[indexPath.row].facebookID!)
+            } else if isFollowing {
+                self.openProfile(name: "\(following[indexPath.row].name!) \(following[indexPath.row].surname!)", memberId: following[indexPath.row].id!, memberFbId: following[indexPath.row].facebookID!)
+            }
+        }
+    }
+    
+    func openProfile(name: String, memberId: String, memberFbId:String) {
+        let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        getMemberInfo(memberId: memberId)
+        isMyFriend(friendMemberId: memberId)
+        group.wait()
+        profileController.navigationItem.title = name
+        profileController.memberIdForFriendProfile = memberId
+        profileController.memberNameForFriendProfile = name
+        profileController.memberFbIdForFriendProfile = memberFbId
+        profileController.memberCountOfFollowerForFriendProfile = countOfFollowersForFriend
+        profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForFriend
+        profileController.memberIsPrivateForFriendProfile = friendIsPrivate
+        profileController.profile = true
+        profileController.isProfileFriend = isProfileFriend        
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(profileController, animated: true)
+    }
+    
+    var countOfFollowersForFriend = 0
+    var countOfFollowingForFriend = 0
+    var friendIsPrivate = false
+    let group = DispatchGroup()
+    func getMemberInfo(memberId: String) {
+        let jsonURL = URL(string: getMemberInfoURL + memberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            if let post = postOfMember {
+                self.countOfFollowersForFriend = (post["followerCount"] as? Int)!
+                self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
+                self.friendIsPrivate = (post["privateMember"] as? Bool)!
+            }
+        }
+    }
+    
+    func isMyFriend(friendMemberId: String) {
+        let jsonURL = URL(string: isMyFriendURL + memberID + "&friendMemberId=" + friendMemberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            let isMyFriend = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
+            self.isProfileFriend = (isMyFriend as String).toBool()
         }
     }
     

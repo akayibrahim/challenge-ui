@@ -88,6 +88,10 @@ class FollowRequestController: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        openProfile(name: "\(friendRequest[indexPath.row].name!) \(friendRequest[indexPath.row].surname!)", memberId: friendRequest[indexPath.row].id!, memberFbId: friendRequest[indexPath.row].facebookID!)
+    }
+    
     func followFriend(sender: subclasssedUIButton) {
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
         deleteOrFollowFriend(url: url, isDelete: false, friendMemberId: sender.memberId!)
@@ -139,6 +143,47 @@ class FollowRequestController: UITableViewController {
         return header
     }
     
+    func openProfile(name: String, memberId: String, memberFbId:String) {
+        let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        getMemberInfo(memberId: memberId)
+        group.wait()
+        profileController.navigationItem.title = name
+        profileController.memberIdForFriendProfile = memberId
+        profileController.memberNameForFriendProfile = name
+        profileController.memberFbIdForFriendProfile = memberFbId
+        profileController.memberCountOfFollowerForFriendProfile = countOfFollowersForFriend
+        profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForFriend
+        profileController.memberIsPrivateForFriendProfile = friendIsPrivate
+        profileController.profile = true
+        profileController.isProfileFriend = false
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(profileController, animated: true)
+    }
+    
+    var countOfFollowersForFriend = 0
+    var countOfFollowingForFriend = 0
+    var friendIsPrivate = false
+    let group = DispatchGroup()
+    func getMemberInfo(memberId: String) {
+        let jsonURL = URL(string: getMemberInfoURL + memberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            if let post = postOfMember {
+                self.countOfFollowersForFriend = (post["followerCount"] as? Int)!
+                self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
+                self.friendIsPrivate = (post["privateMember"] as? Bool)!
+            }
+        }
+    }
 }
 
 class RequestHeader: UITableViewHeaderFooterView {

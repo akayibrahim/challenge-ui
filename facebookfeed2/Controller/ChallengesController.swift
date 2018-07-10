@@ -41,10 +41,20 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var notDonePosts = [Post]()
     var explorer : Bool = false
     var challengIdForTrendAndExplorer: String?
+    var profile: Bool = false
+    var memberIdForFriendProfile: String?
+    var memberFbIdForFriendProfile: String?
+    var memberNameForFriendProfile: String?
+    var memberCountOfFollowerForFriendProfile: Int?
+    var memberCountOfFollowingForFriendProfile: Int?
+    var memberIsPrivateForFriendProfile: Bool?
+    var isProfileFriend: Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if self.tabBarController?.selectedIndex == chanllengeIndex {
+        if profile {
+            
+        } else if self.tabBarController?.selectedIndex == chanllengeIndex {
             navigationItem.title = challengeTitle
             refreshControl = UIRefreshControl()
             refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
@@ -84,7 +94,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func loadChallenges() {
         if dummyServiceCall == false {
             // Asynchronous Http call to your api url, using NSURLSession:
-            if explorer {
+            if profile {
+                if !memberIsPrivateForFriendProfile! || (memberIsPrivateForFriendProfile! && isProfileFriend!) {
+                    fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + memberIdForFriendProfile!, profile: true)
+                }
+                return
+            } else if explorer {
                 fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallanges=false", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == trendsIndex {
@@ -98,7 +113,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 return
             }
         } else {
-            if explorer {
+            if profile {
+                self.donePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: true)
+                self.notDonePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: false)
+                self.posts = donePosts
+                self.posts.append(contentsOf: notDonePosts)
+                return
+            } else if explorer {
                 self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
                 return
             } else if self.tabBarController?.selectedIndex == trendsIndex {
@@ -150,7 +171,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var reusableView : UICollectionReusableView? = nil
-        if self.tabBarController?.selectedIndex == profileIndex && !explorer {
+        if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile {
             if kind == UICollectionElementKindSectionHeader {
                 let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "someRandonIdentifierString", for: indexPath as IndexPath) as! ChallengeHeader
                 if indexPath.section == 1 {
@@ -165,7 +186,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if self.tabBarController?.selectedIndex == profileIndex && !explorer {
+        if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile {
             if section == 0 {
                 return CGSize(width: view.frame.width, height: 0)
             }
@@ -175,7 +196,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if self.tabBarController?.selectedIndex == profileIndex && !explorer  {
+        if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile {
             if section == 0 {
                 return 1
             } else if section == 1 {
@@ -188,7 +209,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if self.tabBarController?.selectedIndex == profileIndex && !explorer  {
+        if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile  {
             return 3
         }
         return 1
@@ -231,32 +252,52 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
     }
     
-    func createProfile() -> ProfileCellView{
-        let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10))
+    func createProfile() -> ProfileCellView {
+        let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10), memberFbId: (profile ? memberFbIdForFriendProfile! : memberFbID) , name: (profile ? memberNameForFriendProfile! : memberName))
+        if profile {
+            profileCell.other.alpha = 0
+            if isProfileFriend! {
+                profileCell.unfollow.alpha = 1
+            } else {
+                profileCell.follow.alpha = 1
+            }
+            if memberIsPrivateForFriendProfile! {
+                profileCell.privateLabel.alpha = 1
+            }
+        }
         profileCell.other.addTarget(self, action: #selector(self.openOthers), for: UIControlEvents.touchUpInside)
-        profileCell.followersCount.text = "\(countOffollowers)"
+        profileCell.followersCount.text = "\((profile ? memberCountOfFollowerForFriendProfile : countOffollowers)!)"
         let followersCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowersCountTap))
         profileCell.followersCount.isUserInteractionEnabled = true
-        profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
         let followersLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowersCountTap))
         profileCell.followersLabel.isUserInteractionEnabled = true
-        profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)
-        profileCell.followingCount.text = "\(countOffollowing)"
+        profileCell.followingCount.text = "\((profile ? memberCountOfFollowingForFriendProfile : countOffollowing)!)"
         let followingCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowingCountTap))
         profileCell.followingCount.isUserInteractionEnabled = true
-        profileCell.followingCount.addGestureRecognizer(followingCountTapGesture)
         let followingLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowingCountTap))
         profileCell.followingLabel.isUserInteractionEnabled = true
-        profileCell.followingLabel.addGestureRecognizer(followingLabelTapGesture)
         let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleChallengeCountTap))
         profileCell.challangeCount.isUserInteractionEnabled = true
-        profileCell.challangeCount.addGestureRecognizer(challengeTapGesture)
         profileCell.challangeCount.text = "\(self.notDonePosts.count + self.donePosts.count)"
+        if !profile || (profile && !memberIsPrivateForFriendProfile!) || (profile && memberIsPrivateForFriendProfile! && isProfileFriend!) {
+            profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
+            profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)
+            profileCell.followingCount.addGestureRecognizer(followingCountTapGesture)
+            profileCell.followingLabel.addGestureRecognizer(followingLabelTapGesture)
+            profileCell.challangeCount.addGestureRecognizer(challengeTapGesture)
+        } else {
+            profileCell.followersCount.textColor = UIColor.gray
+            profileCell.followersLabel.textColor = UIColor.gray
+            profileCell.followingCount.textColor = UIColor.gray
+            profileCell.followingLabel.textColor = UIColor.gray
+            profileCell.challangeCount.textColor = UIColor.gray
+            profileCell.challangeLabel.textColor = UIColor.gray
+        }
         return profileCell
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if self.tabBarController?.selectedIndex == profileIndex  && !self.explorer  {
+        if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile  {
             if indexPath.section == 0 && indexPath.row == 0 {
                 let feedCellForProfile = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
                 let profileCell = createProfile()
@@ -383,6 +424,24 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             feedCell.others.addTarget(self, action: #selector(self.deleteChallenge), for: UIControlEvents.touchUpInside)
             feedCell.others.challengeId = posts[indexPath.item].id
         }
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
+        feedCell.challengerImageView.tag = indexPath.row
+        feedCell.challengerImageView.isUserInteractionEnabled = true
+        feedCell.challengerImageView.addGestureRecognizer(tapGestureRecognizer)
+        let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
+        feedCell.nameAndStatusLabel.tag = indexPath.row
+        feedCell.nameAndStatusLabel.isUserInteractionEnabled = true
+        feedCell.nameAndStatusLabel.addGestureRecognizer(tapGestureRecognizerName)
+    }
+    
+    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! UIImageView
+        openProfile(name: posts[tappedImage.tag].name!, memberId: posts[tappedImage.tag].challengerId!, memberFbId: posts[tappedImage.tag].challengerFBId!)
+    }
+    
+    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! UILabel
+        openProfile(name: posts[tappedImage.tag].name!, memberId: posts[tappedImage.tag].challengerId!, memberFbId: posts[tappedImage.tag].challengerFBId!)
     }
     
     func deleteChallenge(_ sender: subclasssedUIButton) {
@@ -405,6 +464,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.tableTitle = "Followers"
         selectionTable.listMode = true
         selectionTable.isFollower = true
+        selectionTable.profile = profile
+        selectionTable.memberIdForFriendProfile = memberIdForFriendProfile
         selectionTable.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
@@ -414,6 +475,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.tableTitle = "Following"
         selectionTable.listMode = true
         selectionTable.isFollowing = true
+        selectionTable.profile = profile
+        selectionTable.memberIdForFriendProfile = memberIdForFriendProfile
         selectionTable.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
@@ -583,7 +646,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
     let screenSize = UIScreen.main.bounds
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if self.tabBarController?.selectedIndex == profileIndex && !explorer {
+        if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile {
             if indexPath.row == 0 && indexPath.section == 0 {
                 return CGSize(width: view.frame.width, height: screenSize.width * 2.5 / 10)
             }
@@ -729,6 +792,66 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         challengeController.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(challengeController, animated: true)
+    }
+    
+    func openProfile(name: String, memberId: String, memberFbId:String) {
+        let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        getMemberInfo(memberId: memberId)
+        isMyFriend(friendMemberId: memberId)
+        group.wait()
+        profileController.navigationItem.title = name
+        profileController.memberIdForFriendProfile = memberId
+        profileController.memberNameForFriendProfile = name
+        profileController.memberFbIdForFriendProfile = memberFbId
+        profileController.memberCountOfFollowerForFriendProfile = countOfFollowersForFriend
+        profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForFriend
+        profileController.memberIsPrivateForFriendProfile = friendIsPrivate
+        profileController.profile = true
+        profileController.isProfileFriend = isProfileFriend        
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(profileController, animated: true)
+    }
+    
+    var countOfFollowersForFriend = 0
+    var countOfFollowingForFriend = 0
+    var friendIsPrivate = false
+    let group = DispatchGroup()
+    func getMemberInfo(memberId: String) {
+        let jsonURL = URL(string: getMemberInfoURL + memberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            if let post = postOfMember {
+                self.countOfFollowersForFriend = (post["followerCount"] as? Int)!
+                self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
+                self.friendIsPrivate = (post["privateMember"] as? Bool)!
+            }
+        }
+    }
+    
+    func isMyFriend(friendMemberId: String) {
+        let jsonURL = URL(string: isMyFriendURL + memberID + "&friendMemberId=" + friendMemberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            let isMyFriend = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
+            self.isProfileFriend = (isMyFriend as String).toBool()
+        }
     }
 }
 

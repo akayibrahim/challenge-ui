@@ -22,33 +22,42 @@ class OtherViewCell: UITableViewCell {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         if cellRow == 0 {
-            addSubview(settingsButton)
-            settingsButton.translatesAutoresizingMaskIntoConstraints = false
-            settingsButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
-            settingsButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            settings.text = "Settings"
+            settings.font = UIFont.preferredFont(forTextStyle: .headline)
+            addSubview(settings)
+            settings.translatesAutoresizingMaskIntoConstraints = false
+            settings.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
+            settings.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 1 {
-            addSubview(privacyButton)
-            privacyButton.translatesAutoresizingMaskIntoConstraints = false
-            privacyButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
-            privacyButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            privacy.text = "Privacy"
+            privacy.font = UIFont.preferredFont(forTextStyle: .headline)
+            addSubview(privacy)
+            privacy.translatesAutoresizingMaskIntoConstraints = false
+            privacy.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
+            privacy.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 2 {
-            addSubview(supportButton)
-            supportButton.translatesAutoresizingMaskIntoConstraints = false
-            supportButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
-            supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            support.text = "Support"
+            support.font = UIFont.preferredFont(forTextStyle: .headline)
+            addSubview(support)
+            support.translatesAutoresizingMaskIntoConstraints = false
+            support.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
+            support.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 3 {
         } else if cellRow == 4 {
-            addSubview(logoutButton)
-            logoutButton.translatesAutoresizingMaskIntoConstraints = false
-            logoutButton.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
-            logoutButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true            
+            logout.text = "Log out"
+            logout.font = UIFont.preferredFont(forTextStyle: .headline)
+            logout.textColor = UIColor.red
+            addSubview(logout)
+            logout.translatesAutoresizingMaskIntoConstraints = false
+            logout.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
+            logout.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         }
     }
     
-    let logoutButton: UIButton = OtherViewCell.button("Log Out", titleColor: UIColor.red)
-    let settingsButton: UIButton = OtherViewCell.button("Settings", titleColor: UIColor.black)
-    let supportButton: UIButton = OtherViewCell.button("Support", titleColor: UIColor.black)
-    let privacyButton: UIButton = OtherViewCell.button("Privacy", titleColor: UIColor.black)
+    let logout: UILabel = FeedCell.labelCreateDef(1)
+    let settings: UILabel = FeedCell.labelCreateDef(1)
+    let support: UILabel = FeedCell.labelCreateDef(1)
+    let privacy: UILabel = FeedCell.labelCreateDef(1)
     
     static func button(_ title: String, titleColor: UIColor) -> UIButton {
         let button = UIButton()

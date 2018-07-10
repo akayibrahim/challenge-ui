@@ -65,20 +65,16 @@ class TableViewCellContent: UITableViewCell {
             let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())
             datePicker.minimumDate = tomorrow
         } else if cellRow == visibilityIndexPath.row {
-            if typeIndex == 2 {
-                visibilitySegControlForSelf.selectedSegmentIndex = 0
-                addSubview(visibilitySegControlForSelf)
-                addTrailingAnchor(visibilitySegControlForSelf, anchor: contentGuide.trailingAnchor, constant: 0)
-                visibilitySegControlForSelf.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
-            } else {
-                visibilitySegControl.selectedSegmentIndex = 1
-                addSubview(visibilitySegControl)
-                addTrailingAnchor(visibilitySegControl, anchor: contentGuide.trailingAnchor, constant: 0)
-                visibilitySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
-            }
-            if typeIndex == 0 {
+            visibilitySegControl.selectedSegmentIndex = 1
+            addSubview(visibilitySegControl)
+            addTrailingAnchor(visibilitySegControl, anchor: contentGuide.trailingAnchor, constant: 0)
+            visibilitySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            if typeIndex == 1 {
+                visibilitySegControl.selectedSegmentIndex = 2
+            } else if typeIndex == 2 {
                 visibilitySegControl.selectedSegmentIndex = 0
             }
+            
         } else if cellRow == doneIndexPath.row {
             addSubview(isDone)
             addTrailingAnchor(isDone, anchor: contentGuide.trailingAnchor, constant: 0)
@@ -131,8 +127,7 @@ class TableViewCellContent: UITableViewCell {
         return imageView
     }()
     
-    let visibilitySegControlForSelf: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Just Me", "Friend", "Everyone"])
-    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Friend", "Everyone"])
+    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Just Team", "Friends", "Everyone"])
     let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["AS A TEAM", "TO PEOPLE", "TO MYSELF", "TO WORLD"])
     let deadLines: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["A DAY", "A WEEK", "A MONTH", "A YEAR"])
     let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
@@ -162,26 +157,12 @@ class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor.gray
         */
-        self.commentView.delegate = self
+        // self.commentView.delegate = self
         addSubview(commentView)
         commentView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
         addLeadingAnchor(commentView, anchor: contentGuide.leadingAnchor, constant: 0)
         addWidthAnchor(commentView, multiplier: 0.93)
         commentView.heightAnchor.constraint(equalToConstant: globalHeight - 10).isActive = true
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if commentView.textColor == UIColor.lightGray {
-            commentView.text = nil
-            commentView.textColor = UIColor.gray
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if commentView.text.isEmpty {
-            commentView.text = "Comment"
-            commentView.textColor = UIColor.lightGray
-        }
     }
     
     let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
@@ -190,14 +171,14 @@ class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
         let textView = UITextView()
         textView.textColor = UIColor.lightGray
         textView.text = "Comment"
-        textView.isScrollEnabled = true
-        textView.showsVerticalScrollIndicator = false
-        textView.font = UIFont.boldSystemFont(ofSize: 16)
-        textView.alwaysBounceHorizontal = true
+        textView.isScrollEnabled = false
+        // textView.showsVerticalScrollIndicator = false
+        // textView.font = UIFont.boldSystemFont(ofSize: 16)
+        textView.font = UIFont.preferredFont(forTextStyle: .headline)
+        // textView.alwaysBounceHorizontal = true
         textView.layer.borderColor = UIColor (red:204.0/255.0, green:204.0/255.0, blue:204.0/255.0, alpha:1.0).cgColor;
         textView.layer.borderWidth = 1.0;
         textView.layer.cornerRadius = 5.0;
         return textView
     }()
-
 }

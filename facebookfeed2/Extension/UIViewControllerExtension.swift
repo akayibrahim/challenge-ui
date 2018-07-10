@@ -87,7 +87,7 @@ extension UIViewController: UITextViewDelegate {
         let estimatedSize = textView.sizeThatFits(size)
         textView.constraints.forEach{ (constraint) in
             if constraint.firstAttribute == .height {
-                constraint.constant = estimatedSize.height
+                constraint.constant = estimatedSize.height                
             }
         }
     }

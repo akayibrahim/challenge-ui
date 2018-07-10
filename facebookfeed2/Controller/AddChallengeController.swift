@@ -302,6 +302,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         json["firstTeamCount"] = !isPrivate() ? "1" : leftSide.count
         json["secondTeamCount"] = rightSide.count
         json["type"] = type
+        let index = visibilityCell.visibilitySegControl.selectedSegmentIndex
+        json["visibility"] = index == 0 ? 3 : (index == 1 ? 2 : 1)
         
         if isPublic() {
             var joinAttendanceList: [[String: Any]] = []
@@ -313,8 +315,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             json["joinAttendanceList"] = rightSide.count == 0 ? nil : joinAttendanceList as Any
         }
         if isSelf() {
-            let index = visibilityCell.visibilitySegControlForSelf.selectedSegmentIndex
-            json["visibility"] = index == 0 ? 3 : (index == 1 ? 2 : 1)
             json["goal"] = "10" // TODO
             if doneCell.isDone.isOn {
                 json["result"] = resultCell.labelOtherSide
@@ -333,8 +333,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 versusAttendanceList.append(versusAttendance)
             }
             json["versusAttendanceList"] = versusAttendanceList as Any
-            let indexPri = visibilityCell.visibilitySegControlForSelf.selectedSegmentIndex
-            json["visibility"] = indexPri == 0 ? 2 : 1
             if doneCell.isDone.isOn {
                 json["score"] = scoreCell.labelOtherSide
             } else {
@@ -591,6 +589,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     var switchSubject : Bool = true;
     var switchComment : Bool = true;
     var zeroHeight : CGFloat = 0
+    var commentCellHeight : CGFloat = 44
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath == leftSideIndex {
             return getHeight(switchOfCell: switchLeftPeopleCell)
@@ -599,7 +598,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else if indexPath == subjectIndexPath {
             return getHeight(switchOfCell: switchSubject)
         } else if indexPath == commentIndexPath {
-            return getHeight(switchOfCell: switchComment)
+            return commentCellHeight
         } else if indexPath == rightSideIndex {
             return getHeight(switchOfCell: switchRightPeopleCell)
         } else if indexPath == deadlineIndexPath {
@@ -690,9 +689,49 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             cellComment.selectionStyle = UITableViewCellSelectionStyle.none
             cellComment.commentView.text = addChallengeIns[commentIndex].resultText
             cellComment.isHidden = !switchComment
+            cellComment.commentView.delegate = self
             return cellComment
         }
         return cell
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        let commentContent = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
+        if commentContent.commentView.textColor == UIColor.lightGray {
+            commentContent.commentView.text = nil
+            commentContent.commentView.textColor = UIColor.gray
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        let commentContent = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
+        if commentContent.commentView.text.isEmpty {
+            commentContent.commentView.text = "Comment"
+            commentContent.commentView.textColor = UIColor.lightGray
+        }
+    }
+    
+    var beforeEstimatedSize = CGSize(width: screenWidth, height: 44)
+    override func textViewDidChange(_ textView: UITextView) {
+        let commentContent = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
+        let size = CGSize(width: commentContent.commentView.frame.width, height: .infinity)
+        let estimatedSize = commentContent.commentView.sizeThatFits(size)
+        commentContent.commentView.constraints.forEach{ (constraint) in
+            if constraint.firstAttribute == .height {
+                constraint.constant = estimatedSize.height
+                commentCellHeight = estimatedSize.height + 10
+                if beforeEstimatedSize.height != estimatedSize.height {
+                    updateTable()
+                }
+                tableView.scrollToRow(at: commentIndexPath, at: .bottom, animated: false)
+                beforeEstimatedSize = estimatedSize
+            }
+        }
+    }
+    
+    func updateTable() {
+        self.tableView.beginUpdates()
+        self.tableView.endUpdates()
     }
     
     func deadlinesChanged() {

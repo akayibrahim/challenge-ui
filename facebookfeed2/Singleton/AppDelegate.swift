@@ -90,29 +90,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func getMemberInfo(memberId: String) {
-        let url = URL(string: getMemberInfoURL + memberId)!
-        URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                if let httpResponse = response as? HTTPURLResponse {
-                    if httpResponse.statusCode == 200 {
-                        do {
-                            if let post = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String: Any] {
-                                memberFbID = (post["facebookID"] as? String)!
-                                memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
-                                countOffollowers = (post["followerCount"] as? Int)!
-                                countOffollowing = (post["followingCount"] as? Int)!
-                            }
-                        } catch let err {
-                            print(err)
-                        }
-                    } else {
-                        let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID:\(memberId)")
-                        print(error)
-                        // TODO self.popupAlert(message: error, willDelay: false)
-                    }
+        let jsonURL = URL(string: getMemberInfoURL + memberId)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    print(error)
+                    return
+            }
+            DispatchQueue.main.async {
+                if let post = postOfMember {
+                    memberFbID = (post["facebookID"] as? String)!
+                    memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
+                    countOffollowers = (post["followerCount"] as? Int)!
+                    countOffollowing = (post["followingCount"] as? Int)!
                 }
             }
-        }).resume()
+        }
     }
 }
 

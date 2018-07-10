@@ -145,9 +145,27 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TrendRequestCell
         cell.trendRequest = trendRequest[indexPath.row]
         downloadImage(requestImageView: cell.requestImageView, challengeId: trendRequest[indexPath.row].challengeId!)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
+        cell.profileImageView.tag = indexPath.row
+        cell.profileImageView.isUserInteractionEnabled = true
+        cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+        let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
+        cell.nameLabel.tag = indexPath.row
+        cell.nameLabel.isUserInteractionEnabled = true
+        cell.nameLabel.addGestureRecognizer(tapGestureRecognizerName)
         return cell
     }
-    
+
+    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! UIImageView
+        openProfile(name: trendRequest[tappedImage.tag].name!, memberId: trendRequest[tappedImage.tag].challengerId!, memberFbId: trendRequest[tappedImage.tag].prooferFbID!)
+    }
+
+    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! UILabel
+        openProfile(name: trendRequest[tappedImage.tag].name!, memberId: trendRequest[tappedImage.tag].challengerId!, memberFbId: trendRequest[tappedImage.tag].prooferFbID!)
+    }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         openExplorer(challengeId: trendRequest[indexPath.row].challengeId!)
@@ -182,5 +200,66 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
             self.navigationController?.setNavigationBarHidden(false, animated: true)
         }
         self.lastContentOffSet = scrollView.contentOffset.y
+    }
+    
+    func openProfile(name: String, memberId: String, memberFbId:String) {
+        let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        getMemberInfo(memberId: memberId)
+        isMyFriend(friendMemberId: memberId)
+        group.wait()
+        profileController.navigationItem.title = name
+        profileController.memberIdForFriendProfile = memberId
+        profileController.memberNameForFriendProfile = name
+        profileController.memberFbIdForFriendProfile = memberFbId
+        profileController.memberCountOfFollowerForFriendProfile = countOfFollowersForFriend
+        profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForFriend
+        profileController.memberIsPrivateForFriendProfile = friendIsPrivate
+        profileController.profile = true
+        profileController.isProfileFriend = isProfileFriend
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(profileController, animated: true)
+    }
+    
+    var countOfFollowersForFriend = 0
+    var countOfFollowingForFriend = 0
+    var friendIsPrivate = false
+    let group = DispatchGroup()
+    func getMemberInfo(memberId: String) {
+        let jsonURL = URL(string: getMemberInfoURL + memberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            if let post = postOfMember {
+                self.countOfFollowersForFriend = (post["followerCount"] as? Int)!
+                self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
+                self.friendIsPrivate = (post["privateMember"] as? Bool)!
+            }
+        }
+    }
+    
+    var isProfileFriend = false
+    func isMyFriend(friendMemberId: String) {
+        let jsonURL = URL(string: isMyFriendURL + memberID + "&friendMemberId=" + friendMemberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            let isMyFriend = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
+            self.isProfileFriend = (isMyFriend as String).toBool()
+        }
     }
 }

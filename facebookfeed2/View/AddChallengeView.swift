@@ -109,9 +109,7 @@ class AddChallengeView: UIView {
         addWidthAnchor(firstOnePeopleImageView, multiplier: widthOfImage)
         addHeightAnchor(firstOnePeopleImageView, multiplier: heightOfFullImage)
         
-        if(FBSDKAccessToken.current().userID != nil) {
-            setImage(fbID: FBSDKAccessToken.current().userID, imageView: firstOneChlrPeopleImageView)
-        }
+        setImage(fbID: FBSDKAccessToken.current()?.userID!, imageView: firstOneChlrPeopleImageView)
         firstOnePeopleImageView.image = UIImage(named: "unknown")
 
         vsImageView.image = UIImage(named: "vs")

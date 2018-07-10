@@ -85,13 +85,74 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         loginButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.4 / 2, width: view.frame.width - 64, height: 44)
         loginButton.delegate = self
         
-        let label2018 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
-        label2018.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 1.9 / 2)
-        label2018.text = "@2018"
-        label2018.textAlignment = NSTextAlignment.center
-        label2018.textColor = UIColor.white
-        label2018.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 14)
-        // view.addSubview(label2018)
+        let akayButton = FeedCell.buttonForTitle("ibrahim akay", imageName: "")
+        akayButton.setTitleColor(UIColor.white, for: UIControlState())
+        akayButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.55 / 2, width: 200, height: 30)
+        view.addSubview(akayButton)
+        akayButton.addTarget(self, action: #selector(self.akay), for: UIControlEvents.touchUpInside)
+        
+        let aykutButton = FeedCell.buttonForTitle("serkan aykut", imageName: "")
+        aykutButton.setTitleColor(UIColor.white, for: UIControlState())
+        aykutButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.65 / 2, width: 200, height: 30)
+        view.addSubview(aykutButton)
+        aykutButton.addTarget(self, action: #selector(self.aykut), for: UIControlEvents.touchUpInside)
+        
+        let melisButton = FeedCell.buttonForTitle("melisa bahçıvan", imageName: "")
+        melisButton.setTitleColor(UIColor.white, for: UIControlState())
+        melisButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.75 / 2, width: 200, height: 30)
+        view.addSubview(melisButton)
+        melisButton.addTarget(self, action: #selector(self.melis), for: UIControlEvents.touchUpInside)
+        
+        let belkayButton = FeedCell.buttonForTitle("belkay bahçıvan", imageName: "")
+        belkayButton.setTitleColor(UIColor.white, for: UIControlState())
+        belkayButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.85 / 2, width: 200, height: 30)
+        view.addSubview(belkayButton)
+        belkayButton.addTarget(self, action: #selector(self.belkay), for: UIControlEvents.touchUpInside)
+    }
+    
+    func akay() {
+        openMember(id: "5b32959a1cb19909e464f6f5")
+    }
+    func melis() {
+        openMember(id: "5b3152c51cb199f1fadc0faf")
+    }
+    func belkay() {
+        openMember(id: "5b3152b91cb199f1fadc0fae")
+    }
+    func aykut() {
+        openMember(id: "5b3152d31cb199f1fadc0fb0")
+    }
+    let group = DispatchGroup()
+    func getMemberInfo(memberId: String) {
+        let jsonURL = URL(string: getMemberInfoURL + memberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            if let post = postOfMember {
+                memberFbID = (post["facebookID"] as? String)!
+                memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
+                countOffollowers = (post["followerCount"] as? Int)!
+                countOffollowing = (post["followingCount"] as? Int)!
+            }
+        }
+    }
+    func openMember(id:String) {
+        let defaults = UserDefaults.standard
+        defaults.set(id, forKey: "memberID")
+        defaults.synchronize()
+        memberID = id
+        getMemberInfo(memberId: id)
+        group.wait()
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = CustomTabBarController()
     }
     
     func fetchFacebookProfile() {

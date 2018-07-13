@@ -8,15 +8,15 @@
 
 import UIKit
 
-// var memberID = ""
-var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
+var memberID = ""
+// var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
 var memberFbID = "10156204749600712" // dummy
 var memberName = "Seher Can" // dummy
 var countOffollowers: Int = 0
 var countOffollowing: Int = 0
 
 // CONSTANTS
-var dummyServiceCall : Bool = true
+var dummyServiceCall : Bool = false
 var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"
@@ -116,3 +116,4 @@ var deleteChallengeURL = defaultURL + "/deleteChallenge?challengeId="
 var errorLogURL = defaultURL + "/errorLog"
 var isMyFriendURL = defaultURL + "/isMyFriend?memberId="
 var getChallengesOfFriendURL = defaultURL + "/getChallengesOfFriend?memberId="
+var getActivityCountURL = defaultURL + "/getActivityCount?memberId="

@@ -34,4 +34,5 @@ class Post: SafeJsonObject {
     var firstTeamScore : String?
     var secondTeamScore : String?
     var proofed: Bool?
+    var active: Bool?
 }

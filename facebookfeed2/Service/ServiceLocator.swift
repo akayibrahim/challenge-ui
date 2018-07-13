@@ -249,6 +249,7 @@ class ServiceLocator {
         post.isComeFromSelf = postDictionary["comeFromSelf"] as? Bool
         post.supportFirstTeam = postDictionary["supportFirstTeam"] as? Bool
         post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
+        post.active = postDictionary["active"] as? Bool
         post.proofed = postDictionary["proofed"] as? Bool
         return post
     }

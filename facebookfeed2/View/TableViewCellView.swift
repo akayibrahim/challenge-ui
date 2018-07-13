@@ -63,7 +63,7 @@ class TableViewCellContent: UITableViewCell {
             addTrailingAnchor(datePicker, anchor: contentGuide.trailingAnchor, constant: 0)
             // datePicker.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())
-            datePicker.minimumDate = tomorrow
+            datePicker.minimumDate = tomorrow            
         } else if cellRow == visibilityIndexPath.row {
             visibilitySegControl.selectedSegmentIndex = 1
             addSubview(visibilitySegControl)

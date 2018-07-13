@@ -28,7 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // if (true) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 memberID = memberId as! String
-                getMemberInfo(memberId: memberID)                
+                getMemberInfo(memberId: memberID)
+                self.group.wait()
                 window?.rootViewController = CustomTabBarController()
             } else {
                 FBSDKLoginManager().logOut()
@@ -88,8 +89,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-    
+     let group = DispatchGroup()
     func getMemberInfo(memberId: String) {
+        group.enter()
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         jsonURL.get { data, response, error in
             guard
@@ -100,13 +102,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print(error)
                     return
             }
-            DispatchQueue.main.async {
-                if let post = postOfMember {
-                    memberFbID = (post["facebookID"] as? String)!
-                    memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
-                    countOffollowers = (post["followerCount"] as? Int)!
-                    countOffollowing = (post["followingCount"] as? Int)!
-                }
+            self.group.leave()
+            if let post = postOfMember {
+                memberFbID = (post["facebookID"] as? String)!
+                memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
+                countOffollowers = (post["followerCount"] as? Int)!
+                countOffollowing = (post["followingCount"] as? Int)!
             }
         }
     }

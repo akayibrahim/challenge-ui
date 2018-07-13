@@ -12,6 +12,8 @@ class ActivitiesController: UITableViewController {
     let cellId = "cellId"
     let followCellId = "followCellId"
     var activities = [Activities]()
+    var challengeRequestCount: Int = 0
+    let group = DispatchGroup()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,48 +29,81 @@ class ActivitiesController: UITableViewController {
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl!)
-        
-        loadActivities()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadActivities()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+    
     func onRefesh() {
-        self.loadActivities()
-        self.tableView?.reloadData()
-        refreshControl?.endRefreshing()
+        if (refreshControl?.isRefreshing)! {
+            self.loadActivities()
+            refreshControl?.endRefreshing()
+        }
     }
 
     func loadActivities() {
         if dummyServiceCall == false {
+            fetchChallengeRequest()
+            group.wait()
             fetchActivities()
+            self.navigationController?.tabBarController?.tabBar.items?[3].badgeValue = nil
             return
         } else {
             self.activities = ServiceLocator.getActivitiesFromDummy(jsonFileName: "activities")
             return
         }
     }
-
+    
     func fetchActivities() {
-        URLSession.shared.dataTask(with: NSURL(string: getActivitiesURL + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.activities = [Activities]()
-                        for postDictionary in postsArray {
-                            let activity = Activities()
-                            activity.setValuesForKeys(postDictionary)
-                            self.activities.append(activity)
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
+        let jsonURL = URL(string: getActivitiesURL + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    return
             }
             DispatchQueue.main.async {
+                self.activities = [Activities]()
+                for postDictionary in postsArray! {
+                    let activity = Activities()
+                    activity.setValuesForKeys(postDictionary)
+                    self.activities.append(activity)
+                }
                 self.tableView?.reloadData()
             }
-        }).resume()
+        }
     }
-
+    
+    func fetchChallengeRequest() {
+        group.enter()
+        var challengeRequest = [ChallengeRequest]()
+        let jsonURL = URL(string: getChallengeRequestURL + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    return
+            }
+            self.group.leave()
+            for postDictionary in postsArray! {
+                let challenge = ChallengeRequest()
+                challenge.setValuesForKeys(postDictionary)
+                challengeRequest.append(challenge)
+            }
+            self.challengeRequestCount = challengeRequest.count
+        }
+    }
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
@@ -89,7 +124,11 @@ class ActivitiesController: UITableViewController {
             return cell
         } else if indexPath.section == 1 && indexPath.row == 0 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
-            let attributeText = NSMutableAttributedString(string: "Challenge Requests   ", attributes: nil)
+            let attributeText = NSMutableAttributedString(string: "Challenge Requests    ", attributes: nil)
+            if challengeRequestCount != 0 {
+                let challengeRequestCountText = NSMutableAttributedString(string: "\u{2022} \(challengeRequestCount) ", attributes: nil)
+                attributeText.append(challengeRequestCountText)
+            }
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
             return cell
@@ -239,7 +278,6 @@ class ActivitiesController: UITableViewController {
     var countOfFollowersForFriend = 0
     var countOfFollowingForFriend = 0
     var friendIsPrivate = false
-    let group = DispatchGroup()
     func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()

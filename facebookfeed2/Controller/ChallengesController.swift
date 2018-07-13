@@ -67,6 +67,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         collectionView?.alwaysBounceVertical = true
         
+        getActivityCount()
+        
         loadChallenges()
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
@@ -77,15 +79,34 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
     }
     
+    func getActivityCount() {
+        let jsonURL = URL(string: getActivityCountURL + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivityCountURL, inputs: "memberID=\(memberID)")
+                    print(error)
+                    return
+            }
+            DispatchQueue.main.async {
+                let count = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
+                if count != "0" {
+                    self.navigationController?.tabBarController?.tabBar.items?[3].badgeValue = "\(count)"
+                }
+            }
+        }
+    }
+    
     func onRefesh() {
-        if !refreshControl.isRefreshing {
+        if refreshControl.isRefreshing {
             self.loadChallenges()
             refreshControl.endRefreshing()
         }
     }
     
     func onSelfRefesh() {
-        if !selfRefreshControl.isRefreshing {
+        if selfRefreshControl.isRefreshing {
             self.loadChallenges()
             selfRefreshControl.endRefreshing()
         }
@@ -653,7 +674,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
         if posts[indexPath.item].isComeFromSelf == false {
-            knownHeight += (screenSize.width / 26) + (screenSize.width / 5) + (screenWidth * 0.575 / 10)
+            if posts[indexPath.item].active! {
+                knownHeight += (screenSize.width / 5)
+            }
+            knownHeight += (screenSize.width / 26) + (screenWidth * 0.575 / 10)
             if posts[indexPath.item].proofed == true {
                 knownHeight += screenWidth / 2
             }

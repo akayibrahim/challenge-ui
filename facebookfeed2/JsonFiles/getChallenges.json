@@ -22,7 +22,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -62,7 +63,8 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -116,7 +118,8 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -184,7 +187,8 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -266,7 +270,8 @@
               "supportFirstTeam" : true,
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
-              "secondTeamSupportCount" : 15
+              "secondTeamSupportCount" : 15,
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -299,7 +304,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -332,7 +338,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -365,7 +372,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -410,7 +418,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -460,7 +469,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               },
               {
               "id": "87091823091283",
@@ -516,7 +526,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -551,7 +562,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -576,7 +588,8 @@
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active": true
               }
               ]
 }

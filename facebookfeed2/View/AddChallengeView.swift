@@ -109,7 +109,7 @@ class AddChallengeView: UIView {
         addWidthAnchor(firstOnePeopleImageView, multiplier: widthOfImage)
         addHeightAnchor(firstOnePeopleImageView, multiplier: heightOfFullImage)
         
-        setImage(fbID: FBSDKAccessToken.current()?.userID!, imageView: firstOneChlrPeopleImageView)
+        setImage(fbID: memberFbID, imageView: firstOneChlrPeopleImageView)
         firstOnePeopleImageView.image = UIImage(named: "unknown")
 
         vsImageView.image = UIImage(named: "vs")
@@ -119,6 +119,7 @@ class AddChallengeView: UIView {
         untilDateLabel.textAlignment = .center
         untilDateLabel.numberOfLines = 2;
         untilDateLabel.textColor = UIColor.gray
+        untilDateLabel.adjustsFontSizeToFitWidth = true
         
         challengeView.addSubview(subjectLabel)
         challengeView.addTopAnchor(subjectLabel, anchor: middleBottomGuide.bottomAnchor, constant: screenWidth * 0.1 / 10)

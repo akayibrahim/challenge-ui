@@ -137,6 +137,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
             }
             self.group.leave()
             if let post = postOfMember {
+                memberID = memberId
                 memberFbID = (post["facebookID"] as? String)!
                 memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
                 countOffollowers = (post["followerCount"] as? Int)!
@@ -148,7 +149,6 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         let defaults = UserDefaults.standard
         defaults.set(id, forKey: "memberID")
         defaults.synchronize()
-        memberID = id
         getMemberInfo(memberId: id)
         group.wait()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate

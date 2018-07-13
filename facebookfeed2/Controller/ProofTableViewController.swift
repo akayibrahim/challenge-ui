@@ -22,11 +22,10 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height), style: UITableViewStyle.plain)
-        self.tableView.register(CommentCellView.self, forCellReuseIdentifier: "LabelCell")
+        self.tableView.register(ProofCellView.self, forCellReuseIdentifier: "ProofCell")
         self.tableView.delegate = self
         self.tableView.dataSource = self
         tableView.tableFooterView = UIView()
-        tableView.addSubview(proofCellView)
         self.view.addSubview(tableView)
         navigationItem.title = tableTitle
         view.addSubview(messageInputContainerView)
@@ -250,9 +249,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath) as! CommentCellView
-        let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
-        let cell = ProofCellView(frame: frameOfCell, cellRow: indexPath.row)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ProofCell", for: indexPath as IndexPath) as! ProofCellView
+        // let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
+        // let cell = ProofCellView(frame: frameOfCell, cellRow: indexPath.row)
         let nameAtt = NSMutableAttributedString(string: "\(String(describing: proofs[indexPath.row].name!))", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
         cell.thinksAboutChallengeView.attributedText = nameAtt
         let fbID = proofs[indexPath.item].fbID
@@ -261,7 +260,29 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofObjectId)
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
+        
+        if proofs[indexPath.row].memberId != memberID {
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
+            cell.profileImageView.tag = indexPath.row
+            cell.profileImageView.isUserInteractionEnabled = true
+            cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+            
+            let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
+            cell.thinksAboutChallengeView.tag = indexPath.row
+            cell.thinksAboutChallengeView.isUserInteractionEnabled = true
+            cell.thinksAboutChallengeView.addGestureRecognizer(tapGestureRecognizerName)
+        }
         return cell
+    }
+    
+    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! UITextView
+        openProfile(name: proofs[tappedImage.tag].name!, memberId: proofs[tappedImage.tag].memberId!, memberFbId: proofs[tappedImage.tag].fbID!)
+    }
+    
+    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! UIImageView
+        openProfile(name: proofs[tappedImage.tag].name!, memberId: proofs[tappedImage.tag].memberId!, memberFbId: proofs[tappedImage.tag].fbID!)
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -270,5 +291,47 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // scrollView.keyboardDismissMode = .interactive
+    }
+    
+    func openProfile(name: String, memberId: String, memberFbId:String) {
+        let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        getMemberInfo(memberId: memberId)
+        group.wait()
+        profileController.navigationItem.title = name
+        profileController.memberIdForFriendProfile = memberId
+        profileController.memberNameForFriendProfile = name
+        profileController.memberFbIdForFriendProfile = memberFbId
+        profileController.memberCountOfFollowerForFriendProfile = countOfFollowersForFriend
+        profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForFriend
+        profileController.memberIsPrivateForFriendProfile = friendIsPrivate
+        profileController.profile = true
+        profileController.isProfileFriend = false
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(profileController, animated: true)
+    }
+    
+    var countOfFollowersForFriend = 0
+    var countOfFollowingForFriend = 0
+    var friendIsPrivate = false
+    let group = DispatchGroup()
+    func getMemberInfo(memberId: String) {
+        let jsonURL = URL(string: getMemberInfoURL + memberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    print(error)
+                    return
+            }
+            self.group.leave()
+            if let post = postOfMember {
+                self.countOfFollowersForFriend = (post["followerCount"] as? Int)!
+                self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
+                self.friendIsPrivate = (post["privateMember"] as? Bool)!
+            }
+        }
     }
 }

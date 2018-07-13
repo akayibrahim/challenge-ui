@@ -26,8 +26,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         self.tableView.register(CommentCellView.self, forCellReuseIdentifier: "LabelCell")
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        tableView.tableFooterView = UIView()
-        tableView.addSubview(commentCellView)
+        tableView.tableFooterView = UIView()        
         self.view.addSubview(tableView)
         navigationItem.title = tableTitle
         view.addSubview(messageInputContainerView)
@@ -208,10 +207,6 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         }).resume()
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-    }
-    
     let heighForRow : CGFloat = UIScreen.main.bounds.width * 0.9 / 10
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let thinksAboutChl = comments[indexPath.item].comment
@@ -227,9 +222,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath) as! CommentCellView
-        let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
-        let cell = CommentCellView(frame: frameOfCell, cellRow: indexPath.row)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath) as! CommentCellView
+        // let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
+        // let cell = CommentCellView(frame: frameOfCell, cellRow: indexPath.row)
         let fbID = comments[indexPath.item].fbID
         let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])        
         let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
@@ -238,10 +233,12 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         setImage(fbID: fbID, imageView: cell.profileImageView)
         
         cell.selectionStyle = UITableViewCellSelectionStyle.none
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
-        cell.profileImageView.tag = indexPath.row
-        cell.profileImageView.isUserInteractionEnabled = true
-        cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+        if comments[indexPath.row].memberId != memberID {
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
+            cell.profileImageView.tag = indexPath.row
+            cell.profileImageView.isUserInteractionEnabled = true
+            cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+        }
         return cell
     }
     

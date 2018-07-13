@@ -12,14 +12,14 @@ import FBSDKLoginKit
 class CommentCellView: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setups()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(frame: CGRect, cellRow : Int) {
-        super.init(style: UITableViewCellStyle.default, reuseIdentifier: OtherController.cellId)
+    func setups() {        
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         

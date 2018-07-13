@@ -67,8 +67,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         collectionView?.alwaysBounceVertical = true
         
-        getActivityCount()
-        
         loadChallenges()
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
@@ -130,6 +128,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 fetchChallenges(url: getChallengesOfMemberURL + memberID, profile: true)
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
+                getActivityCount()
                 fetchChallenges(url: getChallengesURL + memberID, profile: false)
                 return
             }
@@ -330,9 +329,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             feedCellForSelf.feedController = self
             if indexPath.section == 1 {
                 feedCellForSelf.post = notDonePosts[indexPath.row]
-                feedCellForSelf.updateProgress.type = notDonePosts[indexPath.row].type
-                feedCellForSelf.updateProgress.challengeId = notDonePosts[indexPath.row].id
-                feedCellForSelf.updateProgress.addTarget(self, action: #selector(self.updateProgress), for: UIControlEvents.touchUpInside)
+                if !profile {
+                    feedCellForSelf.updateProgress.type = notDonePosts[indexPath.row].type
+                    feedCellForSelf.updateProgress.challengeId = notDonePosts[indexPath.row].id
+                    feedCellForSelf.updateProgress.addTarget(self, action: #selector(self.updateProgress), for: UIControlEvents.touchUpInside)
+                } else {
+                    feedCellForSelf.updateProgress.alpha = 0
+                }
             } else if indexPath.section == 2 {
                 feedCellForSelf.post = donePosts[indexPath.row]
             }
@@ -365,7 +368,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell.volumeUpImageView.alpha = 0
                 feedCell.volumeDownImageView.alpha = 0
                 feedCell.proofedMediaView.alpha = 1                
-                self.getTrendImage(imageView: feedCell.proofedMediaView, challengeId: self.posts[indexPath.item].id!)
+                self.getTrendImage(imageView: feedCell.proofedMediaView, challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)
             }
         }
         return feedCell
@@ -676,11 +679,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if posts[indexPath.item].isComeFromSelf == false {
             if posts[indexPath.item].active! {
                 knownHeight += (screenSize.width / 5)
+                if posts[indexPath.item].proofed == true {
+                    knownHeight += screenWidth / 2
+                }
             }
             knownHeight += (screenSize.width / 26) + (screenWidth * 0.575 / 10)
-            if posts[indexPath.item].proofed == true {
-                knownHeight += screenWidth / 2
-            }
             if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
                 // let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
                 return CGSize(width: view.frame.width, height: thinksAboutChallenge.heightOf(withConstrainedWidth: screenWidth * 4 / 5, font: UIFont.systemFont(ofSize: 12)) + knownHeight)

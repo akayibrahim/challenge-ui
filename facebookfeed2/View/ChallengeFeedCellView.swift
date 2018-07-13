@@ -79,6 +79,7 @@ class FeedCell: UICollectionViewCell {
         self.volumeDownImageView.image = UIImage()
         self.others.removeFromSuperview()
         self.activeLabel.removeFromSuperview()
+        self.profileImageView.removeFromSuperview()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -345,56 +346,58 @@ class FeedCell: UICollectionViewCell {
         generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore, active: active)
         
         if !isComeFromSelf {
-            if type == PUBLIC && proofed {
-                
-                // TODO choose pic / video
-                if secondTeamCount == "0" {                    
-                } else {
-                }
-                
-                addSubview(proofedMediaView)
-                addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
-                addWidthAnchor(proofedMediaView, multiplier: 1)
-                addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
-                // setImage(name: "gandhi", imageView: proofedMediaView)
-                proofedMediaView.alpha = 0
-                
-                addSubview(proofedVideoView)
-                addTopAnchor(proofedVideoView, anchor: dividerLineView1.bottomAnchor, constant: 0)
-                addWidthAnchor(proofedVideoView, multiplier: 1)
-                addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
-                proofedVideoView.alpha = 1
-                
-                DispatchQueue.main.async {
-                    self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
-                    self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-                    self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                    self.proofedVideoView.layer.masksToBounds = true
-                }
-                
-                addSubview(volumeUpImageView)
-                addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
-                addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
-                addWidthAnchor(volumeUpImageView, multiplier: 0.04)
-                addHeightAnchor(volumeUpImageView, multiplier: 0.04)
-                volumeUpImageView.alpha = 0
-                
-                addSubview(volumeDownImageView)
-                addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
-                addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
-                addWidthAnchor(volumeDownImageView, multiplier: 0.04)
-                addHeightAnchor(volumeDownImageView, multiplier: 0.04)
-                volumeDownImageView.alpha = 1
-            }
-            
-            if(!thinksAboutChallengeView.text.isEmpty) {
-                addSubview(thinksAboutChallengeView)
-                addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.6 / 10))
-                addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
-                addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
-                thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
-            }
             if active {
+                
+                if type == PUBLIC && proofed {
+                    
+                    // TODO choose pic / video
+                    if secondTeamCount == "0" {
+                    } else {
+                    }
+                    
+                    addSubview(proofedMediaView)
+                    addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                    addWidthAnchor(proofedMediaView, multiplier: 1)
+                    addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
+                    // setImage(name: "gandhi", imageView: proofedMediaView)
+                    proofedMediaView.alpha = 0
+                    
+                    addSubview(proofedVideoView)
+                    addTopAnchor(proofedVideoView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                    addWidthAnchor(proofedVideoView, multiplier: 1)
+                    addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
+                    proofedVideoView.alpha = 1
+                    
+                    DispatchQueue.main.async {
+                        self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+                        self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+                        self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                        self.proofedVideoView.layer.masksToBounds = true
+                    }
+                    
+                    addSubview(volumeUpImageView)
+                    addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+                    addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+                    addWidthAnchor(volumeUpImageView, multiplier: 0.04)
+                    addHeightAnchor(volumeUpImageView, multiplier: 0.04)
+                    volumeUpImageView.alpha = 0
+                    
+                    addSubview(volumeDownImageView)
+                    addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+                    addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+                    addWidthAnchor(volumeDownImageView, multiplier: 0.04)
+                    addHeightAnchor(volumeDownImageView, multiplier: 0.04)
+                    volumeDownImageView.alpha = 1
+                }
+                
+                if(!thinksAboutChallengeView.text.isEmpty) {
+                    addSubview(thinksAboutChallengeView)
+                    addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.6 / 10))
+                    addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
+                    addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
+                    thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
+                }
+            
                 addSubview(viewComments)
                 viewComments.titleLabel?.font = UIFont.systemFont(ofSize: 14)
                 addBottomAnchor(viewComments, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.05 / 10))
@@ -443,12 +446,11 @@ class FeedCell: UICollectionViewCell {
                         addHeightAnchor(joinToChl, multiplier: 0.7/10)
                         joinToChl.alpha = 0
                         
-                        if joined {
-                            if !proofed {
-                                addProofs.alpha = 1
-                                joinButton.alpha = 1
-                            }
-                        } else {
+                        if joined && !proofed {
+                            addProofs.alpha = 1
+                            joinButton.alpha = 1
+                        }
+                        if !joined && !proofed {
                             joinToChl.alpha = 1
                             joinButton.alpha = 1
                         }

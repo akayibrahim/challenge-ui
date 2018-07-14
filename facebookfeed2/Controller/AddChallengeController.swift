@@ -303,7 +303,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         var json: [String: Any] = ["challengerId": memberID,
                                    "name": memberName,
                                    "challengerFBId": memberFbID,
-                                   "thinksAboutChallenge": commentCell.commentView.text == "Comment" ? nil : commentCell.commentView.text!,
+                                   "thinksAboutChallenge": commentCell.commentView.text == "Comment" ? "" : commentCell.commentView.text!,
                                    "subject": addViewCell.addChallenge.subjectLabel.text!,
                                    "done": doneCell.isDone.isOn
         ]
@@ -359,9 +359,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         // PRIVATE firstTeamScore - secondTeamScore    ???
         // GENERAL chlDate - untilDateStr - comeFromSelf - supportFirstTeam - supportSecondTeam - firstTeamSupportCount - secondTeamSupportCount - countOfProofs - insertTime - status - countOfComments
         let url = URL(string: isPublic() ? addJoinChallengeURL : (isPrivate() ? addVersusChallengeURL : addSelfChallengeURL))!
-        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        // let request = ServiceLocator.prepareRequest(url: url, json: json)        
+        let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: url, parameters: json, image: proofCell.proofImageView.image!)
         
-        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+        URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
                 return
@@ -369,12 +370,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     DispatchQueue.main.async {
-                        if self.isPublic() {
-                            let result = NSString(data: data, encoding: String.Encoding.ascii.rawValue)!
-                            self.addMedia(result: result, image: proofCell.proofImageView.image!)
-                        } else {
-                            self.clear()
-                        }
+                        self.clear()
                     }
                 } else {
                     let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])

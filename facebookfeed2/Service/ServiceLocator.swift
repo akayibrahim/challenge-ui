@@ -263,7 +263,7 @@ class ServiceLocator {
         return request
     }
     
-    static func prepareRequestForMedia(url: URL, parameters: [String: String], image: UIImage) -> URLRequest {
+    static func prepareRequestForMedia(url: URL, parameters: [String: Any], image: UIImage) -> URLRequest {
         var request = URLRequest(url: url)
         let boundary = "Boundary-\(NSUUID().uuidString)"
         let mediaImage = Media(withImage: image, forKey: "file")
@@ -274,7 +274,7 @@ class ServiceLocator {
         return request
     }
     
-    typealias Parameters = [String: String]
+    typealias Parameters = [String: Any]
     static func createDataBody(withParameters params: Parameters?, media: [Media]?, boundary: String) -> Data {
         let lineBreak = "\r\n"
         var body = Data()
@@ -282,7 +282,7 @@ class ServiceLocator {
             for (key, value) in parameters {
                 body.append("--\(boundary + lineBreak)")
                 body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)")
-                body.append("\(value + lineBreak)")
+                body.append("\(value)\(lineBreak)")
             }
         }
         if let media = media {

@@ -5,21 +5,24 @@
               "challengeId" : "634127860",
               "proof" : "steve",
               "prooferFBId" : "634127860",
-              "subject": "ICE BUCKET"
+              "subject": "ICE BUCKET",
+              "challengerId": "423432"
               },
               {
               "name": "ibrahim AKAY",
               "challengeId" : "634127860",
               "proof" : "zuckdog",
               "prooferFBId" : "10156204749600712",
-              "subject": "READING"
+              "subject": "READING",
+              "challengerId": "423432"
               },
               {
               "name": "Serkan Aykut",
               "challengeId" : "634127860",
               "proof" : "gandhi",
               "prooferFBId" : "689764048",
-              "subject": "RUNNING 10K"
+              "subject": "RUNNING 10K",
+              "challengerId": "423432"
               }
         ]
 }

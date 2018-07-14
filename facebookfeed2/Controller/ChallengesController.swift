@@ -367,8 +367,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell.proofedVideoView.alpha = 0
                 feedCell.volumeUpImageView.alpha = 0
                 feedCell.volumeDownImageView.alpha = 0
-                feedCell.proofedMediaView.alpha = 1                
-                self.getTrendImage(imageView: feedCell.proofedMediaView, challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)
+                feedCell.proofedMediaView.alpha = 1
+                    self.getTrendImage(imageView: feedCell.proofedMediaView, challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)                
             }
         }
         return feedCell

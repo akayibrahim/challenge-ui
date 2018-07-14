@@ -8,14 +8,18 @@
 
 import UIKit
 
-class FollowRequestController: UITableViewController {
+class FollowRequestController: UITableViewController, UISearchBarDelegate {
     
     let cellId = "cellId"
     let headerId = "headerId"
     var friendRequest = [SuggestionFriends]()
+    let searchBar = UISearchBar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        searchBar.placeholder = "Search"
+        searchBar.delegate = self
+        self.navigationItem.titleView = searchBar
         
         tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
         tableView.sectionHeaderHeight = 26
@@ -29,6 +33,52 @@ class FollowRequestController: UITableViewController {
         tableView?.addSubview(refreshControl!)
         
         loadFollowRequest()
+        
+        self.hideKeyboardWhenTappedAround()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        self.searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBarCancelButton()
+        onRefesh()
+    }
+    
+    func searchBarCancelButton() {
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked( _ searchBar: UISearchBar) {
+        if dummyServiceCall == false {
+            searchFriends(key: searchBar.text!)
+            return
+        }
+    }
+    
+    func searchFriends(key: String) {
+        let jsonURL = URL(string: searchFriendsURL + key)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: searchFriendsURL, inputs: "memberId=\(memberID)"), willDelay: false)
+                    return
+            }
+            DispatchQueue.main.async {
+                self.friendRequest = [SuggestionFriends]()
+                for postDictionary in postsArray! {
+                    let friend = SuggestionFriends()
+                    friend.setValuesForKeys(postDictionary)
+                    self.friendRequest.append(friend)
+                }
+                self.tableView?.reloadData()
+            }
+        }
     }
     
     func onRefesh() {

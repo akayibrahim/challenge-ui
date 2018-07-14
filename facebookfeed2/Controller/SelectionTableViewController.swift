@@ -8,9 +8,10 @@
 
 import UIKit
 
-class SelectionTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SelectionTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     let screenSize = UIScreen.main.bounds
     var items = [SelectedItems]()
+    var unfilteredItems = [SelectedItems]()
     var tableTitle : String!
     var tableView : UITableView!
     var popIndexPath : IndexPath!
@@ -20,19 +21,25 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     var listMode : Bool = false
     var isFollower : Bool = false
     var followers = [Followers]()
+    var unfilteredFollowers = [Followers]()
     var isFollowing : Bool = false
     var following = [Following]()
+    var unfilteredFollowing = [Following]()
     var labelCell = "labelCell"
     var followCell = "followCell"
     var profile: Bool = false
     var memberIdForFriendProfile: String?
     var isProfileFriend: Bool?
+    var searchBar = UISearchBar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height), style: UITableViewStyle.plain)
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        searchBar.delegate = self
+        navigationItem.titleView = searchBar
+        unfilteredItems = items
         tableView.tableFooterView = UIView()
         self.view.addSubview(tableView)
         navigationItem.title = tableTitle        
@@ -59,11 +66,35 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         self.hideKeyboardWhenTappedAround()
     }
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if !listMode {
+            let uppercasedText = searchText.uppercased()
+            items = searchText.isEmpty ? unfilteredItems : items.filter { item -> Bool in
+                return item.name.uppercased().hasPrefix(uppercasedText)
+            }
+        } else {
+            if isFollower {
+                let uppercasedText = searchText.uppercased()
+                followers = searchText.isEmpty ? unfilteredFollowers : followers.filter { item -> Bool in
+                    return (item.name?.uppercased().hasPrefix(uppercasedText))!
+                }
+            }
+            if isFollowing {
+                let uppercasedText = searchText.uppercased()
+                following = searchText.isEmpty ? unfilteredFollowing : following.filter { item -> Bool in
+                    return (item.name?.uppercased().hasPrefix(uppercasedText))!
+                }
+            }
+        }
+        tableView.reloadData()
+    }
+    
     func loadFollowings() {
         if dummyServiceCall == false {
             fetchFollowingsData(url: getFollowingListURL)
         } else {
             self.following = ServiceLocator.getFollowingsFromDummy(jsonFileName: "following")
+            self.unfilteredFollowing = self.following
         }
     }
     
@@ -72,6 +103,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             fetchFollowersData(url: getFollowerListURL)
         } else {
             self.followers = ServiceLocator.getFollowersFromDummy(jsonFileName: "followers")
+            self.unfilteredFollowers = self.followers
         }
     }
     
@@ -92,6 +124,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     following.setValuesForKeys(postDictionary)
                     self.following.append(following)
                 }
+                self.unfilteredFollowing = self.following
                 self.tableView?.reloadData()
             }
         }
@@ -114,6 +147,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     follower.setValuesForKeys(postDictionary)
                     self.followers.append(follower)
                 }
+                self.unfilteredFollowers = self.followers
                 self.tableView?.reloadData()
             }
         }
@@ -171,6 +205,10 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     
     func isAway() -> Bool {
         return popIndexPath == rightSideIndex
+    }
+    
+    func isSubject() -> Bool {
+        return popIndexPath == subjectIndexPath
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

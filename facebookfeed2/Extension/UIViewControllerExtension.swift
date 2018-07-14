@@ -24,15 +24,19 @@ extension UIViewController
     }
     
     func getTrendImage(imageView: UIImageView, challengeId: String, challengerId: String) {
-        let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
-        if let urlOfImage = url {
-            ImageService.getImage(withURL: urlOfImage) { image in
-                if image != nil {
-                    imageView.image = image
-                } else {
-                    self.setImage(name: unknown, imageView: imageView)
+        if dummyServiceCall == false {
+            let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
+            if let urlOfImage = url {
+                ImageService.getImage(withURL: urlOfImage) { image in
+                    if image != nil {
+                        imageView.image = image
+                    } else {
+                        self.setImage(name: unknown, imageView: imageView)
+                    }
                 }
             }
+        } else {
+            self.setImage(name: unknown, imageView: imageView)
         }
     }
     

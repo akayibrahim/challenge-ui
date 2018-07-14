@@ -683,15 +683,15 @@ class FeedCell: UICollectionViewCell {
                 addSubview(clapping)
                 addTopAnchor(clapping, anchor: scoreText.bottomAnchor, constant: screenWidth * 0.1 / 10)
                 clapping.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: screenWidth * 1.2 / 10).isActive = true
-                addWidthAnchor(clapping, multiplier: 0.45 / 6)
-                addHeightAnchor(clapping, multiplier: 0.45 / 6)
+                addWidthAnchor(clapping, multiplier: 0.35 / 6)
+                addHeightAnchor(clapping, multiplier: 0.35 / 6)
                 clapping.alpha = 0
                 
                 addSubview(clappingHome)
                 addTopAnchor(clappingHome, anchor: scoreText.bottomAnchor, constant: screenWidth * 0.1 / 10)
                 clappingHome.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenWidth * 1.2 / 10)).isActive = true
-                addWidthAnchor(clappingHome, multiplier: 0.45 / 6)
-                addHeightAnchor(clappingHome, multiplier: 0.45 / 6)
+                addWidthAnchor(clappingHome, multiplier: 0.35 / 6)
+                addHeightAnchor(clappingHome, multiplier: 0.35 / 6)
                 clappingHome.alpha = 0
                 
                 if type == PUBLIC {

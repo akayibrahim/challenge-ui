@@ -27,10 +27,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if(FBSDKAccessToken.current() != nil) {
         // if (true) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
-                memberID = memberId as! String
-                getMemberInfo(memberId: memberID)
-                self.group.wait()
-                window?.rootViewController = CustomTabBarController()
+                if dummyServiceCall == false {
+                    memberID = memberId as! String
+                    getMemberInfo(memberId: memberID)
+                    self.group.wait()
+                    window?.rootViewController = CustomTabBarController()
+                } else {
+                    window?.rootViewController = CustomTabBarController()
+                }
             } else {
                 FBSDKLoginManager().logOut()
                 window?.rootViewController = FacebookController()

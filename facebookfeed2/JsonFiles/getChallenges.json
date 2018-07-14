@@ -23,7 +23,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -64,7 +65,8 @@
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -119,7 +121,8 @@
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -188,7 +191,8 @@
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -271,7 +275,8 @@
               "supportSecondTeam" : false,
               "firstTeamSupportCount" : 13,
               "secondTeamSupportCount" : 15,
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -305,7 +310,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -339,7 +345,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -373,7 +380,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -419,7 +427,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -470,7 +479,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "87091823091283",
@@ -527,7 +537,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "5a81bb6bf8b8e43ec9a81e2e",
@@ -563,7 +574,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -589,7 +601,8 @@
               "secondTeamSupportCount" : 15,
               "firstTeamScore" : "-",
               "secondTeamScore" : "-",
-              "active": true
+              "active": true,
+              "challengerId": "423432"
               }
               ]
 }

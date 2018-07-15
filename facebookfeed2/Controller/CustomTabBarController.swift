@@ -63,7 +63,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 let controllers = tabBarController.viewControllers
                 let navC = controllers![0] as! UINavigationController
                 let feedC = navC.viewController(class: FeedController.self)
-                feedC?.onRefesh()
+                feedC?.loadChallenges()
                 return true
             }
             return false

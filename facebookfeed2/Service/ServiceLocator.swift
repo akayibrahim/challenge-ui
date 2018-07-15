@@ -251,6 +251,7 @@ class ServiceLocator {
         post.supportSecondTeam = postDictionary["supportSecondTeam"] as? Bool
         post.active = postDictionary["active"] as? Bool
         post.proofed = postDictionary["proofed"] as? Bool
+        post.proofedByChallenger = postDictionary["proofedByChallenger"] as? Bool
         return post
     }
     

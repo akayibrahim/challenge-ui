@@ -156,6 +156,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     func enableDisableCells(disable: Bool) {
         closeCalendar()
         let doneCell = getCell(path: doneIndexPath)
+        let addViewCell = getCell(path: addViewIndexPath)
         switchType = disable
         tableView.reloadRows(at: [segControlIndexPath], with: .fade)
         switchSubject = disable
@@ -195,6 +196,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 switchResult = !disable
                 tableView.reloadRows(at: [resultIndexPath], with: .fade)
             }
+        }
+        if !firstPage {
+            let daysBetween = getDayBetweenDates(isSelect: false)
+            addViewCell.addChallenge.untilDateLabel.text = (!isToWorld() && !isSelf()) ? "CHALLENGE TIME is \(daysBetween) DAYS" : "LAST \(daysBetween) DAYS"
         }
     }
     
@@ -359,10 +364,15 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         // PRIVATE firstTeamScore - secondTeamScore    ???
         // GENERAL chlDate - untilDateStr - comeFromSelf - supportFirstTeam - supportSecondTeam - firstTeamSupportCount - secondTeamSupportCount - countOfProofs - insertTime - status - countOfComments
         let url = URL(string: isPublic() ? addJoinChallengeURL : (isPrivate() ? addVersusChallengeURL : addSelfChallengeURL))!
-        // let request = ServiceLocator.prepareRequest(url: url, json: json)        
-        let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: url, parameters: json, image: proofCell.proofImageView.image!)
+        var request : URLRequest!
+        if isPublic() {
+            request = ServiceLocator.prepareRequestForMedia(url: url, parameters: json, image: proofCell.proofImageView.image!)
+        } else {
+            request = ServiceLocator.prepareRequest(url: url, json: json)
+        }
         
-        URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
+        
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
                 return

@@ -160,6 +160,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func fetchChallenges(url: String, profile : Bool) {
+        group.enter()
         URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
                 do {
@@ -167,6 +168,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         self.posts = [Post]()
                         self.donePosts = [Post]()
                         self.notDonePosts = [Post]()
+                        self.group.leave()
                         for postDictionary in postsArray {
                             let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
                             self.posts.append(post)
@@ -184,6 +186,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 }
             }
             DispatchQueue.main.async {
+                self.group.wait()
                 self.collectionView?.reloadData()
             }
         }).resume()
@@ -351,7 +354,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         DispatchQueue.main.async {
             self.avPlayer = AVPlayer.init()
             feedCell.avPlayerLayer.player = self.avPlayer
-            if (feedCell.post?.proofed)! {
+            if (feedCell.post?.proofedByChallenger)! {
                 /**
                 var url : URL
                 if feedCell.post?.secondTeamCount == "0" {
@@ -571,17 +574,21 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell.supportMatchLabel.text = "+\(feedCell.supportMatchLabel.tag + (-1))"
                 feedCell.supportMatchLabel.tag = Int(feedCell.supportMatchLabel.tag + (-1))
             }
-            supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: true)
+            supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: true, index: index)
         } else {
             sender.setImage(UIImage(named: support), for: .normal)
-            supportChallengeService(support: false, challengeId: sender.challengeId!, feedCell: feedCell, isHome: true)
+            supportChallengeService(support: false, challengeId: sender.challengeId!, feedCell: feedCell, isHome: true, index: index)
         }
     }
     
-    func supportChallengeService(support:Bool, challengeId: String, feedCell: FeedCell, isHome: Bool) {
+    func supportChallengeService(support:Bool, challengeId: String, feedCell: FeedCell, isHome: Bool, index: IndexPath) {
         var json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID
         ]
+        let toWorld = posts[index.row].secondTeamCount == "0" && posts[index.row].type == PUBLIC
+        if toWorld {
+            json["supportedMemberId"] = posts[index.row].challengerId
+        }
         json["supportFirstTeam"] = isHome ? support : false
         json["supportSecondTeam"] = !isHome ? support : false
         let url = URL(string: supportChallengeURL)!
@@ -622,10 +629,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell.supportLabel.text = "+\(feedCell.supportLabel.tag + (-1))"
                 feedCell.supportLabel.tag = Int(feedCell.supportLabel.tag + (-1))
             }
-            supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: false)
+            supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: false, index: index)
         } else {
             sender.setImage(UIImage(named: support), for: .normal)
-            supportChallengeService(support: false, challengeId: sender.challengeId!, feedCell: feedCell, isHome: false)
+            supportChallengeService(support: false, challengeId: sender.challengeId!, feedCell: feedCell, isHome: false, index: index)
         }
     }
     
@@ -679,7 +686,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if posts[indexPath.item].isComeFromSelf == false {
             if posts[indexPath.item].active! {
                 knownHeight += (screenSize.width / 5)
-                if posts[indexPath.item].proofed == true {
+                if posts[indexPath.item].proofedByChallenger == true {
                     knownHeight += screenWidth / 2
                 }
             }

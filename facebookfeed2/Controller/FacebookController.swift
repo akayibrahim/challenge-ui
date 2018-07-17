@@ -108,6 +108,12 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         belkayButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.85 / 2, width: 200, height: 30)
         view.addSubview(belkayButton)
         belkayButton.addTarget(self, action: #selector(self.belkay), for: UIControlEvents.touchUpInside)
+        
+        let canButton = FeedCell.buttonForTitle("Seher Can", imageName: "")
+        canButton.setTitleColor(UIColor.white, for: UIControlState())
+        canButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.55 / 2, width: 200, height: 30)
+        view.addSubview(canButton)
+        canButton.addTarget(self, action: #selector(self.can), for: UIControlEvents.touchUpInside)
     }
     
     func akay() {
@@ -121,6 +127,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     }
     func aykut() {
         openMember(id: "5b3152d31cb199f1fadc0fb0")
+    }
+    func can() {
+        openMember(id: "5b3152821cb199f1fadc0fab")
     }
     let group = DispatchGroup()
     func getMemberInfo(memberId: String) {

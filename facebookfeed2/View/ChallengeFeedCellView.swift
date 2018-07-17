@@ -63,7 +63,7 @@ class FeedCell: UICollectionViewCell {
         self.updateProgress.removeFromSuperview()
         self.updateRefreshLabel.removeFromSuperview()
         self.untilDateLabel.removeFromSuperview()
-        self.finishFlag.removeFromSuperview()
+        self.finishFlag.image = UIImage()
         self.scoreHome.removeFromSuperview()
         self.scoreAway.removeFromSuperview()
         self.scoreText.removeFromSuperview()
@@ -346,58 +346,57 @@ class FeedCell: UICollectionViewCell {
         generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore, active: active)
         
         if !isComeFromSelf {
-            if active {
+            if type == PUBLIC && proofedByChallenger {
                 
-                if type == PUBLIC && proofedByChallenger {
-                    
-                    // TODO choose pic / video
-                    if secondTeamCount == "0" {
-                    } else {
-                    }
-                    
-                    addSubview(proofedMediaView)
-                    addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
-                    addWidthAnchor(proofedMediaView, multiplier: 1)
-                    addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
-                    // setImage(name: "gandhi", imageView: proofedMediaView)
-                    proofedMediaView.alpha = 0
-                    
-                    addSubview(proofedVideoView)
-                    addTopAnchor(proofedVideoView, anchor: dividerLineView1.bottomAnchor, constant: 0)
-                    addWidthAnchor(proofedVideoView, multiplier: 1)
-                    addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
-                    proofedVideoView.alpha = 1
-                    
-                    DispatchQueue.main.async {
-                        self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
-                        self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-                        self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                        self.proofedVideoView.layer.masksToBounds = true
-                    }
-                    
-                    addSubview(volumeUpImageView)
-                    addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
-                    addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
-                    addWidthAnchor(volumeUpImageView, multiplier: 0.04)
-                    addHeightAnchor(volumeUpImageView, multiplier: 0.04)
-                    volumeUpImageView.alpha = 0
-                    
-                    addSubview(volumeDownImageView)
-                    addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
-                    addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
-                    addWidthAnchor(volumeDownImageView, multiplier: 0.04)
-                    addHeightAnchor(volumeDownImageView, multiplier: 0.04)
-                    volumeDownImageView.alpha = 1
+                // TODO choose pic / video
+                if secondTeamCount == "0" {
+                } else {
                 }
                 
-                if(!thinksAboutChallengeView.text.isEmpty) {
-                    addSubview(thinksAboutChallengeView)
-                    addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.6 / 10))
-                    addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
-                    addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
-                    thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
+                addSubview(proofedMediaView)
+                addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                addWidthAnchor(proofedMediaView, multiplier: 1)
+                addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
+                // setImage(name: "gandhi", imageView: proofedMediaView)
+                proofedMediaView.alpha = 0
+                
+                addSubview(proofedVideoView)
+                addTopAnchor(proofedVideoView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                addWidthAnchor(proofedVideoView, multiplier: 1)
+                addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
+                proofedVideoView.alpha = 1
+                
+                DispatchQueue.main.async {
+                    self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+                    self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+                    self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    self.proofedVideoView.layer.masksToBounds = true
                 }
+                
+                addSubview(volumeUpImageView)
+                addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+                addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+                addWidthAnchor(volumeUpImageView, multiplier: 0.04)
+                addHeightAnchor(volumeUpImageView, multiplier: 0.04)
+                volumeUpImageView.alpha = 0
+                
+                addSubview(volumeDownImageView)
+                addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+                addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+                addWidthAnchor(volumeDownImageView, multiplier: 0.04)
+                addHeightAnchor(volumeDownImageView, multiplier: 0.04)
+                volumeDownImageView.alpha = 1
+            }
             
+            if(!thinksAboutChallengeView.text.isEmpty) {
+                addSubview(thinksAboutChallengeView)
+                addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: active ? -(screenSize.width * 1.6 / 10) : -(screenSize.width * 0.2 / 10))
+                addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
+                addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
+                thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
+            }
+            
+            if active {
                 addSubview(viewComments)
                 viewComments.titleLabel?.font = UIFont.systemFont(ofSize: 14)
                 addBottomAnchor(viewComments, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.05 / 10))
@@ -458,6 +457,7 @@ class FeedCell: UICollectionViewCell {
                 }
             }
             
+            
             addSubview(insertTime)
             addBottomAnchor(insertTime, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0.2/10))
             addLeadingAnchor(insertTime, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
@@ -508,6 +508,7 @@ class FeedCell: UICollectionViewCell {
             finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
             addWidthAnchor(finishFlag, multiplier: 2 / 6)
             addHeightAnchor(finishFlag, multiplier: 1 / 6)
+            setImage(name: "finishFlag", imageView: finishFlag)
             finishFlag.alpha = 1
             vsImageView.alpha = 0.75
             
@@ -593,8 +594,8 @@ class FeedCell: UICollectionViewCell {
                 addSubview(goalLabel)
                 addBottomAnchor(goalLabel, anchor: scoreText.topAnchor, constant: (screenWidth * 0.05 / 10))
                 goalLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: screenWidth * 1.1 / 10).isActive = true
-                addWidthAnchor(goalLabel, multiplier: 0.3 / 3)
-                addHeightAnchor(goalLabel, multiplier: 0.1 / 3)
+                addWidthAnchor(goalLabel, multiplier: 0.4 / 3)
+                addHeightAnchor(goalLabel, multiplier: 0.15 / 3)
             }
         } else {
             vsImageView.alpha = 1
@@ -647,7 +648,7 @@ class FeedCell: UICollectionViewCell {
                 addWidthAnchor(supportLabel, multiplier: 0.3/3)
                 addHeightAnchor(supportLabel, multiplier: 1/30)
                 
-                if type != SELF && secondTeamCount != "0" {
+                if type == PRIVATE {
                     addSubview(supportButtonMatch)
                     addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1.2/18)
                     supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.35/3)).isActive = true
@@ -745,7 +746,7 @@ class FeedCell: UICollectionViewCell {
         addHeightAnchor(subjectLabel, multiplier: 1/15)
         subjectLabel.adjustsFontSizeToFitWidth = true
         
-        if !isComeFromSelf && active {
+        if !isComeFromSelf {
             addTopAnchor(dividerLineView1, anchor: middleBottomGuide.bottomAnchor, constant: (screenSize.width * 1/15)) // CGSIZE
             addLeadingAnchor(dividerLineView1, anchor: contentGuide.leadingAnchor, constant: 1)
             addTrailingAnchor(dividerLineView1, anchor: contentGuide.trailingAnchor, constant: 1)
@@ -1005,7 +1006,7 @@ class FeedCell: UICollectionViewCell {
     
     let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
     let activeLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
-    let goalLabel: UILabel = FeedCell.labelCreate(7, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
+    let goalLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
     let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
     let insertTime: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
     
@@ -1055,7 +1056,6 @@ class FeedCell: UICollectionViewCell {
     }
     
     let joinButton = FeedCell.buttonForTitle("", imageName: acceptedBlack)
-    let finishFlag = FeedCell.buttonForTitle("", imageName: "finishFlag")
     let multiplierSign = FeedCell.buttonForTitle("", imageName: "multipliersign")
     let clapping = FeedCell.buttonForTitle("", imageName: "clap")
     let clappingHome = FeedCell.buttonForTitle("", imageName: "clap")
@@ -1159,6 +1159,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     let subjectImageView: UIImageView = FeedCell.imageViewFit()
+    let finishFlag: UIImageView = FeedCell.imageViewFit()
     
     static func viewFunc() -> UIView {
         let view = UIView()

@@ -180,6 +180,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                                 }
                             }
                         }
+                    } else {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                        return
                     }
                 } catch let err {
                     print(err)
@@ -279,12 +282,18 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10), memberFbId: (profile ? memberFbIdForFriendProfile! : memberFbID) , name: (profile ? memberNameForFriendProfile! : memberName))
         if profile {
             profileCell.other.alpha = 0
-            if isProfileFriend! {
-                profileCell.unfollow.alpha = 1
-            } else {
-                profileCell.follow.alpha = 1
+            if memberIdForFriendProfile != memberID {
+                if isProfileFriend! {
+                    profileCell.unfollow.alpha = 1
+                } else {
+                    profileCell.follow.alpha = 1
+                }
+                profileCell.follow.memberId = memberIdForFriendProfile
+                profileCell.unfollow.memberId = memberIdForFriendProfile
+                profileCell.follow.addTarget(self, action: #selector(self.followProfile), for: UIControlEvents.touchUpInside)
+                profileCell.unfollow.addTarget(self, action: #selector(self.unFollowProfile), for: UIControlEvents.touchUpInside)
             }
-            if memberIsPrivateForFriendProfile! {
+            if memberIsPrivateForFriendProfile! && !isProfileFriend! {
                 profileCell.privateLabel.alpha = 1
             }
         }
@@ -317,6 +326,42 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             profileCell.challangeLabel.textColor = UIColor.gray
         }
         return profileCell
+    }
+    
+    func unFollowProfile(sender: subclasssedUIButton) {
+        let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=false"
+        followOrUnfollowFriend(url: url, isRemove: true)
+        group.wait()
+        isProfileFriend = false
+        collectionView?.reloadData()
+    }
+    
+    func followProfile(sender: subclasssedUIButton) {
+        let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
+        followOrUnfollowFriend(url: url, isRemove: false)
+        group.wait()
+        isProfileFriend = true
+        collectionView?.reloadData()
+    }
+    
+    func followOrUnfollowFriend(url: String, isRemove: Bool) {
+        group.enter()
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    return
+            }
+            self.loadChallenges()
+            self.group.leave()
+            if !isRemove {
+                self.popupAlert(message: "Now Following!", willDelay: true)
+            } else {
+                self.popupAlert(message: "Removed!", willDelay: true)
+            }
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -509,13 +554,17 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func updateProgress(_ sender: subclasssedUIButton) {
-        let updateProgress = UpdateProgressController()
-        updateProgress.updateProgress = true
-        updateProgress.challengeId = sender.challengeId
-        updateProgress.challengeType = sender.type
-        updateProgress.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.pushViewController(updateProgress, animated: true)
+        if sender.type == PUBLIC {
+            openProofScreen(challengeId: sender.challengeId!)
+        } else {
+            let updateProgress = UpdateProgressController()
+            updateProgress.updateProgress = true
+            updateProgress.challengeId = sender.challengeId
+            updateProgress.challengeType = sender.type
+            updateProgress.hidesBottomBarWhenPushed = true
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+            self.navigationController?.pushViewController(updateProgress, animated: true)
+        }
     }
     
     func openOthers(sender: UIButton) {
@@ -546,21 +595,20 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func addProofs(sender: subclasssedUIButton) {
+        openProofScreen(challengeId: sender.challengeId!)
+    }
+    
+    func openProofScreen(challengeId: String) {
         let commentsTable = ProofTableViewController()
         commentsTable.tableTitle = proofsTableTitle
-        commentsTable.challengeId = sender.challengeId
+        commentsTable.challengeId = challengeId
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
     func viewProofs(sender: subclasssedUIButton) {
-        let commentsTable = ProofTableViewController()
-        commentsTable.tableTitle = proofsTableTitle
-        commentsTable.challengeId = sender.challengeId
-        commentsTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.pushViewController(commentsTable, animated: true)
+        openProofScreen(challengeId: sender.challengeId!)
     }
     
     func supportChallenge(sender: subclasssedUIButton) {
@@ -585,8 +633,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         var json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID
         ]
-        let toWorld = posts[index.row].secondTeamCount == "0" && posts[index.row].type == PUBLIC
-        if toWorld {
+        if posts[index.row].type == PUBLIC {
             json["supportedMemberId"] = posts[index.row].challengerId
         }
         json["supportFirstTeam"] = isHome ? support : false
@@ -685,10 +732,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
         if posts[indexPath.item].isComeFromSelf == false {
             if posts[indexPath.item].active! {
-                knownHeight += (screenSize.width / 5)
-                if posts[indexPath.item].proofedByChallenger == true {
-                    knownHeight += screenWidth / 2
-                }
+                knownHeight += (screenSize.width / 5.3)
+            } else {
+                knownHeight += (screenWidth * 0.4 / 10)
+            }
+            if posts[indexPath.item].proofedByChallenger == true {
+                knownHeight += screenWidth / 2
             }
             knownHeight += (screenSize.width / 26) + (screenWidth * 0.575 / 10)
             if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
@@ -814,7 +863,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if self.tabBarController?.selectedIndex == profileIndex  && !explorer {
-            openExplorer(challengeId: posts[indexPath.row].id!)
+            if indexPath.section == 1 {
+                openExplorer(challengeId: notDonePosts[indexPath.row].id!)
+            } else if indexPath.section == 2 {
+                openExplorer(challengeId: donePosts[indexPath.row].id!)
+            }
         }
     }
     

@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // if (true) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 if dummyServiceCall == false {
-                    memberID = memberId as! String
+                    memberID = memberId as! String  
                     getMemberInfo(memberId: memberID)
                     self.group.wait()
                     window?.rootViewController = CustomTabBarController()

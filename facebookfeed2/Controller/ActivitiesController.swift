@@ -61,6 +61,7 @@ class ActivitiesController: UITableViewController {
     }
     
     func fetchActivities() {
+        group.enter()
         let jsonURL = URL(string: getActivitiesURL + memberID)!
         jsonURL.get { data, response, error in
             guard
@@ -72,11 +73,13 @@ class ActivitiesController: UITableViewController {
             }
             DispatchQueue.main.async {
                 self.activities = [Activities]()
+                self.group.leave()
                 for postDictionary in postsArray! {
                     let activity = Activities()
                     activity.setValuesForKeys(postDictionary)
                     self.activities.append(activity)
                 }
+                self.group.wait()
                 self.tableView?.reloadData()
             }
         }
@@ -109,8 +112,11 @@ class ActivitiesController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 || section == 1 {
+        if section == 0 {
             return 1
+        }
+        if section == 1 {
+            return challengeRequestCount != 0 ? 1 : 0
         }
         return activities.count
     }

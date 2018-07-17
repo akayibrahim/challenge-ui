@@ -233,12 +233,10 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         setImage(fbID: fbID, imageView: cell.profileImageView)
         
         cell.selectionStyle = UITableViewCellSelectionStyle.none
-        if comments[indexPath.row].memberId != memberID {
-            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
-            cell.profileImageView.tag = indexPath.row
-            cell.profileImageView.isUserInteractionEnabled = true
-            cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
-        }
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
+        cell.profileImageView.tag = indexPath.row
+        cell.profileImageView.isUserInteractionEnabled = true
+        cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
         return cell
     }
     

@@ -144,36 +144,32 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
     
     func followFriend(sender: subclasssedUIButton) {
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
-        deleteOrFollowFriend(url: url, isDelete: false, friendMemberId: sender.memberId!)
+        deleteOrFollowFriend(url: url, isDelete: false)
     }
     
     func unFollowFriend(sender: subclasssedUIButton) {
         let url = deleteSuggestionURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId!
-        deleteOrFollowFriend(url: url, isDelete: true, friendMemberId: sender.memberId!)
+        deleteOrFollowFriend(url: url, isDelete: true)
     }
     
-    func deleteOrFollowFriend(url: String, isDelete: Bool, friendMemberId: String) {
-        URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
-            guard let data = data, error == nil else {
-                print(error?.localizedDescription ?? "No data")
-                return
-            }
-            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-            if let responseJSON = responseJSON as? [String: Any] {
-                print(responseJSON)
-                if responseJSON["message"] != nil {
-                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
-                }
+    func deleteOrFollowFriend(url: String, isDelete: Bool) {
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    return
             }
             DispatchQueue.main.async {
                 self.onRefesh()
                 if !isDelete {
-                    self.popupAlert(message: "Start To Following!", willDelay: true)
+                    self.popupAlert(message: "Now Following!", willDelay: true)
                 } else {
                     self.popupAlert(message: "Removed!", willDelay: true)
                 }
             }
-        }).resume()
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

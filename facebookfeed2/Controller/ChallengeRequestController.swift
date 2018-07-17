@@ -62,6 +62,9 @@ class ChallengeRequestController: UITableViewController {
                 }
             }
             DispatchQueue.main.async {
+                if self.challengeRequest.count == 0 {
+                    self.navigationController?.popViewController(animated: true)
+                }
                 self.tableView?.reloadData()
             }
         }).resume()

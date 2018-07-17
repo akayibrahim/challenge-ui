@@ -209,7 +209,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         let parameters = ["challengeId": challengeId as String, "memberId": memberID as String]
         let urlOfUpload = URL(string: uploadImageURL)!
         let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: self.proofImageView.image!)
-        
+        group.enter()
         URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
@@ -217,9 +217,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             }
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
+                    self.group.leave()
+                    self.loadChallenges()
+                    self.group.wait()
                     self.popupAlert(message: "Your Proof Added!", willDelay: true)
                 } else {
                     let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
@@ -261,17 +261,15 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         
-        if proofs[indexPath.row].memberId != memberID {
-            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
-            cell.profileImageView.tag = indexPath.row
-            cell.profileImageView.isUserInteractionEnabled = true
-            cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
-            
-            let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
-            cell.thinksAboutChallengeView.tag = indexPath.row
-            cell.thinksAboutChallengeView.isUserInteractionEnabled = true
-            cell.thinksAboutChallengeView.addGestureRecognizer(tapGestureRecognizerName)
-        }
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
+        cell.profileImageView.tag = indexPath.row
+        cell.profileImageView.isUserInteractionEnabled = true
+        cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+        
+        let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
+        cell.thinksAboutChallengeView.tag = indexPath.row
+        cell.thinksAboutChallengeView.isUserInteractionEnabled = true
+        cell.thinksAboutChallengeView.addGestureRecognizer(tapGestureRecognizerName)
         return cell
     }
     

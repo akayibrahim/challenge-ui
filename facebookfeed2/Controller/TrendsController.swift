@@ -87,6 +87,11 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         searchBar.resignFirstResponder()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.loadTrends()
+    }
+    
     func onRefesh() {
         self.loadTrends()
         self.collectionView?.reloadData()

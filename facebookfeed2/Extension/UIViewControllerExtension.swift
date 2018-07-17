@@ -72,7 +72,9 @@ extension UIViewController
     func popupAlert(message: String, willDelay: Bool) {
         DispatchQueue.main.async {
             let selectAlert: UIAlertController = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.alert)
-            selectAlert.addAction(UIAlertAction(title: willDelay ? "" : "OK", style: UIAlertActionStyle.default, handler: nil))
+            if !willDelay {
+                selectAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            }
             self.present(selectAlert, animated: true, completion: nil)
             if willDelay {
                 let when = DispatchTime.now() + 2

@@ -157,13 +157,20 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         closeCalendar()
         let doneCell = getCell(path: doneIndexPath)
         let addViewCell = getCell(path: addViewIndexPath)
+        let commentCell = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
         switchType = disable
         tableView.reloadRows(at: [segControlIndexPath], with: .fade)
         switchSubject = disable
         tableView.reloadRows(at: [subjectIndexPath], with: .fade)
-        switchDone = disable
-        tableView.reloadRows(at: [doneIndexPath], with: .fade)
+        if firstPage {
+            switchDone = isPublic() ? false : true
+            tableView.reloadRows(at: [doneIndexPath], with: .fade)
+        } else {
+            switchDone = disable
+            tableView.reloadRows(at: [doneIndexPath], with: .fade)
+        }
         switchComment = disable
+        addChallengeIns[commentIndex].resultText = commentCell.commentView.text
         tableView.reloadRows(at: [commentIndexPath], with: .fade)
         if !isToWorld() {
             switchProofCell = !disable
@@ -308,22 +315,26 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         var json: [String: Any] = ["challengerId": memberID,
                                    "name": memberName,
                                    "challengerFBId": memberFbID,
-                                   "thinksAboutChallenge": commentCell.commentView.text == "Comment" ? "" : commentCell.commentView.text!,
                                    "subject": addViewCell.addChallenge.subjectLabel.text!,
                                    "done": doneCell.isDone.isOn
         ]
+        if commentCell.commentView.text != "Comment" {
+            json["thinksAboutChallenge"] = commentCell.commentView.text!
+        }
         json["firstTeamCount"] = !isPrivate() ? "1" : leftSide.count
         json["secondTeamCount"] = rightSide.count
         json["type"] = type
         let index = visibilityCell.visibilitySegControl.selectedSegmentIndex
         json["visibility"] = index == 0 ? 3 : (index == 1 ? 2 : 1)
         
-        if !isSelf() && !isToWorld() {
-            let temp = deadlineCell.labelOtherSide.text
-            let daysBetween = temp?.components(separatedBy: " ").dropLast().joined()
-            json["challengeTime"] = daysBetween
-        } else {
-            json["untilDate"] = deadlineCell.labelOtherSide.text!
+        if doneCell.isDone.isOn == false {
+            if !isSelf() && !isToWorld() {
+                let temp = deadlineCell.labelOtherSide.text
+                let daysBetween = temp?.components(separatedBy: " ").dropLast().joined()
+                json["challengeTime"] = daysBetween
+            } else {
+                json["untilDate"] = deadlineCell.labelOtherSide.text!
+            }
         }
         
         if isPublic() {
@@ -332,13 +343,13 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 let joinAttendance: [String: Any] = ["memberId": attendace.id, "facebookID": attendace.fbId, "join": false, "proofed": false, "challenger": false]
                 joinAttendanceList.append(joinAttendance)
             }
-            json["proofed"] = true
             json["joinAttendanceList"] = rightSide.count == 0 ? nil : joinAttendanceList as Any
+            json["proofed"] = true
         }
         if isSelf() {
             json["goal"] = "10" // TODO
             if doneCell.isDone.isOn {
-                json["result"] = resultCell.labelOtherSide
+                json["result"] = resultCell.labelOtherSide.text
             } else {
                 json["result"] = "-1"
             }
@@ -354,10 +365,16 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 versusAttendanceList.append(versusAttendance)
             }
             json["versusAttendanceList"] = versusAttendanceList as Any
-            if doneCell.isDone.isOn {
-                json["score"] = scoreCell.labelOtherSide
+            if doneCell.isDone.isOn == true {
+                let scoreText = scoreCell.labelOtherSide.text
+                let score = scoreText?.components(separatedBy: "-")
+                let firstTeamScore = score![0]
+                let secondTeamScore = score![1]
+                json["firstTeamScore"] = firstTeamScore.trim()
+                json["secondTeamScore"] = secondTeamScore.trim()
             } else {
-                json["score"] = "-1"
+                json["firstTeamScore"] = "-1"
+                json["secondTeamScore"] = "-1"
             }
             
         }
@@ -370,7 +387,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else {
             request = ServiceLocator.prepareRequest(url: url, json: json)
         }
-        
+        request = ServiceLocator.prepareRequest(url: url, json: json)
         
         URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
@@ -380,7 +397,12 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     DispatchQueue.main.async {
-                        self.clear()
+                        if self.isPublic() {
+                            let result = NSString(data: data, encoding: String.Encoding.ascii.rawValue)!
+                            self.addMedia(result: result, image: proofCell.proofImageView.image!)
+                        } else {
+                            self.clear()
+                        }
                     }
                 } else {
                     let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
@@ -401,7 +423,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.cancel()
             self.tableView.reloadData()
         }
-        self.popupAlert(message: "Your challange ready!", willDelay: true)
+        self.popupAlert(message: "ADDED!", willDelay: true)
+        self.navigationController?.tabBarController?.selectedIndex = profileIndex
     }
     
     func addMedia(result: NSString, image: UIImage) {
@@ -556,6 +579,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.present(self.imagePickerController, animated: true, completion: nil)
         }))
         
+        actionsheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
         self.present(actionsheet, animated: true, completion: nil)
     }
 
@@ -591,7 +616,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             let temp = cCellContent.labelOtherSide.text
             if (temp?.contains("Days"))! {
                 let daysBetween = temp?.components(separatedBy: " ").dropLast().joined()
-                let nextWeek = Calendar.current.date(byAdding: .day, value: Int(daysBetween!)!, to: Date())
+                let nextWeek = Calendar.current.date(byAdding: .day, value: Int(daysBetween!)! + 1, to: Date())
                 cellContent.datePicker.date = nextWeek!
             } else {
                 let date = formatter.date(from: cCellContent.labelOtherSide.text!)

@@ -69,6 +69,9 @@ class TableViewCellContent: UITableViewCell {
             addSubview(visibilitySegControl)
             addTrailingAnchor(visibilitySegControl, anchor: contentGuide.trailingAnchor, constant: 0)
             visibilitySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            addWidthAnchor(visibilitySegControl, multiplier: 2 / 3)
+            let font = UIFont.boldSystemFont(ofSize: 10)
+            visibilitySegControl.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
             if typeIndex == 1 {
                 visibilitySegControl.selectedSegmentIndex = 2
             } else if typeIndex == 2 {
@@ -127,7 +130,7 @@ class TableViewCellContent: UITableViewCell {
         return imageView
     }()
     
-    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Just Team", "Friends", "Everyone"])
+    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Team Members", "Friends", "Everyone"])
     let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["AS A TEAM", "TO PEOPLE", "TO MYSELF", "TO WORLD"])
     let deadLines: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["A DAY", "A WEEK", "A MONTH", "A YEAR"])
     let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)

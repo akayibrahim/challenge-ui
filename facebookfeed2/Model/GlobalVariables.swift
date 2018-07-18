@@ -38,12 +38,13 @@ var teamCountTwo = "2"
 var teamCountThree = "3"
 var teamCountFour = "4"
 var comment = "COMMENT"
-var proof = "PROVE"
+var proof = "PROOF"
 var supportType = "SUPPORT"
 var following = "FOLLOWING"
 var follower = "FOLLOWER"
 var join = "JOIN"
 var accept = "ACCEPT"
+var commentCharacterLimit : Int = 400
 
 // Assets Name
 var supported = "supported"

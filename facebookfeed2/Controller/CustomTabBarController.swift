@@ -65,6 +65,12 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 let feedC = navC.viewController(class: FeedController.self)
                 feedC?.loadChallenges()
                 return true
+            } else if tabBarController.selectedIndex == profileIndex {
+                let controllers = tabBarController.viewControllers
+                let navC = controllers![profileIndex] as! UINavigationController
+                let feedC = navC.viewController(class: FeedController.self)
+                feedC?.loadChallenges()
+                return true
             }
             return false
         }

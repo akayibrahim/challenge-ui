@@ -14,6 +14,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
     let headerId = "headerId"
     var friendRequest = [SuggestionFriends]()
     let searchBar = UISearchBar()
+    var search : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +77,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
                     friend.setValuesForKeys(postDictionary)
                     self.friendRequest.append(friend)
                 }
+                self.search = true
                 self.tableView?.reloadData()
             }
         }
@@ -112,6 +114,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
                     friend.setValuesForKeys(postDictionary)
                     self.friendRequest.append(friend)
                 }
+                self.search = false
                 self.tableView?.reloadData()
             }
         }
@@ -133,6 +136,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         cell.confirmButton.memberId = friendRequest[indexPath.row].id
         cell.deleteButton.memberId = friendRequest[indexPath.row].id
+        cell.deleteButton.alpha = search ? 0 : 1
         cell.confirmButton.addTarget(self, action: #selector(self.followFriend), for: UIControlEvents.touchUpInside)
         cell.deleteButton.addTarget(self, action: #selector(self.unFollowFriend), for: UIControlEvents.touchUpInside)
         return cell

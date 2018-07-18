@@ -249,6 +249,10 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         return 44
     }
     
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        return textView.text.count + (text.count - range.length) <= commentCharacterLimit
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // scrollView.keyboardDismissMode = .interactive
     }

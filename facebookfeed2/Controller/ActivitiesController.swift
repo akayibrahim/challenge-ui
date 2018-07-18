@@ -224,8 +224,7 @@ class ActivitiesController: UITableViewController {
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
-        challengeController.challengIdForTrendAndExplorer = challengeId
-        challengeController.hidesBottomBarWhenPushed = true
+        challengeController.challengIdForTrendAndExplorer = challengeId        
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }

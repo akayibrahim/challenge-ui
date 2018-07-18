@@ -49,6 +49,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var memberCountOfFollowingForFriendProfile: Int?
     var memberIsPrivateForFriendProfile: Bool?
     var isProfileFriend: Bool?
+    var currentPage : Int = 0
+    var nowMoreData: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,8 +68,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             collectionView?.addSubview(selfRefreshControl)
         }
         collectionView?.alwaysBounceVertical = true
-        
-        loadChallenges()
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
@@ -98,6 +98,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func onRefesh() {
         if refreshControl.isRefreshing {
+            currentPage = 0
+            self.posts = [Post]()
+            // self.donePosts = [Post]()
+            // self.notDonePosts = [Post]()
             self.loadChallenges()
             refreshControl.endRefreshing()
         }
@@ -129,7 +133,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
                 getActivityCount()
-                fetchChallenges(url: getChallengesURL + memberID, profile: false)
+                fetchChallenges(url: getChallengesURL + memberID + "&page=\(currentPage)", profile: false)
                 return
             }
         } else {
@@ -161,38 +165,33 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func fetchChallenges(url: String, profile : Bool) {
         group.enter()
-        URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.posts = [Post]()
-                        self.donePosts = [Post]()
-                        self.notDonePosts = [Post]()
-                        self.group.leave()
-                        for postDictionary in postsArray {
-                            let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
-                            self.posts.append(post)
-                            if profile {
-                                if post.done == true {
-                                    self.donePosts.append(post)
-                                } else {
-                                    self.notDonePosts.append(post)
-                                }
-                            }
-                        }
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil,
+                let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberID=\(memberID)"), willDelay: false)
+                    return
+            }
+            self.nowMoreData = postsArray?.count == 0 ? true : false
+            for postDictionary in postsArray! {
+                let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                self.posts.append(post)
+                if profile {
+                    if post.done == true {
+                        self.donePosts.append(post)
                     } else {
-                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
-                        return
+                        self.notDonePosts.append(post)
                     }
-                } catch let err {
-                    print(err)
                 }
             }
+            self.group.leave()
             DispatchQueue.main.async {
                 self.group.wait()
                 self.collectionView?.reloadData()
             }
-        }).resume()
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -275,7 +274,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
+        let checkPoint = posts.count - 1
+        let shouldLoadMore = checkPoint == indexPath.row
+        if self.tabBarController?.selectedIndex == chanllengeIndex && shouldLoadMore && !nowMoreData {
+            currentPage += 1
+            print(currentPage)
+            self.loadChallenges()
+        }
     }
     
     func createProfile() -> ProfileCellView {
@@ -394,6 +399,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.layer.rasterizationScale = UIScreen.main.scale
         feedCell.prepareForReuse()
         feedCell.feedController = self
+        if posts.count == 0 {
+            return feedCell
+        }
         feedCell.post = posts[indexPath.item]
         addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
         DispatchQueue.main.async {
@@ -464,6 +472,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             feedCell.joinToChl.tag = indexPath.row
             feedCell.joinToChl.challengeId = posts[indexPath.item].id
             feedCell.joinToChl.addTarget(self, action: #selector(self.joinToChallenge), for: UIControlEvents.touchUpInside)
+            feedCell.joinButton.tag = indexPath.row
+            feedCell.joinButton.challengeId = posts[indexPath.item].id
+            feedCell.joinButton.addTarget(self, action: #selector(self.joinToChallenge), for: UIControlEvents.touchUpInside)
         }
         feedCell.supportButton.tag = indexPath.row
         feedCell.supportButtonMatch.tag = indexPath.row
@@ -875,8 +886,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
-        challengeController.challengIdForTrendAndExplorer = challengeId
-        challengeController.hidesBottomBarWhenPushed = true
+        challengeController.challengIdForTrendAndExplorer = challengeId        
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }

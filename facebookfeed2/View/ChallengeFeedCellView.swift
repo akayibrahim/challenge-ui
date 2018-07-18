@@ -1055,7 +1055,6 @@ class FeedCell: UICollectionViewCell {
         return button
     }
     
-    let joinButton = FeedCell.buttonForTitle("", imageName: acceptedBlack)
     let multiplierSign = FeedCell.buttonForTitle("", imageName: "multipliersign")
     let clapping = FeedCell.buttonForTitle("", imageName: "clap")
     let clappingHome = FeedCell.buttonForTitle("", imageName: "clap")
@@ -1080,6 +1079,7 @@ class FeedCell: UICollectionViewCell {
     let joinToChl = FeedCell.subClasssButtonForTitle(joinToChlVar, imageName: "")
     let supportButton = FeedCell.subClasssButtonForTitle("", imageName: support)
     let supportButtonMatch = FeedCell.subClasssButtonForTitle("", imageName: support)
+    let joinButton = FeedCell.subClasssButtonForTitle("", imageName: acceptedBlack)
     
     static func buttonForTitleWithBorder(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()

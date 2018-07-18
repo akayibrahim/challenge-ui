@@ -422,9 +422,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.createAddChallengeInstance()
             self.cancel()
             self.tableView.reloadData()
+            self.popupAlert(message: "ADDED!", willDelay: true)
+            self.navigationController?.tabBarController?.selectedIndex = profileIndex
         }
-        self.popupAlert(message: "ADDED!", willDelay: true)
-        self.navigationController?.tabBarController?.selectedIndex = profileIndex
     }
     
     func addMedia(result: NSString, image: UIImage) {
@@ -769,6 +769,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             commentContent.commentView.text = "Comment"
             commentContent.commentView.textColor = UIColor.lightGray
         }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        return textView.text.count + (text.count - range.length) <= commentCharacterLimit
     }
     
     var beforeEstimatedSize = CGSize(width: screenWidth, height: 44)

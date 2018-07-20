@@ -77,7 +77,7 @@ extension UIViewController
             }
             self.present(selectAlert, animated: true, completion: nil)
             if willDelay {
-                let when = DispatchTime.now() + 2
+                let when = DispatchTime.now() + 1
                 DispatchQueue.main.asyncAfter(deadline: when){
                     // your code with delay
                     selectAlert.dismiss(animated: true, completion: nil)

@@ -285,11 +285,11 @@ class FeedCell: UICollectionViewCell {
             }
             if let supportFirstTeam = post?.supportFirstTeam, let supportSecondTeam = post?.supportSecondTeam {
                 if let firstTeamSupportCount = post?.firstTeamSupportCount {
-                    supportLabel.text = "+\(firstTeamSupportCount)"
+                    supportLabel.text = "+\(firstTeamSupportCount.getSuppportCountAsK())"
                     supportLabel.tag = Int(firstTeamSupportCount)
                 }
                 if let secondTeamSupportCount = post?.secondTeamSupportCount {
-                    supportMatchLabel.text = "+\(secondTeamSupportCount)"
+                    supportMatchLabel.text = "+\(secondTeamSupportCount.getSuppportCountAsK())"
                     supportMatchLabel.tag = Int(secondTeamSupportCount)
                 }
                 supportTextLabel.text = supportText

@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/CommentTableViewController.swift"
-            timestampString = "553555415.695048"
+            timestampString = "553618905.074196"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "225"
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.3089941"
+            timestampString = "553814168.26912"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "262"
-            endingLineNumber = "262"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
             landmarkName = "viewWillDisappear(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.31011"
+            timestampString = "553814168.270291"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "418"
-            endingLineNumber = "418"
+            startingLineNumber = "435"
+            endingLineNumber = "435"
             landmarkName = "collectionView(_:cellForItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.310843"
+            timestampString = "553814168.271154"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "399"
-            endingLineNumber = "399"
+            startingLineNumber = "416"
+            endingLineNumber = "416"
             landmarkName = "collectionView(_:cellForItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/View/ChallengeFeedCellView.swift"
-            timestampString = "553614677.311507"
+            timestampString = "553814168.272099"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "120"
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/AddChallengeController.swift"
-            timestampString = "553555415.698377"
+            timestampString = "553811339.874293"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "324"
@@ -106,7 +106,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/AddChallengeController.swift"
-            timestampString = "553555415.698491"
+            timestampString = "553811339.874352"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "306"
@@ -122,7 +122,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/AddChallengeController.swift"
-            timestampString = "553555415.698676"
+            timestampString = "553811339.874402"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "388"
@@ -138,7 +138,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/AddChallengeController.swift"
-            timestampString = "553555415.6988651"
+            timestampString = "553811339.8744479"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "369"
@@ -154,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.3123471"
+            timestampString = "553814168.272984"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "881"
-            endingLineNumber = "881"
+            startingLineNumber = "902"
+            endingLineNumber = "902"
             landmarkName = "collectionView(_:didSelectItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.313071"
+            timestampString = "553814168.2741899"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "869"
-            endingLineNumber = "869"
+            startingLineNumber = "890"
+            endingLineNumber = "890"
             landmarkName = "scrollViewDidScroll(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -186,7 +186,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/AddChallengeController.swift"
-            timestampString = "553555415.701156"
+            timestampString = "553811339.875801"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "341"
@@ -202,7 +202,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Service/ServiceLocator.swift"
-            timestampString = "553465020.054292"
+            timestampString = "553764624.311538"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "283"
@@ -218,7 +218,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/AddChallengeController.swift"
-            timestampString = "553555415.701322"
+            timestampString = "553811339.875885"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "331"
@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.3139631"
+            timestampString = "553814168.275625"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "640"
-            endingLineNumber = "640"
+            startingLineNumber = "658"
+            endingLineNumber = "658"
             landmarkName = "supportChallenge(sender:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -250,7 +250,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ActivitiesController.swift"
-            timestampString = "553555415.702432"
+            timestampString = "553803702.574338"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "65"
@@ -266,7 +266,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/View/ChallengeFeedCellView.swift"
-            timestampString = "553614677.314773"
+            timestampString = "553814168.27676"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "391"
@@ -282,7 +282,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/View/ChallengeFeedCellView.swift"
-            timestampString = "553614677.3154041"
+            timestampString = "553814168.283044"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "96"
@@ -298,7 +298,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/AddChallengeController.swift"
-            timestampString = "553555415.702616"
+            timestampString = "553811339.876761"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "321"
@@ -314,7 +314,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ActivitiesController.swift"
-            timestampString = "553555415.702713"
+            timestampString = "553803702.574558"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "106"
@@ -330,7 +330,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ActivitiesController.swift"
-            timestampString = "553555415.702799"
+            timestampString = "553803702.574681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "121"
@@ -346,7 +346,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ActivitiesController.swift"
-            timestampString = "553555415.7028821"
+            timestampString = "553803702.574783"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "107"
@@ -394,7 +394,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ActivitiesController.swift"
-            timestampString = "553555415.7029589"
+            timestampString = "553803702.574881"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "77"
@@ -410,11 +410,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.316112"
+            timestampString = "553814168.28482"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "294"
-            endingLineNumber = "294"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
             landmarkName = "createProfile()"
             landmarkType = "7">
          </BreakpointContent>
@@ -425,44 +425,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "facebookfeed2/Controller/ActivitiesController.swift"
-            timestampString = "553555415.703995"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "208"
-            endingLineNumber = "208"
-            landmarkName = "tableView(_:didSelectRowAt:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "facebookfeed2/Controller/ActivitiesController.swift"
-            timestampString = "553555415.704089"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "205"
-            endingLineNumber = "205"
-            landmarkName = "tableView(_:didSelectRowAt:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.316825"
+            timestampString = "553814168.285637"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "178"
-            endingLineNumber = "178"
+            startingLineNumber = "181"
+            endingLineNumber = "181"
             landmarkName = "fetchChallenges(url:profile:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -474,11 +442,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.3174829"
+            timestampString = "553814168.286757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "279"
-            endingLineNumber = "279"
+            startingLineNumber = "289"
+            endingLineNumber = "289"
             landmarkName = "collectionView(_:willDisplay:forItemAt:)"
             landmarkType = "7">
             <Locations>
@@ -490,11 +458,11 @@
                   moduleName = "facebookfeed2"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/Controller/ChallengesController.swift"
-                  timestampString = "553598960.154299"
+                  timestampString = "553669489.989695"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "279"
-                  endingLineNumber = "279"
+                  startingLineNumber = "281"
+                  endingLineNumber = "281"
                   offsetFromSymbolStart = "216">
                </Location>
                <Location
@@ -505,12 +473,12 @@
                   moduleName = "facebookfeed2"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iakay/Documents/projects/chl-ios/facebookfeed2/Controller/ChallengesController.swift"
-                  timestampString = "553598960.156919"
+                  timestampString = "553669489.994985"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "279"
-                  endingLineNumber = "279"
-                  offsetFromSymbolStart = "675">
+                  startingLineNumber = "281"
+                  endingLineNumber = "281"
+                  offsetFromSymbolStart = "1397">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -522,11 +490,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.318084"
+            timestampString = "553814168.287618"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "280"
-            endingLineNumber = "280"
+            startingLineNumber = "290"
+            endingLineNumber = "290"
             landmarkName = "collectionView(_:willDisplay:forItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -538,11 +506,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.319078"
+            timestampString = "553814168.288316"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
+            startingLineNumber = "194"
+            endingLineNumber = "194"
             landmarkName = "fetchChallenges(url:profile:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -554,11 +522,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.319726"
+            timestampString = "553814168.289054"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
             landmarkName = "onRefesh()"
             landmarkType = "7">
          </BreakpointContent>
@@ -570,11 +538,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.320299"
+            timestampString = "553814168.289765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "177"
-            endingLineNumber = "177"
+            startingLineNumber = "180"
+            endingLineNumber = "180"
             landmarkName = "fetchChallenges(url:profile:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -586,11 +554,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.320914"
+            timestampString = "553814168.2904691"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "loadChallenges()"
             landmarkType = "7">
          </BreakpointContent>
@@ -602,11 +570,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.321492"
+            timestampString = "553814168.291389"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "loadChallenges()"
             landmarkType = "7">
          </BreakpointContent>
@@ -618,11 +586,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.322153"
+            timestampString = "553814168.2921799"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "282"
-            endingLineNumber = "282"
+            startingLineNumber = "296"
+            endingLineNumber = "296"
             landmarkName = "collectionView(_:willDisplay:forItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -630,15 +598,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.322979"
+            timestampString = "553814168.2929111"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "362"
-            endingLineNumber = "362"
+            startingLineNumber = "376"
+            endingLineNumber = "376"
             landmarkName = "followOrUnfollowFriend(url:isRemove:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -650,27 +618,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.323722"
+            timestampString = "553814168.293722"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
-            landmarkName = "onRefesh()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.324403"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
             landmarkName = "onSelfRefesh()"
             landmarkType = "7">
          </BreakpointContent>
@@ -682,12 +634,108 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/ChallengesController.swift"
-            timestampString = "553614677.325568"
+            timestampString = "553814168.2949769"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
             landmarkName = "onRefesh()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "facebookfeed2/Controller/CommentTableViewController.swift"
+            timestampString = "553618905.08429"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "261"
+            endingLineNumber = "261"
+            landmarkName = "profileImageTappedName(tapGestureRecognizer:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "facebookfeed2/Controller/CommentTableViewController.swift"
+            timestampString = "553618905.084352"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "258"
+            endingLineNumber = "258"
+            landmarkName = "profileImageTappedName(tapGestureRecognizer:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "facebookfeed2/Extension/UIExtension.swift"
+            timestampString = "553814168.29597"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "didTapAttributedTextInLabel(label:inRange:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "facebookfeed2/Service/ServiceLocator.swift"
+            timestampString = "553764624.320225"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
+            landmarkName = "mappingOfPost(postDictionary:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "facebookfeed2/Controller/ChallengeRequestController.swift"
+            timestampString = "553791326.184027"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
+            landmarkName = "acceptOrJoinChallenge(sender:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "facebookfeed2/Controller/ChallengeRequestController.swift"
+            timestampString = "553791326.1841069"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
+            landmarkName = "acceptChallengeService(challengeId:accept:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

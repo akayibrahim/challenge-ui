@@ -423,6 +423,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.cancel()
             self.tableView.reloadData()
             self.popupAlert(message: "ADDED!", willDelay: true)
+            if self.leftSide.count == 0 {
+                self.leftSide.append(self.getMember())
+            }
             self.navigationController?.tabBarController?.selectedIndex = profileIndex
         }
     }

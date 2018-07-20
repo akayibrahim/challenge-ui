@@ -8,6 +8,51 @@
 
 import UIKit
 
+extension NSNumber {
+    func getSuppportCountAsK() -> String {
+        let selfStr = self.stringValue
+        if selfStr.count > 3 {
+            let endIndex = selfStr.index(selfStr.endIndex, offsetBy: -3)
+            let truncated = selfStr.substring(to: endIndex)
+            return "\(truncated)K"
+        } else {
+            return self.stringValue
+        }
+    }
+}
+
+extension UITapGestureRecognizer {
+    
+    func didTapAttributedTextInLabel(label: UITextView, inRange targetRange: NSRange) -> Bool {
+        // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(size: CGSize.zero)
+        let textStorage = NSTextStorage(attributedString: label.attributedText!)
+        
+        // Configure layoutManager and textStorage
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+        
+        // Configure textContainer
+        textContainer.lineFragmentPadding = 0.0
+        // textContainer.lineBreakMode = label.lineBreakMode
+        //textContainer.maximumNumberOfLines = label.numberOfLines
+        let labelSize = label.bounds.size
+        textContainer.size = labelSize
+        
+        // Find the tapped character location and compare it to the specified range
+        let locationOfTouchInLabel = self.location(in: label)
+        let textBoundingBox = layoutManager.usedRect(for: textContainer)
+        let textContainerOffset = CGPoint(x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
+                                          y: (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y);
+        let locationOfTouchInTextContainer = CGPoint(x: locationOfTouchInLabel.x - textContainerOffset.x, y:
+            locationOfTouchInLabel.y - textContainerOffset.y);
+        let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+        
+        return NSLocationInRange(indexOfCharacter + 5, targetRange)
+    }
+}
+
 extension NSLayoutConstraint {
     
     override open var description: String {

@@ -226,10 +226,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         // let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
         // let cell = CommentCellView(frame: frameOfCell, cellRow: indexPath.row)
         let fbID = comments[indexPath.item].fbID
-        let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])        
-        let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
-        commentAtt.append(nameAtt)
-        cell.thinksAboutChallengeView.attributedText = commentAtt
+        cell.thinksAboutChallengeView.attributedText = getCommentText(indexPath: indexPath)
         setImage(fbID: fbID, imageView: cell.profileImageView)
         
         cell.selectionStyle = UITableViewCellSelectionStyle.none
@@ -237,12 +234,32 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         cell.profileImageView.tag = indexPath.row
         cell.profileImageView.isUserInteractionEnabled = true
         cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+        
+        let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
+        cell.thinksAboutChallengeView.tag = indexPath.row
+        cell.thinksAboutChallengeView.isUserInteractionEnabled = true
+        cell.thinksAboutChallengeView.addGestureRecognizer(tapGestureRecognizerName)
         return cell
+    }
+    
+    func getCommentText(indexPath:IndexPath) -> NSMutableAttributedString {
+        let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
+        let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
+        commentAtt.append(nameAtt)
+        return commentAtt
     }
     
     func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
         openProfile(name: comments[tappedImage.tag].name!, memberId: comments[tappedImage.tag].memberId!, memberFbId: comments[tappedImage.tag].fbID!)
+    }
+    
+    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+        let textview = tapGestureRecognizer.view as! UITextView
+        let textRange = NSMakeRange(0, (comments[textview.tag].name?.count)!)
+        if tapGestureRecognizer.didTapAttributedTextInLabel(label: textview, inRange: textRange) {
+            openProfile(name: comments[textview.tag].name!, memberId: comments[textview.tag].memberId!, memberFbId: comments[textview.tag].fbID!)
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

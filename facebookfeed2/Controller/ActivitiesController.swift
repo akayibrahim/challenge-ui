@@ -145,10 +145,25 @@ class ActivitiesController: UITableViewController {
             cell.profileImageView.tag = indexPath.row
             cell.profileImageView.isUserInteractionEnabled = true
             cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+            
+            let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
+            cell.contentText.tag = indexPath.row
+            cell.contentText.isUserInteractionEnabled = true
+            cell.contentText.addGestureRecognizer(tapGestureRecognizerName)
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             return cell
         }
         return UITableViewCell()
+    }
+    
+    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+        let textview = tapGestureRecognizer.view as! UITextView
+        let textRange = NSMakeRange(0, (activities[textview.tag].name?.count)!)
+        if tapGestureRecognizer.didTapAttributedTextInLabel(label: textview, inRange: textRange) {
+            openProfile(name: activities[textview.tag].name!, memberId: activities[textview.tag].fromMemberId!, memberFbId: activities[textview.tag].facebookID!)
+        } else {
+            openBackgroundOfActivity(indexPath: IndexPath(item: textview.tag, section: 0))
+        }
     }
     
     func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
@@ -201,22 +216,26 @@ class ActivitiesController: UITableViewController {
         } else if indexPath.section == 1 && indexPath.row == 0 {
             challengeRequest()
         } else {
-            let type = activities[indexPath.row].type
-            if type == comment {
-                viewComments(challengeId: activities[indexPath.row].challengeId!)
-            } else if type == proof {
-                viewProofs(challengeId: activities[indexPath.row].challengeId!)
-            } else if type == supportType {
-                openExplorer(challengeId: activities[indexPath.row].challengeId!)
-            } else if type == join {
-                openExplorer(challengeId: activities[indexPath.row].challengeId!)
-            } else if type == accept {
-                openExplorer(challengeId: activities[indexPath.row].challengeId!)
-            } else if type == following {
-                // nothing
-            } else if type == follower {
-                // nothing
-            }
+            openBackgroundOfActivity(indexPath: indexPath)
+        }
+    }
+    
+    func openBackgroundOfActivity(indexPath: IndexPath) {
+        let type = activities[indexPath.row].type
+        if type == comment {
+            viewComments(challengeId: activities[indexPath.row].challengeId!)
+        } else if type == proof {
+            viewProofs(challengeId: activities[indexPath.row].challengeId!)
+        } else if type == supportType {
+            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+        } else if type == join {
+            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+        } else if type == accept {
+            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+        } else if type == following {
+            // nothing
+        } else if type == follower {
+            // nothing
         }
     }
     
@@ -225,7 +244,7 @@ class ActivitiesController: UITableViewController {
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
         challengeController.challengIdForTrendAndExplorer = challengeId        
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }
     
@@ -235,31 +254,31 @@ class ActivitiesController: UITableViewController {
         // TODO commentsTable.comments = self.comments        
         commentsTable.challengeId = challengeId
         commentsTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
     func viewProofs(challengeId: String) {
         let proofsTable = ProofTableViewController()
-        proofsTable.tableTitle = commentsTableTitle
+        proofsTable.tableTitle = proofsTableTitle
         // TODO commentsTable.comments = self.comments
         proofsTable.challengeId = challengeId
         proofsTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(proofsTable, animated: true)
     }
     
     func followRequest() {
         let followRequest = FollowRequestController()
         followRequest.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(followRequest, animated: true)
     }
     
     func challengeRequest() {
         let challengeRequest = ChallengeRequestController()
         challengeRequest.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeRequest, animated: true)
     }
     
@@ -276,7 +295,7 @@ class ActivitiesController: UITableViewController {
         profileController.memberIsPrivateForFriendProfile = friendIsPrivate
         profileController.profile = true
         profileController.isProfileFriend = false
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     

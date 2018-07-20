@@ -50,6 +50,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var memberIsPrivateForFriendProfile: Bool?
     var isProfileFriend: Bool?
     var currentPage : Int = 0
+    var selfCurrentPage : Int = 0
     var nowMoreData: Bool = false
     
     override func viewDidLoad() {
@@ -100,8 +101,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if refreshControl.isRefreshing {
             currentPage = 0
             self.posts = [Post]()
-            // self.donePosts = [Post]()
-            // self.notDonePosts = [Post]()
             self.loadChallenges()
             refreshControl.endRefreshing()
         }
@@ -109,6 +108,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func onSelfRefesh() {
         if selfRefreshControl.isRefreshing {
+            selfCurrentPage = 0
+            self.posts = [Post]()
+            self.donePosts = [Post]()
+            self.notDonePosts = [Post]()
             self.loadChallenges()
             selfRefreshControl.endRefreshing()
         }
@@ -119,7 +122,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             // Asynchronous Http call to your api url, using NSURLSession:
             if profile {
                 if !memberIsPrivateForFriendProfile! || (memberIsPrivateForFriendProfile! && isProfileFriend!) {
-                    fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + memberIdForFriendProfile!, profile: true)
+                    fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + memberIdForFriendProfile! + "&page=\(selfCurrentPage)", profile: true)
                 }
                 return
             } else if explorer {
@@ -129,7 +132,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallanges=true", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == profileIndex {
-                fetchChallenges(url: getChallengesOfMemberURL + memberID, profile: true)
+                fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(selfCurrentPage)", profile: true)
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
                 getActivityCount()
@@ -274,11 +277,22 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex
+        let isSelf = self.tabBarController?.selectedIndex == profileIndex
         let checkPoint = posts.count - 1
-        let shouldLoadMore = checkPoint == indexPath.row
-        if self.tabBarController?.selectedIndex == chanllengeIndex && shouldLoadMore && !nowMoreData {
-            currentPage += 1
-            print(currentPage)
+        var shouldLoadMore = checkPoint == indexPath.row
+        if isSelf {
+            let checkPoint1 = notDonePosts.count - 1
+            let checkPoint2 = donePosts.count - 1
+            shouldLoadMore = (checkPoint1 == indexPath.row) || (checkPoint2 == indexPath.row)
+        }
+        if (isChallenge || isSelf) && shouldLoadMore && !nowMoreData {
+            if isChallenge {
+                currentPage += 1
+            }
+            if isSelf {
+                selfCurrentPage += 1
+            }
             self.loadChallenges()
         }
     }
@@ -381,6 +395,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             feedCellForSelf.prepareForReuse()
             feedCellForSelf.feedController = self
             if indexPath.section == 1 {
+                if notDonePosts.count == 0 {
+                    return feedCellForSelf
+                }
                 feedCellForSelf.post = notDonePosts[indexPath.row]
                 if !profile {
                     feedCellForSelf.updateProgress.type = notDonePosts[indexPath.row].type
@@ -630,7 +647,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             sender.setImage(UIImage(named: supported), for: .normal)
             if feedCell.supportButtonMatch.currentImage == UIImage(named: supported) {
                 feedCell.supportButtonMatch.setImage(UIImage(named:support), for: .normal)
-                feedCell.supportMatchLabel.text = "+\(feedCell.supportMatchLabel.tag + (-1))"
+                let supportMatchCount : NSNumber = NSNumber(value: feedCell.supportMatchLabel.tag + (-1))
+                feedCell.supportMatchLabel.text = "+\(supportMatchCount.getSuppportCountAsK())"
                 feedCell.supportMatchLabel.tag = Int(feedCell.supportMatchLabel.tag + (-1))
             }
             supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: true, index: index)
@@ -665,10 +683,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             } else {
                 DispatchQueue.main.async { // Correct
                     if isHome {
-                        feedCell.supportLabel.text = "+\(feedCell.supportLabel.tag + (support ? 1 : -1))"
+                        let supportCount : NSNumber = NSNumber(value: feedCell.supportLabel.tag + (support ? 1 : -1))
+                        feedCell.supportLabel.text = "+\(supportCount.getSuppportCountAsK())"
                         feedCell.supportLabel.tag = Int(feedCell.supportLabel.tag + (support ? 1 : -1))
                     } else {
-                        feedCell.supportMatchLabel.text = "+\(feedCell.supportMatchLabel.tag + (support ? 1 : -1))"
+                        let supportMatchCount : NSNumber = NSNumber(value: feedCell.supportMatchLabel.tag + (support ? 1 : -1))
+                        feedCell.supportMatchLabel.text = "+\(supportMatchCount.getSuppportCountAsK())"
                         feedCell.supportMatchLabel.tag = Int(feedCell.supportMatchLabel.tag + (support ? 1 : -1))
                     }
                 }
@@ -684,7 +704,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             sender.setImage(UIImage(named: supported), for: .normal)
             if feedCell.supportButton.currentImage == UIImage(named: supported) {
                 feedCell.supportButton.setImage(UIImage(named:support), for: .normal)
-                feedCell.supportLabel.text = "+\(feedCell.supportLabel.tag + (-1))"
+                let supportCount : NSNumber = NSNumber(value: feedCell.supportLabel.tag + (-1))
+                feedCell.supportLabel.text = "+\(supportCount.getSuppportCountAsK())"
                 feedCell.supportLabel.tag = Int(feedCell.supportLabel.tag + (-1))
             }
             supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: false, index: index)

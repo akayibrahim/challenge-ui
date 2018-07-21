@@ -8,6 +8,14 @@
 
 import UIKit
 
+extension UIViewController: UITextFieldDelegate {
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else { return true }
+        let newLength = text.characters.count + string.characters.count - range.length
+        return newLength <= 30 // replace 30 for your max length value
+    }
+}
+
 extension NSNumber {
     func getSuppportCountAsK() -> String {
         let selfStr = self.stringValue

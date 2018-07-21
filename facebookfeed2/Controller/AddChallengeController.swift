@@ -39,9 +39,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     let screenSize = UIScreen.main.bounds
     var tableRowHeightHeight: CGFloat = 44
     var chlViewHeight: CGFloat = 17.5/30
-    var subjects = [Subject]()
-    var self_subjects = [Subject]()
-    var friends = [Friends]()
     var leftSide = [SelectedItems]()
     var rightSide = [SelectedItems]()
     var deadLine = Int()
@@ -69,15 +66,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
-        if dummyServiceCall == false {
-            fetchData(url: getSubjectsURL, type: "SUBJECT")
-            fetchData(url: getSelfSubjectsURL, type: "SELF_SUBJECT")
-            fetchData(url: getFollowingListURL + memberID, type: "FRIENDS")
-        } else {
-            self.subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "subject")
-            self.self_subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "self_subject")
-            self.friends = ServiceLocator.getFriendsFromDummy(jsonFileName: "friends")
-        }
         self.hideKeyboardWhenTappedAround()
         self.leftSide.append(getMember())
     }
@@ -213,44 +201,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     func isDone() -> Bool {
         let doneCell = getCell(path: doneIndexPath)
         return doneCell.isDone.isOn
-    }
-    
-    func fetchData(url: String, type: String) {
-        let jsonURL = URL(string: url)!
-        jsonURL.get { data, response, error in
-            guard
-                let returnData = data,
-                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
-                else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: ""), willDelay: false)
-                    return
-            }
-            DispatchQueue.main.async {
-                if type == "FRIENDS" {
-                    self.friends = [Friends]()
-                } else if type == "SELF_SUBJECT" {
-                    self.self_subjects = [Subject]()
-                } else {
-                    self.subjects = [Subject]()
-                }
-                for postDictionary in postsArray! {
-                    if type == "SUBJECT" {
-                        let subject = Subject()
-                        subject.setValuesForKeys(postDictionary)
-                        self.subjects.append(subject)
-                    } else if type == "SELF_SUBJECT" {
-                        let subject = Subject()
-                        subject.setValuesForKeys(postDictionary)
-                        self.self_subjects.append(subject)
-                    } else if type == "FRIENDS" {
-                        let friend = Friends()
-                        friend.setValuesForKeys(postDictionary)
-                        self.friends.append(friend)
-                    }
-                }
-                self.tableView?.reloadData()
-            }
-        }
     }
     
     func createAddChallenge(labelText : String, resultText : String, resultId : Int, resultBool : Bool, labelAtt : NSMutableAttributedString) -> AddChallenge {
@@ -454,21 +404,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         let segControlContent = getCell(path: segControlIndexPath)
         if indexPath == subjectIndexPath {
             let selectionTable = SelectionTableViewController()
-            var selItems = [SelectedItems]()
-            if isPublic() || isPrivate() {
-                for subj in self.subjects {
-                    let selItem = SelectedItems()
-                    selItem.name = subj.name
-                    selItems.append(selItem)
-                }
-            } else {
-                for subj in self.self_subjects {
-                    let selItem = SelectedItems()
-                    selItem.name = subj.name
-                    selItems.append(selItem)
-                }
-            }
-            selectionTable.items = selItems
             selectionTable.tableTitle = "Subjects"
             selectionTable.popIndexPath = indexPath
             selectionTable.segmentIndex = segControlContent.mySegControl.selectedSegmentIndex
@@ -476,42 +411,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath == leftSideIndex || indexPath == rightSideIndex {
             let selectionTable = SelectionTableViewController()
-            var selItems = [SelectedItems]()
-            for fri in self.friends {
-                let selItem = SelectedItems()
-                selItem.name = "\(fri.name!) \(fri.surname!)"
-                selItem.id = fri.id
-                selItem.fbId = fri.facebookID
-                if indexPath == leftSideIndex {
-                    if getIDs(side: self.leftSide).contains(selItem.id) {
-                        selItem.selected = true
-                    }
-                    if !getIDs(side: self.rightSide).contains(selItem.id) {
-                        selItems.append(selItem)
-                    }
-                } else if indexPath == rightSideIndex {
-                    if getIDs(side: self.rightSide).contains(selItem.id) {
-                        selItem.selected = true
-                    }
-                    if !getIDs(side: self.leftSide).contains(selItem.id) {
-                        selItems.append(selItem)
-                    }
-                }
-                
-            }
-            if indexPath == leftSideIndex {
-                selItems.append(getMember())
-            }
-            selectionTable.items = selItems
-            if !isPublic() {
-                if indexPath == leftSideIndex {
-                    selectionTable.otherSideCount = rightSide.count
-                } else {
-                    selectionTable.otherSideCount = leftSide.count
-                }
-            } else {
-                selectionTable.otherSideCount = -1
-            }
+            selectionTable.leftSide = leftSide
+            selectionTable.rightSide = rightSide
             selectionTable.tableTitle = "Friends"
             selectionTable.popIndexPath = indexPath
             selectionTable.segmentIndex = segControlContent.mySegControl.selectedSegmentIndex
@@ -548,14 +449,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         selItem.selected = true
         selItem.user = true
         return selItem
-    }
-    
-    func getIDs(side: [SelectedItems]) -> [String] {
-        var ids : [String] = []
-        for si in side {
-            ids.append(si.id)
-        }
-        return ids
     }
     
     let imagePickerController = UIImagePickerController()

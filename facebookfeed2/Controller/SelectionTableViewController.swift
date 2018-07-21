@@ -31,6 +31,11 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     var memberIdForFriendProfile: String?
     var isProfileFriend: Bool?
     var searchBar = UISearchBar()
+    var subjects = [Subject]()
+    var self_subjects = [Subject]()
+    var leftSide = [SelectedItems]()
+    var rightSide = [SelectedItems]()
+    var friends = [Friends]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,19 +43,37 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         self.tableView.delegate = self
         self.tableView.dataSource = self
         searchBar.delegate = self
+        self.customeSubjectText.delegate = self as UITextFieldDelegate
         navigationItem.titleView = searchBar
         unfilteredItems = items
         tableView.tableFooterView = UIView()
         self.view.addSubview(tableView)
-        navigationItem.title = tableTitle        
+        navigationItem.title = tableTitle  
+        
         if !listMode {
             self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: labelCell)
-            if popIndexPath.row == 3 || popIndexPath.row == 4 {
+            if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex {
                 tableView.allowsMultipleSelection = true
                 navigationItem.rightBarButtonItem = self.editButtonItem
                 let rightButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.showEditing))
                 rightButton.tintColor = UIColor.white
                 navigationItem.rightBarButtonItem = rightButton
+                if dummyServiceCall == false {
+                    fetchData(url: getFollowingListURL + memberID, type: "FRIENDS")
+                } else {
+                    self.friends = ServiceLocator.getFriendsFromDummy(jsonFileName: "friends")
+                }
+            } else if popIndexPath.row == subjectIndex {
+                if dummyServiceCall == false {
+                    if segmentIndex != 2 {
+                        fetchData(url: getSubjectsURL, type: "SUBJECT")
+                    } else {
+                        fetchData(url: getSelfSubjectsURL, type: "SELF_SUBJECT")
+                    }
+                } else {
+                    self.subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "subject")
+                    self.self_subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "self_subject")
+                }
             }
         } else {
             self.tableView.register(FollowCellView.self, forCellReuseIdentifier: followCell)
@@ -64,6 +87,116 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.hideKeyboardWhenTappedAround()
+    }
+    
+    func fetchData(url: String, type: String) {
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: ""), willDelay: false)
+                    return
+            }
+            DispatchQueue.main.async {
+                if type == "FRIENDS" {
+                    self.friends = [Friends]()
+                } else if type == "SELF_SUBJECT" {
+                    self.self_subjects = [Subject]()
+                } else {
+                    self.subjects = [Subject]()
+                }
+                for postDictionary in postsArray! {
+                    if type == "SUBJECT" {
+                        let subject = Subject()
+                        subject.setValuesForKeys(postDictionary)
+                        self.subjects.append(subject)
+                    } else if type == "SELF_SUBJECT" {
+                        let subject = Subject()
+                        subject.setValuesForKeys(postDictionary)
+                        self.self_subjects.append(subject)
+                    } else if type == "FRIENDS" {
+                        let friend = Friends()
+                        friend.setValuesForKeys(postDictionary)
+                        self.friends.append(friend)
+                    }
+                }
+                self.fillItems(type: type)
+                self.tableView?.reloadData()
+            }
+        }
+    }
+    
+    func fillItems(type: String) {
+        var selItems = [SelectedItems]()
+        if type == "SUBJECT" {
+            for subj in self.subjects {
+                let selItem = SelectedItems()
+                selItem.name = subj.name
+                selItems.append(selItem)
+            }
+        } else if type == "SELF_SUBJECT" {
+            for subj in self.self_subjects {
+                let selItem = SelectedItems()
+                selItem.name = subj.name
+                selItems.append(selItem)
+            }
+        } else if type == "FRIENDS" {
+            for fri in self.friends {
+                let selItem = SelectedItems()
+                selItem.name = "\(fri.name!) \(fri.surname!)"
+                selItem.id = fri.id
+                selItem.fbId = fri.facebookID
+                if popIndexPath == leftSideIndex {
+                    if getIDs(side: self.leftSide).contains(selItem.id) {
+                        selItem.selected = true
+                    }
+                    if !getIDs(side: self.rightSide).contains(selItem.id) {
+                        selItems.append(selItem)
+                    }
+                } else if popIndexPath == rightSideIndex {
+                    if getIDs(side: self.rightSide).contains(selItem.id) {
+                        selItem.selected = true
+                    }
+                    if !getIDs(side: self.leftSide).contains(selItem.id) {
+                        selItems.append(selItem)
+                    }
+                }
+                
+            }
+            if popIndexPath == leftSideIndex {
+                selItems.append(getMember())
+            }
+            if !isPublic() {
+                if popIndexPath == leftSideIndex {
+                    otherSideCount = rightSide.count
+                } else {
+                    otherSideCount = leftSide.count
+                }
+            } else {
+                otherSideCount = -1
+            }
+        }
+        self.items = selItems
+    }
+    
+    func getMember() -> SelectedItems {
+        let selItem = SelectedItems()
+        selItem.name = memberName
+        selItem.id = memberID
+        selItem.fbId = memberFbID
+        selItem.selected = true
+        selItem.user = true
+        return selItem
+    }
+    
+    func getIDs(side: [SelectedItems]) -> [String] {
+        var ids : [String] = []
+        for si in side {
+            ids.append(si.id)
+        }
+        return ids
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {

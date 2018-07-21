@@ -72,7 +72,7 @@ class TableViewCellContent: UITableViewCell {
             addWidthAnchor(visibilitySegControl, multiplier: 2 / 3)
             let font = UIFont.boldSystemFont(ofSize: 10)
             visibilitySegControl.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
-            if typeIndex == 1 {
+            if typeIndex == 1 || typeIndex == 3 {
                 visibilitySegControl.selectedSegmentIndex = 2
             } else if typeIndex == 2 {
                 visibilitySegControl.selectedSegmentIndex = 0

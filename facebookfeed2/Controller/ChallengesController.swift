@@ -289,9 +289,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if (isChallenge || isSelf) && shouldLoadMore && !nowMoreData {
             if isChallenge {
                 currentPage += 1
+                print("challenge:\(currentPage)")
             }
             if isSelf {
                 selfCurrentPage += 1
+                print("profile:\(selfCurrentPage)")
             }
             self.loadChallenges()
         }
@@ -507,8 +509,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
         }
         feedCell.viewComments.challengeId = posts[indexPath.item].id
+        feedCell.viewComments.memberId = posts[indexPath.item].challengerId
         feedCell.viewProofs.challengeId = posts[indexPath.item].id
         feedCell.addComments.challengeId = posts[indexPath.item].id
+        feedCell.addComments.memberId = posts[indexPath.item].challengerId
         feedCell.addProofs.challengeId = posts[indexPath.item].id
         feedCell.viewComments.addTarget(self, action: #selector(self.viewComments), for: UIControlEvents.touchUpInside)
         feedCell.viewProofs.addTarget(self, action: #selector(self.viewProofs), for: UIControlEvents.touchUpInside)
@@ -589,6 +593,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             updateProgress.updateProgress = true
             updateProgress.challengeId = sender.challengeId
             updateProgress.challengeType = sender.type
+            updateProgress.homeScoreText.becomeFirstResponder()
             updateProgress.hidesBottomBarWhenPushed = true
             self.navigationController?.setNavigationBarHidden(false, animated: false)
             self.navigationController?.pushViewController(updateProgress, animated: true)
@@ -606,6 +611,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
         commentsTable.challengeId = sender.challengeId
+        commentsTable.commentedMemberId = sender.memberId
         commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -617,6 +623,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
         commentsTable.challengeId = sender.challengeId
+        commentsTable.commentedMemberId = sender.memberId
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)

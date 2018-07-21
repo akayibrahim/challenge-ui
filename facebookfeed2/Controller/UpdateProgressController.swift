@@ -18,39 +18,63 @@ class UpdateProgressController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Update Progress"
-        self.view.backgroundColor = UIColor.white
-        let constraintOfY = screenWidth * 1.2 / 5
-        let constraintOfYForSecondText = (screenWidth * 1.2 / 5) + globalHeight + 5
-        if result {
-            navigationItem.title = "Reult"
-            view.addSubview(resultText)
-            resultText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
-        } else if score {
-            navigationItem.title = "Scores"
-            view.addSubview(homeScoreText)
-            homeScoreText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
-            homeScoreText.placeholder = " Enter home score..."
+        self.view.backgroundColor = pagesBackColor
+        let constraintOfY = screenWidth * 2.5 / 5
+        // let constraintOfYForSecondText = (screenWidth * 1.2 / 5) + globalHeight + 5
+        
+        view.addSubview(homeScoreLabel)
+        homeScoreLabel.frame = CGRect(x: 0 + 10, y: screenWidth * 2 / 5, width: view.frame.width / 3, height: globalHeight)
+        homeScoreLabel.textColor = navAndTabColor
+        
+        view.addSubview(homeScoreText)
+        homeScoreText.frame = CGRect(x: 0 + 10, y: constraintOfY, width: view.frame.width / 3, height: globalHeight)
+        homeScoreText.placeholder = "Enter"
+        awayScoreText.placeholder = "Enter"
+        
+        view.addSubview(awayScoreLabel)
+        awayScoreLabel.frame = CGRect(x: (view.frame.width * 2 / 3) - 10, y: screenWidth * 2 / 5, width: view.frame.width / 3, height: globalHeight)
+        awayScoreLabel.textColor = navAndTabColor
+        
+        view.addSubview(awayScoreText)
+        awayScoreText.frame = CGRect(x: (view.frame.width * 2 / 3) - 10, y: constraintOfY, width: view.frame.width / 3, height: globalHeight)
+        
+        vsImageView.image = UIImage(named: "vs")
+        view.addSubview(vsImageView)
+        vsImageView.frame = CGRect(x: (view.frame.width * 1.2 / 3) - 10, y: screenWidth * 2.3 / 5, width: view.frame.width * 0.8 / 3,
+                                   height: screenWidth * 1 / 6)
+        
+        if updateProgress {
+            view.addSubview(backView)
+            backView.backgroundColor = UIColor.white
+            backView.frame = CGRect(x: 0, y: screenWidth * 3.5 / 5, width: view.frame.width, height: globalHeight)
             
-            view.addSubview(awayScoreText)
-            awayScoreText.frame = CGRect(x: 0, y: constraintOfYForSecondText, width: view.frame.width, height: globalHeight)
-            awayScoreText.placeholder = " Enter away score..."
-        } else if updateProgress {
+            view.addSubview(doneLabel)
+            doneLabel.frame = CGRect(x: (view.frame.width * 1.9 / 3) - 10, y: screenWidth * 3.5 / 5, width: view.frame.width / 5, height: globalHeight)
+            doneLabel.textColor = navAndTabColor
+            doneLabel.text = "Finish"
+            
+            view.addSubview(isDone)
+            isDone.backgroundColor = UIColor.white
+            isDone.frame = CGRect(x: (view.frame.width * 2.5 / 3) - 10, y: screenWidth * 3.6 / 5, width: view.frame.width / 5, height: globalHeight)
+            
             if challengeType == SELF {
-                view.addSubview(isDone)
-                view.addSubview(resultText)
-                resultText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
+                homeScoreLabel.text = "Result"
+                awayScoreLabel.text = "Goal"
+                awayScoreText.isEnabled = false
                 
-                isDone.frame = CGRect(x: 0, y: constraintOfY + (screenWidth * 0.8 / 5), width: view.frame.width / 5, height: globalHeight)
             } else if challengeType == PRIVATE {
-                view.addSubview(homeScoreText)
-                homeScoreText.frame = CGRect(x: 0, y: constraintOfY, width: view.frame.width, height: globalHeight)
-                homeScoreText.placeholder = " Enter home score..."
-                
-                view.addSubview(awayScoreText)
-                awayScoreText.frame = CGRect(x: 0, y: constraintOfYForSecondText, width: view.frame.width, height: globalHeight)
-                awayScoreText.placeholder = " Enter away score..."
-                
-                // isDone.frame = CGRect(x: 0, y: constraintOfYForSecondText + (screenWidth * 0.8 / 5), width: view.frame.width / 5, height: globalHeight)
+                homeScoreLabel.text = "Home"
+                awayScoreLabel.text = "Away"
+            }
+        } else {
+            if result {
+                navigationItem.title = "Result"
+                homeScoreLabel.text = "Result"
+                awayScoreLabel.text = "Goal"
+            } else if score {
+                navigationItem.title = "Scores"
+                homeScoreLabel.text = "Home"
+                awayScoreLabel.text = "Away"
             }
         }
         navigationItem.rightBarButtonItem = self.editButtonItem
@@ -65,7 +89,7 @@ class UpdateProgressController : UIViewController {
         if updateProgress {
             var url : String?
             if challengeType == SELF {
-                url = updateProgressOrDoneForSelfURL  + "?challengeId=" + challengeId! + "&result=" + resultText.text! + "&done=" + (isDone.isOn ? "true" : "false")
+                url = updateProgressOrDoneForSelfURL  + "?challengeId=" + challengeId! + "&result=" + homeScoreText.text! + "&done=" + (isDone.isOn ? "true" : "false")
             } else if challengeType == PRIVATE {
                 url = updateResultsOfVersusURL  + "?challengeId=" + challengeId! + "&firstTeamScore=" + homeScoreText.text! + "&secondTeamScore=" + awayScoreText.text!
             }
@@ -75,8 +99,8 @@ class UpdateProgressController : UIViewController {
             let addViewContent = controller.tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
             if result {
                 let resultContent = controller.tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
-                resultContent.labelOtherSide.text = resultText.text
-                addViewContent.addChallenge.score.text = "\(resultText.text!)"
+                resultContent.labelOtherSide.text = homeScoreText.text
+                addViewContent.addChallenge.score.text = "\(homeScoreText.text!)"
                 controller.updateScoreAndResult(indexPath: resultIndexPath)
             } else if score {
                 let scoreContent = controller.tableView.cellForRow(at: scoreIndexPath) as! TableViewCellContent
@@ -107,9 +131,29 @@ class UpdateProgressController : UIViewController {
         }).resume()
     }
     
-    let resultText: UITextField = UpdateProgressController.textField()
+    let backView: UIView = FeedCell.viewFunc()
+    
+    let vsImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.semanticContentAttribute = .forceRightToLeft
+        return imageView
+    }()
+    
     let homeScoreText: UITextField = UpdateProgressController.textField()
     let awayScoreText: UITextField = UpdateProgressController.textField()
+    
+    static func label(_ fontSize: CGFloat) -> UILabel {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: fontSize)
+        label.textAlignment = .center
+        label.textColor = UIColor.darkGray
+        return label
+    }
+    
+    let homeScoreLabel: UILabel = FeedCell.label(15)
+    let awayScoreLabel: UILabel = FeedCell.label(15)
+    let doneLabel: UILabel = FeedCell.label(15)
     
     static func textField() -> UITextField {
         let textField = UITextField()
@@ -118,6 +162,7 @@ class UpdateProgressController : UIViewController {
         textField.layer.borderWidth = 1.0;
         textField.layer.cornerRadius = 5.0;
         textField.layer.backgroundColor = UIColor.white.cgColor
+        textField.textAlignment = .center;
         return textField
     }
     

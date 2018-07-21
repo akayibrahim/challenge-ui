@@ -427,7 +427,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else if indexPath == resultIndexPath {
             let updateProgress = UpdateProgressController()
             updateProgress.result = true
-            updateProgress.resultText.becomeFirstResponder()
+            updateProgress.homeScoreText.becomeFirstResponder()
             updateProgress.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(updateProgress, animated: true)
         } else if indexPath == scoreIndexPath {

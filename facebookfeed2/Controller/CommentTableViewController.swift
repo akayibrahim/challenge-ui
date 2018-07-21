@@ -18,6 +18,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     var heightOfCommentView : CGFloat = 50
     var challengeId : String!
     var refreshControl : UIRefreshControl!
+    var commentedMemberId: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -179,7 +180,8 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
             self.popupAlert(message: "Please enter your comment!", willDelay: false)
         }
         var json: [String: Any] = ["challengeId": self.challengeId,
-                                   "memberId": memberID
+                                   "memberId": memberID,
+                                   "commentedMemberId": commentedMemberId
         ]
         json["comment"] = self.textView.text
         let url = URL(string: commentToChallangeURL)!

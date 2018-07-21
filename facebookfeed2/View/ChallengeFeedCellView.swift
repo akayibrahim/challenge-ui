@@ -43,7 +43,7 @@ class FeedCell: UICollectionViewCell {
         self.subjectImageView.image = UIImage()
         self.thinksAboutChallengeView.text = nil
         self.goalLabel.removeFromSuperview()
-        self.joinButton.removeFromSuperview()
+        self.joinButton.removeFromSuperview()        
         self.supportButtonMatch.removeFromSuperview()
         self.supportButton.removeFromSuperview()
         self.subjectLabel.removeFromSuperview()

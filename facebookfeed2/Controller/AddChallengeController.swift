@@ -228,7 +228,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns.append(createAddChallenge(labelText: "Home", resultText : memberName, resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Away", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
         let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: Date())
-        addChallengeIns.append(createAddChallenge(labelText: "Deadline", resultText : getDateAsFormatted(date: nextWeek!), resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Deadline", resultText : getDateAsFormatted(date: nextWeek!), resultId: 10079, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Visibility", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
@@ -243,6 +243,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     func addChallenge() {
+        if switchDateP == true {
+            switchDateP = false
+            tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
+        }
         let commentCell = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
         let addViewCell = getCell(path: addViewIndexPath)
         let deadlineCell = getCell(path: deadlineIndexPath)
@@ -279,9 +283,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         
         if doneCell.isDone.isOn == false {
             if !isSelf() && !isToWorld() {
-                let temp = deadlineCell.labelOtherSide.text
-                let daysBetween = temp?.components(separatedBy: " ").dropLast().joined()
-                json["challengeTime"] = daysBetween
+                // let temp = deadlineCell.labelOtherSide.text
+                // let daysBetween = temp?.components(separatedBy: " ").dropLast().joined()
+                json["challengeTime"] = addChallengeIns[deadlineIndex].resultId
             } else {
                 json["untilDate"] = deadlineCell.labelOtherSide.text!
             }
@@ -507,6 +511,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             if !isToWorld() && !isSelf() {
                 let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
                 cCellContent.labelOtherSide.text = "\(daysBetween) Days"
+                let minutesBetween : Int = Calendar.current.dateComponents([.minute], from: Date(), to: cellContent.datePicker.date).minute!
+                addChallengeIns[deadlineIndex].resultId = minutesBetween
             } else {
                 cCellContent.labelOtherSide.text = formattedDate
             }

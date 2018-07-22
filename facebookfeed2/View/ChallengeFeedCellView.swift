@@ -167,8 +167,8 @@ class FeedCell: UICollectionViewCell {
                     subjectImageView.image = UIImage(named: subject)
                 }
                 if let done = post?.done, let firstTeamScore = post?.firstTeamScore, let secondTeamScore = post?.secondTeamScore {
+                    scoreText.text = "\(firstTeamScore)\(scoreForPrivate)\(secondTeamScore)"
                     if done {
-                        scoreText.text = "\(firstTeamScore)\(scoreForPrivate)\(secondTeamScore)"
                         /*
                         scoreHome.text = "\(firstTeamScore)"
                         scoreText.text = "\(scoreForPrivate)"
@@ -628,6 +628,28 @@ class FeedCell: UICollectionViewCell {
             if !active {
                 untilDateLabel.alpha = 0
                 activeLabel.alpha = 1
+            }
+            if isComeFromSelf && ( (type == PRIVATE && firstTeamScore != "-1" && secondTeamScore != "-1") || (type == SELF && result != "-1") ) {
+                addSubview(scoreText)
+                addTopAnchor(scoreText, anchor: vsImageView.topAnchor, constant: (screenWidth * 0.6 / 10))
+                scoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
+                addWidthAnchor(scoreText, multiplier: 1.7 / 6)
+                addHeightAnchor(scoreText, multiplier: 0.25 / 6)
+                scoreText.backgroundColor = UIColor.white
+                scoreText.textColor = UIColor.black
+                scoreText.layer.cornerRadius = 5
+                scoreText.layer.masksToBounds = true
+                scoreText.addBorders(edges: [.top, .bottom], width: 1)
+                scoreText.adjustsFontSizeToFitWidth = true
+                scoreText.alpha = 0.8
+                
+                if type == SELF {
+                    addSubview(goalLabel)
+                    addBottomAnchor(goalLabel, anchor: scoreText.topAnchor, constant: (screenWidth * 0.05 / 10))
+                    goalLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: screenWidth * 1.1 / 10).isActive = true
+                    addWidthAnchor(goalLabel, multiplier: 0.4 / 3)
+                    addHeightAnchor(goalLabel, multiplier: 0.15 / 3)
+                }
             }
         }
         

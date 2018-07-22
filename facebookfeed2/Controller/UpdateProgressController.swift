@@ -14,6 +14,9 @@ class UpdateProgressController : UIViewController {
     var updateProgress : Bool = false
     var challengeId : String?
     var challengeType : String?
+    var goal: String?
+    var homeScore: String?
+    var awayScore: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,15 +64,23 @@ class UpdateProgressController : UIViewController {
                 homeScoreLabel.text = "Result"
                 awayScoreLabel.text = "Goal"
                 awayScoreText.isEnabled = false
-                
+                awayScoreText.text = goal
             } else if challengeType == PRIVATE {
                 homeScoreLabel.text = "Home"
                 awayScoreLabel.text = "Away"
+                if awayScore != "-1" {
+                    awayScoreText.text = awayScore
+                }
+            }
+            if homeScore != "-1" {
+                homeScoreText.text = homeScore
             }
         } else {
             if result {
                 navigationItem.title = "Result"
                 homeScoreLabel.text = "Result"
+                homeScoreText.text = "?"
+                homeScoreText.isEnabled = false
                 awayScoreLabel.text = "Goal"
             } else if score {
                 navigationItem.title = "Scores"
@@ -83,6 +94,8 @@ class UpdateProgressController : UIViewController {
         navigationItem.rightBarButtonItem = rightButton
         
         self.hideKeyboardWhenTappedAround()
+        homeScoreText.keyboardType = .numberPad
+        awayScoreText.keyboardType = .numberPad
     }
     
     func done() {
@@ -91,7 +104,7 @@ class UpdateProgressController : UIViewController {
             if challengeType == SELF {
                 url = updateProgressOrDoneForSelfURL  + "?challengeId=" + challengeId! + "&result=" + homeScoreText.text! + "&done=" + (isDone.isOn ? "true" : "false")
             } else if challengeType == PRIVATE {
-                url = updateResultsOfVersusURL  + "?challengeId=" + challengeId! + "&firstTeamScore=" + homeScoreText.text! + "&secondTeamScore=" + awayScoreText.text!
+                url = updateResultsOfVersusURL  + "?challengeId=" + challengeId! + "&firstTeamScore=" + homeScoreText.text! + "&secondTeamScore=" + awayScoreText.text! + "&done=" + (isDone.isOn ? "true" : "false")
             }
             updateProgres(url: url!)
         }
@@ -99,7 +112,7 @@ class UpdateProgressController : UIViewController {
             let addViewContent = controller.tableView.cellForRow(at: addViewIndexPath) as! TableViewCellContent
             if result {
                 let resultContent = controller.tableView.cellForRow(at: resultIndexPath) as! TableViewCellContent
-                resultContent.labelOtherSide.text = homeScoreText.text
+                resultContent.labelOtherSide.text = "\(homeScoreText.text!) - \(awayScoreText.text!)"                
                 addViewContent.addChallenge.score.text = "\(homeScoreText.text!)"
                 controller.updateScoreAndResult(indexPath: resultIndexPath)
             } else if score {
@@ -167,4 +180,8 @@ class UpdateProgressController : UIViewController {
     }
     
     var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        return textView.text.count + (text.count - range.length) <= 8
+    }
 }

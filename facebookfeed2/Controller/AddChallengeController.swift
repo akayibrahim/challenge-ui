@@ -151,15 +151,28 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         switchSubject = disable
         tableView.reloadRows(at: [subjectIndexPath], with: .fade)
         if firstPage {
+            switchDeadline = false
+            tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
             switchDone = isPublic() ? false : true
             tableView.reloadRows(at: [doneIndexPath], with: .fade)
         } else {
             switchDone = disable
             tableView.reloadRows(at: [doneIndexPath], with: .fade)
+            if !doneCell.isDone.isOn {
+                switchDeadline = !disable
+                tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
+            } else {
+                if isPrivate() {
+                    switchScore = !disable
+                    tableView.reloadRows(at: [scoreIndexPath], with: .fade)
+                }
+            }
         }
         switchComment = disable
         addChallengeIns[commentIndex].resultText = commentCell.commentView.text
         tableView.reloadRows(at: [commentIndexPath], with: .fade)
+        switchResult = !disable
+        tableView.reloadRows(at: [resultIndexPath], with: .fade)
         if !isToWorld() {
             switchProofCell = !disable
             tableView.reloadRows(at: [visibilityIndexPath], with: .fade)
@@ -178,19 +191,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else if !firstPage && isPublic() {
             switchProof = !disable
             tableView.reloadRows(at: [proofIndexPath], with: .fade)
-        }
-        if !doneCell.isDone.isOn {
-            switchDeadline = !disable
-            tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
-        } else {
-            if isPrivate() {
-                switchScore = !disable
-                tableView.reloadRows(at: [scoreIndexPath], with: .fade)
-            }
-            if isSelf() {
-                switchResult = !disable
-                tableView.reloadRows(at: [resultIndexPath], with: .fade)
-            }
         }
         if !firstPage {
             let daysBetween = getDayBetweenDates(isSelect: false)
@@ -232,8 +232,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Visibility", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Score", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Result", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Scores", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Score - Goal", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Proof", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
@@ -297,12 +297,17 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             json["proofed"] = true
         }
         if isSelf() {
-            json["goal"] = "10" // TODO
-            if doneCell.isDone.isOn {
-                json["result"] = resultCell.labelOtherSide.text
+            let scoreText = resultCell.labelOtherSide.text
+            let score = scoreText?.components(separatedBy: "-")
+            let firstTeamScore = score![0]
+            let secondTeamScore = score![1]
+            if doneCell.isDone.isOn == true {
+                json["result"] = firstTeamScore.trim()
+                json["goal"] = secondTeamScore.trim()
             } else {
                 json["result"] = "-1"
-            }
+                json["goal"] = secondTeamScore.trim()
+            }            
         }
         if isPrivate() {
             var versusAttendanceList: [[String: Any]] = []

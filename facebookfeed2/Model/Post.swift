@@ -36,4 +36,6 @@ class Post: SafeJsonObject {
     var proofed: Bool?
     var active: Bool?
     var proofedByChallenger: Bool?
+    var goal: String?
+    var result: String?
 }

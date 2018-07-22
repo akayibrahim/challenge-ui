@@ -99,22 +99,30 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func onRefesh() {
         if refreshControl.isRefreshing {
-            currentPage = 0
-            self.posts = [Post]()
-            self.loadChallenges()
+            reloadChlPage()
             refreshControl.endRefreshing()
         }
     }
     
+    func reloadChlPage() {
+        currentPage = 0
+        self.posts = [Post]()
+        self.loadChallenges()
+    }
+    
     func onSelfRefesh() {
         if selfRefreshControl.isRefreshing {
-            selfCurrentPage = 0
-            self.posts = [Post]()
-            self.donePosts = [Post]()
-            self.notDonePosts = [Post]()
-            self.loadChallenges()
+            reloadSelfPage()
             selfRefreshControl.endRefreshing()
         }
+    }
+    
+    func reloadSelfPage() {
+        selfCurrentPage = 0
+        self.posts = [Post]()
+        self.donePosts = [Post]()
+        self.notDonePosts = [Post]()
+        self.loadChallenges()
     }
     
     func loadChallenges() {
@@ -255,7 +263,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
                 cell.avPlayerLayer.player?.play()
             }
-            self.loadChallenges()
+            if self.tabBarController?.selectedIndex == chanllengeIndex {
+                self.reloadChlPage()
+            }
+            if self.tabBarController?.selectedIndex == profileIndex {
+                self.reloadSelfPage()
+            }
         }
     }
     
@@ -404,6 +417,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if !profile {
                     feedCellForSelf.updateProgress.type = notDonePosts[indexPath.row].type
                     feedCellForSelf.updateProgress.challengeId = notDonePosts[indexPath.row].id
+                    feedCellForSelf.updateProgress.goal = notDonePosts[indexPath.row].goal
+                    if notDonePosts[indexPath.row].type == SELF {
+                        feedCellForSelf.updateProgress.homeScore = notDonePosts[indexPath.row].result
+                    } else if notDonePosts[indexPath.row].type == PRIVATE {
+                        feedCellForSelf.updateProgress.homeScore = notDonePosts[indexPath.row].firstTeamScore
+                        feedCellForSelf.updateProgress.awayScore = notDonePosts[indexPath.row].secondTeamScore
+                    }
                     feedCellForSelf.updateProgress.addTarget(self, action: #selector(self.updateProgress), for: UIControlEvents.touchUpInside)
                 } else {
                     feedCellForSelf.updateProgress.alpha = 0
@@ -593,7 +613,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             updateProgress.updateProgress = true
             updateProgress.challengeId = sender.challengeId
             updateProgress.challengeType = sender.type
-            updateProgress.homeScoreText.becomeFirstResponder()
+            updateProgress.goal = sender.goal
+            updateProgress.homeScore = sender.homeScore
+            updateProgress.awayScore = sender.awayScore
+            if sender.type == PRIVATE {
+                updateProgress.homeScoreText.becomeFirstResponder()
+            } else {
+                updateProgress.awayScoreText.becomeFirstResponder()
+            }
             updateProgress.hidesBottomBarWhenPushed = true
             self.navigationController?.setNavigationBarHidden(false, animated: false)
             self.navigationController?.pushViewController(updateProgress, animated: true)

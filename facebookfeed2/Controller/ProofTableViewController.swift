@@ -18,6 +18,8 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     var heightOfCommentView : CGFloat = 50
     var challengeId : String!
     var refreshControl : UIRefreshControl!
+    var currentPage : Int = 0
+    var nowMoreData: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,12 +56,18 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     func onRefresh() {
-        loadChallenges()
+        reloadPage()
         refreshControl.endRefreshing()
     }
     
+    func reloadPage() {
+        currentPage = 0
+        self.proofs = [Prove]()
+        self.loadChallenges()
+    }
+    
     func fetchData(url: String) {
-        let jsonURL = URL(string: url + self.challengeId)!
+        let jsonURL = URL(string: url + self.challengeId + "&page=\(currentPage)")!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
@@ -68,8 +76,8 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: self.challengeId, sUrl: url, inputs: "challengeId=\(self.challengeId)"), willDelay: false)
                     return
             }
+            self.nowMoreData = postsArray?.count == 0 ? true : false
             DispatchQueue.main.async {
-                self.proofs = [Prove]()
                 for postDictionary in postsArray! {
                     let proof = Prove()
                     proof.setValuesForKeys(postDictionary)
@@ -233,6 +241,15 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 }
             }
         }).resume()
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let checkPoint = proofs.count - 1
+        let shouldLoadMore = checkPoint == indexPath.row
+        if shouldLoadMore && !nowMoreData && !dummyServiceCall {
+            currentPage += 1
+            self.loadChallenges()
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

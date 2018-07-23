@@ -31,12 +31,12 @@ extension UIViewController
                     if image != nil {
                         imageView.image = image
                     } else {
-                        self.setImage(name: unknown, imageView: imageView)
+                        self.setImage(name: unknownImage, imageView: imageView)
                     }
                 }
             }
         } else {
-            self.setImage(name: unknown, imageView: imageView)
+            self.setImage(name: unknownImage, imageView: imageView)
         }
     }
     
@@ -47,7 +47,7 @@ extension UIViewController
                 if image != nil {
                     imageView.image = image
                 } else {
-                    self.setImage(name: unknown, imageView: imageView)
+                    self.setImage(name: unknownImage, imageView: imageView)
                 }
             }
         }

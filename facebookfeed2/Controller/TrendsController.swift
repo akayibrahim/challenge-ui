@@ -13,6 +13,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     var trendRequest = [TrendRequest]()
     let cellId = "cellId"
     var refreshControl : UIRefreshControl!
+    var currentPage : Int = 0
+    var nowMoreData: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,8 +33,6 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         collectionView?.addSubview(refreshControl)
-        
-        loadTrends()
         
         self.hideKeyboardWhenTappedAround()
     }
@@ -54,6 +54,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     func searchBarSearchButtonClicked( _ searchBar: UISearchBar) {
         if dummyServiceCall == false {
+            currentPage = 0
+            self.trendRequest = [TrendRequest]()
             fetchTrendChallenges(key: searchBar.text!)
             return
         } else {
@@ -93,9 +95,15 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     func onRefesh() {
-        self.loadTrends()
+        self.reloadPage()
         self.collectionView?.reloadData()
         refreshControl.endRefreshing()
+    }
+    
+    func reloadPage() {
+        currentPage = 0
+        self.trendRequest = [TrendRequest]()
+        self.loadTrends()
     }
     
     func loadTrends() {
@@ -109,14 +117,14 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     func fetchTrendChallenges(key: String) {
-        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=" + key
+        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=" + key + "&page=\(currentPage)"
         let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
         let url = NSURL(string: urlStrWithPerm!)!
         URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
                 do {
                     if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.trendRequest = [TrendRequest]()
+                        self.nowMoreData = postsArray.count == 0 ? true : false
                         for postDictionary in postsArray {
                             let trend = TrendRequest()
                             trend.setValuesForKeys(postDictionary)
@@ -131,6 +139,16 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                 self.collectionView?.reloadData()
             }
         }).resume()
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        let checkPoint = trendRequest.count - 1
+        let shouldLoadMore = checkPoint == indexPath.row
+        if shouldLoadMore && !nowMoreData && !dummyServiceCall {
+            currentPage += 1
+            print("trends:\(currentPage)")
+            self.loadTrends()
+        }
     }
     
     var downImage: UIImage?

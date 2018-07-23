@@ -15,7 +15,12 @@
               "comeFromSelf" : true,              
               "proofed" : false,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active" : true,
+              "challengerId": "423432",
+              "proofedByChallenger": false,
+              "goal":"",
+              "result":""
           },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -34,7 +39,12 @@
               "comeFromSelf" : true,
               "proofed" : false,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active" : true,
+              "challengerId": "423432",
+              "proofedByChallenger": false,
+              "goal":"",
+              "result":""
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -53,7 +63,12 @@
               "comeFromSelf" : true,
               "proofed" : false,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active" : true,
+              "challengerId": "423432",
+              "proofedByChallenger": false,
+              "goal":"",
+              "result":""
               },
               {
               "name": "İbrahim AKAY",
@@ -79,7 +94,12 @@
               "comeFromSelf" : true,
               "proofed" : false,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active" : true,
+              "challengerId": "423432",
+              "proofedByChallenger": false,
+              "goal":"",
+              "result":""
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -97,7 +117,12 @@
               "comeFromSelf" : true,
               "proofed" : false,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active" : true,
+              "challengerId": "423432",
+              "proofedByChallenger": false,
+              "goal":"",
+              "result":""
               },
               {
               "id": "5a81dd3587f8723fc231028b",
@@ -115,7 +140,12 @@
               "comeFromSelf" : true,
               "proofed" : false,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active" : true,
+              "challengerId": "423432",
+              "proofedByChallenger": false,
+              "goal":"",
+              "result":""
               },
               {
               "name": "İbrahim AKAY",
@@ -152,7 +182,12 @@
               "challengerFBId": "10156204749600712",
               "proofed" : false,
               "firstTeamScore" : "-",
-              "secondTeamScore" : "-"
+              "secondTeamScore" : "-",
+              "active" : true,
+              "challengerId": "423432",
+              "proofedByChallenger": false,
+              "goal":"",
+              "result":""
               },
               {
               "name": "İbrahim AKAY",
@@ -189,7 +224,12 @@
               "challengerFBId": "10156204749600712",
               "firstTeamScore" : "3",
               "secondTeamScore" : "5",
-              "proofed" : false
+              "active" : true,
+              "proofed" : false,
+              "challengerId": "423432",
+              "proofedByChallenger": false,
+              "goal":"",
+              "result":""
               }
         ]
 }

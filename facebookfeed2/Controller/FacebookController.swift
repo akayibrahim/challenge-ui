@@ -114,6 +114,12 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         canButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.55 / 2, width: 200, height: 30)
         view.addSubview(canButton)
         canButton.addTarget(self, action: #selector(self.can), for: UIControlEvents.touchUpInside)
+        
+        let uzunButton = FeedCell.buttonForTitle("Taner Uzun", imageName: "")
+        uzunButton.setTitleColor(UIColor.white, for: UIControlState())
+        uzunButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.65 / 2, width: 200, height: 30)
+        view.addSubview(uzunButton)
+        uzunButton.addTarget(self, action: #selector(self.uzun), for: UIControlEvents.touchUpInside)
     }
     
     func akay() {
@@ -130,6 +136,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     }
     func can() {
         openMember(id: "5b3152821cb199f1fadc0fab")
+    }
+    func uzun() {
+        openMember(id: "5b3152a71cb199f1fadc0fad")
     }
     let group = DispatchGroup()
     func getMemberInfo(memberId: String) {

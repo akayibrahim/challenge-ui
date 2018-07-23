@@ -155,6 +155,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
             switchDone = isPublic() ? false : true
             tableView.reloadRows(at: [doneIndexPath], with: .fade)
+            switchResult = false
+            tableView.reloadRows(at: [resultIndexPath], with: .fade)
         } else {
             switchDone = disable
             tableView.reloadRows(at: [doneIndexPath], with: .fade)
@@ -171,8 +173,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         switchComment = disable
         addChallengeIns[commentIndex].resultText = commentCell.commentView.text
         tableView.reloadRows(at: [commentIndexPath], with: .fade)
-        switchResult = !disable
-        tableView.reloadRows(at: [resultIndexPath], with: .fade)
+        if isSelf() {
+            switchResult = !disable
+            tableView.reloadRows(at: [resultIndexPath], with: .fade)
+        }
         if !isToWorld() {
             switchProofCell = !disable
             tableView.reloadRows(at: [visibilityIndexPath], with: .fade)
@@ -479,7 +483,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }))
         
         actionsheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: {(action: UIAlertAction) in
-            self.imagePickerController.sourceType = UIImagePickerControllerSourceType.photoLibrary
+            self.imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
             self.imagePickerController.allowsEditing = false
             self.present(self.imagePickerController, animated: true, completion: nil)
         }))

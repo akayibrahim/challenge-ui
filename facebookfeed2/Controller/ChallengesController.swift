@@ -51,7 +51,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var isProfileFriend: Bool?
     var currentPage : Int = 0
     var selfCurrentPage : Int = 0
+    var explorerCurrentPage : Int = 0
     var nowMoreData: Bool = false
+    var challangeCount: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +78,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "selfCellId")
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
+        
+        if profile || self.tabBarController?.selectedIndex == trendsIndex {
+            loadChallenges()
+        }
     }
     
     func getActivityCount() {
@@ -129,18 +135,23 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if dummyServiceCall == false {
             // Asynchronous Http call to your api url, using NSURLSession:
             if profile {
-                if !memberIsPrivateForFriendProfile! || (memberIsPrivateForFriendProfile! && isProfileFriend!) {
+                if (!memberIsPrivateForFriendProfile! || (memberIsPrivateForFriendProfile! && isProfileFriend!)) && memberIdForFriendProfile != memberID {
                     fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + memberIdForFriendProfile! + "&page=\(selfCurrentPage)", profile: true)
+                    fetchChallengeSize(memberId: memberIdForFriendProfile!)
+                } else if memberIdForFriendProfile == memberID {
+                    fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(selfCurrentPage)", profile: true)
+                    fetchChallengeSize(memberId: memberID)
                 }
                 return
             } else if explorer {
-                fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallanges=false", profile: false)
+                fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallenges=false"  + "&page=\(explorerCurrentPage)", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == trendsIndex {
-                fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallanges=true", profile: false)
+                fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(explorerCurrentPage)", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == profileIndex {
                 fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(selfCurrentPage)", profile: true)
+                fetchChallengeSize(memberId: memberID)
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
                 getActivityCount()
@@ -152,23 +163,18 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.donePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: true)
                 self.notDonePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: false)
                 self.posts = donePosts
-                self.posts.append(contentsOf: notDonePosts)
-                return
+                self.posts.append(contentsOf: notDonePosts)                
             } else if explorer {
                 self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
-                return
             } else if self.tabBarController?.selectedIndex == trendsIndex {
                 self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
-                return
             } else if self.tabBarController?.selectedIndex == profileIndex {
                 self.donePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: true)
                 self.notDonePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: false)
                 self.posts = donePosts
                 self.posts.append(contentsOf: notDonePosts)
-                return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
                 self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getChallenges")
-                return
             }
             self.collectionView?.reloadData()
         }
@@ -202,6 +208,19 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.group.wait()
                 self.collectionView?.reloadData()
             }
+        }
+    }
+    
+    func fetchChallengeSize(memberId: String) {
+        let jsonURL = URL(string: getChallengeSizeOfMemberURL + memberId)!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getChallengeSizeOfMemberURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    return
+            }
+            self.challangeCount = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)! as String
         }
     }
     
@@ -263,7 +282,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
                 cell.avPlayerLayer.player?.play()
             }
-            if self.tabBarController?.selectedIndex == chanllengeIndex {
+            if self.tabBarController?.selectedIndex == chanllengeIndex && !self.profile {
                 self.reloadChlPage()
             }
             if self.tabBarController?.selectedIndex == profileIndex {
@@ -292,6 +311,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex
         let isSelf = self.tabBarController?.selectedIndex == profileIndex
+        let isTrend = self.tabBarController?.selectedIndex == trendsIndex
         let checkPoint = posts.count - 1
         var shouldLoadMore = checkPoint == indexPath.row
         if isSelf {
@@ -299,14 +319,18 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             let checkPoint2 = donePosts.count - 1
             shouldLoadMore = (checkPoint1 == indexPath.row) || (checkPoint2 == indexPath.row)
         }
-        if (isChallenge || isSelf) && shouldLoadMore && !nowMoreData {
+        if (isChallenge || isSelf || isTrend) && shouldLoadMore && !nowMoreData && !dummyServiceCall {
             if isChallenge {
                 currentPage += 1
                 print("challenge:\(currentPage)")
             }
-            if isSelf {
+            if isSelf || memberIdForFriendProfile == memberID {
                 selfCurrentPage += 1
                 print("profile:\(selfCurrentPage)")
+            }
+            if isTrend {
+                explorerCurrentPage += 1
+                print("explorer:\(explorerCurrentPage)")
             }
             self.loadChallenges()
         }
@@ -326,6 +350,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 profileCell.unfollow.memberId = memberIdForFriendProfile
                 profileCell.follow.addTarget(self, action: #selector(self.followProfile), for: UIControlEvents.touchUpInside)
                 profileCell.unfollow.addTarget(self, action: #selector(self.unFollowProfile), for: UIControlEvents.touchUpInside)
+            } else {
+                profileCell.other.alpha = 1
             }
             if memberIsPrivateForFriendProfile! && !isProfileFriend! {
                 profileCell.privateLabel.alpha = 1
@@ -344,7 +370,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         profileCell.followingLabel.isUserInteractionEnabled = true
         let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleChallengeCountTap))
         profileCell.challangeCount.isUserInteractionEnabled = true
-        profileCell.challangeCount.text = "\(self.notDonePosts.count + self.donePosts.count)"
+        profileCell.challangeCount.text = challangeCount
         if !profile || (profile && !memberIsPrivateForFriendProfile!) || (profile && memberIsPrivateForFriendProfile! && isProfileFriend!) {
             profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
             profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)

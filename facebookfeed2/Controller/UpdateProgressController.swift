@@ -102,8 +102,20 @@ class UpdateProgressController : UIViewController {
         if updateProgress {
             var url : String?
             if challengeType == SELF {
+                if isDone.isOn && homeScoreText.text == "" {
+                    self.popupAlert(message: "Score is mandotory!", willDelay: false)
+                    return
+                }
                 url = updateProgressOrDoneForSelfURL  + "?challengeId=" + challengeId! + "&result=" + homeScoreText.text! + "&done=" + (isDone.isOn ? "true" : "false")
             } else if challengeType == PRIVATE {
+                if isDone.isOn && homeScoreText.text == "" {
+                    self.popupAlert(message: "Home score is mandotory!", willDelay: false)
+                    return
+                }
+                if isDone.isOn && awayScoreText.text == "" {
+                    self.popupAlert(message: "Away score is mandotory!", willDelay: false)
+                    return
+                }
                 url = updateResultsOfVersusURL  + "?challengeId=" + challengeId! + "&firstTeamScore=" + homeScoreText.text! + "&secondTeamScore=" + awayScoreText.text! + "&done=" + (isDone.isOn ? "true" : "false")
             }
             updateProgres(url: url!)
@@ -182,6 +194,6 @@ class UpdateProgressController : UIViewController {
     var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        return textView.text.count + (text.count - range.length) <= 8
+        return textView.text.count + (text.count - range.length) <= 5
     }
 }

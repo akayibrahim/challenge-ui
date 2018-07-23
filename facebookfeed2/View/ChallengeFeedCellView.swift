@@ -110,6 +110,7 @@ class FeedCell: UICollectionViewCell {
                 insertTime.text = insertTimeText
             }
             setImage(fbID: post?.challengerFBId, imageView: challengerImageView)
+            firstOnePeopleImageView.contentMode = .scaleAspectFill
             if post?.type == PUBLIC {
                 if let subject = post?.subject {
                     subjectImageView.image = UIImage(named: subject)

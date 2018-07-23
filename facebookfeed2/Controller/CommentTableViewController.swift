@@ -19,6 +19,8 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     var challengeId : String!
     var refreshControl : UIRefreshControl!
     var commentedMemberId: String!
+    var currentPage : Int = 0
+    var nowMoreData: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,12 +59,18 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     }
     
     func onRefresh() {
-        loadChallenges()
+        reloadPage()
         refreshControl.endRefreshing()
     }
     
+    func reloadPage() {
+        currentPage = 0
+        self.comments = [Comments]()
+        self.loadChallenges()
+    }
+    
     func fetchData(url: String) {
-        let jsonURL = URL(string: url + self.challengeId)!
+        let jsonURL = URL(string: url + self.challengeId + "&page=\(currentPage)")!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
@@ -71,8 +79,8 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                     self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: self.challengeId, sUrl: url, inputs: "challengeId=\(self.challengeId)"), willDelay: false)
                     return
             }
+            self.nowMoreData = postsArray?.count == 0 ? true : false
             DispatchQueue.main.async {
-                self.comments = [Comments]()
                 for postDictionary in postsArray! {
                     let comment = Comments()
                     comment.setValuesForKeys(postDictionary)
@@ -81,6 +89,15 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                 self.tableView?.reloadData()
                 self.scrollToLastRow()
             }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let checkPoint = comments.count - 1
+        let shouldLoadMore = checkPoint == indexPath.row
+        if shouldLoadMore && !nowMoreData && !dummyServiceCall {
+            currentPage += 1
+            self.loadChallenges()
         }
     }
     

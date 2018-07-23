@@ -9,7 +9,7 @@
 import UIKit
 
 var memberID = ""
-// var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
+//var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
 var memberFbID = "10156204749600712" // dummy
 var memberName = "Seher Can" // dummy
 var countOffollowers: Int = 0
@@ -56,6 +56,7 @@ var worldImage = "worldImage"
 var more_icon = "more_icon"
 var volumeUp = "volumeUp"
 var volumeDown = "volumeDown"
+var unknownImage = "unknownImage"
 
 // TITLES
 var challengeTitle = "Challenge"
@@ -119,3 +120,4 @@ var isMyFriendURL = defaultURL + "/isMyFriend?memberId="
 var getChallengesOfFriendURL = defaultURL + "/getChallengesOfFriend?memberId="
 var getActivityCountURL = defaultURL + "/getActivityCount?memberId="
 var searchFriendsURL = defaultURL + "/searchFriends?searchKey="
+var getChallengeSizeOfMemberURL = defaultURL + "/getChallengeSizeOfMember?memberId="

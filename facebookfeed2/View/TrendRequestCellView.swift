@@ -18,7 +18,7 @@ class TrendRequestCell: UICollectionViewCell {
         didSet {
             if let name = trendRequest?.name, let subject = trendRequest?.subject {
                 let nameAtt = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
-                let proofBy = NSMutableAttributedString(string: " proofed ", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
+                let proofBy = NSMutableAttributedString(string: " proved ", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
                 let subjectAtt = NSMutableAttributedString(string: "\(subject).", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
                 proofBy.append(subjectAtt)
                 nameAtt.append(proofBy)
@@ -50,7 +50,7 @@ class TrendRequestCell: UICollectionViewCell {
     let requestImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = UIColor.blue
+        // imageView.backgroundColor = UIColor.blue
         imageView.layer.masksToBounds = true
         return imageView
     }()

@@ -14,6 +14,8 @@ class ActivitiesController: UITableViewController {
     var activities = [Activities]()
     var challengeRequestCount: Int = 0
     let group = DispatchGroup()
+    var currentPage : Int = 0
+    var nowMoreData: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,11 +44,17 @@ class ActivitiesController: UITableViewController {
     
     func onRefesh() {
         if (refreshControl?.isRefreshing)! {
-            self.loadActivities()
+            self.reloadPage()
             refreshControl?.endRefreshing()
         }
     }
 
+    func reloadPage() {
+        currentPage = 0
+        self.activities = [Activities]()
+        self.loadActivities()
+    }
+    
     func loadActivities() {
         if dummyServiceCall == false {
             fetchChallengeRequest()
@@ -62,7 +70,7 @@ class ActivitiesController: UITableViewController {
     
     func fetchActivities() {
         group.enter()
-        let jsonURL = URL(string: getActivitiesURL + memberID)!
+        let jsonURL = URL(string: getActivitiesURL + memberID + "&page=\(currentPage)")!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
@@ -71,8 +79,8 @@ class ActivitiesController: UITableViewController {
                     self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
                     return
             }
+            self.nowMoreData = postsArray?.count == 0 ? true : false
             DispatchQueue.main.async {
-                self.activities = [Activities]()
                 self.group.leave()
                 for postDictionary in postsArray! {
                     let activity = Activities()
@@ -104,6 +112,15 @@ class ActivitiesController: UITableViewController {
                 challengeRequest.append(challenge)
             }
             self.challengeRequestCount = challengeRequest.count
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let checkPoint = activities.count - 1
+        let shouldLoadMore = checkPoint == indexPath.row
+        if shouldLoadMore && !nowMoreData && !dummyServiceCall {
+            currentPage += 1
+            self.loadActivities()
         }
     }
     

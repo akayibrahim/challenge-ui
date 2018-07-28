@@ -16,6 +16,7 @@ import FBSDKLoginKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var isCont: Bool = false
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -24,22 +25,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 
+        
         if(FBSDKAccessToken.current() != nil) {
-        // if (true) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 if dummyServiceCall == false {
-                    memberID = memberId as! String  
-                    getMemberInfo(memberId: memberID)
+                    getMemberInfo(memberId: memberId as! String)
                     self.group.wait()
-                    window?.rootViewController = CustomTabBarController()
                 } else {
-                    window?.rootViewController = CustomTabBarController()
+                    isCont = true
                 }
-            } else {
-                FBSDKLoginManager().logOut()
-                window?.rootViewController = FacebookController()
             }
+        }
+        
+        if isCont {
+            window?.rootViewController = CustomTabBarController()
         } else {
+            FBSDKLoginManager().logOut()
             window?.rootViewController = FacebookController()
         }
         
@@ -102,13 +103,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let returnData = data,
                 let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
                 else {
-                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
-                    print(error)
+                    if data != nil {
+                        let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                        print(error)
+                    } else {
+                        self.group.leave()
+                    }
                     return
             }
             self.group.leave()
             if let post = postOfMember {
-                memberFbID = (post["facebookID"] as? String)!
+                guard let facebookID = post["facebookID"] as? String else {
+                    FBSDKLoginManager().logOut()
+                    self.window?.rootViewController = FacebookController()
+                    return
+                }
+                self.isCont = true
+                memberFbID = facebookID
+                memberID = (post["id"] as? String)!
                 memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
                 countOffollowers = (post["followerCount"] as? Int)!
                 countOffollowing = (post["followingCount"] as? Int)!

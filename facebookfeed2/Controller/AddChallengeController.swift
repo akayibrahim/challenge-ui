@@ -57,7 +57,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         tableView.tableFooterView = UIView()
         self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
         rightButton = UIBarButtonItem(title: "Share", style: UIBarButtonItemStyle.plain, target: self, action: #selector(addChallenge))
-        cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(cancel))
+        cancelButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.plain, target: self, action: #selector(cancel))
         nextButton = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.plain, target: self, action: #selector(nextPage))
         navigationItem.rightBarButtonItem = nextButton
         rightButton?.tintColor = UIColor.white
@@ -157,6 +157,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             tableView.reloadRows(at: [doneIndexPath], with: .fade)
             switchResult = false
             tableView.reloadRows(at: [resultIndexPath], with: .fade)
+            switchScore = false
+            tableView.reloadRows(at: [scoreIndexPath], with: .fade)
         } else {
             switchDone = disable
             tableView.reloadRows(at: [doneIndexPath], with: .fade)
@@ -313,7 +315,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 json["result"] = firstTeamScore.trim()
                 json["goal"] = secondTeamScore.trim()
             } else {
-                json["result"] = "-1"
+                json["result"] = "0"
                 json["goal"] = secondTeamScore.trim()
             }            
         }
@@ -336,8 +338,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 json["firstTeamScore"] = firstTeamScore.trim()
                 json["secondTeamScore"] = secondTeamScore.trim()
             } else {
-                json["firstTeamScore"] = "-1"
-                json["secondTeamScore"] = "-1"
+                json["firstTeamScore"] = "0"
+                json["secondTeamScore"] = "0"
             }
             
         }
@@ -440,6 +442,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else if indexPath == resultIndexPath {
             let updateProgress = UpdateProgressController()
             updateProgress.result = true
+            updateProgress.doneSwitch = isDone()
             updateProgress.homeScoreText.becomeFirstResponder()
             updateProgress.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(updateProgress, animated: true)

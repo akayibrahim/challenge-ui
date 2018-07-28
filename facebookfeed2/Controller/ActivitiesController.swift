@@ -35,7 +35,7 @@ class ActivitiesController: UITableViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        loadActivities()
+        self.reloadPage()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -69,26 +69,25 @@ class ActivitiesController: UITableViewController {
     }
     
     func fetchActivities() {
-        group.enter()
         let jsonURL = URL(string: getActivitiesURL + memberID + "&page=\(currentPage)")!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    }
                     return
             }
             self.nowMoreData = postsArray?.count == 0 ? true : false
+            for postDictionary in postsArray! {
+                let activity = Activities()
+                activity.setValuesForKeys(postDictionary)
+                self.activities.append(activity)
+            }
             DispatchQueue.main.async {
-                self.group.leave()
-                for postDictionary in postsArray! {
-                    let activity = Activities()
-                    activity.setValuesForKeys(postDictionary)
-                    self.activities.append(activity)
-                }
-                self.group.wait()
-                self.tableView?.reloadData()
+                self.tableView.reloadData()
             }
         }
     }
@@ -102,7 +101,9 @@ class ActivitiesController: UITableViewController {
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    }
                     return
             }
             self.group.leave()
@@ -157,7 +158,12 @@ class ActivitiesController: UITableViewController {
             return cell
         } else if indexPath.section == 2 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ActivityCell
-            cell.activity = activities[indexPath.row]
+            if activities.count == 0 {
+                return cell
+            }
+            DispatchQueue.main.async {
+                cell.activity = self.activities[indexPath.row]
+            }
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
             cell.profileImageView.tag = indexPath.row
             cell.profileImageView.isUserInteractionEnabled = true
@@ -193,9 +199,11 @@ class ActivitiesController: UITableViewController {
         if (indexPath.section == 0 || indexPath.section == 1) && indexPath.row == 0 {
             return UIScreen.main.bounds.width * 1.2 / 10
         }
-        if let thinksAboutChallenge = activities[indexPath.row].content {
-            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
-            return rect.height + heighForRow
+        if activities.count != 0 {
+            if  let thinksAboutChallenge = activities[indexPath.row].content {
+                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+                return rect.height + heighForRow
+            }
         }
         return heighForRow
     }

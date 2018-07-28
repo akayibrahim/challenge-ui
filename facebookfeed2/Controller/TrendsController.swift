@@ -91,7 +91,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.loadTrends()
+        reloadPage()
     }
     
     func onRefesh() {
@@ -122,21 +122,21 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let url = NSURL(string: urlStrWithPerm!)!
         URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.nowMoreData = postsArray.count == 0 ? true : false
-                        for postDictionary in postsArray {
-                            let trend = TrendRequest()
-                            trend.setValuesForKeys(postDictionary)
-                            self.trendRequest.append(trend)
+                    do {
+                        if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                            self.nowMoreData = postsArray.count == 0 ? true : false
+                            DispatchQueue.main.async {
+                                for postDictionary in postsArray {
+                                    let trend = TrendRequest()
+                                    trend.setValuesForKeys(postDictionary)
+                                    self.trendRequest.append(trend)
+                                }
+                                self.collectionView?.reloadData()
+                            }
                         }
+                    } catch let err {
+                        print(err)
                     }
-                } catch let err {
-                    print(err)
-                }
-            }
-            DispatchQueue.main.async {
-                self.collectionView?.reloadData()
             }
         }).resume()
     }
@@ -146,7 +146,6 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let shouldLoadMore = checkPoint == indexPath.row
         if shouldLoadMore && !nowMoreData && !dummyServiceCall {
             currentPage += 1
-            print("trends:\(currentPage)")
             self.loadTrends()
         }
     }
@@ -166,9 +165,10 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TrendRequestCell
-        cell.trendRequest = trendRequest[indexPath.row]
-        downloadImage(requestImageView: cell.requestImageView, challengeId: trendRequest[indexPath.row].challengeId!, challengerId: trendRequest[indexPath.row].challengerId!)
-        
+        cell.trendRequest = self.trendRequest[indexPath.row]
+        DispatchQueue.main.async {
+            self.downloadImage(requestImageView: cell.requestImageView, challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
+        }
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
         cell.profileImageView.tag = indexPath.row
         cell.profileImageView.isUserInteractionEnabled = true

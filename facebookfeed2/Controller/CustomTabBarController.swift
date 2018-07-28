@@ -65,8 +65,10 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 let feedC = navC.viewController(class: FeedController.self)
                 feedC?.currentPage += 1
                 feedC?.loadChallenges()
-                let firstChlRow = IndexPath(item: 0, section: 0)
-                feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+                if feedC?.posts.count != 0 {
+                    let firstChlRow = IndexPath(item: 0, section: 0)
+                    feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+                }
                 return true
             } else if tabBarController.selectedIndex == profileIndex {
                 let controllers = tabBarController.viewControllers

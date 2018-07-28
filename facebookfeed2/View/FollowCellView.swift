@@ -34,10 +34,27 @@ class FollowCellView: UITableViewCell {
         addLeadingAnchor(thinksAboutChallengeView, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.15/10)
         addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
         thinksAboutChallengeView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
-        thinksAboutChallengeView.font = UIFont.boldSystemFont(ofSize: 12)
+        thinksAboutChallengeView.textAlignment = NSTextAlignment.left
+        thinksAboutChallengeView.textColor = UIColor.black
+        
+        addSubview(followButton)
+        addTrailingAnchor(followButton, anchor: contentGuide.trailingAnchor, constant: 4)
+        addWidthAnchor(followButton, multiplier: 2/10)
+        followButton.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+        followButton.alpha = 0
     }
 
     
     let profileImageView: UIImageView = FeedCell().profileImageView
-    let thinksAboutChallengeView: UITextView = FeedCell().thinksAboutChallengeView
+    let thinksAboutChallengeView: UILabel = FeedCell.label(12)
+    
+    let followButton: subclasssedUIButton = {
+        let button = subclasssedUIButton()
+        button.setTitle(followButtonText, for: UIControlState())
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.backgroundColor = UIColor.rgb(87, green: 143, blue: 255)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 10)
+        button.layer.cornerRadius = 2
+        return button
+    }()
 }

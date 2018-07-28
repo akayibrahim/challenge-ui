@@ -8,15 +8,17 @@
 
 import UIKit
 
-var memberID = ""
-//var memberID = "5a81b0f0f8b8e43e70325d3d" // dummy
-var memberFbID = "10156204749600712" // dummy
-var memberName = "Seher Can" // dummy
+var memberID = dummyServiceCall ? "5a81b0f0f8b8e43e70325d3d" : ""
+var memberFbID = "" //10156204749600712" // dummy
+var memberName = "" //Seher Can" // dummy
 var countOffollowers: Int = 0
 var countOffollowing: Int = 0
 
+var defaultURL = isLocal ?  "http://localhost:8080" : "http://107.22.156.149:8080"
+
 // CONSTANTS
 var dummyServiceCall : Bool = false
+var isLocal: Bool = false
 var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"
@@ -24,7 +26,9 @@ var pagesBackColor : UIColor = UIColor.rgb(229, green: 231, blue: 235)
 var profileIndex : Int = 4
 var chanllengeIndex : Int = 0
 var trendsIndex : Int = 1
+var activityIndex : Int = 3
 var navAndTabColor : UIColor = UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1)
+var scoreColor : UIColor = UIColor(red: 194/255, green: 25/255, blue: 28/255, alpha: 1)
 var blueColor : UIColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
 // UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1) coca-cola red
 // UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
@@ -81,10 +85,10 @@ var customSubjectLabel = "Custom Subject"
 var ok = "OK"
 var greaterThan = NSMutableAttributedString(string: ">", attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
 var proofedText = "PROVED"
-var scoreForPrivate = " | SCORE | "
+var scoreForPrivate = "-"
+var scoreForSelf = "of"
 
 // URL's
-var defaultURL = "http://localhost:8080"
 var getChallengesURL = defaultURL + "/getChallenges?memberId="
 var getChallengesOfMemberURL = defaultURL + "/getChallengesOfMember?memberId="
 var getTrendChallengesURL = defaultURL + "/getTrendChallenges?memberId="
@@ -121,3 +125,5 @@ var getChallengesOfFriendURL = defaultURL + "/getChallengesOfFriend?memberId="
 var getActivityCountURL = defaultURL + "/getActivityCount?memberId="
 var searchFriendsURL = defaultURL + "/searchFriends?searchKey="
 var getChallengeSizeOfMemberURL = defaultURL + "/getChallengeSizeOfMember?memberId="
+var getSupportListURL = defaultURL + "/getSupportList?challengeId="
+var getChallengerListURL = defaultURL + "/getChallengerList?challengeId="

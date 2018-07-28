@@ -120,7 +120,7 @@
               "countOfProofs": 0,
               "insertTime" : "3 DAYS AGO",
               "status": "has finished challenge",
-              "firstTeamScore" : "2",
+              "firstTeamScore" : "12",
               "secondTeamScore" : "5",
               "proofed" : false,
               "supportFirstTeam" : true,
@@ -640,8 +640,8 @@
               "active": true,
               "challengerId": "423432",
               "proofedByChallenger": false,
-              "goal":"",
-              "result":""
+              "goal":"4",
+              "result":"3"
               }
               ]
 }

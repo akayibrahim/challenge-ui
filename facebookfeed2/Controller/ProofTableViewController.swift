@@ -20,6 +20,8 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     var refreshControl : UIRefreshControl!
     var currentPage : Int = 0
     var nowMoreData: Bool = false
+    var proofed: Bool = false
+    var canJoin: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +38,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         messageInputContainerView.translatesAutoresizingMaskIntoConstraints = false
         bottomConstraint = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint!)
-        setupInputComponents()        
+        if canJoin {
+            let joinButton = UIBarButtonItem(title: "Join", style: UIBarButtonItemStyle.plain, target: self, action: #selector(joinChallenge))
+            navigationItem.rightBarButtonItem = joinButton
+        } else if !proofed {
+             setupInputComponents()
+        }
+        
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.hideKeyboardWhenTappedAround()
@@ -45,6 +53,37 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.onRefresh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl)
+    }
+    
+    func joinChallenge() {
+        joinToChallengeService(challengeId: challengeId)
+    }
+    
+    func joinToChallengeService(challengeId: String) {
+        let json: [String: Any] = ["challengeId": challengeId,
+                                   "memberId": memberID,
+                                   "join": true
+        ]
+        let url = URL(string: joinToChallengeURL)!
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                }
+            } else {
+                DispatchQueue.main.async { // Correct
+                    self.setupInputComponents()
+                    self.navigationItem.rightBarButtonItem = nil
+                }
+            }
+        }).resume()
     }
     
     func loadChallenges() {
@@ -83,7 +122,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     proof.setValuesForKeys(postDictionary)
                     self.proofs.append(proof)
                 }
-                self.tableView?.reloadData()
+                self.tableView.reloadData()
             }
         }
     }
@@ -269,12 +308,14 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProofCell", for: indexPath as IndexPath) as! ProofCellView
         // let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
         // let cell = ProofCellView(frame: frameOfCell, cellRow: indexPath.row)
-        let nameAtt = NSMutableAttributedString(string: "\(String(describing: proofs[indexPath.row].name!))", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
-        cell.thinksAboutChallengeView.attributedText = nameAtt
-        let fbID = proofs[indexPath.item].fbID
-        setImage(fbID: fbID, imageView: cell.profileImageView)
-        if let proofObjectId = proofs[indexPath.item].proofObjectId {
-            getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofObjectId)
+        DispatchQueue.main.async {
+            let nameAtt = NSMutableAttributedString(string: "\(String(describing: self.proofs[indexPath.row].name!))", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
+            cell.thinksAboutChallengeView.attributedText = nameAtt
+            let fbID = self.proofs[indexPath.item].fbID
+            self.setImage(fbID: fbID, imageView: cell.profileImageView)
+            if let proofObjectId = self.proofs[indexPath.item].proofObjectId {
+                self.getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofObjectId)
+            }
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         

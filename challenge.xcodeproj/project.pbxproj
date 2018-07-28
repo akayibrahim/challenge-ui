@@ -49,8 +49,10 @@
 		A17162C1209C420900061399 /* ActivityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17162C0209C420900061399 /* ActivityCell.swift */; };
 		A17162C3209C424D00061399 /* activities.json in Resources */ = {isa = PBXBuildFile; fileRef = A17162C2209C424D00061399 /* activities.json */; };
 		A17162C5209C42DC00061399 /* Activities.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17162C4209C42DC00061399 /* Activities.swift */; };
+		A1766C892108CC35000AB4E0 /* Attendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1766C882108CC35000AB4E0 /* Attendance.swift */; };
 		A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */; };
 		A187996320AB7A86009FA6B6 /* trend_request_1.json in Resources */ = {isa = PBXBuildFile; fileRef = A187996220AB7A86009FA6B6 /* trend_request_1.json */; };
+		A187C98B2107831C00C6A0D4 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = A187C98A2107831C00C6A0D4 /* Support.swift */; };
 		A18D947A20E0AB9000FA1679 /* ProofTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */; };
 		A18D948020E0AE2E00FA1679 /* ProofCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */; };
 		A19A31F6207D1ACD00DDC98C /* comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A19A31F5207D1ACD00DDC98C /* comments.json */; };
@@ -156,8 +158,10 @@
 		A17162C0209C420900061399 /* ActivityCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityCell.swift; sourceTree = "<group>"; };
 		A17162C2209C424D00061399 /* activities.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = activities.json; sourceTree = "<group>"; };
 		A17162C4209C42DC00061399 /* Activities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Activities.swift; sourceTree = "<group>"; };
+		A1766C882108CC35000AB4E0 /* Attendance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attendance.swift; sourceTree = "<group>"; };
 		A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewController.swift; sourceTree = "<group>"; };
 		A187996220AB7A86009FA6B6 /* trend_request_1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trend_request_1.json; sourceTree = "<group>"; };
+		A187C98A2107831C00C6A0D4 /* Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
 		A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofTableViewController.swift; sourceTree = "<group>"; };
 		A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofCellView.swift; sourceTree = "<group>"; };
 		A19A31F5207D1ACD00DDC98C /* comments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = comments.json; sourceTree = "<group>"; };
@@ -303,6 +307,8 @@
 				A1DA5F0120DFA44D00044E1E /* Media.swift */,
 				A14A996A207530F500B1418D /* Subject.swift */,
 				A14A996C2075310D00B1418D /* Friends.swift */,
+				A187C98A2107831C00C6A0D4 /* Support.swift */,
+				A1766C882108CC35000AB4E0 /* Attendance.swift */,
 				A119611A20E8F1900022E965 /* ChallengeRequest.swift */,
 				A1DA9CAA20A95236009200E3 /* AddChallenge.swift */,
 				A1DC3413207E2A1800F21232 /* Comments.swift */,
@@ -594,6 +600,7 @@
 				A1DA5F0220DFA44D00044E1E /* Media.swift in Sources */,
 				A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */,
 				A1C13416207F212700C6A435 /* TrendsController.swift in Sources */,
+				A187C98B2107831C00C6A0D4 /* Support.swift in Sources */,
 				A159265C209ACCFD00D98923 /* TrendRequest.swift in Sources */,
 				A113ABFC203BE01B006E99F1 /* AddChallengeController.swift in Sources */,
 				A119611120E8EC510022E965 /* ChallengeRequestController.swift in Sources */,
@@ -628,6 +635,7 @@
 				A17162C5209C42DC00061399 /* Activities.swift in Sources */,
 				A1C8D31420B7EE440018B781 /* ServiceLocator.swift in Sources */,
 				A17162C1209C420900061399 /* ActivityCell.swift in Sources */,
+				A1766C892108CC35000AB4E0 /* Attendance.swift in Sources */,
 				C7D879AC1C8289DD008766AE /* CustomTabBarController.swift in Sources */,
 				A14D75FE20752D430005B2F2 /* SelectedItems.swift in Sources */,
 				A16584402077A69400842F10 /* GlobalVariables.swift in Sources */,

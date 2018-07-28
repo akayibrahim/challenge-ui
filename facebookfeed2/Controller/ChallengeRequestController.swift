@@ -90,7 +90,7 @@ class ChallengeRequestController: UITableViewController {
         if challengeRequest[indexPath.row].type == join {
             cell.nameLabel.text = "\(challengeRequest[indexPath.row].name!) \(challengeRequest[indexPath.row].surname!) request you for join to \(challengeRequest[indexPath.row].subject!) challenge."
             cell.confirmButton.setTitle("Join", for: UIControlState())
-            cell.deleteButton.setTitle("Don't Join", for: UIControlState())
+            cell.deleteButton.setTitle("Cancel", for: UIControlState())
             cell.confirmButton.type = join
             cell.deleteButton.type = join
         } else if challengeRequest[indexPath.row].type == accept {

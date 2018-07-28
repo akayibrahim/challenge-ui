@@ -17,6 +17,7 @@ class UpdateProgressController : UIViewController {
     var goal: String?
     var homeScore: String?
     var awayScore: String?
+    var doneSwitch: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,19 +69,15 @@ class UpdateProgressController : UIViewController {
             } else if challengeType == PRIVATE {
                 homeScoreLabel.text = "Home"
                 awayScoreLabel.text = "Away"
-                if awayScore != "-1" {
-                    awayScoreText.text = awayScore
-                }
+                awayScoreText.text = awayScore
             }
-            if homeScore != "-1" {
-                homeScoreText.text = homeScore
-            }
+            homeScoreText.text = homeScore
         } else {
             if result {
                 navigationItem.title = "Result"
                 homeScoreLabel.text = "Result"
                 homeScoreText.text = "?"
-                homeScoreText.isEnabled = false
+                homeScoreText.isEnabled = doneSwitch ? true : false
                 awayScoreLabel.text = "Goal"
             } else if score {
                 navigationItem.title = "Scores"

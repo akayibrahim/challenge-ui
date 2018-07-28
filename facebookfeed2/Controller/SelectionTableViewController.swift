@@ -36,6 +36,15 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     var leftSide = [SelectedItems]()
     var rightSide = [SelectedItems]()
     var friends = [Friends]()
+    var supportList: Bool = false
+    var challengeId: String?
+    var supportedMemberId: String?
+    var firstTeam: Bool?
+    var listOfSupports = [Support]()
+    var unfilteredSupports = [Support]()
+    var isMoreAttendance: Bool = false
+    var attendanceList = [Attendance]()
+    var unfilteredAttendanceList = [Attendance]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +59,14 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         self.view.addSubview(tableView)
         navigationItem.title = tableTitle  
         
+        reload()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        self.hideKeyboardWhenTappedAround()
+    }
+    
+    func reload() {
         if !listMode {
             self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: labelCell)
             if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex {
@@ -60,6 +77,8 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 navigationItem.rightBarButtonItem = rightButton
                 if dummyServiceCall == false {
                     fetchData(url: getFollowingListURL + memberID, type: "FRIENDS")
+                    group.wait()
+                    self.tableView?.reloadData()
                 } else {
                     self.friends = ServiceLocator.getFriendsFromDummy(jsonFileName: "friends")
                 }
@@ -70,6 +89,8 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     } else {
                         fetchData(url: getSelfSubjectsURL, type: "SELF_SUBJECT")
                     }
+                    group.wait()
+                    self.tableView?.reloadData()
                 } else {
                     self.subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "subject")
                     self.self_subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "self_subject")
@@ -83,48 +104,52 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             if isFollowing {
                 loadFollowings()
             }
+            if supportList {
+                loadSupportList()
+            }
+            if isMoreAttendance {
+                loadMoreAttendance()
+            }
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        self.hideKeyboardWhenTappedAround()
     }
     
     func fetchData(url: String, type: String) {
+        group.enter()
         let jsonURL = URL(string: url)!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: ""), willDelay: false)
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: ""), willDelay: false)
+                    }
                     return
             }
-            DispatchQueue.main.async {
-                if type == "FRIENDS" {
-                    self.friends = [Friends]()
-                } else if type == "SELF_SUBJECT" {
-                    self.self_subjects = [Subject]()
-                } else {
-                    self.subjects = [Subject]()
-                }
-                for postDictionary in postsArray! {
-                    if type == "SUBJECT" {
-                        let subject = Subject()
-                        subject.setValuesForKeys(postDictionary)
-                        self.subjects.append(subject)
-                    } else if type == "SELF_SUBJECT" {
-                        let subject = Subject()
-                        subject.setValuesForKeys(postDictionary)
-                        self.self_subjects.append(subject)
-                    } else if type == "FRIENDS" {
-                        let friend = Friends()
-                        friend.setValuesForKeys(postDictionary)
-                        self.friends.append(friend)
-                    }
-                }
-                self.fillItems(type: type)
-                self.tableView?.reloadData()
+            if type == "FRIENDS" {
+                self.friends = [Friends]()
+            } else if type == "SELF_SUBJECT" {
+                self.self_subjects = [Subject]()
+            } else {
+                self.subjects = [Subject]()
             }
+            for postDictionary in postsArray! {
+                if type == "SUBJECT" {
+                    let subject = Subject()
+                    subject.setValuesForKeys(postDictionary)
+                    self.subjects.append(subject)
+                } else if type == "SELF_SUBJECT" {
+                    let subject = Subject()
+                    subject.setValuesForKeys(postDictionary)
+                    self.self_subjects.append(subject)
+                } else if type == "FRIENDS" {
+                    let friend = Friends()
+                    friend.setValuesForKeys(postDictionary)
+                    self.friends.append(friend)
+                }
+            }
+            self.fillItems(type: type)
+            self.group.leave()
         }
     }
     
@@ -218,6 +243,18 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     return (item.name?.uppercased().hasPrefix(uppercasedText))!
                 }
             }
+            if supportList {
+                let uppercasedText = searchText.uppercased()
+                listOfSupports = searchText.isEmpty ? unfilteredSupports : listOfSupports.filter { item -> Bool in
+                    return (item.name?.uppercased().hasPrefix(uppercasedText))!
+                }
+            }
+            if isMoreAttendance {
+                let uppercasedText = searchText.uppercased()
+                attendanceList = searchText.isEmpty ? unfilteredAttendanceList : attendanceList.filter { item -> Bool in
+                    return (item.name?.uppercased().hasPrefix(uppercasedText))!
+                }
+            }
         }
         tableView.reloadData()
     }
@@ -228,6 +265,70 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         } else {
             self.following = ServiceLocator.getFollowingsFromDummy(jsonFileName: "following")
             self.unfilteredFollowing = self.following
+        }
+    }
+    
+    func loadMoreAttendance() {
+        if dummyServiceCall == false {
+            fetchMoreAttendances(url: getChallengerListURL)
+        }
+    }
+    
+    func fetchMoreAttendances(url: String) {
+        let jsonURL = URL(string: url + challengeId! + "&memberId=\(memberID)&firstTeam=\(firstTeam!)")!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    }
+                    return
+            }
+            DispatchQueue.main.async {
+                self.attendanceList = [Attendance]()
+                for postDictionary in postsArray! {
+                    let attendance = Attendance()
+                    attendance.followed = postDictionary["followed"] as? Bool
+                    attendance.setValuesForKeys(postDictionary)
+                    self.attendanceList.append(attendance)
+                }
+                self.unfilteredAttendanceList = self.attendanceList
+                self.tableView?.reloadData()
+            }
+        }
+    }
+    
+    func loadSupportList() {
+        if dummyServiceCall == false {
+            fetchSupportList(url: getSupportListURL)
+        }
+    }
+    
+    func fetchSupportList(url: String) {
+        let jsonURL = URL(string: url + challengeId! + "&memberId=\(memberID)&supportedMemberId=\((supportedMemberId == nil ? "" : supportedMemberId)!)&firstTeam=\(firstTeam!)")!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    }
+                    return
+            }
+            DispatchQueue.main.async {
+                self.listOfSupports = [Support]()
+                for postDictionary in postsArray! {
+                    let support = Support()
+                    support.followed = postDictionary["followed"] as? Bool
+                    support.setValuesForKeys(postDictionary)
+                    self.listOfSupports.append(support)
+                }
+                self.unfilteredSupports = self.listOfSupports
+                self.tableView?.reloadData()
+            }
         }
     }
     
@@ -247,7 +348,9 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    }
                     return
             }
             DispatchQueue.main.async {
@@ -270,7 +373,9 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberID=\(memberID)"), willDelay: false)
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberID=\(memberID)"), willDelay: false)
+                    }
                     return
             }
             DispatchQueue.main.async {
@@ -374,6 +479,10 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 self.openProfile(name: "\(followers[indexPath.row].name!) \(followers[indexPath.row].surname!)", memberId: followers[indexPath.row].id!, memberFbId: followers[indexPath.row].facebookID!)
             } else if isFollowing {
                 self.openProfile(name: "\(following[indexPath.row].name!) \(following[indexPath.row].surname!)", memberId: following[indexPath.row].id!, memberFbId: following[indexPath.row].facebookID!)
+            } else if supportList {
+                self.openProfile(name: "\(listOfSupports[indexPath.row].name!) \(listOfSupports[indexPath.row].surname!)", memberId: listOfSupports[indexPath.row].memberId!, memberFbId: listOfSupports[indexPath.row].facebookId!)
+            } else if isMoreAttendance {
+                self.openProfile(name: "\(attendanceList[indexPath.row].name!) \(attendanceList[indexPath.row].surname!)", memberId: attendanceList[indexPath.row].memberId!, memberFbId: attendanceList[indexPath.row].facebookId!)
             }
         }
     }
@@ -428,8 +537,9 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             guard
                 let returnData = data
                 else {
-                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
-                    print(error)
+                    if data != nil {
+                        ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
+                    }
                     return
             }
             self.group.leave()
@@ -484,6 +594,10 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 return followers.count
             } else if isFollowing {
                 return following.count
+            } else if supportList {
+                return listOfSupports.count
+            } else if isMoreAttendance {
+                return attendanceList.count
             }
         }
         return 0
@@ -532,9 +646,43 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             } else if isFollowing {
                 setImage(fbID: following[indexPath.row].facebookID, imageView: cell.profileImageView)
                 cell.thinksAboutChallengeView.text = "\(following[indexPath.row].name!) \(following[indexPath.row].surname!)"
+            } else if supportList {
+                setImage(fbID: listOfSupports[indexPath.row].facebookId, imageView: cell.profileImageView)
+                cell.thinksAboutChallengeView.text = "\(listOfSupports[indexPath.row].name!) \(listOfSupports[indexPath.row].surname!)"
+                cell.followButton.alpha = listOfSupports[indexPath.row].followed! ? 0 : 1
+                cell.followButton.memberId = listOfSupports[indexPath.row].memberId
+            } else if isMoreAttendance {
+                setImage(fbID: attendanceList[indexPath.row].facebookId, imageView: cell.profileImageView)
+                cell.thinksAboutChallengeView.text = "\(attendanceList[indexPath.row].name!) \(attendanceList[indexPath.row].surname!)"
+                cell.followButton.alpha = attendanceList[indexPath.row].followed! ? 0 : 1
+                cell.followButton.memberId = attendanceList[indexPath.row].memberId
             }
+            cell.followButton.addTarget(self, action: #selector(self.follow), for: UIControlEvents.touchUpInside)
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             return cell
+        }
+    }
+    
+    func follow(sender: subclasssedUIButton) {
+        let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
+        followFriend(url: url)
+    }
+    
+    func followFriend(url: String) {
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil
+                else {
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    }
+                    return
+            }
+            DispatchQueue.main.async {
+                self.reload()
+                self.popupAlert(message: "Now Following!", willDelay: true)
+            }
         }
     }
     

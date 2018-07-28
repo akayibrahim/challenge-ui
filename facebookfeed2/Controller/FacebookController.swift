@@ -123,22 +123,22 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     func akay() {
-        openMember(id: "5b32959a1cb19909e464f6f5")
+        openMember(id: isLocal ? "5b32959a1cb19909e464f6f5" : "5b5a3c61d35c65260545d832")
     }
     func melis() {
-        openMember(id: "5b3152c51cb199f1fadc0faf")
+        openMember(id: isLocal ? "5b3152c51cb199f1fadc0faf" : "5b5aa83dd35c650e3ffeeb62")
     }
     func belkay() {
-        openMember(id: "5b3152b91cb199f1fadc0fae")
+        openMember(id: isLocal ? "5b3152b91cb199f1fadc0fae" : "5b5aa85bd35c650e3ffeeb63")
     }
     func aykut() {
-        openMember(id: "5b3152d31cb199f1fadc0fb0")
+        openMember(id: isLocal ? "5b3152d31cb199f1fadc0fb0" : "5b5aa7aad35c650e3ffeeb61")
     }
     func can() {
-        openMember(id: "5b3152821cb199f1fadc0fab")
+        openMember(id: isLocal ? "5b3152821cb199f1fadc0fab" : "")
     }
     func uzun() {
-        openMember(id: "5b3152a71cb199f1fadc0fad")
+        openMember(id: isLocal ? "5b3152a71cb199f1fadc0fad" : "5b5aa8a4d35c650e3ffeeb64")
     }
     let group = DispatchGroup()
     func getMemberInfo(memberId: String) {
@@ -149,8 +149,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                 let returnData = data,
                 let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
                 else {
-                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
-                    print(error)
+                    if data != nil {
+                        ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    }
                     return
             }
             self.group.leave()

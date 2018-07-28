@@ -76,7 +76,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                 let returnData = data,
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: self.challengeId, sUrl: url, inputs: "challengeId=\(self.challengeId)"), willDelay: false)
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: self.challengeId, sUrl: url, inputs: "challengeId=\(self.challengeId)"), willDelay: false)
+                    }
                     return
             }
             self.nowMoreData = postsArray?.count == 0 ? true : false
@@ -355,8 +357,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                 let returnData = data,
                 let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
                 else {
-                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
-                    print(error)
+                    if data != nil {
+                        ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    }
                     return
             }
             self.group.leave()

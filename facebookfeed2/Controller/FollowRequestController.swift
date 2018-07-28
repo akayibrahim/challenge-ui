@@ -160,9 +160,11 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         let jsonURL = URL(string: url)!
         jsonURL.get { data, response, error in
             guard
-                let returnData = data
+                data != nil
                 else {
-                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    }
                     return
             }
             DispatchQueue.main.async {
@@ -222,8 +224,9 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
                 let returnData = data,
                 let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
                 else {
-                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
-                    print(error)
+                    if data != nil {
+                        ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
+                    }
                     return
             }
             self.group.leave()

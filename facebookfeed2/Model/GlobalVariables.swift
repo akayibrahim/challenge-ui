@@ -127,3 +127,12 @@ var searchFriendsURL = defaultURL + "/searchFriends?searchKey="
 var getChallengeSizeOfMemberURL = defaultURL + "/getChallengeSizeOfMember?memberId="
 var getSupportListURL = defaultURL + "/getSupportList?challengeId="
 var getChallengerListURL = defaultURL + "/getChallengerList?challengeId="
+
+struct INSTAGRAM_IDS {
+    static let INSTAGRAM_AUTHURL = "https://api.instagram.com/oauth/authorize/"
+    static let INSTAGRAM_CLIENT_ID = "4d8864aeac294021bb23f31874a23df1"
+    static let INSTAGRAM_CLIENTSERCRET = "ecc368e3de66464a8c8beabc02d59696"
+    static let INSTAGRAM_REDIRECT_URI = "http://www.iakay.com"
+    static let INSTAGRAM_ACCESS_TOKEN = "access_token"
+    static let INSTAGRAM_SCOPE = "public_content"
+}

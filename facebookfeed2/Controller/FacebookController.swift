@@ -78,6 +78,11 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         imageView.image = UIImage(named: "AppIconLogin")
         view.addSubview(imageView)
         
+        instagramLogin.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.2 / 2, width: view.frame.width - 64, height: 44)
+        // instagramLogin.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
+        // view.addSubview(instagramLogin)
+        instagramLogin.addTarget(self, action: #selector(self.loginWithInstagram), for: UIControlEvents.touchUpInside)
+        
         let loginButton = FBSDKLoginButton()
         loginButton.readPermissions = ["public_profile", "email", "user_friends"]
         view.addSubview(loginButton)
@@ -120,6 +125,11 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         uzunButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.65 / 2, width: 200, height: 30)
         view.addSubview(uzunButton)
         uzunButton.addTarget(self, action: #selector(self.uzun), for: UIControlEvents.touchUpInside)
+    }
+    
+    func loginWithInstagram() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = InstagramLoginVC()
     }
     
     func akay() {
@@ -247,4 +257,14 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
             }
         }).resume()
     }
+    
+    let instagramLogin: UIButton = {
+        let button = UIButton(type: UIButtonType.system)
+        button.setTitle("Continue with Instagram", for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.backgroundColor = UIColor(red: 59/255, green: 89/255, blue: 153/255, alpha: 1)
+        button.layer.cornerRadius = 2        
+        return button
+    }()
 }

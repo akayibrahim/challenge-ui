@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if isCont {
             window?.rootViewController = CustomTabBarController()
-        } else {
+        } else {             
             FBSDKLoginManager().logOut()
             window?.rootViewController = FacebookController()
         }

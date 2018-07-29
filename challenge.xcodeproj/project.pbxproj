@@ -41,6 +41,8 @@
 		A15F875F207BBBB70035130D /* friend_request.json in Resources */ = {isa = PBXBuildFile; fileRef = A15F875E207BBBB70035130D /* friend_request.json */; };
 		A15F8765207BBBF30035130D /* SuggestionFriends.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15F8764207BBBF30035130D /* SuggestionFriends.swift */; };
 		A16584402077A69400842F10 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165843F2077A69400842F10 /* GlobalVariables.swift */; };
+		A16A7DC4210E45650078FBA3 /* InstagramLoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16A7DC3210E45650078FBA3 /* InstagramLoginVC.swift */; };
+		A16A7DCA210E57570078FBA3 /* InstaUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A16A7DC9210E57570078FBA3 /* InstaUser.swift */; };
 		A1715F3B20B047A4003E7AFF /* followers.json in Resources */ = {isa = PBXBuildFile; fileRef = A1715F3A20B047A4003E7AFF /* followers.json */; };
 		A1715F4120B0481A003E7AFF /* Followers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715F4020B0481A003E7AFF /* Followers.swift */; };
 		A1715F4320B04997003E7AFF /* FollowCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1715F4220B04997003E7AFF /* FollowCellView.swift */; };
@@ -83,13 +85,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A1451188210CDFFB00F74891 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 39B0CB95C033CA07BB459FC5CAC75435;
-			remoteInfo = Nuke;
-		};
 		A1A06ABB2105224600F95875 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
@@ -157,6 +152,8 @@
 		A15F875E207BBBB70035130D /* friend_request.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = friend_request.json; sourceTree = "<group>"; };
 		A15F8764207BBBF30035130D /* SuggestionFriends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuggestionFriends.swift; sourceTree = "<group>"; };
 		A165843F2077A69400842F10 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
+		A16A7DC3210E45650078FBA3 /* InstagramLoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramLoginVC.swift; sourceTree = "<group>"; };
+		A16A7DC9210E57570078FBA3 /* InstaUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstaUser.swift; sourceTree = "<group>"; };
 		A1715F3A20B047A4003E7AFF /* followers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = followers.json; sourceTree = "<group>"; };
 		A1715F4020B0481A003E7AFF /* Followers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Followers.swift; sourceTree = "<group>"; };
 		A1715F4220B04997003E7AFF /* FollowCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowCellView.swift; sourceTree = "<group>"; };
@@ -248,6 +245,7 @@
 		A13C70972043CD010076B989 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				A16A7DC3210E45650078FBA3 /* InstagramLoginVC.swift */,
 				A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */,
 				A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */,
 				A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */,
@@ -329,6 +327,7 @@
 				A138F391204D9CFA00142231 /* JoinAttendance.swift */,
 				A14D75FD20752D430005B2F2 /* SelectedItems.swift */,
 				A165843F2077A69400842F10 /* GlobalVariables.swift */,
+				A16A7DC9210E57570078FBA3 /* InstaUser.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -339,7 +338,6 @@
 				A1A06ABC2105224600F95875 /* Bolts.framework */,
 				A1A06ABE2105224600F95875 /* FBSDKCoreKit.framework */,
 				A1A06AC02105224600F95875 /* FBSDKLoginKit.framework */,
-				A1451189210CDFFB00F74891 /* Nuke.framework */,
 				A1A06AC22105224600F95875 /* Pods_facebookfeed2.framework */,
 			);
 			name = Products;
@@ -478,13 +476,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		A1451189210CDFFB00F74891 /* Nuke.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Nuke.framework;
-			remoteRef = A1451188210CDFFB00F74891 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		A1A06ABC2105224600F95875 /* Bolts.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -616,6 +607,7 @@
 				A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */,
 				A1C13416207F212700C6A435 /* TrendsController.swift in Sources */,
 				A187C98B2107831C00C6A0D4 /* Support.swift in Sources */,
+				A16A7DCA210E57570078FBA3 /* InstaUser.swift in Sources */,
 				A159265C209ACCFD00D98923 /* TrendRequest.swift in Sources */,
 				A113ABFC203BE01B006E99F1 /* AddChallengeController.swift in Sources */,
 				A119611120E8EC510022E965 /* ChallengeRequestController.swift in Sources */,
@@ -641,6 +633,7 @@
 				A14BDFED204E5E780095875F /* AddChallengeView.swift in Sources */,
 				A1715F4720B050DD003E7AFF /* Following.swift in Sources */,
 				A1235D3E20870C3A0028738E /* Prove.swift in Sources */,
+				A16A7DC4210E45650078FBA3 /* InstagramLoginVC.swift in Sources */,
 				A1289CB020A556F500CC66B0 /* UITableViewControllerExtension.swift in Sources */,
 				A1D2CAB720451C9F008782D3 /* OtherViewCellView.swift in Sources */,
 				A13C709D2043CE6E0076B989 /* FriendRequestCellView.swift in Sources */,

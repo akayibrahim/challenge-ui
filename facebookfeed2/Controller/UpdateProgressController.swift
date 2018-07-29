@@ -76,7 +76,7 @@ class UpdateProgressController : UIViewController {
             if result {
                 navigationItem.title = "Result"
                 homeScoreLabel.text = "Result"
-                homeScoreText.text = "?"
+                homeScoreText.text = doneSwitch ? "" : "?"
                 homeScoreText.isEnabled = doneSwitch ? true : false
                 awayScoreLabel.text = "Goal"
             } else if score {

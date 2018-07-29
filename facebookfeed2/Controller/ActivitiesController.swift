@@ -31,11 +31,12 @@ class ActivitiesController: UITableViewController {
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl!)
+        
+        self.reloadPage()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.reloadPage()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

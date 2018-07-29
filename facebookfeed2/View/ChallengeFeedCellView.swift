@@ -124,6 +124,7 @@ class FeedCell: UICollectionViewCell {
                 var thirdPImg: Bool = false;
                 if post?.secondTeamCount == "0" {
                     setImage(name: worldImage, imageView: firstOnePeopleImageView)
+                    firstOnePeopleImageView.memberId = nil
                     firstOnePeopleImageView.contentMode = .scaleAspectFit
                 }
                 for join in (post?.joinAttendanceList)! {
@@ -131,33 +132,43 @@ class FeedCell: UICollectionViewCell {
                         if !firstPImg {
                             if post?.secondTeamCount == "1" {
                                 setImage(fbID: join.FacebookID, imageView: firstOnePeopleImageView)
+                                firstOnePeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "2" {
                                 setImage(fbID: join.FacebookID, imageView: firstTwoPeopleImageView)
+                                firstTwoPeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: join.FacebookID, imageView: firstThreePeopleImageView)
+                                firstThreePeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: join.FacebookID, imageView: firstFourPeopleImageView)
+                                firstFourPeopleImageView.memberId = join.memberId
                             }
                             firstPImg = true
                         } else if !secondPImg {
                             if post?.secondTeamCount == "2" {
                                 setImage(fbID: join.FacebookID, imageView: secondTwoPeopleImageView)
+                                secondTwoPeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: join.FacebookID, imageView: secondThreePeopleImageView)
+                                secondThreePeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: join.FacebookID, imageView: secondFourPeopleImageView)
+                                secondFourPeopleImageView.memberId = join.memberId
                             }
                             secondPImg = true
                         } else if !thirdPImg {
                             if post?.secondTeamCount == "3" {
                                 setImage(fbID: join.FacebookID, imageView: thirdThreePeopleImageView)
+                                thirdThreePeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: join.FacebookID, imageView: thirdFourPeopleImageView)
+                                thirdFourPeopleImageView.memberId = join.memberId
                             }
                             thirdPImg = true
                         }
                     }
                     setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
+                    firstOneChlrPeopleImageView.memberId = post?.challengerId
                     if memberID == join.memberId {
                         if join.join! {
                             isJoined = true
@@ -199,28 +210,37 @@ class FeedCell: UICollectionViewCell {
                         if !firstChlrImg {
                             if post?.secondTeamCount == "1" {
                                 setImage(fbID: versus.FacebookID, imageView: firstOneChlrPeopleImageView)
+                                firstOneChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "2" {
                                 setImage(fbID: versus.FacebookID, imageView: firstTwoChlrPeopleImageView)
+                                firstTwoChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: firstThreeChlrPeopleImageView)
+                                firstThreeChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: versus.FacebookID, imageView: firstFourChlrPeopleImageView)
+                                firstFourChlrPeopleImageView.memberId = versus.memberId
                             }
                             firstChlrImg = true
                         } else if !secondChlrImg {
                             if post?.secondTeamCount == "2" {
                                 setImage(fbID: versus.FacebookID, imageView: secondTwoChlrPeopleImageView)
+                                secondTwoChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: secondThreeChlrPeopleImageView)
+                                secondThreeChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: versus.FacebookID, imageView: secondFourChlrPeopleImageView)
+                                secondFourChlrPeopleImageView.memberId = versus.memberId
                             }
                             secondChlrImg = true
                         } else if !thirdChlrImg {
                             if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: thirdThreeChlrPeopleImageView)
+                                thirdThreeChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: versus.FacebookID, imageView: thirdFourChlrPeopleImageView)
+                                thirdFourChlrPeopleImageView.memberId = versus.memberId
                             }
                             thirdChlrImg = true
                         }
@@ -228,28 +248,37 @@ class FeedCell: UICollectionViewCell {
                         if !firstImg {
                             if post?.secondTeamCount == "1" {
                                 setImage(fbID: versus.FacebookID, imageView: firstOnePeopleImageView)
+                                firstOnePeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "2" {
                                 setImage(fbID: versus.FacebookID, imageView: firstTwoPeopleImageView)
+                                firstTwoPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: firstThreePeopleImageView)
+                                firstThreePeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: versus.FacebookID, imageView: firstFourPeopleImageView)
+                                firstFourPeopleImageView.memberId = versus.memberId
                             }
                             firstImg = true
                         } else if !secondImg {
                             if post?.secondTeamCount == "2" {
                                 setImage(fbID: versus.FacebookID, imageView: secondTwoPeopleImageView)
+                                secondTwoPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: secondThreePeopleImageView)
+                                secondThreePeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: versus.FacebookID, imageView: secondFourPeopleImageView)
+                                secondFourPeopleImageView.memberId = versus.memberId
                             }
                             secondImg = true
                         } else if !thirdImg {
                             if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: thirdThreePeopleImageView)
+                                thirdThreePeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: versus.FacebookID, imageView: thirdFourPeopleImageView)
+                                thirdFourPeopleImageView.memberId = versus.memberId
                             }
                             thirdImg = true
                         }
@@ -257,8 +286,10 @@ class FeedCell: UICollectionViewCell {
                 }
             } else if post?.type == SELF {
                 setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
+                firstOneChlrPeopleImageView.memberId = post?.challengerId
                 if let subject = post?.subject {
                     setImage(name: subject, imageView: firstOnePeopleImageView)
+                    firstOnePeopleImageView.memberId = nil
                     firstOnePeopleImageView.contentMode = .scaleAspectFill
                 }
                 // goalLabel.text = "GOAL: \(goal)"
@@ -357,7 +388,7 @@ class FeedCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
+    }    
     
     let screenSize = UIScreen.main.bounds
     func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, joined: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String) {
@@ -483,6 +514,7 @@ class FeedCell: UICollectionViewCell {
                         joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
                         addHeightAnchor(joinToChl, multiplier: 0.7/10)
                         joinToChl.alpha = 0
+                        joinToChl.canJoin = false
                         
                         if joined && !proofed {
                             addProofs.alpha = 1
@@ -491,6 +523,7 @@ class FeedCell: UICollectionViewCell {
                         if !joined && !proofed {
                             joinToChl.alpha = 1
                             joinButton.alpha = 1
+                            joinToChl.canJoin = true
                         }
                     }
                 }
@@ -850,6 +883,7 @@ class FeedCell: UICollectionViewCell {
                     updateProgress.layer.cornerRadius = 5.0
                     updateProgress.clipsToBounds = true
                     updateProgress.titleLabel?.adjustsFontSizeToFitWidth = true
+                    updateProgress.alpha = type == PUBLIC && proofedByChallenger ? 0 : 1
                     
                     /*
                      addSubview(updateRefreshLabel)
@@ -1252,34 +1286,34 @@ class FeedCell: UICollectionViewCell {
     
     let others = FeedCell.subClassbuttonForTitleWithBorder("Remove!", imageName: "")
     
-    static func imageView() -> UIImageView {
-        let imageView = UIImageView()
+    static func imageView() -> subclasssedUIImageView {
+        let imageView = subclasssedUIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 4.0
         imageView.layer.masksToBounds = true
         return imageView
     }
     
-    let firstOnePeopleImageView: UIImageView = FeedCell.imageView()
-    let firstTwoPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondTwoPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstThreePeopleImageView: UIImageView = FeedCell.imageView()
-    let secondThreePeopleImageView: UIImageView = FeedCell.imageView()
-    let thirdThreePeopleImageView: UIImageView = FeedCell.imageView()
-    let firstFourPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondFourPeopleImageView: UIImageView = FeedCell.imageView()
-    let thirdFourPeopleImageView: UIImageView = FeedCell.imageView()
-    let moreFourPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstOneChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstTwoChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondTwoChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let thirdThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let thirdFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let moreFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    let firstOnePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let firstTwoPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let secondTwoPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let firstThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let secondThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let thirdThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let firstFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let secondFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let thirdFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let moreFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let firstOneChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let firstTwoChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let secondTwoChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let firstThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let secondThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let thirdThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let firstFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let secondFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let thirdFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    let moreFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
     
     static func imageViewFit() -> UIImageView {
         let imageView = UIImageView()
@@ -1333,4 +1367,10 @@ class subclasssedUIButton : UIButton {
 
 class subclasssedUILabel : UILabel {
     var index: Int?
+}
+
+class subclasssedUIImageView : UIImageView {
+    var memberId: String?
+    var name: String?
+    var fbID: String?
 }

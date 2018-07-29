@@ -37,7 +37,9 @@ class ImageService {
         if let image = cache.object(forKey: url.absoluteString as NSString) {
             completion(image)
         } else {
-            downloadImage(withURL: url, completion: completion)
+            DispatchQueue.global(qos: .background).async {
+                downloadImage(withURL: url, completion: completion)
+            }
         }
     }
 }

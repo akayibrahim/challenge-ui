@@ -271,6 +271,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             popupAlert(message: "Proof cannot be empty.", willDelay: false)
             return
         }
+        if isSelf() && resultCell.labelOtherSide.attributedText == addChallengeIns[resultIndex].labelAtt {
+            popupAlert(message: "Result cannot be empty.", willDelay: false)
+            return
+        }
         
         var json: [String: Any] = ["challengerId": memberID,
                                    "name": memberName,
@@ -443,7 +447,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             let updateProgress = UpdateProgressController()
             updateProgress.result = true
             updateProgress.doneSwitch = isDone()
-            updateProgress.homeScoreText.becomeFirstResponder()
+            updateProgress.awayScoreText.becomeFirstResponder()
             updateProgress.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(updateProgress, animated: true)
         } else if indexPath == scoreIndexPath {

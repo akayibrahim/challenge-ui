@@ -34,6 +34,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         collectionView?.addSubview(refreshControl)
         
+        reloadPage()
+        
         self.hideKeyboardWhenTappedAround()
     }
     
@@ -90,8 +92,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        reloadPage()
+        super.viewWillAppear(animated)        
     }
     
     func onRefesh() {

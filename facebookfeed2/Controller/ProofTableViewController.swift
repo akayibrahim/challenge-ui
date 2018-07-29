@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ProofTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class ProofTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate {
     let screenSize = UIScreen.main.bounds
     var tableTitle : String!
     var tableView : UITableView!
@@ -291,10 +291,6 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-    }
-    
     let heighForRow : CGFloat = (screenWidth * 0.7 / 10) + (screenWidth / 2) + (screenWidth * 0.1 / 2)
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return heighForRow
@@ -328,7 +324,68 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         cell.thinksAboutChallengeView.tag = indexPath.row
         cell.thinksAboutChallengeView.isUserInteractionEnabled = true
         cell.thinksAboutChallengeView.addGestureRecognizer(tapGestureRecognizerName)
+        
+        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(zoom))
+        pinch.delegate = self
+        cell.proofImageView.isUserInteractionEnabled = true
+        cell.proofImageView.addGestureRecognizer(pinch)
+        
+        let myPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan)) //Update: July 18, 2016 for Xcode 7.3.1(Swift 2.2)
+        myPanGestureRecognizer.delegate = self
+        cell.proofImageView.addGestureRecognizer(myPanGestureRecognizer)
+        cell.proofImageView.layer.zPosition = 1
+        
         return cell
+    }
+    
+    var isZooming = false
+    var originalImageCenter: CGPoint?
+    func pan(sender: UIPanGestureRecognizer) {
+        if self.isZooming && sender.state == .began {
+            self.originalImageCenter = sender.view?.center
+        } else if self.isZooming && sender.state == .changed {
+            let translation = sender.translation(in: sender.view)
+            // note: 'view' is optional and need to be unwrapped
+            if !((sender.view?.frame.minX)! <= CGFloat(-32) && (sender.view?.frame.maxX)! >= self.view.frame.maxX + 32) {
+            }
+            sender.view!.center = CGPoint(x: sender.view!.center.x + translation.x, y: sender.view!.center.y + translation.y)
+            sender.setTranslation(CGPoint.zero, in: self.view.superview)
+        }
+    }
+    
+    var lastScale:CGFloat!
+    func zoom(sender:UIPinchGestureRecognizer) {
+        let postImage = sender.view as! UIImageView
+        if(sender.state == .began) {
+            // Reset the last scale, necessary if there are multiple objects with different scales
+            lastScale = sender.scale
+            self.tableView?.isScrollEnabled = false
+        } else if (sender.state == .changed) {
+            self.isZooming = true
+            let currentScale = sender.view!.layer.value(forKeyPath:"transform.scale")! as! CGFloat
+            // Constants to adjust the max/min values of zoom
+            let kMaxScale:CGFloat = 2.5
+            let kMinScale:CGFloat = 2.0
+            var newScale = 1 -  (lastScale - sender.scale)
+            newScale = min(newScale, kMaxScale / currentScale)
+            newScale = max(newScale, kMinScale / currentScale)
+            let transform = (sender.view?.transform)!.scaledBy(x: newScale, y: newScale);
+            sender.view?.transform = transform
+            lastScale = sender.scale  // Store the previous scale factor for the next pinch gesture call
+        } else if sender.state == .ended || sender.state == .failed || sender.state == .cancelled {
+            guard let center = self.originalImageCenter else {return}
+            UIView.animate(withDuration: 0.3, animations: {
+                postImage.transform = CGAffineTransform.identity
+                postImage.center = center
+            }, completion: { _ in
+                self.isZooming = false
+            })
+            self.tableView?.isScrollEnabled = true
+        }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
     
     func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {

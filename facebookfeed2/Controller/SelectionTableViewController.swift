@@ -500,7 +500,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForFriend
         profileController.memberIsPrivateForFriendProfile = friendIsPrivate
         profileController.profile = true
-        profileController.isProfileFriend = isProfileFriend        
+        profileController.isProfileFriend = isProfileFriend!
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(profileController, animated: true)
     }

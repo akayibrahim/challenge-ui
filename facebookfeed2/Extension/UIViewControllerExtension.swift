@@ -26,7 +26,7 @@ extension UIViewController
     func getTrendImage(imageView: UIImageView, challengeId: String, challengerId: String) {
         if dummyServiceCall == false {
             let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
-            if let urlOfImage = url {
+            if let urlOfImage = url {                
                 ImageService.getImage(withURL: urlOfImage) { image in
                     if image != nil {
                         imageView.image = image

@@ -34,7 +34,7 @@ class Feed: SafeJsonObject {
     var feedUrl, title, link, author, type: String?
 }
 
-class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
     	
     var posts = [Post]()
     var donePosts = [Post]()
@@ -48,7 +48,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var memberCountOfFollowerForFriendProfile: Int?
     var memberCountOfFollowingForFriendProfile: Int?
     var memberIsPrivateForFriendProfile: Bool?
-    var isProfileFriend: Bool?
+    var isProfileFriend: Bool = false
     var currentPage : Int = 0
     var selfCurrentPage : Int = 0
     var explorerCurrentPage : Int = 0
@@ -79,10 +79,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
         
-        if profile || isTabIndex(trendsIndex) ||
-            (isTabIndex(activityIndex) && explorer) {
-            loadChallenges()
-        }
+        loadChallenges()
     }
     
     func isTabIndex(_ index: Int) -> Bool {
@@ -141,7 +138,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if dummyServiceCall == false {
             // Asynchronous Http call to your api url, using NSURLSession:
             if profile {
-                if (!memberIsPrivateForFriendProfile! || (memberIsPrivateForFriendProfile! && isProfileFriend!)) && memberIdForFriendProfile != memberID {
+                if (!memberIsPrivateForFriendProfile! || (memberIsPrivateForFriendProfile! && isProfileFriend)) && memberIdForFriendProfile != memberID {
                     fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + memberIdForFriendProfile! + "&page=\(selfCurrentPage)", profile: true)
                     fetchChallengeSize(memberId: memberIdForFriendProfile!)
                 } else if memberIdForFriendProfile == memberID {
@@ -290,12 +287,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             for indexPath in indexPaths! {
                 let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
                 cell.avPlayerLayer.player?.play()
+                // TODO get Challenge from server
+                // self.collectionView?.reloadItems(at: [indexPath])
             }
             if self.tabBarController?.selectedIndex == chanllengeIndex && !self.profile {
-                self.reloadChlPage()
+                // self.reloadChlPage()
             }
             if self.tabBarController?.selectedIndex == profileIndex && !self.profile  {
-                self.reloadSelfPage()
+                // self.reloadSelfPage()
             }
         }
     }
@@ -350,7 +349,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if profile {
             profileCell.other.alpha = 0
             if memberIdForFriendProfile != memberID {
-                if isProfileFriend! {
+                if isProfileFriend {
                     profileCell.unfollow.alpha = 1
                 } else {
                     profileCell.follow.alpha = 1
@@ -362,7 +361,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             } else {
                 profileCell.other.alpha = 1
             }
-            if memberIsPrivateForFriendProfile! && !isProfileFriend! {
+            if memberIsPrivateForFriendProfile! && !isProfileFriend {
                 profileCell.privateLabel.alpha = 1
             }
         }
@@ -380,7 +379,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleChallengeCountTap))
         profileCell.challangeCount.isUserInteractionEnabled = true
         profileCell.challangeCount.text = challangeCount
-        if !profile || (profile && !memberIsPrivateForFriendProfile!) || (profile && memberIsPrivateForFriendProfile! && isProfileFriend!) {
+        if !profile || (profile && !memberIsPrivateForFriendProfile!) || (profile && memberIsPrivateForFriendProfile! && isProfileFriend) {
             profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
             profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)
             profileCell.followingCount.addGestureRecognizer(followingCountTapGesture)
@@ -456,7 +455,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     feedCellForSelf.updateProgress.challengeId = self.notDonePosts[indexPath.row].id
                     feedCellForSelf.updateProgress.goal = self.notDonePosts[indexPath.row].goal
                     feedCellForSelf.updateProgress.proofed = self.notDonePosts[indexPath.row].proofed
-                    feedCellForSelf.updateProgress.canJoin = feedCellForSelf.joinToChl.alpha == 1 ? true : false
+                    feedCellForSelf.updateProgress.canJoin = feedCellForSelf.joinToChl.canJoin != nil ? feedCellForSelf.joinToChl.canJoin : false
                     if self.notDonePosts[indexPath.row].type == SELF {
                         feedCellForSelf.updateProgress.homeScore = self.notDonePosts[indexPath.row].result
                     } else if self.notDonePosts[indexPath.row].type == PRIVATE {
@@ -578,7 +577,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.addComments.memberId = posts[indexPath.item].challengerId
         feedCell.addProofs.challengeId = posts[indexPath.item].id
         feedCell.addProofs.proofed = posts[indexPath.row].proofed
-        feedCell.addProofs.canJoin = feedCell.joinToChl.alpha == 1 ? true : false
+        feedCell.addProofs.canJoin = feedCell.joinToChl.canJoin != nil ? feedCell.joinToChl.canJoin : false
         feedCell.viewComments.addTarget(self, action: #selector(self.viewComments), for: UIControlEvents.touchUpInside)
         feedCell.viewProofs.addTarget(self, action: #selector(self.viewProofs), for: UIControlEvents.touchUpInside)
         feedCell.addComments.addTarget(self, action: #selector(self.addComments), for: UIControlEvents.touchUpInside)
@@ -621,6 +620,97 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.moreFourPeopleImageView.tag = indexPath.row
         feedCell.moreFourPeopleImageView.isUserInteractionEnabled = true
         feedCell.moreFourPeopleImageView.addGestureRecognizer(tapGestureRecognizerAwayMore)
+        
+        addTargetToImageView(image:feedCell.firstOnePeopleImageView)
+        addTargetToImageView(image:feedCell.firstTwoPeopleImageView)
+        addTargetToImageView(image:feedCell.secondTwoPeopleImageView)
+        addTargetToImageView(image:feedCell.firstThreePeopleImageView)
+        addTargetToImageView(image:feedCell.secondThreePeopleImageView)
+        addTargetToImageView(image:feedCell.thirdThreePeopleImageView)
+        addTargetToImageView(image:feedCell.firstFourPeopleImageView)
+        addTargetToImageView(image:feedCell.secondFourPeopleImageView)
+        addTargetToImageView(image:feedCell.thirdFourPeopleImageView)
+        addTargetToImageView(image:feedCell.firstOneChlrPeopleImageView)
+        addTargetToImageView(image:feedCell.firstTwoChlrPeopleImageView)
+        addTargetToImageView(image:feedCell.secondTwoChlrPeopleImageView)
+        addTargetToImageView(image:feedCell.firstThreeChlrPeopleImageView)
+        addTargetToImageView(image:feedCell.secondThreeChlrPeopleImageView)
+        addTargetToImageView(image:feedCell.thirdThreeChlrPeopleImageView)
+        addTargetToImageView(image:feedCell.firstFourChlrPeopleImageView)
+        addTargetToImageView(image:feedCell.secondFourChlrPeopleImageView)
+        addTargetToImageView(image:feedCell.thirdFourChlrPeopleImageView)
+        
+        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(zoom))
+        pinch.delegate = self
+        feedCell.proofedMediaView.addGestureRecognizer(pinch)
+        
+        let myPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan)) //Update: July 18, 2016 for Xcode 7.3.1(Swift 2.2)
+        myPanGestureRecognizer.delegate = self
+        feedCell.proofedMediaView.addGestureRecognizer(myPanGestureRecognizer)
+        feedCell.proofedMediaView.layer.zPosition = 1
+    }
+    
+    var isZooming = false
+    var originalImageCenter: CGPoint?
+    func pan(sender: UIPanGestureRecognizer) {
+        if self.isZooming && sender.state == .began {
+            self.originalImageCenter = sender.view?.center
+        } else if self.isZooming && sender.state == .changed {
+            let translation = sender.translation(in: sender.view)
+            // note: 'view' is optional and need to be unwrapped
+            if !((sender.view?.frame.minX)! <= CGFloat(-32) && (sender.view?.frame.maxX)! >= self.view.frame.maxX + 32) {
+            }
+            sender.view!.center = CGPoint(x: sender.view!.center.x + translation.x, y: sender.view!.center.y + translation.y)
+            sender.setTranslation(CGPoint.zero, in: self.view.superview)
+        }
+    }
+    
+    var lastScale:CGFloat!
+    func zoom(sender:UIPinchGestureRecognizer) {
+        let postImage = sender.view as! UIImageView
+        if(sender.state == .began) {
+            // Reset the last scale, necessary if there are multiple objects with different scales
+            lastScale = sender.scale
+            self.collectionView?.isScrollEnabled = false
+        } else if (sender.state == .changed) {
+            self.isZooming = true
+            let currentScale = sender.view!.layer.value(forKeyPath:"transform.scale")! as! CGFloat
+            // Constants to adjust the max/min values of zoom
+            let kMaxScale:CGFloat = 2.5
+            let kMinScale:CGFloat = 2.0
+            var newScale = 1 -  (lastScale - sender.scale)
+            newScale = min(newScale, kMaxScale / currentScale)
+            newScale = max(newScale, kMinScale / currentScale)
+            let transform = (sender.view?.transform)!.scaledBy(x: newScale, y: newScale);
+            sender.view?.transform = transform
+            lastScale = sender.scale  // Store the previous scale factor for the next pinch gesture call
+        } else if sender.state == .ended || sender.state == .failed || sender.state == .cancelled {
+            guard let center = self.originalImageCenter else {return}
+            UIView.animate(withDuration: 0.3, animations: {
+                postImage.transform = CGAffineTransform.identity
+                postImage.center = center
+            }, completion: { _ in
+                self.isZooming = false
+            })
+            self.collectionView?.isScrollEnabled = true
+        }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func addTargetToImageView(image: subclasssedUIImageView) {
+        let tapGestureRecognizerOpenProfile = UITapGestureRecognizer(target: self, action: #selector(openProfileForImage(tapGestureRecognizer:)))
+        image.isUserInteractionEnabled = true
+        image.addGestureRecognizer(tapGestureRecognizerOpenProfile)
+    }
+    
+    func openProfileForImage(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view as! subclasssedUIImageView
+        if tappedImage.memberId != nil {
+            openProfile(memberId: tappedImage.memberId!)
+        }
     }
     
     func homeMoreAttendances(tapGestureRecognizer: UITapGestureRecognizer) {
@@ -672,12 +762,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
-        openProfile(name: posts[tappedImage.tag].name!, memberId: posts[tappedImage.tag].challengerId!, memberFbId: posts[tappedImage.tag].challengerFBId!)
+        openProfile(memberId: posts[tappedImage.tag].challengerId!)
     }
     
     func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UILabel
-        openProfile(name: posts[tappedImage.tag].name!, memberId: posts[tappedImage.tag].challengerId!, memberFbId: posts[tappedImage.tag].challengerFBId!)
+        openProfile(memberId: posts[tappedImage.tag].challengerId!)
     }
     
     func deleteChallenge(_ sender: subclasssedUIButton) {
@@ -1079,17 +1169,17 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(challengeController, animated: true)
     }
     
-    func openProfile(name: String, memberId: String, memberFbId:String) {
+    func openProfile(memberId: String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
         isMyFriend(friendMemberId: memberId)
         group.wait()
-        profileController.navigationItem.title = name
+        profileController.navigationItem.title = nameForOpenProfile
         profileController.memberIdForFriendProfile = memberId
-        profileController.memberNameForFriendProfile = name
-        profileController.memberFbIdForFriendProfile = memberFbId
-        profileController.memberCountOfFollowerForFriendProfile = countOfFollowersForFriend
-        profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForFriend
+        profileController.memberNameForFriendProfile = nameForOpenProfile
+        profileController.memberFbIdForFriendProfile = facebookIDForOpenProfile
+        profileController.memberCountOfFollowerForFriendProfile = countOfFollowersForOpenProfile
+        profileController.memberCountOfFollowingForFriendProfile = countOfFollowingForOpenProfile
         profileController.memberIsPrivateForFriendProfile = friendIsPrivate
         profileController.profile = true
         profileController.isProfileFriend = isProfileFriend        
@@ -1097,8 +1187,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
-    var countOfFollowersForFriend = 0
-    var countOfFollowingForFriend = 0
+    var countOfFollowersForOpenProfile = 0
+    var countOfFollowingForOpenProfile = 0
+    var nameForOpenProfile = ""
+    var facebookIDForOpenProfile = ""
     var friendIsPrivate = false
     let group = DispatchGroup()
     func getMemberInfo(memberId: String) {
@@ -1115,8 +1207,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
             self.group.leave()
             if let post = postOfMember {
-                self.countOfFollowersForFriend = (post["followerCount"] as? Int)!
-                self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
+                self.countOfFollowersForOpenProfile = (post["followerCount"] as? Int)!
+                self.countOfFollowingForOpenProfile = (post["followingCount"] as? Int)!
+                self.nameForOpenProfile = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
+                self.facebookIDForOpenProfile = (post["facebookID"] as? String)!
                 self.friendIsPrivate = (post["privateMember"] as? Bool)!
             }
         }

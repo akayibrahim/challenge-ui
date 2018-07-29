@@ -83,6 +83,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A1451188210CDFFB00F74891 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 39B0CB95C033CA07BB459FC5CAC75435;
+			remoteInfo = Nuke;
+		};
 		A1A06ABB2105224600F95875 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
@@ -332,6 +339,7 @@
 				A1A06ABC2105224600F95875 /* Bolts.framework */,
 				A1A06ABE2105224600F95875 /* FBSDKCoreKit.framework */,
 				A1A06AC02105224600F95875 /* FBSDKLoginKit.framework */,
+				A1451189210CDFFB00F74891 /* Nuke.framework */,
 				A1A06AC22105224600F95875 /* Pods_facebookfeed2.framework */,
 			);
 			name = Products;
@@ -470,6 +478,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		A1451189210CDFFB00F74891 /* Nuke.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Nuke.framework;
+			remoteRef = A1451188210CDFFB00F74891 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		A1A06ABC2105224600F95875 /* Bolts.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;

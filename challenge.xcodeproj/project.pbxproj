@@ -55,6 +55,8 @@
 		A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */; };
 		A187996320AB7A86009FA6B6 /* trend_request_1.json in Resources */ = {isa = PBXBuildFile; fileRef = A187996220AB7A86009FA6B6 /* trend_request_1.json */; };
 		A187C98B2107831C00C6A0D4 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = A187C98A2107831C00C6A0D4 /* Support.swift */; };
+		A18BE7CB210F697400306540 /* ForwardChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18BE7CA210F697400306540 /* ForwardChange.swift */; };
+		A18BE7D1210F742700306540 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18BE7D0210F742700306540 /* LoadingOverlay.swift */; };
 		A18D947A20E0AB9000FA1679 /* ProofTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */; };
 		A18D948020E0AE2E00FA1679 /* ProofCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */; };
 		A19A31F6207D1ACD00DDC98C /* comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A19A31F5207D1ACD00DDC98C /* comments.json */; };
@@ -166,6 +168,8 @@
 		A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewController.swift; sourceTree = "<group>"; };
 		A187996220AB7A86009FA6B6 /* trend_request_1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trend_request_1.json; sourceTree = "<group>"; };
 		A187C98A2107831C00C6A0D4 /* Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
+		A18BE7CA210F697400306540 /* ForwardChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardChange.swift; sourceTree = "<group>"; };
+		A18BE7D0210F742700306540 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
 		A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofTableViewController.swift; sourceTree = "<group>"; };
 		A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofCellView.swift; sourceTree = "<group>"; };
 		A19A31F5207D1ACD00DDC98C /* comments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = comments.json; sourceTree = "<group>"; };
@@ -230,6 +234,7 @@
 				A1289CAB20A5564900CC66B0 /* UIViewControllerExtension.swift */,
 				A1289CAF20A556F500CC66B0 /* UITableViewControllerExtension.swift */,
 				A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */,
+				A18BE7D0210F742700306540 /* LoadingOverlay.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -328,6 +333,7 @@
 				A14D75FD20752D430005B2F2 /* SelectedItems.swift */,
 				A165843F2077A69400842F10 /* GlobalVariables.swift */,
 				A16A7DC9210E57570078FBA3 /* InstaUser.swift */,
+				A18BE7CA210F697400306540 /* ForwardChange.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -630,6 +636,7 @@
 				A14A996B207530F500B1418D /* Subject.swift in Sources */,
 				A11C823520499DDB0061A33F /* ImageService.swift in Sources */,
 				A1289CAC20A5564900CC66B0 /* UIViewControllerExtension.swift in Sources */,
+				A18BE7CB210F697400306540 /* ForwardChange.swift in Sources */,
 				A14BDFED204E5E780095875F /* AddChallengeView.swift in Sources */,
 				A1715F4720B050DD003E7AFF /* Following.swift in Sources */,
 				A1235D3E20870C3A0028738E /* Prove.swift in Sources */,
@@ -643,6 +650,7 @@
 				A17162C5209C42DC00061399 /* Activities.swift in Sources */,
 				A1C8D31420B7EE440018B781 /* ServiceLocator.swift in Sources */,
 				A17162C1209C420900061399 /* ActivityCell.swift in Sources */,
+				A18BE7D1210F742700306540 /* LoadingOverlay.swift in Sources */,
 				A1766C892108CC35000AB4E0 /* Attendance.swift in Sources */,
 				C7D879AC1C8289DD008766AE /* CustomTabBarController.swift in Sources */,
 				A14D75FE20752D430005B2F2 /* SelectedItems.swift in Sources */,

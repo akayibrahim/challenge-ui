@@ -278,7 +278,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
         let textview = tapGestureRecognizer.view as! UITextView
         let textRange = NSMakeRange(0, (comments[textview.tag].name?.count)!)
-        if tapGestureRecognizer.didTapAttributedTextInLabel(label: textview, inRange: textRange) {
+        if tapGestureRecognizer.didTapAttributedTextInTextView(label: textview, inRange: textRange) {
             openProfile(name: comments[textview.tag].name!, memberId: comments[textview.tag].memberId!, memberFbId: comments[textview.tag].fbID!)
         }
     }

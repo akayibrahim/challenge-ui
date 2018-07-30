@@ -200,6 +200,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if postsArray?.isEmpty == false {
                     for postDictionary in postsArray! {
                         let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                        let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                        ImageService.cacheImage(withURL: url!)
                         self.posts.append(post)
                         if profile {
                             if post.done == true {
@@ -213,7 +215,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.collectionView?.reloadData()
             }
         }
-    }
+        }
     
     func fetchChallengeSize(memberId: String) {
         let jsonURL = URL(string: getChallengeSizeOfMemberURL + memberId)!
@@ -278,9 +280,20 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //Correct the nav bar state unwinding from segues
-        if self.tabBarController?.selectedIndex == chanllengeIndex || self.tabBarController?.selectedIndex == profileIndex {
-            // self.navigationController?.setNavigationBarHidden(false, animated: true)
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: "forwardChange") != nil {
+            let decoded = defaults.object(forKey: "forwardChange") as! Data
+            let forwardChange = NSKeyedUnarchiver.unarchiveObject(with: decoded) as! ForwardChange
+            if forwardChange.forwardScreen == FRWRD_CHNG_CMMNT {
+                // self.posts[forwardChange.index!.row].countOfComments = forwardChange.viewCommentsCount as NSNumber?
+                // self.collectionView?.reloadItems(at: [forwardChange.index!])
+            } else if forwardChange.forwardScreen == FRWRD_CHNG_PRV {
+                // self.posts[forwardChange.index!.row].countOfProofs = forwardChange.viewCommentsCount as NSNumber?
+                // self.posts[forwardChange.index!.row].proofedByChallenger = forwardChange.proved
+                // self.posts[forwardChange.index!.row].joinAttendanceList TODO join
+                // self.collectionView?.reloadItems(at: [forwardChange.index!])
+            }
+            defaults.removeObject(forKey: "forwardChange")
         }
         DispatchQueue.main.async {
             let indexPaths = self.collectionView?.indexPathsForVisibleItems
@@ -317,7 +330,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex
+        let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex && !profile
         let isSelf = self.tabBarController?.selectedIndex == profileIndex
         let isTrend = self.tabBarController?.selectedIndex == trendsIndex && explorer
         let checkPoint = posts.count - 1
@@ -843,6 +856,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         // TODO commentsTable.comments = self.comments
         commentsTable.challengeId = sender.challengeId
         commentsTable.commentedMemberId = sender.memberId
+        addForwardChange(challengeId: sender.challengeId!, screen: FRWRD_CHNG_CMMNT)
         commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -855,6 +869,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         // TODO commentsTable.comments = self.comments
         commentsTable.challengeId = sender.challengeId
         commentsTable.commentedMemberId = sender.memberId
+        addForwardChange(challengeId: sender.challengeId!, screen: FRWRD_CHNG_CMMNT)
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
@@ -870,6 +885,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.challengeId = challengeId
         commentsTable.proofed = proofed
         commentsTable.canJoin = canJoin
+        addForwardChange(challengeId: challengeId, screen: FRWRD_CHNG_PRV)
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
@@ -1151,7 +1167,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if self.tabBarController?.selectedIndex == profileIndex  && !explorer {
+        if (self.tabBarController?.selectedIndex == profileIndex  && !explorer) || profile {
             if indexPath.section == 1 {
                 openExplorer(challengeId: notDonePosts[indexPath.row].id!)
             } else if indexPath.section == 2 {
@@ -1205,7 +1221,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     print(error)
                     return
             }
-            self.group.leave()
             if let post = postOfMember {
                 self.countOfFollowersForOpenProfile = (post["followerCount"] as? Int)!
                 self.countOfFollowingForOpenProfile = (post["followingCount"] as? Int)!
@@ -1213,6 +1228,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.facebookIDForOpenProfile = (post["facebookID"] as? String)!
                 self.friendIsPrivate = (post["privateMember"] as? Bool)!
             }
+            self.group.leave()
         }
     }
     
@@ -1231,6 +1247,17 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             let isMyFriend = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
             self.isProfileFriend = (isMyFriend as String).toBool()
         }
+    }
+    
+    func addForwardChange(challengeId: String, screen: String) {
+        let forwardChange = ForwardChange(challengeId: challengeId, forwardScreen: screen)
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: "forwardChange") != nil {
+            defaults.removeObject(forKey: "forwardChange")
+        }
+        let encodedData = NSKeyedArchiver.archivedData(withRootObject: forwardChange)
+        defaults.set(encodedData, forKey: "forwardChange")
+        defaults.synchronize()
     }
 }
 

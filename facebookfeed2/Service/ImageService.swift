@@ -33,6 +33,23 @@ class ImageService {
         dataTask.resume()
     }
     
+    static func cacheImage(withURL url:URL) {
+        DispatchQueue.global(qos: .background).async {
+            if cache.object(forKey: url.absoluteString as NSString) == nil {            
+                let dataTask = URLSession.shared.dataTask(with: url) { data, responseURL, error in
+                    var downloadedImage:UIImage?
+                    if let data = data {
+                        downloadedImage = UIImage(data: data)
+                    }
+                    if downloadedImage != nil {
+                        cache.setObject(downloadedImage!, forKey: url.absoluteString as NSString)
+                    }
+                }
+                dataTask.resume()
+            }
+        }
+    }
+    
     static func getImage(withURL url:URL, completion: @escaping (_ image:UIImage?)->()) {
         if let image = cache.object(forKey: url.absoluteString as NSString) {
             completion(image)

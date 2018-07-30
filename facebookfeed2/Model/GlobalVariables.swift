@@ -49,6 +49,8 @@ var follower = "FOLLOWER"
 var join = "JOIN"
 var accept = "ACCEPT"
 var commentCharacterLimit : Int = 400
+var FRWRD_CHNG_CMMNT = "CMMNT"
+var FRWRD_CHNG_PRV = "PRV"
 
 // Assets Name
 var supported = "supported"

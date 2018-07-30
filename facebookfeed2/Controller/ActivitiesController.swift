@@ -16,6 +16,7 @@ class ActivitiesController: UITableViewController {
     let group = DispatchGroup()
     var currentPage : Int = 0
     var nowMoreData: Bool = false
+    var goForward: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +38,10 @@ class ActivitiesController: UITableViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if goForward {
+            self.reloadPage()
+            goForward = false
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -164,16 +169,18 @@ class ActivitiesController: UITableViewController {
             }
             DispatchQueue.main.async {
                 cell.activity = self.activities[indexPath.row]
+                
+                let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.profileImageTapped(tapGestureRecognizer:)))
+                cell.profileImageView.tag = indexPath.row
+                cell.profileImageView.isUserInteractionEnabled = true
+                cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
+                
+                let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(self.profileImageTappedName(tapGestureRecognizer:)))
+                cell.contentText.tag = indexPath.row
+                cell.contentText.isUserInteractionEnabled = true
+                cell.contentText.addGestureRecognizer(tapGestureRecognizerName)
             }
-            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
-            cell.profileImageView.tag = indexPath.row
-            cell.profileImageView.isUserInteractionEnabled = true
-            cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
             
-            let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
-            cell.contentText.tag = indexPath.row
-            cell.contentText.isUserInteractionEnabled = true
-            cell.contentText.addGestureRecognizer(tapGestureRecognizerName)
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             return cell
         }
@@ -183,7 +190,7 @@ class ActivitiesController: UITableViewController {
     func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
         let textview = tapGestureRecognizer.view as! UITextView
         let textRange = NSMakeRange(0, (activities[textview.tag].name?.count)!)
-        if tapGestureRecognizer.didTapAttributedTextInLabel(label: textview, inRange: textRange) {
+        if tapGestureRecognizer.didTapAttributedTextInTextView(label: textview, inRange: textRange) {
             openProfile(name: activities[textview.tag].name!, memberId: activities[textview.tag].fromMemberId!, memberFbId: activities[textview.tag].facebookID!)
         } else {
             openBackgroundOfActivity(indexPath: IndexPath(item: textview.tag, section: 0))
@@ -303,6 +310,7 @@ class ActivitiesController: UITableViewController {
     
     func challengeRequest() {
         let challengeRequest = ChallengeRequestController()
+        goForward = true
         challengeRequest.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeRequest, animated: true)

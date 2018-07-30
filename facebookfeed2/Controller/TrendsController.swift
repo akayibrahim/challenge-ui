@@ -131,6 +131,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                                     let trend = TrendRequest()
                                     trend.setValuesForKeys(postDictionary)
                                     self.trendRequest.append(trend)
+                                    let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                    ImageService.cacheImage(withURL: url!)
                                 }
                                 self.collectionView?.reloadData()
                             }
@@ -167,14 +169,12 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TrendRequestCell
         cell.trendRequest = self.trendRequest[indexPath.row]
-        DispatchQueue.main.async {
-            self.downloadImage(requestImageView: cell.requestImageView, challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
-        }
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
+        self.downloadImage(requestImageView: cell.requestImageView, challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.profileImageTapped(tapGestureRecognizer:)))
         cell.profileImageView.tag = indexPath.row
         cell.profileImageView.isUserInteractionEnabled = true
         cell.profileImageView.addGestureRecognizer(tapGestureRecognizer)
-        let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(profileImageTappedName(tapGestureRecognizer:)))
+        let tapGestureRecognizerName = UITapGestureRecognizer(target: self, action: #selector(self.profileImageTappedName(tapGestureRecognizer:)))
         cell.nameLabel.tag = indexPath.row
         cell.nameLabel.isUserInteractionEnabled = true
         cell.nameLabel.addGestureRecognizer(tapGestureRecognizerName)
@@ -187,8 +187,13 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
 
     func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
-        let tappedImage = tapGestureRecognizer.view as! UILabel
-        openProfile(name: trendRequest[tappedImage.tag].name!, memberId: trendRequest[tappedImage.tag].challengerId!, memberFbId: trendRequest[tappedImage.tag].prooferFbID!)
+        let tappedImage = tapGestureRecognizer.view as! UILabel        
+        let textRange = NSMakeRange(0, (trendRequest[tappedImage.tag].name?.count)!)
+        if tapGestureRecognizer.didTapAttributedTextInLabel(label: tappedImage, inRange: textRange) {
+            openProfile(name: trendRequest[tappedImage.tag].name!, memberId: trendRequest[tappedImage.tag].challengerId!, memberFbId: trendRequest[tappedImage.tag].prooferFbID!)
+        } else {
+            openExplorer(challengeId: trendRequest[tappedImage.tag].challengeId!)
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

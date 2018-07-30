@@ -632,7 +632,6 @@ class FeedCell: UICollectionViewCell {
             resultText.layer.masksToBounds = true
             // resultText.addBorders(edges: [.top, .bottom], width: 1)
             resultText.adjustsFontSizeToFitWidth = true
-            */
             
             addSubview(proofText)
             addTopAnchor(proofText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.5 / 10))
@@ -670,7 +669,7 @@ class FeedCell: UICollectionViewCell {
                 proofText.alpha = 0
                 // resultText.alpha = 0
             }
-            
+            */
         } else {
             vsImageView.alpha = 1
             
@@ -720,7 +719,20 @@ class FeedCell: UICollectionViewCell {
             }
         }
         
-        if  done || ( isComeFromSelf && ( (type == PRIVATE && firstTeamScore != "-1" && secondTeamScore != "-1") || (type == SELF && result != "-1") ) ) {
+        if  done || ( isComeFromSelf && ( (type == PRIVATE && firstTeamScore != "0" && secondTeamScore != "0") || (type == SELF && result != "0") ) ) {
+            addSubview(proofText)
+            addTopAnchor(proofText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.5 / 10))
+            proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
+            addWidthAnchor(proofText, multiplier: 1.3 / 6)
+            addHeightAnchor(proofText, multiplier: 0.5 / 6)
+            proofText.font = UIFont(name: "MarkerFelt-Thin", size: 40)
+            proofText.backgroundColor = scoreColor
+            proofText.textColor = UIColor.white
+            proofText.layer.cornerRadius = 5
+            proofText.layer.masksToBounds = true
+            // proofText.addBorders(edges: [.top, .bottom], width: 1)
+            proofText.adjustsFontSizeToFitWidth = true
+            
             addSubview(homeScoreText)
             addTopAnchor(homeScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.3 / 10))
             homeScoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.8 / 10)).isActive = true
@@ -735,7 +747,6 @@ class FeedCell: UICollectionViewCell {
             // scoreText.addBorders(edges: [.top, .bottom], width: 1)
             homeScoreText.adjustsFontSizeToFitWidth = true
             homeScoreText.baselineAdjustment = .alignCenters
-            // scoreText.alpha = 0.8
             
             addSubview(scoreText)
             addTopAnchor(scoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.3 / 10))
@@ -749,7 +760,6 @@ class FeedCell: UICollectionViewCell {
             // scoreText.layer.masksToBounds = true
             // scoreText.addBorders(edges: [.top, .bottom], width: 1)
             scoreText.adjustsFontSizeToFitWidth = true
-            // scoreText.alpha = 0.8
             vsImageView.alpha = 0
             
             addSubview(awayScoreText)
@@ -765,6 +775,24 @@ class FeedCell: UICollectionViewCell {
             // scoreText.addBorders(edges: [.top, .bottom], width: 1)
             awayScoreText.adjustsFontSizeToFitWidth = true
             awayScoreText.baselineAdjustment = .alignCenters
+            awayScoreText.alpha = 1
+            
+            if type == PUBLIC {
+                homeScoreText.alpha = 0
+                awayScoreText.alpha = 0
+                scoreText.alpha = 0
+                proofText.alpha = 1
+                if proofedByChallenger {
+                    proofText.text = proofedText
+                } else {
+                    proofText.text = "JOINED" // TODO
+                }
+            } else  {
+                homeScoreText.alpha = 1
+                awayScoreText.alpha = 1
+                scoreText.alpha = 1
+                proofText.alpha = 0
+            }
         }
         
         /*

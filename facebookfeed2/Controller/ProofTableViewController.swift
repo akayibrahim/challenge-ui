@@ -53,6 +53,10 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.onRefresh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl)
+        
+        if self.tabBarController?.selectedIndex == profileIndex {
+            Util.getForwardChange();
+        }
     }
     
     func joinChallenge() {
@@ -81,6 +85,8 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 DispatchQueue.main.async { // Correct
                     self.setupInputComponents()
                     self.navigationItem.rightBarButtonItem = nil
+                    let forwardChange = Util.getForwardChange();
+                    Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount!, joined: false, proved: forwardChange.proved!))
                 }
             }
         }).resume()
@@ -257,6 +263,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         let urlOfUpload = URL(string: uploadImageURL)!
         let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: self.proofImageView.image!)
         group.enter()
+        self.sendButton.alpha = 0
         URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
@@ -265,15 +272,18 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     self.group.leave()
-                    self.loadChallenges()
+                    self.reloadPage()
+                    let forwardChange = Util.getForwardChange();
+                    Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount! + 1, joined: forwardChange.joined!, proved: true))
                     self.group.wait()
-                    self.popupAlert(message: "Your Proof Added!", willDelay: true)
+                    self.popupAlert(message: "ADDED!", willDelay: true)
                 } else {
                     let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
                     if let responseJSON = responseJSON as? [String: Any] {
                         print(responseJSON)
                         if responseJSON["message"] != nil {
                             self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                            self.sendButton.alpha = 1
                             return
                         }
                     }

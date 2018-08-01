@@ -13,7 +13,6 @@ import FBSDKCoreKit
 class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     var imageView : UIImageView!
     var label: UILabel!
-    var window: UIWindow?
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         print("User Logged In")
@@ -27,8 +26,11 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
             if result.grantedPermissions.contains("email") {
                 print("LoggedIn")
                 self.fetchFacebookProfile()
+                preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
+                preFetchTrendChallenges()
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                appDelegate.window?.rootViewController = CustomTabBarController()
+                appDelegate.window?.rootViewController = SplashScreenController()
+                splashTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)                
             }
         }
     }
@@ -174,12 +176,22 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
             }
         }
     }
+    
+    var splashTimer: Timer?
     func openMember(id:String) {
         let defaults = UserDefaults.standard
         defaults.set(id, forKey: "memberID")
         defaults.synchronize()
         getMemberInfo(memberId: id)
         group.wait()
+        preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
+        preFetchTrendChallenges()
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = SplashScreenController()
+        splashTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+    }
+    
+    func splashScreenToMain() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = CustomTabBarController()
     }
@@ -267,4 +279,49 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         button.layer.cornerRadius = 2        
         return button
     }()
+    
+    func preFetchChallenges(url: String, profile : Bool) {
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil,
+                let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    return
+            }
+            DispatchQueue.global(qos: .background).async {
+                if postsArray?.isEmpty == false {
+                    for postDictionary in postsArray! {
+                        let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                        let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                        ImageService.cacheImage(withURL: url!)
+                    }
+                }
+            }
+        }
+    }
+    
+    func preFetchTrendChallenges() {
+        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=&page=0"
+        let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        let url = NSURL(string: urlStrWithPerm!)!
+        URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        DispatchQueue.global(qos: .background).async {
+                            for postDictionary in postsArray {
+                                let trend = TrendRequest()
+                                trend.setValuesForKeys(postDictionary)
+                                let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                ImageService.cacheImage(withURL: url!)
+                            }
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+        }).resume()
+    }
 }

@@ -224,6 +224,8 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                 self.setupInputComponents()
                 self.setTextViewToDefault()
                 self.scrollToLastRow()
+                let forwardChange = Util.getForwardChange();
+                Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewCommentsCount: forwardChange.viewCommentsCount! + 1))
             }
         }).resume()
     }

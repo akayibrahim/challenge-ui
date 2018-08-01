@@ -90,7 +90,6 @@ class FeedCell: UICollectionViewCell {
     
     var post: Post? {
         didSet {
-            var isJoined = false
             if let name = post?.name, let status = post?.status {
                 let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
                 let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
@@ -106,9 +105,14 @@ class FeedCell: UICollectionViewCell {
             setImage(fbID: memberFbID, imageView: profileImageView)
             if let countOfComments = post?.countOfComments {
                 viewComments.setTitle("View all \(countOfComments) comments", for: UIControlState())
+                viewComments.count = Int(countOfComments)
+                addComments.count = Int(countOfComments)
             }
             if let countOfProofs = post?.countOfProofs {
                 viewProofs.setTitle("View all \(countOfProofs) proofs", for: UIControlState())
+                viewProofs.count = Int(countOfProofs)
+                addProofs.count = Int(countOfProofs)
+                updateProgress.count = Int(countOfProofs)
             }
             if let insertTimeText = post?.insertTime {
                 insertTime.text = insertTimeText
@@ -169,11 +173,6 @@ class FeedCell: UICollectionViewCell {
                     }
                     setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
                     firstOneChlrPeopleImageView.memberId = post?.challengerId
-                    if memberID == join.memberId {
-                        if join.join! {
-                            isJoined = true
-                        }
-                    }
                 }
             } else if post?.type == PRIVATE {
                 if let subject = post?.subject {
@@ -372,12 +371,12 @@ class FeedCell: UICollectionViewCell {
             }
             // END CONSTANTS
             
-            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger {
+            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined {
                 let firstTeamScore = self.post?.firstTeamScore != nil ? self.post?.firstTeamScore : "-"
                 let secondTeamScore = self.post?.secondTeamScore != nil ? self.post?.secondTeamScore : "-"
                 let result = self.post?.result != nil ? self.post?.result : "-"
                 let goal = self.post?.goal != nil ? self.post?.goal : "-"
-                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, joined: isJoined, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!)
+                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined)
             }
         }
     }
@@ -391,7 +390,7 @@ class FeedCell: UICollectionViewCell {
     }    
     
     let screenSize = UIScreen.main.bounds
-    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, joined: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String) {
+    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -514,21 +513,18 @@ class FeedCell: UICollectionViewCell {
                         joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
                         addHeightAnchor(joinToChl, multiplier: 0.7/10)
                         joinToChl.alpha = 0
-                        joinToChl.canJoin = false
                         
                         if joined && !proofed {
                             addProofs.alpha = 1
                             proofButton.alpha = 1
                         }
-                        if !joined && !proofed {
+                        if canJoin {
                             joinToChl.alpha = 1
                             joinButton.alpha = 1
-                            joinToChl.canJoin = true
                         }
                     }
                 }
             }
-            
             
             addSubview(insertTime)
             addBottomAnchor(insertTime, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0.2/10))
@@ -911,7 +907,7 @@ class FeedCell: UICollectionViewCell {
                     updateProgress.layer.cornerRadius = 5.0
                     updateProgress.clipsToBounds = true
                     updateProgress.titleLabel?.adjustsFontSizeToFitWidth = true
-                    updateProgress.alpha = type == PUBLIC && proofedByChallenger ? 0 : 1
+                    updateProgress.alpha = type == PUBLIC && proofed ? 0 : 1
                     
                     /*
                      addSubview(updateRefreshLabel)
@@ -1390,7 +1386,8 @@ class subclasssedUIButton : UIButton {
     var homeScore: String?
     var awayScore: String?
     var proofed: Bool?
-    var canJoin: Bool?    
+    var canJoin: Bool?
+    var count: Int?
 }
 
 class subclasssedUILabel : UILabel {

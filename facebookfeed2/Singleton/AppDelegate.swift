@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var isCont: Bool = false
+    var splashTimer: Timer?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -38,7 +39,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if isCont {
-            window?.rootViewController = CustomTabBarController()
+            preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
+            preFetchTrendChallenges()
+            window?.rootViewController = SplashScreenController()
+            splashTimer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
         } else {             
             FBSDKLoginManager().logOut()
             window?.rootViewController = FacebookController()
@@ -55,6 +59,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.statusBarStyle = .lightContent
         playAudioWithOther()
         return true
+    }
+    
+    func preFetchChallenges(url: String, profile : Bool) {
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil,
+                let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]]
+                else {                    
+                    return
+            }
+            DispatchQueue.global(qos: .background).async {
+                if postsArray?.isEmpty == false {
+                    for postDictionary in postsArray! {
+                        let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                        let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                        ImageService.cacheImage(withURL: url!)
+                    }
+                }
+            }
+        }
+    }
+    
+    func preFetchTrendChallenges() {
+        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=&page=0"
+        let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        let url = NSURL(string: urlStrWithPerm!)!
+        URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        DispatchQueue.global(qos: .background).async {
+                            for postDictionary in postsArray {
+                                let trend = TrendRequest()
+                                trend.setValuesForKeys(postDictionary)
+                                let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                ImageService.cacheImage(withURL: url!)
+                            }
+                        }
+                    }
+                } catch let err {
+                    print(err)
+                }
+            }
+        }).resume()
+    }
+    
+    func splashScreenToMain() {
+        window?.rootViewController = CustomTabBarController()
     }
     
     func playAudioWithOther() {
@@ -111,7 +164,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
                     return
             }
-            self.group.leave()
             if let post = postOfMember {
                 guard let facebookID = post["facebookID"] as? String else {
                     FBSDKLoginManager().logOut()
@@ -119,6 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     return
                 }
                 self.isCont = true
+                self.group.leave()
                 memberFbID = facebookID
                 memberID = (post["id"] as? String)!
                 memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"

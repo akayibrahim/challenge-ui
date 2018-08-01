@@ -10,7 +10,6 @@ import Foundation
 
 class ForwardChange: NSObject, NSCoding {
     func encode(with aCoder: NSCoder) {
-        aCoder.encode(challengeId, forKey: "challengeId")
         aCoder.encode(forwardScreen, forKey: "forwardScreen")
         aCoder.encode(viewCommentsCount, forKey: "viewCommentsCount")
         aCoder.encode(viewProofsCount, forKey: "viewProofsCount")
@@ -18,17 +17,29 @@ class ForwardChange: NSObject, NSCoding {
         aCoder.encode(proved, forKey: "proved")
         aCoder.encode(firstTeamScore, forKey: "firstTeamScore")
         aCoder.encode(secondTeamScore, forKey: "secondTeamScore")
-        aCoder.encode(proofed, forKey: "proofed")
         aCoder.encode(index, forKey: "index")
     }
     
-    init(challengeId: String, forwardScreen: String) {
-        self.challengeId = challengeId
+    init(index: IndexPath, forwardScreen: String) {
+        self.index = index
         self.forwardScreen = forwardScreen
     }
     
+    init(index: IndexPath, forwardScreen: String, viewCommentsCount: Int) {
+        self.index = index
+        self.forwardScreen = forwardScreen
+        self.viewCommentsCount = viewCommentsCount
+    }
+    
+    init(index: IndexPath, forwardScreen: String, viewProofsCount: Int, joined: Bool, proved: Bool) {
+        self.index = index
+        self.forwardScreen = forwardScreen
+        self.viewProofsCount = viewProofsCount
+        self.joined = joined
+        self.proved = proved
+    }
+    
     required init?(coder aDecoder: NSCoder) {
-        challengeId = aDecoder.decodeObject(forKey: "challengeId") as? String
         forwardScreen = aDecoder.decodeObject(forKey: "forwardScreen") as? String
         viewCommentsCount = aDecoder.decodeObject(forKey: "viewCommentsCount") as? Int
         viewProofsCount = aDecoder.decodeObject(forKey: "viewProofsCount") as? Int
@@ -36,11 +47,9 @@ class ForwardChange: NSObject, NSCoding {
         proved = aDecoder.decodeObject(forKey: "proved") as? Bool
         firstTeamScore = aDecoder.decodeObject(forKey: "firstTeamScore") as? String
         secondTeamScore = aDecoder.decodeObject(forKey: "secondTeamScore") as? String
-        proofed = aDecoder.decodeObject(forKey: "proofed") as? Bool
         index = aDecoder.decodeObject(forKey: "index") as? IndexPath
     }
     
-    var challengeId: String?
     var forwardScreen: String?
     var viewCommentsCount: Int?
     var viewProofsCount: Int?
@@ -48,6 +57,5 @@ class ForwardChange: NSObject, NSCoding {
     var proved: Bool?
     var firstTeamScore: String?
     var secondTeamScore: String?
-    var proofed: Bool?
     var index: IndexPath?
 }

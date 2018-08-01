@@ -33,6 +33,7 @@ var blueColor : UIColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alp
 // UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1) coca-cola red
 // UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
 var screenWidth = UIScreen.main.bounds.width
+var screenHeight = UIScreen.main.bounds.height
 var globalHeight : CGFloat = 44
 var volume : Float =  0
 var fontMarkerFelt = "Marker Felt"

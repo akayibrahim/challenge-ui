@@ -38,4 +38,6 @@ class Post: SafeJsonObject {
     var proofedByChallenger: Bool?
     var goal: String?
     var result: String?
+    var canJoin: Bool?
+    var joined: Bool?
 }

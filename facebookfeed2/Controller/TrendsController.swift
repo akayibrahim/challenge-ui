@@ -171,34 +171,33 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TrendRequestCell
         cell.trendRequest = self.trendRequest[indexPath.row]
         if self.trendRequest[indexPath.row].provedWithImage! {
-            self.group.enter()
+            //self.group.enter()
             getTrendImage(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)  {
                 image in
                 if image != nil {
                     cell.requestImageView.image = image
-                    self.group.leave()
+                    //self.group.leave()
                 }
             }
-            self.group.wait()
+            //self.group.wait()
         } else {
-            var video: Data?
-            self.group.enter()
+            // var video: Data?
+            //self.group.enter()
             let params = "?challengeId=\(self.trendRequest[indexPath.row].challengeId!)&memberId=\(self.trendRequest[indexPath.row].challengerId!)"
-            let urlV = URL(string: downloadVideoURL + params)
-            URLSession.shared.dataTask(with: urlV!) {
-                (data: Data?, response: URLResponse?, error: Error?) in
-                if let data = data {
-                    video = data
-                    self.group.leave()
+            // let urlV = URL(string: downloadVideoURL + params)
+            self.getVideo(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!) {
+                video in
+                if let vid = video {
+                    let url = vid.write(name: "\(params).mov")
+                    self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                    self.avPlayer.volume = volume
+                    cell.avPlayerLayer.player = self.avPlayer
+                    cell.avPlayerLayer.player?.play()
+                    //self.group.leave()
                 }
-            }.resume()
-            self.group.wait()
+            }
+            //self.group.wait()
             //let url = URL(fileURLWithPath:  + ".mov")
-            let url=(video?.write(name: "\(params).mov"))!
-            self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
-            self.avPlayer.volume = volume
-            cell.avPlayerLayer.player = self.avPlayer
-            cell.avPlayerLayer.player?.play()
             cell.proofedVideoView.alpha = 1
             cell.volumeUpImageView.alpha = 0
             cell.volumeDownImageView.alpha = 1

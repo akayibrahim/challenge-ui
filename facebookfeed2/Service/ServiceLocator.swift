@@ -257,6 +257,7 @@ class ServiceLocator {
         post.homeWin = postDictionary["homeWin"] as? Bool
         post.awayWin = postDictionary["awayWin"] as? Bool
         post.provedWithImage = postDictionary["provedWithImage"] as? Bool
+        post.rejectedByAllAttendance = postDictionary["rejectedByAllAttendance"] as? Bool
         return post
     }
     

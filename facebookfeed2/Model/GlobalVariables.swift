@@ -14,11 +14,11 @@ var memberName = "" //Seher Can" // dummy
 var countOffollowers: Int = 0
 var countOffollowing: Int = 0
 
-var defaultURL = isLocal ?  "http://localhost:8080" : "http://107.22.156.149:8080"
+var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://107.22.156.149:8080"
 
 // CONSTANTS
 var dummyServiceCall : Bool = false
-var isLocal: Bool = true
+var isLocal: Bool = UIDevice.current.isSimulator
 var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"

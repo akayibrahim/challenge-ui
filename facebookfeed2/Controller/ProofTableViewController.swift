@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVKit
 
 class ProofTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate {
     let screenSize = UIScreen.main.bounds
@@ -128,6 +129,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             DispatchQueue.main.async {
                 for postDictionary in postsArray! {
                     let proof = Prove()
+                    proof.provedWithImage = postDictionary["provedWithImage"] as? Bool
                     proof.setValuesForKeys(postDictionary)
                     self.proofs.append(proof)
                 }
@@ -325,7 +327,36 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             let fbID = self.proofs[indexPath.item].fbID
             self.setImage(fbID: fbID, imageView: cell.profileImageView)
             if let proofObjectId = self.proofs[indexPath.item].proofObjectId {
-                self.getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofObjectId)
+                if self.proofs[indexPath.item].provedWithImage! {
+                    self.getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofObjectId) {
+                        image in
+                        if image != nil {
+                            cell.proofImageView.image = image
+                            cell.proofImageView.alpha = 1
+                        }
+                    }
+                } else {
+                    // var video: Data?
+                    //self.group.enter()
+                    let params = "?challengeId=\(self.challengeId!)&memberId=\(self.proofs[indexPath.row].memberId!)"
+                    // let urlV = URL(string: downloadVideoURL + params)
+                    self.getVideo(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!) {
+                        video in
+                        if let vid = video {
+                            let url = vid.write(name: "\(params).mov")
+                            self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                            self.avPlayer.volume = volume
+                            cell.avPlayerLayer.player = self.avPlayer
+                            cell.avPlayerLayer.player?.play()
+                            //self.group.leave()
+                        }
+                    }
+                    //self.group.wait()
+                    //let url = URL(fileURLWithPath:  + ".mov")
+                    cell.proofedVideoView.alpha = 1
+                    cell.volumeUpImageView.alpha = 0
+                    cell.volumeDownImageView.alpha = 1
+                }
             }
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
@@ -353,6 +384,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         return cell
     }
     
+    var avPlayer : AVPlayer = AVPlayer.init()
     var isZooming = false
     var originalImageCenter: CGPoint?
     func pan(sender: UIPanGestureRecognizer) {

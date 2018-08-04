@@ -14,4 +14,5 @@ class Prove: SafeJsonObject {
     var proofObjectId: String?
     var challangeId: String?
     var memberId: String?
+    var provedWithImage: Bool?
 }

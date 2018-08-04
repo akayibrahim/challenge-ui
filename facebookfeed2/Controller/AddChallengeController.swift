@@ -239,7 +239,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Visibility", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Scores", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Winner", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Goal", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Proof", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
@@ -748,7 +748,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             } else if isPrivate() {
                 addViewContent.addChallenge.score.text = "-\(scoreForPrivate)-"
             }
-            addChallengeIns[resultIndex].labelText = "Score - Goal"
+            addChallengeIns[resultIndex].labelText = "Succeed?"
         } else {
             addViewContent.addChallenge.untilDateLabel.isHidden = false
             addViewContent.addChallenge.finishFlag.isHidden = true
@@ -785,7 +785,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else {
             addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
             if isSelf() {
-                setImage(name: addViewContent.addChallenge.subjectLabel.text, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
+                let imageName = addViewContent.addChallenge.subjectLabel.text?.replacingOccurrences(of: " ", with: "_")
+                setImage(name: imageName, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
             }
         }
         if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex {

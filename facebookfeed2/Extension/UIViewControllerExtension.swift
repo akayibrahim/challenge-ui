@@ -36,13 +36,13 @@ extension UIViewController
         }
     }
     
-    func getVideo(challengeId: String, challengerId: String, completion: @escaping (_ video:NSData?)->()) {
+    func getVideo(challengeId: String, challengerId: String, completion: @escaping (_ video:Data?)->()) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
                 VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
                     if let video = videoData {
-                        completion(video)
+                        completion(video as Data)
                     }
                 })
             }
@@ -51,14 +51,12 @@ extension UIViewController
         }
     }
     
-    func getProofImageByObjectId(imageView: UIImageView, objectId: String) {
+    func getProofImageByObjectId(imageView: UIImageView, objectId: String, completion: @escaping (_ image:UIImage?)->()) {
         let url = URL(string: downloadProofImageByObjectIdURL + "?objectId=\(objectId)")
         if let urlOfImage = url {
             ImageService.getImage(withURL: urlOfImage) { image in
                 if image != nil {
-                    imageView.image = image
-                } else {
-                    self.setImage(name: unknownImage, imageView: imageView)
+                    completion(image)
                 }
             }
         }

@@ -158,6 +158,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             } else if self.tabBarController?.selectedIndex == profileIndex {
                 fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(selfCurrentPage)", profile: true)
                 fetchChallengeSize(memberId: memberID)
+                FacebookController().getMemberInfo(memberId: memberID)
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
                 getActivityCount()
@@ -294,6 +295,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.posts[forwardChange.index!.row].countOfProofs = forwardChange.viewProofsCount as NSNumber?
                 self.posts[forwardChange.index!.row].proofed = forwardChange.proved
                 self.posts[forwardChange.index!.row].canJoin = forwardChange.joined
+                self.posts[forwardChange.index!.row].joined = !forwardChange.joined!
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
             }
         }
@@ -500,37 +502,35 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.post = self.posts[indexPath.item]
         self.addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
         DispatchQueue.main.async {
-            self.avPlayer = AVPlayer.init()
-            feedCell.avPlayerLayer.player = self.avPlayer
             if (feedCell.post?.proofedByChallenger)! {
+                self.avPlayer = AVPlayer.init()
+                feedCell.avPlayerLayer.player = self.avPlayer
                 /**
-                var url : URL
-                if feedCell.post?.secondTeamCount == "0" {
-                    url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
-                } else {
-                    url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
-                }
-     */
-                
+                 var url : URL
+                 if feedCell.post?.secondTeamCount == "0" {
+                 url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
+                 } else {
+                 url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
+                 }
+                 */
                 if !self.posts[indexPath.item].provedWithImage! {
-                    var video: Data?
-                    self.group.enter()
+                    // var video: Data?
+                    //self.group.enter()
                     let params = "?challengeId=\(self.posts[indexPath.item].id!)&memberId=\(self.posts[indexPath.item].challengerId!)"
-                    let urlV = URL(string: downloadVideoURL + params)
-                    URLSession.shared.dataTask(with: urlV!) {
-                         (data: Data?, response: URLResponse?, error: Error?) in
-                        if let data = data {
-                            video = data
+                    // let urlV = URL(string: downloadVideoURL + params)
+                    self.getVideo(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!) {
+                        video in
+                        if let vid = video {
+                            let url = vid.write(name: "\(params).mov")
+                            self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                            self.avPlayer.volume = volume
+                            feedCell.avPlayerLayer.player = self.avPlayer
+                            feedCell.avPlayerLayer.player?.play()
                         }
-                        self.group.leave()
-                        }.resume()
-                    self.group.wait()
+                        //self.group.leave()
+                    }
+                    //self.group.wait()
                     //let url = URL(fileURLWithPath:  + ".mov")
-                    let url=(video?.write(name: "\(params).mov"))!
-                    self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
-                    self.avPlayer.volume = volume
-                    feedCell.avPlayerLayer.player = self.avPlayer
-                    feedCell.avPlayerLayer.player?.play()                    
                     feedCell.proofedVideoView.alpha = 1
                     feedCell.volumeUpImageView.alpha = 0
                     feedCell.volumeDownImageView.alpha = 0
@@ -540,15 +540,15 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     feedCell.volumeUpImageView.alpha = 0
                     feedCell.volumeDownImageView.alpha = 0
                     feedCell.proofedMediaView.alpha = 1
-                    self.group.enter()
+                    //self.group.enter()
                     self.getTrendImage(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)  {
                         image in
                         if image != nil {
                             feedCell.proofedMediaView.image = image
-                            self.group.leave()
                         }
+                        //self.group.leave()
                     }
-                    self.group.wait()
+                    //self.group.wait()
                 }
             } else {
                 feedCell.proofedMediaView.alpha = 0

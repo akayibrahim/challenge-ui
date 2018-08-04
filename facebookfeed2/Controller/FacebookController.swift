@@ -257,7 +257,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                         let idOfMember = NSString(data: data, encoding: String.Encoding.utf8.rawValue)!
                         memberID = idOfMember as String
                         memberFbID = facebookID
-                        memberName = "\(firstName) \(surname)"
+                        memberName = "\(firstName) \(surname)"                        
                         
                         let defaults = UserDefaults.standard
                         defaults.set(memberID, forKey: "memberID")

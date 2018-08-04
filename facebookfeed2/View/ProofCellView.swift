@@ -8,6 +8,7 @@
 
 import UIKit
 import FBSDKLoginKit
+import AVKit
 
 class ProofCellView: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -40,6 +41,38 @@ class ProofCellView: UITableViewCell {
         addWidthAnchor(proofImageView, multiplier: 1)
         addHeightAnchor(proofImageView, multiplier: 1 / 2)
         setImage(name: unknown, imageView: proofImageView)
+        proofImageView.alpha = 0
+        
+        addSubview(proofedVideoView)
+        addTopAnchor(proofedVideoView, anchor: profileImageView.bottomAnchor, constant: screenWidth * 0.05 / 2)
+        addWidthAnchor(proofedVideoView, multiplier: 1)
+        addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
+        proofedVideoView.alpha = 0
+        
+        DispatchQueue.main.async {
+            self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+            self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+            self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+            self.avPlayerLayer.repeatCount = 3
+            self.proofedVideoView.layer.masksToBounds = true
+        }
+        
+        addSubview(volumeUpImageView)
+        addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+        addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+        addWidthAnchor(volumeUpImageView, multiplier: 0.04)
+        addHeightAnchor(volumeUpImageView, multiplier: 0.04)
+        volumeUpImageView.alpha = 0
+        
+        addSubview(volumeDownImageView)
+        addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+        addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+        addWidthAnchor(volumeDownImageView, multiplier: 0.04)
+        addHeightAnchor(volumeDownImageView, multiplier: 0.04)
+        volumeDownImageView.alpha = 0
+        
+        setImage(name: volumeUp, imageView: volumeUpImageView)
+        setImage(name: volumeDown, imageView: volumeDownImageView)
     }
 
     
@@ -53,4 +86,9 @@ class ProofCellView: UITableViewCell {
         imageView.layer.masksToBounds = true
         return imageView
     }()
+    
+    let proofedVideoView: UIView = FeedCell.viewFunc()
+    let volumeUpImageView: UIImageView = FeedCell.circleImageView()
+    let volumeDownImageView: UIImageView = FeedCell.circleImageView()
+    let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

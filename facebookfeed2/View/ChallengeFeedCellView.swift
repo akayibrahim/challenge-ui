@@ -373,14 +373,15 @@ class FeedCell: UICollectionViewCell {
             }
             // END CONSTANTS
             
-            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined {
+            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined,
+                let rejectedByAllAttendance = self.post?.rejectedByAllAttendance {
                 let firstTeamScore = self.post?.firstTeamScore != nil ? self.post?.firstTeamScore : "-1"
                 let secondTeamScore = self.post?.secondTeamScore != nil ? self.post?.secondTeamScore : "-1"
                 let result = self.post?.result != nil ? self.post?.result : "-1"
                 let goal = self.post?.goal != nil ? self.post?.goal : "-1"
                 let homeWin = self.post?.homeWin != nil ? self.post?.homeWin : false
                 let awayWin = self.post?.awayWin != nil ? self.post?.awayWin : false
-                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!)
+                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance)
             }
         }
     }
@@ -394,7 +395,7 @@ class FeedCell: UICollectionViewCell {
     }    
     
     let screenSize = UIScreen.main.bounds
-    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool) {
+    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -409,7 +410,7 @@ class FeedCell: UICollectionViewCell {
         addTrailingAnchor(dividerLineView, anchor: contentGuide.trailingAnchor, constant: 0)
         dividerLineView.heightAnchor.constraint(equalToConstant: 0).isActive = true
         
-        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore, active: active, result: result, goal: goal, proofedByChallenger: proofedByChallenger, joined: joined, homeWin: homeWin, awayWin: awayWin)
+        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore, active: active, result: result, goal: goal, proofedByChallenger: proofedByChallenger, joined: joined, homeWin: homeWin, awayWin: awayWin, rejectedByAllAttendance: rejectedByAllAttendance)
         
         if !isComeFromSelf {
             if type == PUBLIC && proofedByChallenger {
@@ -559,7 +560,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, result: String, goal: String, proofedByChallenger: Bool, joined: Bool, homeWin: Bool, awayWin: Bool) {
+    func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, result: String, goal: String, proofedByChallenger: Bool, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool) {
         let middleTopGuide = UILayoutGuide()
         let middleCenterGuide = UILayoutGuide()
         let middleBottomGuide = UILayoutGuide()
@@ -601,7 +602,11 @@ class FeedCell: UICollectionViewCell {
             addHeightAnchor(untilDateLabel, multiplier: 1/6)
             untilDateLabel.alpha = 1
             
-            activeLabel.text = "WAITING FOR PARTICIPANTS"
+            if rejectedByAllAttendance {
+                activeLabel.text = "REJECTED BY ALL PARTICIPANT"
+            } else {
+                activeLabel.text = "WAITING FOR PARTICIPANTS"
+            }
             activeLabel.font = UIFont (name: fontMarkerFelt, size: 23)
             activeLabel.textAlignment = .center
             activeLabel.numberOfLines = 2;
@@ -685,7 +690,7 @@ class FeedCell: UICollectionViewCell {
                 homeScoreText.alpha = 0
                 awayScoreText.alpha = 0
                 scoreText.alpha = 0
-                if proofed {
+                if proofedByChallenger || (proofed && isComeFromSelf) {
                     proofText.text = proofedText
                     proofText.alpha = 1
                 } else if joined {
@@ -784,7 +789,7 @@ class FeedCell: UICollectionViewCell {
                 awayWinBase.alpha = 0
                 
                 if type == PUBLIC {
-                    if proofed {
+                    if proofedByChallenger || (proofed && isComeFromSelf) {
                         clappingHome.alpha = 1
                     }
                 } else if type == PRIVATE {

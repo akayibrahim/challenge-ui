@@ -51,6 +51,7 @@ class UpdateProgressController : UIViewController {
         homeScoreLabel.frame = CGRect(x: 0 + 10, y: screenHeight * 1.3 / 5, width: view.frame.width / 3, height: globalHeight)
         homeScoreLabel.textColor = navAndTabColor
         
+        homeScoreText.delegate = self
         view.addSubview(homeScoreText)
         homeScoreText.frame = CGRect(x: 0 + 10, y: constraintOfY, width: view.frame.width / 3, height: globalHeight)
         homeScoreText.placeholder = "Enter"
@@ -60,6 +61,7 @@ class UpdateProgressController : UIViewController {
         awayScoreLabel.frame = CGRect(x: (view.frame.width * 2 / 3) - 10, y: screenHeight * 1.3 / 5, width: view.frame.width / 3, height: globalHeight)
         awayScoreLabel.textColor = navAndTabColor
         
+        awayScoreText.delegate = self
         view.addSubview(awayScoreText)
         awayScoreText.frame = CGRect(x: (view.frame.width * 2 / 3) - 10, y: constraintOfY, width: view.frame.width / 3, height: globalHeight)
         
@@ -112,7 +114,7 @@ class UpdateProgressController : UIViewController {
             homeScoreText.text = homeScore != "-1" ? homeScore : ""
         } else {
             if result {
-                navigationItem.title = "Result"
+                navigationItem.title = doneSwitch ? "Succeed?" : "Goal"
                 homeScoreLabel.text = "Result"
                 homeScoreText.text = doneSwitch ? "" : "-"
                 homeScoreText.isEnabled = doneSwitch ? true : false
@@ -121,14 +123,12 @@ class UpdateProgressController : UIViewController {
                 vsImageView.alpha = 0
                 awayWin.alpha = 0
                 middleLabel.text = "of"
-                view.addSubview(succeedLabel)
-                succeedLabel.frame = CGRect(x: (view.frame.width * 1.2 / 3) - 10, y: screenHeight * 0.6 / 5, width: view.frame.width * 0.8 / 3, height: globalHeight)
                 succeedLabel.textColor = navAndTabColor
                 succeedLabel.text = "Succeed?"
                 succeedLabel.alpha = !doneSwitch ? 0.3 : 1
                 homeWin.alpha = !doneSwitch ? 0.3 : 1
             } else if score {
-                navigationItem.title = "Scores"
+                navigationItem.title = "Winner"
                 homeScoreLabel.text = "Home"
                 awayScoreLabel.text = "Away"
             }
@@ -346,7 +346,9 @@ class UpdateProgressController : UIViewController {
     
     var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
     
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        return textView.text.count + (text.count - range.length) <= 3
+    override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else { return true }
+        let newLength = text.count + string.count - range.length
+        return newLength <= 3 // Bool
     }
 }

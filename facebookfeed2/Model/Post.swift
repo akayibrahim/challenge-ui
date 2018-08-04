@@ -43,4 +43,5 @@ class Post: SafeJsonObject {
     var homeWin: Bool?
     var awayWin: Bool?
     var provedWithImage: Bool?
+    var rejectedByAllAttendance: Bool?
 }

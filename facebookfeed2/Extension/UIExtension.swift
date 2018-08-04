@@ -8,6 +8,16 @@
 
 import UIKit
 
+extension UIDevice {
+    var isSimulator: Bool {
+        #if arch(i386) || arch(x86_64)
+            return true
+        #else
+            return false
+        #endif
+    }
+}
+
 extension Data {
     func write(name: String) -> URL {
         let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(name)

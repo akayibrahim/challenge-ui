@@ -13,6 +13,7 @@ import FBSDKCoreKit
 class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     var imageView : UIImageView!
     var label: UILabel!
+    var customTabBarController = CustomTabBarController()
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         print("User Logged In")
@@ -26,11 +27,11 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
             if result.grantedPermissions.contains("email") {
                 print("LoggedIn")
                 self.fetchFacebookProfile()
-                preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
+                // preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)                
                 preFetchTrendChallenges()
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.window?.rootViewController = SplashScreenController()
-                splashTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)                
+                splashTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
             }
         }
     }
@@ -184,16 +185,16 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         defaults.synchronize()
         getMemberInfo(memberId: id)
         group.wait()
-        preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
+        // preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
         preFetchTrendChallenges()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = SplashScreenController()
-        splashTimer = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+        splashTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
     }
     
     func splashScreenToMain() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.window?.rootViewController = CustomTabBarController()
+        appDelegate.window?.rootViewController = customTabBarController
     }
     
     func fetchFacebookProfile() {

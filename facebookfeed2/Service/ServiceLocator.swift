@@ -254,6 +254,9 @@ class ServiceLocator {
         post.canJoin = postDictionary["canJoin"] as? Bool
         post.joined = postDictionary["joined"] as? Bool
         post.proofedByChallenger = postDictionary["proofedByChallenger"] as? Bool
+        post.homeWin = postDictionary["homeWin"] as? Bool
+        post.awayWin = postDictionary["awayWin"] as? Bool
+        post.provedWithImage = postDictionary["provedWithImage"] as? Bool
         return post
     }
     
@@ -269,10 +272,21 @@ class ServiceLocator {
     static func prepareRequestForMedia(url: URL, parameters: [String: Any], image: UIImage) -> URLRequest {
         var request = URLRequest(url: url)
         let boundary = "Boundary-\(NSUUID().uuidString)"
-        let mediaImage = Media(withImage: image, forKey: "file")
+        let image = Media(withImage: image, forKey: "file")
         request.httpMethod = "POST"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        let dataBody = createDataBody(withParameters: parameters , media: [mediaImage!], boundary: boundary)
+        let dataBody = createDataBody(withParameters: parameters , media: [image!], boundary: boundary)
+        request.httpBody = dataBody
+        return request
+    }
+    
+    static func prepareRequestForVideo(url: URL, parameters: [String: Any], videoUrl: NSURL) -> URLRequest {
+        var request = URLRequest(url: url)
+        let boundary = "Boundary-\(NSUUID().uuidString)"
+        let video = Media(url: videoUrl, forKey: "file")
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        let dataBody = createDataBody(withParameters: parameters , media: [video!], boundary: boundary)
         request.httpBody = dataBody
         return request
     }

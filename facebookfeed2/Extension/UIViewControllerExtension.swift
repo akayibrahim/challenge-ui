@@ -23,20 +23,31 @@ extension UIViewController
         }
     }
     
-    func getTrendImage(imageView: UIImageView, challengeId: String, challengerId: String) {
+    func getTrendImage(challengeId: String, challengerId: String, completion: @escaping (_ image:UIImage?)->()) {
         if dummyServiceCall == false {
             let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {                
                 ImageService.getImage(withURL: urlOfImage) { image in
                     if image != nil {
-                        imageView.image = image
-                    } else {
-                        self.setImage(name: unknownImage, imageView: imageView)
+                        completion(image)
                     }
                 }
             }
+        }
+    }
+    
+    func getVideo(challengeId: String, challengerId: String, completion: @escaping (_ video:NSData?)->()) {
+        if dummyServiceCall == false {
+            let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
+            if let urlOfImage = url {
+                VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
+                    if let video = videoData {
+                        completion(video)
+                    }
+                })
+            }
         } else {
-            self.setImage(name: unknownImage, imageView: imageView)
+            // self.setImage(name: unknownImage, imageView: imageView)
         }
     }
     

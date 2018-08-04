@@ -8,16 +8,17 @@
 
 import UIKit
 
-class ImageService {
+class VideoService {
     
-    static let cache = NSCache<NSString, UIImage>()
+    static let cache = NSCache<NSString, NSData>()
     
-    static func downloadImage(withURL url:URL, completion: @escaping (_ image:UIImage?)->()) {
+    static func downloadVideo(withURL url:URL, completion: @escaping (_ video:NSData?)->()) {
         let dataTask = URLSession.shared.dataTask(with: url) { data, responseURL, error in
-            var downloadedImage:UIImage?
+            var downloadedImage:NSData?
             
             if let data = data {
-                downloadedImage = UIImage(data: data)
+                let bytes: [Int8] = data.map{Int8(bitPattern: $0)}
+                downloadedImage = NSData(bytes: bytes, length: bytes.count)
             }
             
             if downloadedImage != nil {
@@ -37,9 +38,10 @@ class ImageService {
         DispatchQueue.global(qos: .background).async {
             if cache.object(forKey: url.absoluteString as NSString) == nil {            
                 let dataTask = URLSession.shared.dataTask(with: url) { data, responseURL, error in
-                    var downloadedImage:UIImage?
+                    var downloadedImage:NSData?
                     if let data = data {
-                        downloadedImage = UIImage(data: data)
+                        let bytes: [Int8] = data.map{Int8(bitPattern: $0)}
+                        downloadedImage = NSData(bytes: bytes, length: bytes.count)
                     }
                     if downloadedImage != nil {
                         cache.setObject(downloadedImage!, forKey: url.absoluteString as NSString)
@@ -50,12 +52,12 @@ class ImageService {
         }
     }
     
-    static func getImage(withURL url:URL, completion: @escaping (_ image:UIImage?)->()) {
+    static func getVideo(withURL url:URL, completion: @escaping (_ video:NSData?)->()) {
         if let image = cache.object(forKey: url.absoluteString as NSString) {
             completion(image)
         } else {
             // DispatchQueue.global(qos: .background).async {
-                downloadImage(withURL: url, completion: completion)
+                downloadVideo(withURL: url, completion: completion)
             // }
         }
     }

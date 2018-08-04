@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var isCont: Bool = false
     var splashTimer: Timer?
+    var customTabBarController: CustomTabBarController!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -39,10 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if isCont {
-            preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
+            // preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
+            customTabBarController = CustomTabBarController()
             preFetchTrendChallenges()
             window?.rootViewController = SplashScreenController()
-            splashTimer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+            splashTimer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
         } else {             
             FBSDKLoginManager().logOut()
             window?.rootViewController = FacebookController()
@@ -107,7 +109,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func splashScreenToMain() {
-        window?.rootViewController = CustomTabBarController()
+        window?.rootViewController = customTabBarController
     }
     
     func playAudioWithOther() {

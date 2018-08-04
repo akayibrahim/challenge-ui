@@ -40,4 +40,7 @@ class Post: SafeJsonObject {
     var result: String?
     var canJoin: Bool?
     var joined: Bool?
+    var homeWin: Bool?
+    var awayWin: Bool?
+    var provedWithImage: Bool?
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 var chlIndex : Int = 0
 var typeIndex : Int = 1
@@ -239,7 +240,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns.append(createAddChallenge(labelText: "Visibility", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Scores", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Score - Goal", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Goal", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Proof", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
@@ -267,11 +268,11 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             popupAlert(message: "Away cannot be empty.", willDelay: false)
             return
         }
-        if isPublic() && proofCell.proofImageView.image == nil {
+        if isImg && isPublic() && proofCell.proofImageView.image == nil {
             popupAlert(message: "Proof cannot be empty.", willDelay: false)
             return
         }
-        if isSelf() && resultCell.labelOtherSide.attributedText == addChallengeIns[resultIndex].labelAtt {
+        if isDone() && isSelf() && resultCell.labelOtherSide.attributedText == addChallengeIns[resultIndex].labelAtt {
             popupAlert(message: "Result cannot be empty.", willDelay: false)
             return
         }
@@ -311,16 +312,13 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             json["proofed"] = true
         }
         if isSelf() {
-            let scoreText = resultCell.labelOtherSide.text
-            let score = scoreText?.components(separatedBy: "-")
-            let firstTeamScore = score![0]
-            let secondTeamScore = score![1]
             if doneCell.isDone.isOn == true {
-                json["result"] = firstTeamScore.trim()
-                json["goal"] = secondTeamScore.trim()
+                json["result"] = resultCell.firstTeamScore
+                json["goal"] = resultCell.secondTeamScore
+                json["homeWin"] = resultCell.homeWin
             } else {
-                json["result"] = "0"
-                json["goal"] = secondTeamScore.trim()
+                json["result"] = resultCell.firstTeamScore
+                json["goal"] = resultCell.secondTeamScore
             }            
         }
         if isPrivate() {
@@ -335,15 +333,13 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             }
             json["versusAttendanceList"] = versusAttendanceList as Any
             if doneCell.isDone.isOn == true {
-                let scoreText = scoreCell.labelOtherSide.text
-                let score = scoreText?.components(separatedBy: "-")
-                let firstTeamScore = score![0]
-                let secondTeamScore = score![1]
-                json["firstTeamScore"] = firstTeamScore.trim()
-                json["secondTeamScore"] = secondTeamScore.trim()
+                json["firstTeamScore"] = scoreCell.firstTeamScore
+                json["secondTeamScore"] = scoreCell.secondTeamScore
+                json["homeWin"] = scoreCell.homeWin
+                json["awayWin"] = scoreCell.awayWin
             } else {
-                json["firstTeamScore"] = "0"
-                json["secondTeamScore"] = "0"
+                json["firstTeamScore"] = "-1"
+                json["secondTeamScore"] = "-1"
             }
             
         }
@@ -352,7 +348,11 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         let url = URL(string: isPublic() ? addJoinChallengeURL : (isPrivate() ? addVersusChallengeURL : addSelfChallengeURL))!
         var request : URLRequest!
         if isPublic() {
-            request = ServiceLocator.prepareRequestForMedia(url: url, parameters: json, image: proofCell.proofImageView.image!)
+            if isImg {
+                // request = ServiceLocator.prepareRequestForMedia(url: url, parameters: json, image: proofCell.proofImageView.image!)
+            } else {
+                // request = ServiceLocator.prepareRequestForVideo(url: url, parameters: json, videoUrl: videoURL!)
+            }
         } else {
             request = ServiceLocator.prepareRequest(url: url, json: json)
         }
@@ -368,7 +368,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                     DispatchQueue.main.async {
                         if self.isPublic() {
                             let result = NSString(data: data, encoding: String.Encoding.ascii.rawValue)!
-                            self.addMedia(result: result, image: proofCell.proofImageView.image!)
+                            self.addMedia(result: result)
                         } else {
                             self.clear()
                         }
@@ -399,11 +399,17 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    func addMedia(result: NSString, image: UIImage) {
+    func addMedia(result: NSString) {
+        let proofCell = getCell(path: proofIndexPath)
         let parameters = ["challengeId": result as String, "memberId": memberID as String]
         let urlOfUpload = URL(string: uploadImageURL)!
-        let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: image)        
-        URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
+        var requestOfUpload: URLRequest?
+        if self.isImg {
+            requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: proofCell.proofImageView.image!)
+        } else {
+            requestOfUpload = ServiceLocator.prepareRequestForVideo(url: urlOfUpload, parameters: parameters, videoUrl: videoURL!)
+        }
+        URLSession.shared.dataTask(with: requestOfUpload!, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
                 return
@@ -452,6 +458,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.navigationController?.pushViewController(updateProgress, animated: true)
         } else if indexPath == scoreIndexPath {
             let updateProgress = UpdateProgressController()
+            updateProgress.doneSwitch = isDone()
             updateProgress.homeScoreText.becomeFirstResponder()
             updateProgress.score = true
             updateProgress.hidesBottomBarWhenPushed = true
@@ -489,9 +496,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             
         }))
         
-        actionsheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: {(action: UIAlertAction) in
+        actionsheet.addAction(UIAlertAction(title: "Media Library", style: .default, handler: {(action: UIAlertAction) in
             self.imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
-            self.imagePickerController.allowsEditing = false
+            self.imagePickerController.allowsEditing = false            
             self.present(self.imagePickerController, animated: true, completion: nil)
         }))
         
@@ -500,13 +507,18 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         self.present(actionsheet, animated: true, completion: nil)
     }
 
+    var videoURL: NSURL?
+    
+    var isImg: Bool = true
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             let proofCell = self.getCell(path: proofIndexPath)
             proofCell.proofImageView.image = pickedImage
             proofCell.proofImageView.alpha = 1
+            isImg = true
         } else {
-            let videoURL = info["UIImagePickerControllerMediaURL"] as? NSURL
+            videoURL = info["UIImagePickerControllerMediaURL"] as? NSURL
+            isImg = false
             print(videoURL!)
         }
         dismiss(animated: true, completion: nil)
@@ -736,12 +748,14 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             } else if isPrivate() {
                 addViewContent.addChallenge.score.text = "-\(scoreForPrivate)-"
             }
+            addChallengeIns[resultIndex].labelText = "Score - Goal"
         } else {
             addViewContent.addChallenge.untilDateLabel.isHidden = false
             addViewContent.addChallenge.finishFlag.isHidden = true
             addViewContent.addChallenge.clapping.isHidden = true
             addViewContent.addChallenge.score.isHidden = true
             addViewContent.addChallenge.untilDateLabel.text = "Deadline"
+            addChallengeIns[resultIndex].labelText = "Goal"
         }
         tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
         tableView.reloadRows(at: [scoreIndexPath], with: .fade)

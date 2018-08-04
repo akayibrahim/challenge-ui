@@ -27,6 +27,11 @@ class TableViewCellContent: UITableViewCell {
     let screenSize = UIScreen.main.bounds
     var chlViewHeight: CGFloat = 17.5/30
     var tableRowHeightHeight: CGFloat = 44
+    
+    var firstTeamScore: Int!
+    var secondTeamScore: Int!
+    var homeWin: Bool!
+    var awayWin: Bool!
     init(frame: CGRect, cellRow : Int, typeIndex : Int) {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
         let contentGuide = self.readableContentGuide

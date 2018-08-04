@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVKit
 
 class TrendRequestCell: UICollectionViewCell {
     
@@ -61,6 +62,7 @@ class TrendRequestCell: UICollectionViewCell {
         addSubview(requestImageView)
         addSubview(nameLabel)
         addSubview(profileImageView)
+        addSubview(proofedVideoView)
         
         addTopAnchor(profileImageView, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: 0)
@@ -79,6 +81,40 @@ class TrendRequestCell: UICollectionViewCell {
         // addTrailingAnchor(requestImageView, anchor: contentGuide.trailingAnchor, constant: 0)
         addWidthAnchor(requestImageView, multiplier: 1)
         addHeightAnchor(requestImageView, multiplier: 1 / 2)
+        
+        addTopAnchor(proofedVideoView, anchor: profileImageView.bottomAnchor, constant: screenWidth * 0.05 / 2)
+        addWidthAnchor(proofedVideoView, multiplier: 1)
+        addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
+        proofedVideoView.alpha = 0
+        
+        DispatchQueue.main.async {
+            self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+            self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+            self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+            self.avPlayerLayer.repeatCount = 3
+            self.proofedVideoView.layer.masksToBounds = true
+        }
+        
+        addSubview(volumeUpImageView)
+        addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+        addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+        addWidthAnchor(volumeUpImageView, multiplier: 0.04)
+        addHeightAnchor(volumeUpImageView, multiplier: 0.04)
+        volumeUpImageView.alpha = 0
+        
+        addSubview(volumeDownImageView)
+        addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+        addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+        addWidthAnchor(volumeDownImageView, multiplier: 0.04)
+        addHeightAnchor(volumeDownImageView, multiplier: 0.04)
+        volumeDownImageView.alpha = 1
+        
+        setImage(name: volumeUp, imageView: volumeUpImageView)
+        setImage(name: volumeDown, imageView: volumeDownImageView)
     }
     let profileImageView: UIImageView = FeedCell().profileImageView
+    let proofedVideoView: UIView = FeedCell.viewFunc()
+    let volumeUpImageView: UIImageView = FeedCell.circleImageView()
+    let volumeDownImageView: UIImageView = FeedCell.circleImageView()
+    let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

@@ -8,6 +8,25 @@
 
 import UIKit
 
+extension Data {
+    func write(name: String) -> URL {
+        let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(name)
+        try! write(to: url, options: .atomicWrite)
+        return url
+    }
+}
+
+extension URL {
+    static var documentsDirectory: URL {
+        let documentsDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+        return try! documentsDirectory.asURL()
+    }
+    
+    static func urlInDocumentsDirectory(with filename: String) -> URL {
+        return documentsDirectory.appendingPathComponent(filename)
+    }
+}
+
 extension UIViewController: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }

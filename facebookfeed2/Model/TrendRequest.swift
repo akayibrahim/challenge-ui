@@ -15,4 +15,5 @@ class TrendRequest: SafeJsonObject {
     var prooferFbID : String?
     var subject : String?
     var challengerId : String?
+    var provedWithImage: Bool?
 }

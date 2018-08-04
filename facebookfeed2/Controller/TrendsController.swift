@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVKit
 
 class TrendsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
     let searchBar = UISearchBar()
@@ -129,10 +130,13 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                             DispatchQueue.main.async {
                                 for postDictionary in postsArray {
                                     let trend = TrendRequest()
+                                    trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
                                     trend.setValuesForKeys(postDictionary)
                                     self.trendRequest.append(trend)
-                                    let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                    ImageService.cacheImage(withURL: url!)
+                                    if trend.provedWithImage! {
+                                        let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                        ImageService.cacheImage(withURL: url!)
+                                    }
                                 }
                                 self.collectionView?.reloadData()
                             }
@@ -154,9 +158,6 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     var downImage: UIImage?
-    func downloadImage(requestImageView: UIImageView, challengeId: String, challengerId: String) {
-        getTrendImage(imageView: requestImageView, challengeId: challengeId, challengerId: challengerId)
-    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width, height: self.view.frame.width * 1.3 / 2)
@@ -169,7 +170,39 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TrendRequestCell
         cell.trendRequest = self.trendRequest[indexPath.row]
-        self.downloadImage(requestImageView: cell.requestImageView, challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
+        if self.trendRequest[indexPath.row].provedWithImage! {
+            self.group.enter()
+            getTrendImage(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)  {
+                image in
+                if image != nil {
+                    cell.requestImageView.image = image
+                    self.group.leave()
+                }
+            }
+            self.group.wait()
+        } else {
+            var video: Data?
+            self.group.enter()
+            let params = "?challengeId=\(self.trendRequest[indexPath.row].challengeId!)&memberId=\(self.trendRequest[indexPath.row].challengerId!)"
+            let urlV = URL(string: downloadVideoURL + params)
+            URLSession.shared.dataTask(with: urlV!) {
+                (data: Data?, response: URLResponse?, error: Error?) in
+                if let data = data {
+                    video = data
+                    self.group.leave()
+                }
+            }.resume()
+            self.group.wait()
+            //let url = URL(fileURLWithPath:  + ".mov")
+            let url=(video?.write(name: "\(params).mov"))!
+            self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+            self.avPlayer.volume = volume
+            cell.avPlayerLayer.player = self.avPlayer
+            cell.avPlayerLayer.player?.play()
+            cell.proofedVideoView.alpha = 1
+            cell.volumeUpImageView.alpha = 0
+            cell.volumeDownImageView.alpha = 1
+        }
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.profileImageTapped(tapGestureRecognizer:)))
         cell.profileImageView.tag = indexPath.row
         cell.profileImageView.isUserInteractionEnabled = true
@@ -180,6 +213,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         cell.nameLabel.addGestureRecognizer(tapGestureRecognizerName)
         return cell
     }
+    
+    var avPlayer : AVPlayer = AVPlayer.init()
 
     func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView

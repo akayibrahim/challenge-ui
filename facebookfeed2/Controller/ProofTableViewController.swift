@@ -38,11 +38,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         messageInputContainerView.translatesAutoresizingMaskIntoConstraints = false
         bottomConstraint = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint!)
+        messageInputContainerView.alpha = 0
         if canJoin {
             let joinButton = UIBarButtonItem(title: "Join", style: UIBarButtonItemStyle.plain, target: self, action: #selector(joinChallenge))
             navigationItem.rightBarButtonItem = joinButton
         } else if !proofed {
-             setupInputComponents()
+            messageInputContainerView.alpha = 1
+            setupInputComponents()
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
@@ -83,6 +85,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 }
             } else {
                 DispatchQueue.main.async { // Correct
+                    self.messageInputContainerView.alpha = 1
                     self.setupInputComponents()
                     self.navigationItem.rightBarButtonItem = nil
                     let forwardChange = Util.getForwardChange();
@@ -274,7 +277,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     self.group.leave()
                     self.reloadPage()
                     let forwardChange = Util.getForwardChange();
-                    Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount! + 1, joined: forwardChange.joined!, proved: true))
+                    if forwardChange.forwardScreen != "" {
+                        Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount! + 1, joined: forwardChange.joined!, proved: true))
+                    }
                     self.group.wait()
                     self.popupAlert(message: "ADDED!", willDelay: true)
                 } else {

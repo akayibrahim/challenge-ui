@@ -18,7 +18,7 @@ var defaultURL = isLocal ?  "http://localhost:8080" : "http://107.22.156.149:808
 
 // CONSTANTS
 var dummyServiceCall : Bool = false
-var isLocal: Bool = false
+var isLocal: Bool = true
 var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"
@@ -114,6 +114,7 @@ var updateProgressOrDoneForSelfURL = defaultURL + "/updateProgressOrDoneForSelf"
 var updateResultsOfVersusURL = defaultURL + "/updateResultsOfVersus"
 var uploadImageURL = defaultURL + "/uploadImage"
 var downloadImageURL = defaultURL + "/downloadImage"
+var downloadVideoURL = defaultURL + "/downloadVideo"
 var getProofInfoListByChallengeURL = defaultURL + "/getProofInfoListByChallenge?challengeId="
 var downloadProofImageByObjectIdURL = defaultURL + "/downloadProofImageByObjectId"
 var addMemberURL = defaultURL + "/addMember"

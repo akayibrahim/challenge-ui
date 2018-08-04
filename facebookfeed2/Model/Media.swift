@@ -17,10 +17,21 @@ struct Media {
     init?(withImage image: UIImage, forKey key: String) {
         self.key = key
         self.mimeType = "image/jpeg"
-        self.filename = "kyleleeheadiconimage234567.jpg"
+        self.filename = "image.jpg"
         
         guard let data = UIImageJPEGRepresentation(image, 0.7) else { return nil }
         self.data = data
     }
     
+    init?(url: NSURL, forKey key: String) {
+        self.key = key
+        self.mimeType = "video/mov"
+        self.filename = "video.mov"
+        
+        // guard let data = NSData.init(contentsOf: url as URL) else { return nil }
+        var data: Data?
+        let path = url.path
+        do { data = try Data(contentsOf: url as URL) } catch {}
+        self.data = data!
+    }
 }

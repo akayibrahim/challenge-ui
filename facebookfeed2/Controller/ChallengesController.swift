@@ -54,6 +54,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var explorerCurrentPage : Int = 0
     var nowMoreData: Bool = false
     var challangeCount: String?
+    var goForward: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +73,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         collectionView?.alwaysBounceVertical = true
         
-        reloadChlPage()
+        if !(self.tabBarController?.selectedIndex == profileIndex && !self.profile) {
+            reloadChlPage()
+        }
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
@@ -196,13 +199,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     return
             }
             self.nowMoreData = postsArray?.count == 0 ? true : false
-            DispatchQueue.main.async {
                 if postsArray?.isEmpty == false {
                     for postDictionary in postsArray! {
                         let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
                         if self.currentPage != 0 || self.selfCurrentPage != 0 {
-                            let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                            ImageService.cacheImage(withURL: url!)
+                            // let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                            // ImageService.cacheImage(withURL: url!)
                         }
                         self.posts.append(post)
                         if profile {
@@ -214,6 +216,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         }
                     }
                 }
+            DispatchQueue.main.async {
                 self.collectionView?.reloadData()
             }
         }
@@ -283,7 +286,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let forwardChange = Util.getForwardChange()
-        if forwardChange.forwardScreen != "" {
+        if goForward && forwardChange.forwardScreen != "" {
             if forwardChange.forwardScreen == FRWRD_CHNG_CMMNT {
                 self.posts[forwardChange.index!.row].countOfComments = forwardChange.viewCommentsCount as NSNumber?
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
@@ -306,7 +309,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 // self.reloadChlPage()
             }
             if self.tabBarController?.selectedIndex == profileIndex && !self.profile  {
-                // self.reloadSelfPage()
+                self.reloadSelfPage()
             }
         }
     }
@@ -457,10 +460,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             let feedCellForSelf = collectionView.dequeueReusableCell(withReuseIdentifier: "selfCellId", for: indexPath) as! FeedCell
             feedCellForSelf.prepareForReuse()
             feedCellForSelf.feedController = self
-            if  self.notDonePosts.count == 0 {
-                return feedCellForSelf
-            }
             if indexPath.section == 1 {
+                if  self.notDonePosts.count == 0 {
+                    return feedCellForSelf
+                }
                 feedCellForSelf.post = self.notDonePosts[indexPath.row]
                 if !self.profile {
                     feedCellForSelf.updateProgress.type = self.notDonePosts[indexPath.row].type
@@ -479,6 +482,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     feedCellForSelf.updateProgress.alpha = 0
                 }
             } else if indexPath.section == 2 {
+                if  self.donePosts.count == 0 {
+                    return feedCellForSelf
+                }
                 feedCellForSelf.post = self.donePosts[indexPath.row]
             }
             return feedCellForSelf
@@ -504,16 +510,46 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 } else {
                     url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
                 }
-                self.avPlayer.replaceCurrentItem(with: AVPlayerItem(url: url))
-                self.avPlayer.volume = volume
-                feedCell.avPlayerLayer.player = self.avPlayer
-                feedCell.avPlayerLayer.player?.play()
-                 */
-                feedCell.proofedVideoView.alpha = 0
-                feedCell.volumeUpImageView.alpha = 0
-                feedCell.volumeDownImageView.alpha = 0
-                feedCell.proofedMediaView.alpha = 1
-                self.getTrendImage(imageView: feedCell.proofedMediaView, challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)
+     */
+                
+                if !self.posts[indexPath.item].provedWithImage! {
+                    var video: Data?
+                    self.group.enter()
+                    let params = "?challengeId=\(self.posts[indexPath.item].id!)&memberId=\(self.posts[indexPath.item].challengerId!)"
+                    let urlV = URL(string: downloadVideoURL + params)
+                    URLSession.shared.dataTask(with: urlV!) {
+                         (data: Data?, response: URLResponse?, error: Error?) in
+                        if let data = data {
+                            video = data
+                        }
+                        self.group.leave()
+                        }.resume()
+                    self.group.wait()
+                    //let url = URL(fileURLWithPath:  + ".mov")
+                    let url=(video?.write(name: "\(params).mov"))!
+                    self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                    self.avPlayer.volume = volume
+                    feedCell.avPlayerLayer.player = self.avPlayer
+                    feedCell.avPlayerLayer.player?.play()                    
+                    feedCell.proofedVideoView.alpha = 1
+                    feedCell.volumeUpImageView.alpha = 0
+                    feedCell.volumeDownImageView.alpha = 0
+                    feedCell.proofedMediaView.alpha = 0
+                } else {
+                    feedCell.proofedVideoView.alpha = 0
+                    feedCell.volumeUpImageView.alpha = 0
+                    feedCell.volumeDownImageView.alpha = 0
+                    feedCell.proofedMediaView.alpha = 1
+                    self.group.enter()
+                    self.getTrendImage(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)  {
+                        image in
+                        if image != nil {
+                            feedCell.proofedMediaView.image = image
+                            self.group.leave()
+                        }
+                    }
+                    self.group.wait()
+                }
             } else {
                 feedCell.proofedMediaView.alpha = 0
             }
@@ -860,6 +896,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.challengeId = sender.challengeId
         commentsTable.commentedMemberId = sender.memberId
         Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 0), forwardScreen: FRWRD_CHNG_CMMNT, viewCommentsCount: sender.count!))
+        goForward = true
         commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -873,6 +910,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.challengeId = sender.challengeId
         commentsTable.commentedMemberId = sender.memberId
         Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 0), forwardScreen: FRWRD_CHNG_CMMNT, viewCommentsCount: sender.count!))
+        goForward = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
@@ -889,6 +927,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.proofed = proofed
         commentsTable.canJoin = canJoin
         Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: canJoin, proved: proofed))
+        goForward = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)

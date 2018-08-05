@@ -100,7 +100,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                     return
             }
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .background).async {
                 let count = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
                 if count != "0" {
                     self.navigationController?.tabBarController?.tabBar.items?[3].badgeValue = "\(count)"
@@ -139,31 +139,33 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func loadChallenges() {
         if dummyServiceCall == false {
-            // Asynchronous Http call to your api url, using NSURLSession:
-            if profile {
-                if (!memberIsPrivateForFriendProfile! || (memberIsPrivateForFriendProfile! && isProfileFriend)) && memberIdForFriendProfile != memberID {
-                    fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + memberIdForFriendProfile! + "&page=\(selfCurrentPage)", profile: true)
-                    fetchChallengeSize(memberId: memberIdForFriendProfile!)
-                } else if memberIdForFriendProfile == memberID {
-                    fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(selfCurrentPage)", profile: true)
-                    fetchChallengeSize(memberId: memberID)
+            DispatchQueue.global(qos: .background).async {
+                // Asynchronous Http call to your api url, using NSURLSession:
+                if self.profile {
+                    if (!self.memberIsPrivateForFriendProfile! || (self.memberIsPrivateForFriendProfile! && self.isProfileFriend)) && self.memberIdForFriendProfile != memberID {
+                        self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
+                        self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
+                    } else if self.memberIdForFriendProfile == memberID {
+                        self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
+                        self.fetchChallengeSize(memberId: memberID)
+                    }
+                    return
+                } else if self.explorer {
+                    self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=false"  + "&page=\(self.explorerCurrentPage)", profile: false)
+                    return
+                } else if self.tabBarController?.selectedIndex == trendsIndex {
+                    self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(self.explorerCurrentPage)", profile: false)
+                    return
+                } else if self.tabBarController?.selectedIndex == profileIndex {
+                    self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
+                    self.fetchChallengeSize(memberId: memberID)
+                    FacebookController().getMemberInfo(memberId: memberID)
+                    return
+                } else if self.tabBarController?.selectedIndex == chanllengeIndex {
+                        self.getActivityCount()
+                        self.fetchChallenges(url: getChallengesURL + memberID + "&page=\(self.currentPage)", profile: false)
+                    return
                 }
-                return
-            } else if explorer {
-                fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallenges=false"  + "&page=\(explorerCurrentPage)", profile: false)
-                return
-            } else if self.tabBarController?.selectedIndex == trendsIndex {
-                fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(explorerCurrentPage)", profile: false)
-                return
-            } else if self.tabBarController?.selectedIndex == profileIndex {
-                fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(selfCurrentPage)", profile: true)
-                fetchChallengeSize(memberId: memberID)
-                FacebookController().getMemberInfo(memberId: memberID)
-                return
-            } else if self.tabBarController?.selectedIndex == chanllengeIndex {
-                getActivityCount()
-                fetchChallenges(url: getChallengesURL + memberID + "&page=\(currentPage)", profile: false)
-                return
             }
         } else {
             if profile {
@@ -200,23 +202,28 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     return
             }
             self.nowMoreData = postsArray?.count == 0 ? true : false
-                if postsArray?.isEmpty == false {
-                    for postDictionary in postsArray! {
-                        let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
-                        if self.currentPage != 0 || self.selfCurrentPage != 0 {
-                            // let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                            // ImageService.cacheImage(withURL: url!)
+            if postsArray?.isEmpty == false {
+                for postDictionary in postsArray! {
+                    let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                    if post.proofedByChallenger! {
+                        if post.provedWithImage! { // } self.currentPage != 0 || self.selfCurrentPage != 0 {
+                            let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                            ImageService.cacheImage(withURL: url!)
+                        } else {
+                            let url = URL(string: downloadVideoURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                            VideoService.cacheImage(withURL: url!)
                         }
-                        self.posts.append(post)
-                        if profile {
-                            if post.done == true {
-                                self.donePosts.append(post)
-                            } else {
-                                self.notDonePosts.append(post)
-                            }
+                    }
+                    self.posts.append(post)
+                    if profile {
+                        if post.done == true {
+                            self.donePosts.append(post)
+                        } else {
+                            self.notDonePosts.append(post)
                         }
                     }
                 }
+            }
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
             }
@@ -299,32 +306,28 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
             }
         }
-        DispatchQueue.main.async {
-            let indexPaths = self.collectionView?.indexPathsForVisibleItems
-            for indexPath in indexPaths! {
-                let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
-                cell.avPlayerLayer.player?.play()
-                // TODO get Challenge from server
-                // self.collectionView?.reloadItems(at: [indexPath])
-            }
-            if self.tabBarController?.selectedIndex == chanllengeIndex && !self.profile {
-                // self.reloadChlPage()
-            }
-            if self.tabBarController?.selectedIndex == profileIndex && !self.profile  {
-                self.reloadSelfPage()
-            }
+        let indexPaths = self.collectionView?.indexPathsForVisibleItems
+        for indexPath in indexPaths! {
+            let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
+            cell.avPlayerLayer.player?.play()
+            // TODO get Challenge from server
+            // self.collectionView?.reloadItems(at: [indexPath])
+        }
+        if self.tabBarController?.selectedIndex == chanllengeIndex && !self.profile {
+            // self.reloadChlPage()
+        }
+        if self.tabBarController?.selectedIndex == profileIndex && !self.profile  {
+            self.reloadSelfPage()
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        DispatchQueue.main.async {
-            let indexPaths = self.collectionView?.indexPathsForVisibleItems
-            for indexPath in indexPaths! {
-                let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
-                if let player = cell.avPlayerLayer.player {
-                    player.pause()
-                }
+        let indexPaths = self.collectionView?.indexPathsForVisibleItems
+        for indexPath in indexPaths! {
+            let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
+            if let player = cell.avPlayerLayer.player {
+                player.pause()
             }
         }
     }
@@ -501,58 +504,59 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         feedCell.post = self.posts[indexPath.item]
         self.addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
-        DispatchQueue.main.async {
-            if (feedCell.post?.proofedByChallenger)! {
-                self.avPlayer = AVPlayer.init()
-                feedCell.avPlayerLayer.player = self.avPlayer
-                /**
-                 var url : URL
-                 if feedCell.post?.secondTeamCount == "0" {
-                 url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
-                 } else {
-                 url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
-                 }
-                 */
-                if !self.posts[indexPath.item].provedWithImage! {
-                    // var video: Data?
-                    //self.group.enter()
-                    let params = "?challengeId=\(self.posts[indexPath.item].id!)&memberId=\(self.posts[indexPath.item].challengerId!)"
-                    // let urlV = URL(string: downloadVideoURL + params)
-                    self.getVideo(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!) {
-                        video in
-                        if let vid = video {
+        if (feedCell.post?.proofedByChallenger)! {
+            // self.avPlayer = AVPlayer.init()
+            // feedCell.avPlayerLayer.player = self.avPlayer
+            /**
+             var url : URL
+             if feedCell.post?.secondTeamCount == "0" {
+             url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
+             } else {
+             url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
+             }
+             */
+            if !self.posts[indexPath.item].provedWithImage! {
+                // var video: Data?
+                //self.group.enter()
+                let params = "?challengeId=\(self.posts[indexPath.item].id!)&memberId=\(self.posts[indexPath.item].challengerId!)"
+                // let urlV = URL(string: downloadVideoURL + params)
+                self.getVideo(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!) {
+                    video in
+                    if let vid = video {
+                        DispatchQueue.main.async {
                             let url = vid.write(name: "\(params).mov")
-                            self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
-                            self.avPlayer.volume = volume
-                            feedCell.avPlayerLayer.player = self.avPlayer
+                            let avPlayer = AVPlayer.init()
+                            avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                            avPlayer.volume = volume
+                            feedCell.avPlayerLayer.player = avPlayer
                             feedCell.avPlayerLayer.player?.play()
                         }
-                        //self.group.leave()
                     }
-                    //self.group.wait()
-                    //let url = URL(fileURLWithPath:  + ".mov")
-                    feedCell.proofedVideoView.alpha = 1
-                    feedCell.volumeUpImageView.alpha = 0
-                    feedCell.volumeDownImageView.alpha = 0
-                    feedCell.proofedMediaView.alpha = 0
-                } else {
-                    feedCell.proofedVideoView.alpha = 0
-                    feedCell.volumeUpImageView.alpha = 0
-                    feedCell.volumeDownImageView.alpha = 0
-                    feedCell.proofedMediaView.alpha = 1
-                    //self.group.enter()
-                    self.getTrendImage(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)  {
-                        image in
-                        if image != nil {
-                            feedCell.proofedMediaView.image = image
-                        }
-                        //self.group.leave()
-                    }
-                    //self.group.wait()
+                    //self.group.leave()
                 }
-            } else {
+                //self.group.wait()
+                //let url = URL(fileURLWithPath:  + ".mov")
+                feedCell.proofedVideoView.alpha = 1
+                feedCell.volumeUpImageView.alpha = 0
+                feedCell.volumeDownImageView.alpha = 0
                 feedCell.proofedMediaView.alpha = 0
+            } else {
+                feedCell.proofedVideoView.alpha = 0
+                feedCell.volumeUpImageView.alpha = 0
+                feedCell.volumeDownImageView.alpha = 0
+                feedCell.proofedMediaView.alpha = 1
+                //self.group.enter()
+                self.getTrendImage(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)  {
+                    image in
+                    if image != nil {
+                        feedCell.proofedMediaView.image = image
+                    }
+                    //self.group.leave()
+                }
+                //self.group.wait()
             }
+        } else {
+            feedCell.proofedMediaView.alpha = 0
         }
         return feedCell
     }
@@ -592,7 +596,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    var avPlayer : AVPlayer = AVPlayer.init()
+    // var avPlayer : AVPlayer = AVPlayer.init()
     
     func addTargetToFeedCell(feedCell: FeedCell, indexPath : IndexPath) {        
         if feedCell.post?.type == PUBLIC {

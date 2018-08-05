@@ -31,7 +31,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                 preFetchTrendChallenges()
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.window?.rootViewController = SplashScreenController()
-                splashTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+                splashTimer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
             }
         }
     }
@@ -189,7 +189,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         preFetchTrendChallenges()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = SplashScreenController()
-        splashTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+        splashTimer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
     }
     
     func splashScreenToMain() {
@@ -282,20 +282,27 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     }()
     
     func preFetchChallenges(url: String, profile : Bool) {
-        let jsonURL = URL(string: url)!
-        jsonURL.get { data, response, error in
-            guard
-                data != nil,
-                let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]]
-                else {
-                    return
-            }
-            DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .background).async {
+            let jsonURL = URL(string: url)!
+            jsonURL.get { data, response, error in
+                guard
+                    data != nil,
+                    let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]]
+                    else {
+                        return
+                }
                 if postsArray?.isEmpty == false {
                     for postDictionary in postsArray! {
                         let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
-                        let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                        ImageService.cacheImage(withURL: url!)
+                        if post.proofedByChallenger! {
+                            if post.provedWithImage! { // } self.currentPage != 0 || self.selfCurrentPage != 0 {
+                                let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                                ImageService.cacheImage(withURL: url!)
+                            } else {
+                                let url = URL(string: downloadVideoURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                                VideoService.cacheImage(withURL: url!)
+                            }
+                        }
                     }
                 }
             }
@@ -303,26 +310,32 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     func preFetchTrendChallenges() {
-        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=&page=0"
-        let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
-        let url = NSURL(string: urlStrWithPerm!)!
-        URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .background).async {
+            let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=&page=0"
+            let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+            let url = NSURL(string: urlStrWithPerm!)!
+            URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
+                if error == nil && data != nil {
+                    do {
+                        if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
                             for postDictionary in postsArray {
                                 let trend = TrendRequest()
+                                trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
                                 trend.setValuesForKeys(postDictionary)
-                                let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                ImageService.cacheImage(withURL: url!)
+                                if trend.provedWithImage! {
+                                    let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                    ImageService.cacheImage(withURL: url!)
+                                } else {
+                                    let url = URL(string: downloadVideoURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                    VideoService.cacheImage(withURL: url!)
+                                }
                             }
                         }
+                    } catch let err {
+                        print(err)
                     }
-                } catch let err {
-                    print(err)
                 }
-            }
-        }).resume()
+            }).resume()
+        }
     }
 }

@@ -110,7 +110,9 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     func loadTrends() {
         if dummyServiceCall == false {
-            fetchTrendChallenges(key: "")
+            DispatchQueue.global(qos: .background).async {
+                self.fetchTrendChallenges(key: "")
+            }
             return
         } else {
             self.trendRequest = ServiceLocator.getTrendChallengesFromDummy(jsonFileName: "trend_request")
@@ -127,17 +129,20 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                     do {
                         if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
                             self.nowMoreData = postsArray.count == 0 ? true : false
-                            DispatchQueue.main.async {
-                                for postDictionary in postsArray {
-                                    let trend = TrendRequest()
-                                    trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
-                                    trend.setValuesForKeys(postDictionary)
-                                    self.trendRequest.append(trend)
-                                    if trend.provedWithImage! {
-                                        let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                        ImageService.cacheImage(withURL: url!)
-                                    }
+                            for postDictionary in postsArray {
+                                let trend = TrendRequest()
+                                trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
+                                trend.setValuesForKeys(postDictionary)
+                                self.trendRequest.append(trend)
+                                if trend.provedWithImage! {
+                                    let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                    ImageService.cacheImage(withURL: url!)
+                                } else {
+                                    let url = URL(string: downloadVideoURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                    VideoService.cacheImage(withURL: url!)
                                 }
+                            }
+                            DispatchQueue.main.async {
                                 self.collectionView?.reloadData()
                             }
                         }
@@ -189,9 +194,10 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                 video in
                 if let vid = video {
                     let url = vid.write(name: "\(params).mov")
-                    self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
-                    self.avPlayer.volume = volume
-                    cell.avPlayerLayer.player = self.avPlayer
+                    let avPlayer = AVPlayer.init()
+                    avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                    avPlayer.volume = volume
+                    cell.avPlayerLayer.player = avPlayer
                     cell.avPlayerLayer.player?.play()
                     //self.group.leave()
                 }
@@ -213,7 +219,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         return cell
     }
     
-    var avPlayer : AVPlayer = AVPlayer.init()
+    // var avPlayer : AVPlayer = AVPlayer.init()
 
     func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView

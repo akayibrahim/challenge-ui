@@ -98,7 +98,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     func loadChallenges() {
         if dummyServiceCall == false {
-            fetchData(url: getProofInfoListByChallengeURL)
+            DispatchQueue.global(qos: .background).async {
+                self.fetchData(url: getProofInfoListByChallengeURL)
+            }
         } else {
             self.proofs = ServiceLocator.getProofsFromDummy(jsonFileName: "comments")
         }
@@ -126,13 +128,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     return
             }
             self.nowMoreData = postsArray?.count == 0 ? true : false
+            for postDictionary in postsArray! {
+                let proof = Prove()
+                proof.provedWithImage = postDictionary["provedWithImage"] as? Bool
+                proof.setValuesForKeys(postDictionary)
+                self.proofs.append(proof)
+            }
             DispatchQueue.main.async {
-                for postDictionary in postsArray! {
-                    let proof = Prove()
-                    proof.provedWithImage = postDictionary["provedWithImage"] as? Bool
-                    proof.setValuesForKeys(postDictionary)
-                    self.proofs.append(proof)
-                }
                 self.tableView.reloadData()
             }
         }
@@ -344,9 +346,10 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                         video in
                         if let vid = video {
                             let url = vid.write(name: "\(params).mov")
-                            self.avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
-                            self.avPlayer.volume = volume
-                            cell.avPlayerLayer.player = self.avPlayer
+                            let avPlayer = AVPlayer.init()
+                            avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                            avPlayer.volume = volume
+                            cell.avPlayerLayer.player = avPlayer
                             cell.avPlayerLayer.player?.play()
                             //self.group.leave()
                         }
@@ -384,7 +387,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         return cell
     }
     
-    var avPlayer : AVPlayer = AVPlayer.init()
+    // var avPlayer : AVPlayer = AVPlayer.init()
     var isZooming = false
     var originalImageCenter: CGPoint?
     func pan(sender: UIPanGestureRecognizer) {

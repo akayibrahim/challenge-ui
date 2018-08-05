@@ -140,32 +140,32 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func loadChallenges() {
         if dummyServiceCall == false {
             DispatchQueue.global(qos: .background).async {
-                // Asynchronous Http call to your api url, using NSURLSession:
-                if self.profile {
-                    if (!self.memberIsPrivateForFriendProfile! || (self.memberIsPrivateForFriendProfile! && self.isProfileFriend)) && self.memberIdForFriendProfile != memberID {
-                        self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
-                        self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
-                    } else if self.memberIdForFriendProfile == memberID {
-                        self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
-                        self.fetchChallengeSize(memberId: memberID)
-                    }
-                    return
-                } else if self.explorer {
-                    self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=false"  + "&page=\(self.explorerCurrentPage)", profile: false)
-                    return
-                } else if self.tabBarController?.selectedIndex == trendsIndex {
-                    self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(self.explorerCurrentPage)", profile: false)
-                    return
-                } else if self.tabBarController?.selectedIndex == profileIndex {
+            // Asynchronous Http call to your api url, using NSURLSession:
+            if self.profile {
+                if (!self.memberIsPrivateForFriendProfile! || (self.memberIsPrivateForFriendProfile! && self.isProfileFriend)) && self.memberIdForFriendProfile != memberID {
+                    self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
+                    self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
+                } else if self.memberIdForFriendProfile == memberID {
                     self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
                     self.fetchChallengeSize(memberId: memberID)
-                    FacebookController().getMemberInfo(memberId: memberID)
-                    return
-                } else if self.tabBarController?.selectedIndex == chanllengeIndex {
-                        self.getActivityCount()
-                        self.fetchChallenges(url: getChallengesURL + memberID + "&page=\(self.currentPage)", profile: false)
-                    return
                 }
+                return
+            } else if self.explorer {
+                self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=false"  + "&page=\(self.explorerCurrentPage)", profile: false)
+                return
+            } else if self.tabBarController?.selectedIndex == trendsIndex {
+                self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(self.explorerCurrentPage)", profile: false)
+                return
+            } else if self.tabBarController?.selectedIndex == profileIndex {
+                self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
+                self.fetchChallengeSize(memberId: memberID)
+                FacebookController().getMemberInfo(memberId: memberID)
+                return
+            } else if self.tabBarController?.selectedIndex == chanllengeIndex {
+                self.getActivityCount()
+                self.fetchChallenges(url: getChallengesURL + memberID + "&page=\(self.currentPage)", profile: false)
+                return
+            }
             }
         } else {
             if profile {
@@ -202,31 +202,32 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     return
             }
             self.nowMoreData = postsArray?.count == 0 ? true : false
-            if postsArray?.isEmpty == false {
-                for postDictionary in postsArray! {
-                    let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
-                    if post.proofedByChallenger! {
-                        if post.provedWithImage! { // } self.currentPage != 0 || self.selfCurrentPage != 0 {
-                            let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                            ImageService.cacheImage(withURL: url!)
-                        } else {
-                            let url = URL(string: downloadVideoURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                            VideoService.cacheImage(withURL: url!)
-                        }
-                    }
-                    self.posts.append(post)
-                    if profile {
-                        if post.done == true {
-                            self.donePosts.append(post)
-                        } else {
-                            self.notDonePosts.append(post)
+                if postsArray?.isEmpty == false {
+                    for postDictionary in postsArray! {
+                        let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                        /*if post.proofedByChallenger! {
+                            if post.provedWithImage! { // } self.currentPage != 0 || self.selfCurrentPage != 0 {
+                                let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                                ImageService.cacheImage(withURL: url!)
+                            } else {
+                                let url = URL(string: downloadVideoURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                                VideoService.cacheImage(withURL: url!)
+                            }
+                        }*/
+                        self.posts.append(post)
+                        if profile {
+                            if post.done == true {
+                                self.donePosts.append(post)
+                            } else {
+                                self.notDonePosts.append(post)
+                            }
                         }
                     }
                 }
-            }
-            DispatchQueue.main.async {
-                self.collectionView?.reloadData()
-            }
+                DispatchQueue.main.async {
+                    self.collectionView?.reloadData()
+                }
+            
         }
     }
     
@@ -456,10 +457,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile  {
             if indexPath.section == 0 && indexPath.row == 0 {
                 let feedCellForProfile = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
-                DispatchQueue.main.async {
-                    let profileCell = self.createProfile()
-                    feedCellForProfile.addSubview(profileCell)
-                }
+                let profileCell = self.createProfile()
+                feedCellForProfile.addSubview(profileCell)
                 return feedCellForProfile
             }
             let feedCellForSelf = collectionView.dequeueReusableCell(withReuseIdentifier: "selfCellId", for: indexPath) as! FeedCell
@@ -523,14 +522,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.getVideo(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!) {
                     video in
                     if let vid = video {
-                        DispatchQueue.main.async {
-                            let url = vid.write(name: "\(params).mov")
-                            let avPlayer = AVPlayer.init()
-                            avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
-                            avPlayer.volume = volume
-                            feedCell.avPlayerLayer.player = avPlayer
-                            feedCell.avPlayerLayer.player?.play()
-                        }
+                        let url = vid.write(name: "\(params).mov")
+                        let avPlayer = AVPlayer.init()
+                        avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                        avPlayer.volume = volume
+                        feedCell.avPlayerLayer.player = avPlayer
+                        feedCell.avPlayerLayer.player?.play()
                     }
                     //self.group.leave()
                 }

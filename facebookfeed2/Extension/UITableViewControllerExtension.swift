@@ -16,9 +16,7 @@ extension UITableViewController
             // imageView.load(url: url!)
             ImageService.getImage(withURL: url!) { image in
                 if image != nil && !reset {
-                    DispatchQueue.main.async {
-                        imageView.image = image
-                    }
+                    imageView.image = image
                 } else {
                     self.setImage(name: "unknown", imageView: imageView)
                 }

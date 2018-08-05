@@ -40,9 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if isCont {
-            // preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
-            customTabBarController = CustomTabBarController()
-            preFetchTrendChallenges()
+            self.customTabBarController = CustomTabBarController()
+            DispatchQueue.global(qos: .background).async {
+                self.preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
+                self.preFetchTrendChallenges()
+            }
             window?.rootViewController = SplashScreenController()
             splashTimer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
         } else {             
@@ -64,61 +66,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func preFetchChallenges(url: String, profile : Bool) {
-        DispatchQueue.global(qos: .background).async {
-            let jsonURL = URL(string: url)!
-            jsonURL.get { data, response, error in
-                guard
-                    data != nil,
-                    let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]]
-                    else {
-                        return
-                }
-                if postsArray?.isEmpty == false {
-                    for postDictionary in postsArray! {
-                        let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
-                        if post.proofedByChallenger! {
-                            if post.provedWithImage! { // } self.currentPage != 0 || self.selfCurrentPage != 0 {
-                                let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                                ImageService.cacheImage(withURL: url!)
-                            } else {
-                                let url = URL(string: downloadVideoURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                                VideoService.cacheImage(withURL: url!)
-                            }
+        let jsonURL = URL(string: url)!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil,
+                let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    return
+            }
+            if postsArray?.isEmpty == false {
+                for postDictionary in postsArray! {
+                    let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                    if post.proofedByChallenger! {
+                        if post.provedWithImage! { // } self.currentPage != 0 || self.selfCurrentPage != 0 {
+                            let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                            ImageService.cacheImage(withURL: url!)
+                        } else {
+                            let url = URL(string: downloadVideoURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
+                            VideoService.cacheImage(withURL: url!)
                         }
                     }
                 }
             }
         }
+        
     }
     
     func preFetchTrendChallenges() {
-        DispatchQueue.global(qos: .background).async {
-            let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=&page=0"
-            let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
-            let url = NSURL(string: urlStrWithPerm!)!
-            URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
-                if error == nil && data != nil {
-                    do {
-                        if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                            for postDictionary in postsArray {
-                                let trend = TrendRequest()
-                                trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
-                                trend.setValuesForKeys(postDictionary)
-                                if trend.provedWithImage! {
-                                    let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                    ImageService.cacheImage(withURL: url!)
-                                } else {
-                                    let url = URL(string: downloadVideoURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                    VideoService.cacheImage(withURL: url!)
-                                }
+        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=&page=0"
+        let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+        let url = NSURL(string: urlStrWithPerm!)!
+        URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        for postDictionary in postsArray {
+                            let trend = TrendRequest()
+                            trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
+                            trend.setValuesForKeys(postDictionary)
+                            if trend.provedWithImage! {
+                                let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                ImageService.cacheImage(withURL: url!)
+                            } else {
+                                let url = URL(string: downloadVideoURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
+                                VideoService.cacheImage(withURL: url!)
                             }
                         }
-                    } catch let err {
-                        print(err)
                     }
+                } catch let err {
+                    print(err)
                 }
-            }).resume()
-        }
+            }
+        }).resume()
     }
     
     func splashScreenToMain() {

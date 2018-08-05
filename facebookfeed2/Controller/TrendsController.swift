@@ -110,9 +110,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     func loadTrends() {
         if dummyServiceCall == false {
-            DispatchQueue.global(qos: .background).async {
-                self.fetchTrendChallenges(key: "")
-            }
+            self.fetchTrendChallenges(key: "")
             return
         } else {
             self.trendRequest = ServiceLocator.getTrendChallengesFromDummy(jsonFileName: "trend_request")

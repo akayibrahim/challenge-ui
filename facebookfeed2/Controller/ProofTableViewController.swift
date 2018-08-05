@@ -98,9 +98,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     func loadChallenges() {
         if dummyServiceCall == false {
-            DispatchQueue.global(qos: .background).async {
-                self.fetchData(url: getProofInfoListByChallengeURL)
-            }
+            self.fetchData(url: getProofInfoListByChallengeURL)
         } else {
             self.proofs = ServiceLocator.getProofsFromDummy(jsonFileName: "comments")
         }

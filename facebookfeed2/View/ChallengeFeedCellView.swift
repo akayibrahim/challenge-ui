@@ -433,13 +433,11 @@ class FeedCell: UICollectionViewCell {
                 addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
                 proofedVideoView.alpha = 1
                 
-                DispatchQueue.main.async {
-                    self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
-                    self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-                    self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                    self.avPlayerLayer.repeatCount = 3
-                    self.proofedVideoView.layer.masksToBounds = true
-                }
+                self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+                self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+                self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                self.avPlayerLayer.repeatCount = 3
+                self.proofedVideoView.layer.masksToBounds = true
                 
                 addSubview(volumeUpImageView)
                 addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))

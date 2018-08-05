@@ -24,9 +24,9 @@ class VideoService {
                 cache.setObject(downloadedImage! as NSData, forKey: url.absoluteString as NSString)
             }
             
-            //DispatchQueue.main.async {
+            DispatchQueue.main.async {
                 completion(downloadedImage)
-            //}
+            }
             
         }
         
@@ -34,7 +34,7 @@ class VideoService {
     }
     
     static func cacheImage(withURL url:URL) {
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .background).async {
             if cache.object(forKey: url.absoluteString as NSString) == nil {            
                 let dataTask = URLSession.shared.dataTask(with: url) { data, responseURL, error in
                     var downloadedImage:Data?
@@ -54,9 +54,9 @@ class VideoService {
         if let image = cache.object(forKey: url.absoluteString as NSString) {
             completion(image as Data)
         } else {
-            DispatchQueue.global(qos: .userInitiated).async {
+            //DispatchQueue.global(qos: .background).async {
                 downloadVideo(withURL: url, completion: completion)
-            }
+            //}
         }
     }
 }

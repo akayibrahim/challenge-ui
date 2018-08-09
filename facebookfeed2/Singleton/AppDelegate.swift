@@ -24,32 +24,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-
+        
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-
         
-        if(FBSDKAccessToken.current() != nil) {
-            if let memberId = UserDefaults.standard.object(forKey: "memberID") {
-                if dummyServiceCall == false {
-                    getMemberInfo(memberId: memberId as! String)
-                    self.group.wait()
-                } else {
-                    isCont = true
-                }
-            }
-        }
-        
-        if isCont {
-            self.customTabBarController = CustomTabBarController()
-            DispatchQueue.global(qos: .background).async {
-                self.preFetchChallenges(url: getChallengesURL + memberID + "&page=0", profile: false)
-                self.preFetchTrendChallenges()
-            }
-            window?.rootViewController = SplashScreenController()
-            splashTimer = Timer.scheduledTimer(timeInterval: 1.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
-        } else {             
-            FBSDKLoginManager().logOut()
-            window?.rootViewController = FacebookController()
+        if !Reachability.isConnectedToNetwork() {
+            window?.rootViewController = ConnectionProblemController()
+        } else {
+            openApp()
         }
         
         UINavigationBar.appearance().barTintColor = navAndTabColor
@@ -65,59 +46,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func preFetchChallenges(url: String, profile : Bool) {
-        let jsonURL = URL(string: url)!
-        jsonURL.get { data, response, error in
-            guard
-                data != nil,
-                let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]]
-                else {
-                    return
-            }
-            if postsArray?.isEmpty == false {
-                for postDictionary in postsArray! {
-                    let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
-                    if post.proofedByChallenger! {
-                        if post.provedWithImage! { // } self.currentPage != 0 || self.selfCurrentPage != 0 {
-                            let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                            ImageService.cacheImage(withURL: url!)
-                        } else {
-                            let url = URL(string: downloadVideoURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                            VideoService.cacheImage(withURL: url!)
-                        }
-                    }
+    func openApp() {
+        if(FBSDKAccessToken.current() != nil) {
+            if let memberId = UserDefaults.standard.object(forKey: "memberID") {
+                if dummyServiceCall == false {
+                    getMemberInfo(memberId: memberId as! String)
+                    self.group.wait()
+                } else {
+                    isCont = true
                 }
             }
         }
         
-    }
-    
-    func preFetchTrendChallenges() {
-        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=&page=0"
-        let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
-        let url = NSURL(string: urlStrWithPerm!)!
-        URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
-            if error == nil && data != nil {
-                do {
-                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        for postDictionary in postsArray {
-                            let trend = TrendRequest()
-                            trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
-                            trend.setValuesForKeys(postDictionary)
-                            if trend.provedWithImage! {
-                                let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                ImageService.cacheImage(withURL: url!)
-                            } else {
-                                let url = URL(string: downloadVideoURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                VideoService.cacheImage(withURL: url!)
-                            }
-                        }
-                    }
-                } catch let err {
-                    print(err)
-                }
-            }
-        }).resume()
+        if isCont {
+            self.customTabBarController = CustomTabBarController()
+            window?.rootViewController = SplashScreenController()
+            splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+        } else {
+            FBSDKLoginManager().logOut()
+            window?.rootViewController = FacebookController()
+        }
     }
     
     func splashScreenToMain() {

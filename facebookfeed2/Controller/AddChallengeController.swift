@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import YPImagePicker
 
 var chlIndex : Int = 0
 var typeIndex : Int = 1
@@ -250,6 +251,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     func addChallenge() {
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
         if switchDateP == true {
             switchDateP = false
             tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
@@ -378,6 +380,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                     if let responseJSON = responseJSON as? [String: Any] {
                         print(responseJSON)
                         if responseJSON["message"] != nil {
+                            self.navigationItem.rightBarButtonItem?.isEnabled = true
                             self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
                         }
                     }
@@ -396,6 +399,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 self.leftSide.append(self.getMember())
             }
             self.navigationController?.tabBarController?.selectedIndex = profileIndex
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
         }
     }
     
@@ -418,6 +422,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 if httpResponse.statusCode == 200 {
                     self.clear()
                 } else {
+                    self.navigationItem.rightBarButtonItem?.isEnabled = true
                     let error = ServiceLocator.getErrorMessage(data: data, chlId: "", sUrl: uploadImageURL, inputs: "challengeId:\(result as String), memberID:\(memberID)")
                     self.popupAlert(message: error, willDelay: false)
                 }
@@ -496,10 +501,15 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             
         }))
         
-        actionsheet.addAction(UIAlertAction(title: "Media Library", style: .default, handler: {(action: UIAlertAction) in
-            self.imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
+        actionsheet.addAction(UIAlertAction(title: "Media Library", style: .default, handler: {(action: UIAlertAction) in            
+            let picker = YPImagePicker()
+            picker.showsFilters = true
+            picker.showsVideo = true
+            YPImagePickerConfiguration()
+            self.present(picker, animated: true, completion: nil)
+            /*self.imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
             self.imagePickerController.allowsEditing = false            
-            self.present(self.imagePickerController, animated: true, completion: nil)
+            self.present(self.imagePickerController, animated: true, completion: nil)*/
         }))
         
         actionsheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

@@ -621,7 +621,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     customeSubjectText.autocapitalizationType = .allCharacters
                     view.addSubview(saveButton)
                     saveButton.frame = CGRect(x: view.frame.width * 4 / 5, y: 0, width: view.frame.width * 1 / 5, height: globalHeight)
-                    saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)
+                    saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)                    
                     saveButton.backgroundColor = navAndTabColor
                     saveButton.layer.borderWidth = 0
                     saveButton.setTitleColor(UIColor.white, for: UIControlState())

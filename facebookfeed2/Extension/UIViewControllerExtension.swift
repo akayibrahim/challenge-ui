@@ -30,20 +30,24 @@ extension UIViewController
             if let urlOfImage = url {                
                 ImageService.getImage(withURL: urlOfImage) { image in
                     if image != nil {
-                        completion(image)
+                        DispatchQueue.main.async {
+                            completion(image)
+                        }
                     }
                 }
             }
         }
     }
     
-    func getVideo(challengeId: String, challengerId: String, completion: @escaping (_ video:Data?)->()) {
+    func getVideo(challengeId: String, challengerId: String, completion: @escaping (_ video:URL?)->()) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
                 VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
                     if let video = videoData {
-                        completion(video as Data)
+                        DispatchQueue.main.async {
+                            completion(video as URL)
+                        }
                     }
                 })
             }

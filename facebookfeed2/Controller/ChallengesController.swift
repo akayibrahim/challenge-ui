@@ -21,7 +21,7 @@ var selfRefreshControl : UIRefreshControl!
 class SafeJsonObject: NSObject {
     
     override func setValue(_ value: Any?, forKey key: String) {
-        let selectorString = "set\(key.uppercased().characters.first!)\(String(key.characters.dropFirst())):"
+        let selectorString = "set\(key.uppercased().first!)\(String(key.dropFirst())):"
         let selector = Selector(selectorString)
         if responds(to: selector) {
             super.setValue(value, forKey: key)
@@ -53,13 +53,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var selfCurrentPage : Int = 0
     var explorerCurrentPage : Int = 0
     var nowMoreData: Bool = false
-    var challangeCount: String?
+    var challangeCount: String = "0"
     var goForward: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         if profile {
-            
         } else if self.tabBarController?.selectedIndex == chanllengeIndex {
             navigationItem.title = challengeTitle
             refreshControl = UIRefreshControl()
@@ -100,7 +99,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                     return
             }
-            DispatchQueue.global(qos: .background).async {
+            DispatchQueue.main.async {
                 let count = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
                 if count != "0" {
                     self.navigationController?.tabBarController?.tabBar.items?[3].badgeValue = "\(count)"
@@ -139,7 +138,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func loadChallenges() {
         if dummyServiceCall == false {
-            DispatchQueue.global(qos: .background).async {
             // Asynchronous Http call to your api url, using NSURLSession:
             if self.profile {
                 if (!self.memberIsPrivateForFriendProfile! || (self.memberIsPrivateForFriendProfile! && self.isProfileFriend)) && self.memberIdForFriendProfile != memberID {
@@ -165,7 +163,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.getActivityCount()
                 self.fetchChallenges(url: getChallengesURL + memberID + "&page=\(self.currentPage)", profile: false)
                 return
-            }
             }
         } else {
             if profile {
@@ -201,7 +198,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                     return
             }
-            self.nowMoreData = postsArray?.count == 0 ? true : false
+            //DispatchQueue.global(qos: .userInitiated).async {
+            DispatchQueue.main.async {
+                self.nowMoreData = postsArray?.count == 0 ? true : false
                 if postsArray?.isEmpty == false {
                     for postDictionary in postsArray! {
                         let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
@@ -224,10 +223,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         }
                     }
                 }
-                DispatchQueue.main.async {
+                if self.nowMoreData == false {
                     self.collectionView?.reloadData()
                 }
-            
+            }
+            //}
         }
     }
     
@@ -307,18 +307,21 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
             }
         }
-        let indexPaths = self.collectionView?.indexPathsForVisibleItems
-        for indexPath in indexPaths! {
-            let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
-            cell.avPlayerLayer.player?.play()
-            // TODO get Challenge from server
-            // self.collectionView?.reloadItems(at: [indexPath])
-        }
-        if self.tabBarController?.selectedIndex == chanllengeIndex && !self.profile {
-            // self.reloadChlPage()
-        }
-        if self.tabBarController?.selectedIndex == profileIndex && !self.profile  {
-            self.reloadSelfPage()
+        DispatchQueue.main.async {
+            let indexPaths = self.collectionView?.indexPathsForVisibleItems
+            for indexPath in indexPaths! {
+                let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
+                cell.avPlayerLayer.player?.play()
+                // TODO get Challenge from server
+                // self.collectionView?.reloadItems(at: [indexPath])
+            }
+            if !self.profile {
+                if self.tabBarController?.selectedIndex == chanllengeIndex {
+                    // self.reloadChlPage()
+                } else if self.tabBarController?.selectedIndex == profileIndex {
+                    self.reloadSelfPage()
+                }
+            }
         }
     }
     
@@ -331,6 +334,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 player.pause()
             }
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -457,8 +464,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile  {
             if indexPath.section == 0 && indexPath.row == 0 {
                 let feedCellForProfile = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
-                let profileCell = self.createProfile()
-                feedCellForProfile.addSubview(profileCell)
+                DispatchQueue.main.async {
+                    feedCellForProfile.addSubview(self.createProfile())
+                }
                 return feedCellForProfile
             }
             let feedCellForSelf = collectionView.dequeueReusableCell(withReuseIdentifier: "selfCellId", for: indexPath) as! FeedCell
@@ -494,70 +502,109 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             return feedCellForSelf
         }
         let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
-        feedCell.layer.shouldRasterize = true
-        feedCell.layer.rasterizationScale = UIScreen.main.scale
-        feedCell.prepareForReuse()
-        feedCell.feedController = self
         if  self.posts.count == 0 {
             return feedCell
         }
-        feedCell.post = self.posts[indexPath.item]
-        self.addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
-        if (feedCell.post?.proofedByChallenger)! {
-            // self.avPlayer = AVPlayer.init()
-            // feedCell.avPlayerLayer.player = self.avPlayer
-            /**
-             var url : URL
-             if feedCell.post?.secondTeamCount == "0" {
-             url = URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!;
-             } else {
-             url = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!;
-             }
-             */
-            if !self.posts[indexPath.item].provedWithImage! {
-                // var video: Data?
-                //self.group.enter()
-                let params = "?challengeId=\(self.posts[indexPath.item].id!)&memberId=\(self.posts[indexPath.item].challengerId!)"
-                // let urlV = URL(string: downloadVideoURL + params)
-                self.getVideo(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!) {
-                    video in
-                    if let vid = video {
-                        let url = vid.write(name: "\(params).mov")
-                        let avPlayer = AVPlayer.init()
-                        avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
-                        avPlayer.volume = volume
-                        feedCell.avPlayerLayer.player = avPlayer
-                        feedCell.avPlayerLayer.player?.play()
+        feedCell.feedController = self
+        DispatchQueue.main.async {
+            feedCell.layer.shouldRasterize = true
+            feedCell.layer.rasterizationScale = UIScreen.main.scale
+            feedCell.prepareForReuse()
+            feedCell.post = self.posts[indexPath.item]
+            self.addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
+            if !self.posts[indexPath.item].isComeFromSelf! {
+                if (self.posts[indexPath.item].proofedByChallenger)! {
+                    if !self.posts[indexPath.item].provedWithImage! {
+                        self.imageEnable(feedCell, yes: false)
+                        feedCell.avPlayerLayer.load(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)
+                    } else {
+                        self.imageEnable(feedCell, yes: true)
+                        feedCell.proofedMediaView.load(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)
                     }
-                    //self.group.leave()
                 }
-                //self.group.wait()
-                //let url = URL(fileURLWithPath:  + ".mov")
-                feedCell.proofedVideoView.alpha = 1
-                feedCell.volumeUpImageView.alpha = 0
-                feedCell.volumeDownImageView.alpha = 0
-                feedCell.proofedMediaView.alpha = 0
-            } else {
-                feedCell.proofedVideoView.alpha = 0
-                feedCell.volumeUpImageView.alpha = 0
-                feedCell.volumeDownImageView.alpha = 0
-                feedCell.proofedMediaView.alpha = 1
-                //self.group.enter()
-                self.getTrendImage(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)  {
-                    image in
-                    if image != nil {
-                        feedCell.proofedMediaView.image = image
-                    }
-                    //self.group.leave()
-                }
-                //self.group.wait()
             }
-        } else {
-            feedCell.proofedMediaView.alpha = 0
         }
         return feedCell
     }
     
+    func imageEnable(_ feedCell: FeedCell, yes: Bool) {
+        feedCell.proofedVideoView.alpha = yes ? 0 : 1
+        feedCell.volumeUpImageView.alpha = yes ? 0 : 1
+        feedCell.volumeDownImageView.alpha = yes ? 0 : 1
+        feedCell.proofedMediaView.alpha = yes ? 1 : 0
+    }
+    /*
+     /*
+     self.getTrendImage(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)  {
+     image in
+     if image != nil {
+     DispatchQueue.main.async {
+     feedCell.proofedMediaView.image = image
+     }
+     }
+     }
+     
+     let params = "?challengeId=\(self.posts[indexPath.item].id!)&memberId=\(self.posts[indexPath.item].challengerId!)"
+     let url = URL(string: downloadImageURL + params)
+     feedCell.proofedMediaView.af_setImage(withURL: url!)
+     
+     imageDownloader.download(URLRequest(url: url!)) { response in
+     if response.result.value != nil {
+     DispatchQueue.main.async {
+     feedCell.proofedMediaView.image = response.result.value!
+     }
+     }
+     }
+     */
+     
+     // var video: Data?
+     /*
+     let params = "?challengeId=\(self.posts[indexPath.item].id!)&memberId=\(self.posts[indexPath.item].challengerId!)"
+     let urlV = URL(string: downloadVideoURL + params)
+     let tempUrl = FileManager.default.temporaryDirectory.appendingPathComponent("\(params).mov")
+     let destination: DownloadRequest.DownloadFileDestination = { _, _ in return (tempUrl, [.removePreviousFile, .createIntermediateDirectories]) }
+     Alamofire.download(urlV!, to: destination).responseData { (response) in
+     print(tempUrl)
+     switch response.result {
+     case .failure( _):
+     break;
+     case .success( _):
+     DispatchQueue.main.async {
+     let avPlayer = AVPlayer.init()
+     avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: tempUrl))
+     avPlayer.volume = volume
+     feedCell.avPlayerLayer.player = avPlayer
+     feedCell.avPlayerLayer.player?.play()
+     }
+     break;
+     }
+     
+     }
+     
+     self.getVideo(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!) {
+     video in
+     if let vid = video {
+     DispatchQueue.main.async {
+     let avPlayer = AVPlayer.init()
+     avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: vid))
+     avPlayer.volume = volume
+     feedCell.avPlayerLayer.player = avPlayer
+     feedCell.avPlayerLayer.player?.play()
+     }
+     }
+     }
+     */
+     
+    let imageDownloader = ImageDownloader(
+        configuration: ImageDownloader.defaultURLSessionConfiguration(),
+        downloadPrioritization: .fifo,
+        maximumActiveDownloads: 8,
+        imageCache: AutoPurgingImageCache(
+            memoryCapacity: 3_000_000, // Memory in bytes
+            preferredMemoryUsageAfterPurge: 3_000_000
+        )
+    )
+    */
     func changeVolume(gesture: UITapGestureRecognizer) {
         DispatchQueue.main.async {
             let index = IndexPath(item: (gesture.view?.tag)!, section : 0)

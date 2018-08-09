@@ -10,5 +10,7 @@ target 'facebookfeed2' do
 pod 'FBSDKLoginKit', '4.29.0'
 pod 'FBSDKCoreKit', '4.29.0'
 pod 'Alamofire'
+pod 'AlamofireImage'
+pod 'YPImagePicker', '1.2.0'
 
 end

@@ -7,20 +7,7 @@
 //
 
 import UIKit
-
-extension UIImageView {
-    func load(url: URL) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                }
-            }
-        }
-    }
-}
+import AVKit
 
 extension UIDevice {
     var isSimulator: Bool {
@@ -54,7 +41,7 @@ extension URL {
 extension UIViewController: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
-        let newLength = text.characters.count + string.characters.count - range.length
+        let newLength = text.count + string.characters.count - range.length
         return newLength <= 30 // replace 30 for your max length value
     }
 }
@@ -243,6 +230,41 @@ extension UIImageView {
         self.clipsToBounds = true
     }
     
+    func load(challengeId: String, challengerId: String) {
+        if dummyServiceCall == false {
+            let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
+            if let urlOfImage = url {
+                ImageService.getImage(withURL: urlOfImage) { image in
+                    if image != nil {
+                        DispatchQueue.main.async {
+                            self.image = image
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension AVPlayerLayer {
+    func load(challengeId: String, challengerId: String) {
+        if dummyServiceCall == false {
+            let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
+            if let urlOfImage = url {
+                VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
+                    if let video = videoData {
+                        DispatchQueue.main.async {
+                            let avPlayer = AVPlayer.init()
+                            avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: video))
+                            avPlayer.volume = volume
+                            self.player = avPlayer
+                            self.player?.play()
+                        }
+                    }
+                })
+            }
+        }
+    }
 }
 
 extension UIColor {

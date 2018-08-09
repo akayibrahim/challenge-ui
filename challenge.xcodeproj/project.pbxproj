@@ -58,9 +58,9 @@
 		A18BE7CB210F697400306540 /* ForwardChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18BE7CA210F697400306540 /* ForwardChange.swift */; };
 		A18BE7D1210F742700306540 /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18BE7D0210F742700306540 /* LoadingOverlay.swift */; };
 		A18BE7D321101E7B00306540 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18BE7D221101E7B00306540 /* Util.swift */; };
-		A18BE7D52110290D00306540 /* SplashScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18BE7D42110290D00306540 /* SplashScreenController.swift */; };
 		A18D947A20E0AB9000FA1679 /* ProofTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */; };
 		A18D948020E0AE2E00FA1679 /* ProofCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */; };
+		A18E46982118B619003A670A /* SplashScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18E46922118B619003A670A /* SplashScreenController.swift */; };
 		A19A31F6207D1ACD00DDC98C /* comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A19A31F5207D1ACD00DDC98C /* comments.json */; };
 		A19BBDFC206A07D700EC7B11 /* TableViewCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */; };
 		A1AB96C920ADD4E50059AC79 /* getTrendChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = A1AB96C820ADD4E50059AC79 /* getTrendChallenges.json */; };
@@ -78,6 +78,8 @@
 		A1DD4E752115E01000772C51 /* VideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DD4E742115E01000772C51 /* VideoService.swift */; };
 		A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */; };
 		A1E45A3E2074996800FD58E6 /* getOwnChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */; };
+		A1FA9B9C211B473600ED741A /* ConnectionProblemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FA9B9B211B473600ED741A /* ConnectionProblemController.swift */; };
+		A1FA9BA6211B48E200ED741A /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FA9BA5211B48E200ED741A /* Reachability.swift */; };
 		C780A7B21C88C582007023FD /* single_post.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B11C88C582007023FD /* single_post.json */; };
 		C780A7B41C88CEFB007023FD /* getChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B31C88CEFB007023FD /* getChallenges.json */; };
 		C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A85F331C78C137007E9A00 /* AppDelegate.swift */; };
@@ -124,6 +126,27 @@
 			proxyType = 2;
 			remoteGlobalIDString = 292858F24BB5D992D1B9279E632D3FA7;
 			remoteInfo = Alamofire;
+		};
+		A1DE0A81211C011C009EEB3B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ADD9B4A18082CCC8FA85F0D85283EFFA;
+			remoteInfo = SteviaLayout;
+		};
+		A1DE0A83211C011C009EEB3B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 36452ECD43B0E79A6D8C085B088A6EA3;
+			remoteInfo = YPImagePicker;
+		};
+		A1FA9BA3211B473600ED741A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 74233A4132473F516E46089A9C44C74F;
+			remoteInfo = AlamofireImage;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -181,9 +204,9 @@
 		A18BE7CA210F697400306540 /* ForwardChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForwardChange.swift; sourceTree = "<group>"; };
 		A18BE7D0210F742700306540 /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
 		A18BE7D221101E7B00306540 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
-		A18BE7D42110290D00306540 /* SplashScreenController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashScreenController.swift; sourceTree = "<group>"; };
 		A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofTableViewController.swift; sourceTree = "<group>"; };
 		A18D947F20E0AE2E00FA1679 /* ProofCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProofCellView.swift; sourceTree = "<group>"; };
+		A18E46922118B619003A670A /* SplashScreenController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashScreenController.swift; sourceTree = "<group>"; };
 		A19A31F5207D1ACD00DDC98C /* comments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = comments.json; sourceTree = "<group>"; };
 		A19BBDFB206A07D700EC7B11 /* TableViewCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellView.swift; sourceTree = "<group>"; };
 		A1A06AB42105224600F95875 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
@@ -203,6 +226,8 @@
 		A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewController.swift; sourceTree = "<group>"; };
 		A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getOwnChallenges.json; sourceTree = "<group>"; };
 		A1ED4B1020404BAE00422544 /* facebookfeed2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = facebookfeed2.entitlements; path = facebookfeed2/facebookfeed2.entitlements; sourceTree = "<group>"; };
+		A1FA9B9B211B473600ED741A /* ConnectionProblemController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionProblemController.swift; sourceTree = "<group>"; };
+		A1FA9BA5211B48E200ED741A /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		BD7C5B0D0ACCAB6DD1AF9AD7 /* Pods-facebookfeed2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-facebookfeed2.release.xcconfig"; path = "Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2.release.xcconfig"; sourceTree = "<group>"; };
 		C780A7B11C88C582007023FD /* single_post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = single_post.json; sourceTree = "<group>"; };
 		C780A7B31C88CEFB007023FD /* getChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getChallenges.json; sourceTree = "<group>"; };
@@ -249,6 +274,7 @@
 				A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */,
 				A18BE7D0210F742700306540 /* LoadingOverlay.swift */,
 				A18BE7D221101E7B00306540 /* Util.swift */,
+				A1FA9BA5211B48E200ED741A /* Reachability.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -265,6 +291,8 @@
 			isa = PBXGroup;
 			children = (
 				A16A7DC3210E45650078FBA3 /* InstagramLoginVC.swift */,
+				A18E46922118B619003A670A /* SplashScreenController.swift */,
+				A1FA9B9B211B473600ED741A /* ConnectionProblemController.swift */,
 				A17DA77E206A9944005BCC2C /* SelectionTableViewController.swift */,
 				A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */,
 				A18D947920E0AB9000FA1679 /* ProofTableViewController.swift */,
@@ -275,7 +303,6 @@
 				A1C13415207F212700C6A435 /* TrendsController.swift */,
 				A1B27B03209A2F8D00263E48 /* ActivitiesController.swift */,
 				A1274107200F38E60073BFF2 /* FacebookController.swift */,
-				A18BE7D42110290D00306540 /* SplashScreenController.swift */,
 				A113ABFB203BE01B006E99F1 /* AddChallengeController.swift */,
 				A113ABFF203BE1E9006E99F1 /* OtherController.swift */,
 				C7A85F351C78C137007E9A00 /* ChallengesController.swift */,
@@ -357,10 +384,13 @@
 			isa = PBXGroup;
 			children = (
 				A1DD4E732115CB4F00772C51 /* Alamofire.framework */,
+				A1FA9BA4211B473600ED741A /* AlamofireImage.framework */,
 				A1A06ABC2105224600F95875 /* Bolts.framework */,
 				A1A06ABE2105224600F95875 /* FBSDKCoreKit.framework */,
 				A1A06AC02105224600F95875 /* FBSDKLoginKit.framework */,
 				A1A06AC22105224600F95875 /* Pods_facebookfeed2.framework */,
+				A1DE0A82211C011C009EEB3B /* Stevia.framework */,
+				A1DE0A84211C011C009EEB3B /* YPImagePicker.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -452,7 +482,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = challenge;
 				TargetAttributes = {
 					C7A85F2F1C78C137007E9A00 = {
@@ -534,6 +564,27 @@
 			remoteRef = A1DD4E722115CB4F00772C51 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		A1DE0A82211C011C009EEB3B /* Stevia.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Stevia.framework;
+			remoteRef = A1DE0A81211C011C009EEB3B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A1DE0A84211C011C009EEB3B /* YPImagePicker.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = YPImagePicker.framework;
+			remoteRef = A1DE0A83211C011C009EEB3B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A1FA9BA4211B473600ED741A /* AlamofireImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AlamofireImage.framework;
+			remoteRef = A1FA9BA3211B473600ED741A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -573,16 +624,22 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SteviaLayout/Stevia.framework",
+				"${BUILT_PRODUCTS_DIR}/YPImagePicker/YPImagePicker.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stevia.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YPImagePicker.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -635,6 +692,7 @@
 				C7A85F361C78C137007E9A00 /* ChallengesController.swift in Sources */,
 				A1289CA820A555F100CC66B0 /* UIExtension.swift in Sources */,
 				A159265E209ACDEC00D98923 /* TrendRequestCellView.swift in Sources */,
+				A1FA9B9C211B473600ED741A /* ConnectionProblemController.swift in Sources */,
 				A1DA5F0220DFA44D00044E1E /* Media.swift in Sources */,
 				A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */,
 				A1C13416207F212700C6A435 /* TrendsController.swift in Sources */,
@@ -646,6 +704,8 @@
 				A17DA77F206A9944005BCC2C /* SelectionTableViewController.swift in Sources */,
 				A1289CB220A557BF00CC66B0 /* UIViewExtension.swift in Sources */,
 				A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */,
+				A1FA9BA6211B48E200ED741A /* Reachability.swift in Sources */,
+				A18E46982118B619003A670A /* SplashScreenController.swift in Sources */,
 				A14A996D2075310D00B1418D /* Friends.swift in Sources */,
 				A18D948020E0AE2E00FA1679 /* ProofCellView.swift in Sources */,
 				C7A85F341C78C137007E9A00 /* AppDelegate.swift in Sources */,
@@ -684,7 +744,6 @@
 				A14D75FE20752D430005B2F2 /* SelectedItems.swift in Sources */,
 				A16584402077A69400842F10 /* GlobalVariables.swift in Sources */,
 				A1DC3416207E2D9800F21232 /* CommentCellView.swift in Sources */,
-				A18BE7D52110290D00306540 /* SplashScreenController.swift in Sources */,
 				A13C709B2043CE000076B989 /* ChallengeFeedCellView.swift in Sources */,
 				A138F392204D9CFA00142231 /* JoinAttendance.swift in Sources */,
 				A1DC3414207E2A1800F21232 /* Comments.swift in Sources */,
@@ -714,13 +773,23 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -744,10 +813,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = Challenge;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -760,13 +830,23 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -786,6 +866,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Challenge;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
 			};

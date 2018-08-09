@@ -133,7 +133,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 self.proofs.append(proof)
             }
             DispatchQueue.main.async {
-                self.tableView.reloadData()
+                if self.nowMoreData == false {
+                    self.tableView.reloadData()
+                }
             }
         }
     }
@@ -338,14 +340,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 } else {
                     // var video: Data?
                     //self.group.enter()
-                    let params = "?challengeId=\(self.challengeId!)&memberId=\(self.proofs[indexPath.row].memberId!)"
+                    // let params = "?challengeId=\(self.challengeId!)&memberId=\(self.proofs[indexPath.row].memberId!)"
                     // let urlV = URL(string: downloadVideoURL + params)
                     self.getVideo(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!) {
                         video in
                         if let vid = video {
-                            let url = vid.write(name: "\(params).mov")
                             let avPlayer = AVPlayer.init()
-                            avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: url))
+                            avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: vid))
                             avPlayer.volume = volume
                             cell.avPlayerLayer.player = avPlayer
                             cell.avPlayerLayer.player?.play()

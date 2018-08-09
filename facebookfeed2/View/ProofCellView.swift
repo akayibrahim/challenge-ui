@@ -48,13 +48,13 @@ class ProofCellView: UITableViewCell {
         addWidthAnchor(proofedVideoView, multiplier: 1)
         addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
         proofedVideoView.alpha = 0
-        
-        self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
-        self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-        self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-        self.avPlayerLayer.repeatCount = 3
-        self.proofedVideoView.layer.masksToBounds = true
-        
+        DispatchQueue.main.async {
+            self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+            self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+            self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+            self.avPlayerLayer.repeatCount = 3
+            self.proofedVideoView.layer.masksToBounds = true
+        }
         addSubview(volumeUpImageView)
         addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
         addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))

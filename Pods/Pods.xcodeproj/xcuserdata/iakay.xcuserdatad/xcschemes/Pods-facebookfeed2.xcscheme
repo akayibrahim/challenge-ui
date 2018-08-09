@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6D85B46CAC7C9873E9777DE032AFC7DC"
+               BlueprintIdentifier = "15FE2F0B54951B02E289B9AD2F63A693"
                BuildableName = "Pods_facebookfeed2.framework"
                BlueprintName = "Pods-facebookfeed2"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -26,7 +26,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
@@ -37,7 +36,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -47,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6D85B46CAC7C9873E9777DE032AFC7DC"
+            BlueprintIdentifier = "15FE2F0B54951B02E289B9AD2F63A693"
             BuildableName = "Pods_facebookfeed2.framework"
             BlueprintName = "Pods-facebookfeed2"
             ReferencedContainer = "container:Pods.xcodeproj">

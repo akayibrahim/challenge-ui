@@ -18,8 +18,9 @@ struct Media {
         self.key = key
         self.mimeType = "image/jpeg"
         self.filename = "image.jpg"
-        
-        guard let data = UIImageJPEGRepresentation(image, 0.7) else { return nil }
+        let uploadDataCount = UIImagePNGRepresentation(image)?.count
+        let quality = uploadDataCount! > 150 ? Double(150 / uploadDataCount!) : 1
+        guard let data = UIImageJPEGRepresentation(image, CGFloat(quality)) else { return nil }
         self.data = data
     }
     
@@ -27,10 +28,9 @@ struct Media {
         self.key = key
         self.mimeType = "video/mov"
         self.filename = "video.mov"
-        
         // guard let data = NSData.init(contentsOf: url as URL) else { return nil }
         var data: Data?
-        let path = url.path
+        // let path = url.path
         do { data = try Data(contentsOf: url as URL) } catch {}
         self.data = data!
     }

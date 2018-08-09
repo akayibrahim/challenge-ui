@@ -7,56 +7,41 @@
 //
 
 import UIKit
+import Alamofire
 
 class VideoService {
     
-    static let cache = NSCache<NSString, NSData>()
+    static let cache = NSCache<NSString, NSURL>()
     
-    static func downloadVideo(withURL url:URL, completion: @escaping (_ video:Data?)->()) {
-        let dataTask = URLSession.shared.dataTask(with: url) { data, responseURL, error in
-            var downloadedImage:Data?
-            
-            if let data = data {
-                downloadedImage = data
-            }
-            
-            if downloadedImage != nil {
-                cache.setObject(downloadedImage! as NSData, forKey: url.absoluteString as NSString)
-            }
-            
-            DispatchQueue.main.async {
-                completion(downloadedImage)
-            }
-            
-        }
-        
-        dataTask.resume()
-    }
-    
-    static func cacheImage(withURL url:URL) {
-        DispatchQueue.global(qos: .background).async {
-            if cache.object(forKey: url.absoluteString as NSString) == nil {            
-                let dataTask = URLSession.shared.dataTask(with: url) { data, responseURL, error in
-                    var downloadedImage:Data?
-                    if let data = data {
-                        downloadedImage = data
-                    }
-                    if downloadedImage != nil {
-                        cache.setObject(downloadedImage! as NSData, forKey: url.absoluteString as NSString)
-                    }
+    static func downloadVideo(withURL url:URL, completion: @escaping (_ video:URL?)->()) {
+        let urls = url.absoluteString.split(separator: "?")
+        let tempUrl = FileManager.default.temporaryDirectory.appendingPathComponent("\(urls[1]).mov")
+        let destination: DownloadRequest.DownloadFileDestination = { _, _ in return (tempUrl, [.removePreviousFile, .createIntermediateDirectories]) }
+        Alamofire.download(url, to: destination).responseData { (response) in
+            print(tempUrl)
+            switch response.result {
+            case .failure( _):
+                break;
+            case .success( _):
+                cache.setObject(tempUrl as NSURL, forKey: url.absoluteString as NSString)
+                DispatchQueue.main.async {
+                    completion(tempUrl)
                 }
-                dataTask.resume()
+                break;
             }
+            
         }
     }
     
-    static func getVideo(withURL url:URL, completion: @escaping (_ video:Data?)->()) {
+    static func getVideo(withURL url:URL, completion: @escaping (_ video:URL?)->()) {
         if let image = cache.object(forKey: url.absoluteString as NSString) {
-            completion(image as Data)
+            DispatchQueue.main.async {
+                completion(image as URL)
+            }
         } else {
-            //DispatchQueue.global(qos: .background).async {
+            DispatchQueue.global(qos: .background).async {
                 downloadVideo(withURL: url, completion: completion)
-            //}
+            }
         }
     }
 }

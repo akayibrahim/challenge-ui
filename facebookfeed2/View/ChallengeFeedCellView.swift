@@ -86,6 +86,7 @@ class FeedCell: UICollectionViewCell {
         self.awayScoreText.removeFromSuperview()
         self.homeWinBase.removeFromSuperview()
         self.awayWinBase.removeFromSuperview()
+        self.avPlayerLayer.removeFromSuperlayer()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -433,11 +434,13 @@ class FeedCell: UICollectionViewCell {
                 addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
                 proofedVideoView.alpha = 1
                 
-                self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
-                self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-                self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                self.avPlayerLayer.repeatCount = 3
-                self.proofedVideoView.layer.masksToBounds = true
+                DispatchQueue.main.async {
+                    self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+                    self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    self.avPlayerLayer.repeatCount = 3
+                    self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+                    self.proofedVideoView.layer.masksToBounds = true
+                }
                 
                 addSubview(volumeUpImageView)
                 addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))

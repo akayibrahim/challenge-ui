@@ -8,7 +8,6 @@
 
 import UIKit
 import Alamofire
-import YPImagePicker
 
 var chlIndex : Int = 0
 var typeIndex : Int = 1
@@ -502,14 +501,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }))
         
         actionsheet.addAction(UIAlertAction(title: "Media Library", style: .default, handler: {(action: UIAlertAction) in            
-            let picker = YPImagePicker()
-            picker.showsFilters = true
-            picker.showsVideo = true
-            YPImagePickerConfiguration()
-            self.present(picker, animated: true, completion: nil)
-            /*self.imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
+            self.imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
             self.imagePickerController.allowsEditing = false            
-            self.present(self.imagePickerController, animated: true, completion: nil)*/
+            self.present(self.imagePickerController, animated: true, completion: nil)
         }))
         
         actionsheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

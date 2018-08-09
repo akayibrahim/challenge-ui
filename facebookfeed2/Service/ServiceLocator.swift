@@ -317,6 +317,15 @@ class ServiceLocator {
     }
     
     static func getErrorMessage(data: Data, chlId: String, sUrl: String, inputs: String) -> String {
+        return logError(data: data, chlId: chlId, sUrl: sUrl, inputs: inputs)
+    }
+    
+    static func logErrorMessage(data: Data, chlId: String, sUrl: String, inputs: String) {
+        let error = logError(data: data, chlId: chlId, sUrl: sUrl, inputs: inputs)
+        print(error)
+    }
+    
+    static func logError(data: Data, chlId: String, sUrl: String, inputs: String) -> String {
         var errorMessage: String = ""
         let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
         if let responseJSON = responseJSON as? [String: Any] {

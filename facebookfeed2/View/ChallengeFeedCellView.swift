@@ -108,14 +108,14 @@ class FeedCell: UICollectionViewCell {
             setImage(fbID: memberFbID, imageView: profileImageView)
             if let countOfComments = post?.countOfComments {
                 viewComments.setTitle("View all \(countOfComments) comments", for: UIControlState())
-                viewComments.count = Int(countOfComments)
-                addComments.count = Int(countOfComments)
+                viewComments.count = Int(truncating: countOfComments)
+                addComments.count = Int(truncating: countOfComments)
             }
             if let countOfProofs = post?.countOfProofs {
                 viewProofs.setTitle("View all \(countOfProofs) proofs", for: UIControlState())
-                viewProofs.count = Int(countOfProofs)
-                addProofs.count = Int(countOfProofs)
-                updateProgress.count = Int(countOfProofs)
+                viewProofs.count = Int(truncating: countOfProofs)
+                addProofs.count = Int(truncating: countOfProofs)
+                updateProgress.count = Int(truncating: countOfProofs)
             }
             if let insertTimeText = post?.insertTime {
                 insertTime.text = insertTimeText
@@ -341,7 +341,7 @@ class FeedCell: UICollectionViewCell {
             if let supportFirstTeam = post?.supportFirstTeam, let supportSecondTeam = post?.supportSecondTeam {
                 if let firstTeamSupportCount = post?.firstTeamSupportCount {
                     supportLabel.text = "+\(firstTeamSupportCount.getSuppportCountAsK())"
-                    supportLabel.tag = Int(firstTeamSupportCount)
+                    supportLabel.tag = Int(truncating: firstTeamSupportCount)
                     supportLabel.alpha = 1
                     if supportLabel.tag == 0 {
                         supportLabel.alpha = 0
@@ -349,7 +349,7 @@ class FeedCell: UICollectionViewCell {
                 }
                 if let secondTeamSupportCount = post?.secondTeamSupportCount {
                     supportMatchLabel.text = "+\(secondTeamSupportCount.getSuppportCountAsK())"
-                    supportMatchLabel.tag = Int(secondTeamSupportCount)
+                    supportMatchLabel.tag = Int(truncating: secondTeamSupportCount)
                     supportMatchLabel.alpha = 1
                     if supportMatchLabel.tag == 0 {
                         supportMatchLabel.alpha = 0

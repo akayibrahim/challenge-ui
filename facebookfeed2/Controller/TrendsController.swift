@@ -132,15 +132,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                                     let trend = TrendRequest()
                                     trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
                                     trend.setValuesForKeys(postDictionary)
-                                    self.trendRequest.append(trend)
-                                    /*
-                                    if trend.provedWithImage! {
-                                        let url = URL(string: downloadImageURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                        ImageService.cacheImage(withURL: url!)
-                                    } else {
-                                        let url = URL(string: downloadVideoURL + "?challengeId=\(trend.challengeId!)&memberId=\(trend.challengerId!)")
-                                        VideoService.cacheImage(withURL: url!)
-                                    }*/
+                                    self.trendRequest.append(trend)                                    
                                 }
                                 if self.nowMoreData == false {
                                     self.collectionView?.reloadData()
@@ -178,33 +170,13 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         DispatchQueue.main.async {
             cell.trendRequest = self.trendRequest[indexPath.row]
             if self.trendRequest[indexPath.row].provedWithImage! {
-                self.getTrendImage(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)  {
-                    image in
-                    if image != nil {
-                        cell.requestImageView.image = image
-                    }
-                }
+                cell.requestImageView.load(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
                 cell.proofedVideoView.alpha = 0
                 cell.volumeUpImageView.alpha = 0
                 cell.volumeDownImageView.alpha = 0
                 cell.requestImageView.alpha = 1
             } else {
-                // var video: Data?
-                //self.group.enter()
-                // let params = "?challengeId=\(self.trendRequest[indexPath.row].challengeId!)&memberId=\(self.trendRequest[indexPath.row].challengerId!)"
-                // let urlV = URL(string: downloadVideoURL + params)
-                self.getVideo(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!) {
-                    video in
-                    if let vid = video {
-                        // let url = vid.write(name: "\(params).mov")
-                        let avPlayer = AVPlayer.init()
-                        avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: vid))
-                        avPlayer.volume = volume
-                        cell.avPlayerLayer.player = avPlayer
-                        cell.avPlayerLayer.player?.play()
-                        //self.group.leave()
-                    }
-                }
+                cell.avPlayerLayer.load(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!)
                 cell.proofedVideoView.alpha = 1
                 cell.volumeUpImageView.alpha = 0
                 cell.volumeDownImageView.alpha = 1

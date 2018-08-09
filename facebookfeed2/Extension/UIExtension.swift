@@ -41,7 +41,7 @@ extension URL {
 extension UIViewController: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
-        let newLength = text.count + string.characters.count - range.length
+        let newLength = text.count + string.count - range.length
         return newLength <= 30 // replace 30 for your max length value
     }
 }

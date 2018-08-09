@@ -538,7 +538,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 let returnData = data
                 else {
                     if data != nil {
-                        ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
+                        ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
                     }
                     return
             }

@@ -32,6 +32,13 @@ public class Util {
         return ForwardChange(index: IndexPath(item:0, section: 0), forwardScreen: "")
     }
     
+    static func removeForwardChange() {
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: "forwardChange") != nil {
+            defaults.removeObject(forKey: "forwardChange")
+        }
+    }
+    
     static func conficOfYpImagePicker() -> YPImagePickerConfiguration {
         var config = YPImagePickerConfiguration()
         config.library.mediaType = .photoAndVideo

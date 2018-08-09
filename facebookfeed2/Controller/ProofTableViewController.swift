@@ -59,7 +59,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         tableView?.addSubview(refreshControl)
         
         if self.tabBarController?.selectedIndex == profileIndex {
-            Util.getForwardChange();
+            Util.removeForwardChange();
         }
     }
     
@@ -513,8 +513,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 let returnData = data,
                 let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
                 else {
-                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
-                    print(error)
+                    ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")                    
                     return
             }
             self.group.leave()

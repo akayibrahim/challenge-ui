@@ -95,7 +95,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let returnData = data
                 else {
                     if data != nil {
-                        ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivityCountURL, inputs: "memberID=\(memberID)")
+                        ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: getActivityCountURL, inputs: "memberID=\(memberID)")
                     }
                     return
             }
@@ -996,7 +996,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell.supportButtonMatch.setImage(UIImage(named:support), for: .normal)
                 let supportMatchCount : NSNumber = NSNumber(value: feedCell.supportMatchLabel.tag + (-1))
                 feedCell.supportMatchLabel.text = "+\(supportMatchCount.getSuppportCountAsK())"
-                feedCell.supportMatchLabel.tag = Int(supportMatchCount)
+                feedCell.supportMatchLabel.tag = Int(truncating: supportMatchCount)
                 if feedCell.supportMatchLabel.tag == 0 {
                     feedCell.supportMatchLabel.alpha = 0
                 }
@@ -1035,14 +1035,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     if isHome {
                         let supportCount : NSNumber = NSNumber(value: feedCell.supportLabel.tag + (support ? 1 : -1))
                         feedCell.supportLabel.text = "+\(supportCount.getSuppportCountAsK())"
-                        feedCell.supportLabel.tag = Int(supportCount)
+                        feedCell.supportLabel.tag = Int(truncating: supportCount)
                         if feedCell.supportLabel.tag == 0 {
                             feedCell.supportLabel.alpha = 0
                         }
                     } else {
                         let supportMatchCount : NSNumber = NSNumber(value: feedCell.supportMatchLabel.tag + (support ? 1 : -1))
                         feedCell.supportMatchLabel.text = "+\(supportMatchCount.getSuppportCountAsK())"
-                        feedCell.supportMatchLabel.tag = Int(supportMatchCount)
+                        feedCell.supportMatchLabel.tag = Int(truncating: supportMatchCount)
                         if feedCell.supportMatchLabel.tag == 0 {
                             feedCell.supportMatchLabel.alpha = 0
                         }
@@ -1063,7 +1063,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 feedCell.supportButton.setImage(UIImage(named:support), for: .normal)
                 let supportCount : NSNumber = NSNumber(value: feedCell.supportLabel.tag + (-1))
                 feedCell.supportLabel.text = "+\(supportCount.getSuppportCountAsK())"
-                feedCell.supportLabel.tag = Int(supportCount)
+                feedCell.supportLabel.tag = Int(truncating: supportCount)
                 if feedCell.supportLabel.tag == 0 {
                     feedCell.supportLabel.alpha = 0
                 }
@@ -1310,8 +1310,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let returnData = data,
                 let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
                 else {
-                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
-                    print(error)
+                    ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "memberID=\(memberId)")
                     return
             }
             if let post = postOfMember {
@@ -1332,8 +1331,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             guard
                 let returnData = data
                 else {
-                    let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
-                    print(error)
+                    ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")                    
                     return
             }
             self.group.leave()

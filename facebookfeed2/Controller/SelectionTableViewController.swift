@@ -67,6 +67,9 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     @objc func reload() {
+        if Util.controlNetwork() {
+            return
+        }
         if !listMode {
             self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: labelCell)
             if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex {

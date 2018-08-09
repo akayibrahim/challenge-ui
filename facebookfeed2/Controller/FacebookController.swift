@@ -15,6 +15,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     @objc var label: UILabel!
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
+        if Util.controlNetwork() {
+            return
+        }
         print("User Logged In")
         if ((error) != nil) {
             print(error as Any)
@@ -49,9 +52,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         super.viewDidLoad()
         self.view.backgroundColor = navAndTabColor
         
-        if !Reachability.isConnectedToNetwork() {
-            let appDelegate = UIApplication.shared.delegate as! AppDelegate
-            appDelegate.window?.rootViewController = ConnectionProblemController()
+        if Util.controlNetwork() {
             return
         }
         
@@ -183,6 +184,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     
     @objc var splashTimer: Timer?
     @objc func openMember(id:String) {
+        if Util.controlNetwork() {
+            return
+        }
         let defaults = UserDefaults.standard
         defaults.set(id, forKey: "memberID")
         defaults.synchronize()

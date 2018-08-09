@@ -64,6 +64,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     @objc func joinChallenge() {
+        if Util.controlNetwork() {
+            return
+        }
         joinToChallengeService(challengeId: challengeId)
     }
     
@@ -99,6 +102,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     @objc func loadChallenges() {
         if dummyServiceCall == false {
+            if Util.controlNetwork() {
+                return
+            }
             self.fetchData(url: getProofInfoListByChallengeURL)
         } else {
             self.proofs = ServiceLocator.getProofsFromDummy(jsonFileName: "comments")
@@ -283,6 +289,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     @objc func sendProof() {
+        if Util.controlNetwork() {
+            return
+        }
         if proofImageView.image == nil {
             popupAlert(message: "You have to add your prove first.", willDelay: false)
             return

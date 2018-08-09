@@ -63,6 +63,9 @@ class ActivitiesController: UITableViewController {
     
     @objc func loadActivities() {
         if dummyServiceCall == false {
+            if Util.controlNetwork() {
+                return
+            }
             fetchChallengeRequest()
             group.wait()
             fetchActivities()

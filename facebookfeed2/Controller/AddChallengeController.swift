@@ -251,6 +251,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     @objc func addChallenge() {
+        if Util.controlNetwork() {
+            return
+        }
         self.navigationItem.rightBarButtonItem?.isEnabled = false
         if switchDateP == true {
             switchDateP = false

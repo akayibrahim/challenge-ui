@@ -110,6 +110,9 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     @objc func loadTrends() {
         if dummyServiceCall == false {
+            if Util.controlNetwork() {
+                return
+            }
             self.fetchTrendChallenges(key: "")
             return
         } else {

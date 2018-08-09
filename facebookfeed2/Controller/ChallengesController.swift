@@ -138,6 +138,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func loadChallenges() {
         if dummyServiceCall == false {
+            if Util.controlNetwork() {
+                return
+            }
             // Asynchronous Http call to your api url, using NSURLSession:
             if self.profile {
                 if (!self.memberIsPrivateForFriendProfile! || (self.memberIsPrivateForFriendProfile! && self.isProfileFriend)) && self.memberIdForFriendProfile != memberID {

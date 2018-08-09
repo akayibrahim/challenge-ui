@@ -68,4 +68,13 @@ public class Util {
         config.isScrollToChangeModesEnabled = false
         return config
     }
+    
+    static func controlNetwork() -> Bool {
+        if !Reachability.isConnectedToNetwork() {
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.window?.rootViewController = ConnectionProblemController()
+            return true
+        }
+        return false
+    }
 }

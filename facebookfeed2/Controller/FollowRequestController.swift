@@ -91,6 +91,9 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
     
     @objc func loadFollowRequest() {
         if dummyServiceCall == false {
+            if Util.controlNetwork() {
+                return
+            }
             fetchData(url: getSuggestionsForFollowingURL)
         } else {
             self.friendRequest = ServiceLocator.getSuggestionFriendsFromDummy(jsonFileName: "friend_request")

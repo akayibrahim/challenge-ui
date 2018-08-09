@@ -82,6 +82,9 @@ class OtherController: UITableViewController {
     }()
     
     @objc func logout() {
+        if Util.controlNetwork() {
+            return
+        }
         FBSDKLoginManager().logOut()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = FacebookController()

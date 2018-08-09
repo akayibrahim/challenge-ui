@@ -39,6 +39,9 @@ class ChallengeRequestController: UITableViewController {
     
     @objc func loadFollowRequest() {
         if dummyServiceCall == false {
+            if Util.controlNetwork() {
+                return
+            }
             fetchData(url: getChallengeRequestURL)
         } else {
             self.challengeRequest = ServiceLocator.getChallengeRequestsFromDummy(jsonFileName: "challenge_request")
@@ -120,6 +123,9 @@ class ChallengeRequestController: UITableViewController {
     }
     
     @objc func acceptChallengeService(challengeId: String, accept: Bool) {
+        if Util.controlNetwork() {
+            return
+        }
         let json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID,
                                    "accept": accept
@@ -146,6 +152,9 @@ class ChallengeRequestController: UITableViewController {
     }
     
     @objc func joinToChallengeService(challengeId: String, join: Bool) {
+        if Util.controlNetwork() {
+            return
+        }
         let json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID,
                                    "join": join

@@ -52,6 +52,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     
     @objc func loadChallenges() {
         if dummyServiceCall == false {
+            if Util.controlNetwork() {
+                return
+            }
             fetchData(url: getCommentsURL)
         } else {
             self.comments = ServiceLocator.getCommentFromDummy(jsonFileName: "comments")
@@ -352,6 +355,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     @objc var friendIsPrivate = false
     @objc let group = DispatchGroup()
     @objc func getMemberInfo(memberId: String) {
+        if Util.controlNetwork() {
+            return
+        }
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in

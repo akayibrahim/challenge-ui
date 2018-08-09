@@ -15,12 +15,12 @@ class TrendRequestCell: UICollectionViewCell {
         super.init(frame: frame)
     }
     
-    var trendRequest : TrendRequest? {
+    @objc var trendRequest : TrendRequest? {
         didSet {
             if let name = trendRequest?.name, let subject = trendRequest?.subject {
-                let nameAtt = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
-                let proofBy = NSMutableAttributedString(string: " proved ", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
-                let subjectAtt = NSMutableAttributedString(string: "\(subject).", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
+                let nameAtt = NSMutableAttributedString(string: "\(name)", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
+                let proofBy = NSMutableAttributedString(string: " proved ", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)])
+                let subjectAtt = NSMutableAttributedString(string: "\(subject).", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
                 proofBy.append(subjectAtt)
                 nameAtt.append(proofBy)
                 nameLabel.attributedText = nameAtt
@@ -41,14 +41,14 @@ class TrendRequestCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let nameLabel: UILabel = {
+    @objc let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Sample Name"
         label.font = UIFont.boldSystemFont(ofSize: 14)
         return label
     }()
     
-    let requestImageView: UIImageView = {
+    @objc let requestImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         // imageView.backgroundColor = UIColor.blue
@@ -56,7 +56,7 @@ class TrendRequestCell: UICollectionViewCell {
         return imageView
     }()
     
-    func setupViews() {
+    @objc func setupViews() {
         let contentGuide = self.readableContentGuide
         backgroundColor = UIColor.white
         addSubview(requestImageView)
@@ -89,7 +89,7 @@ class TrendRequestCell: UICollectionViewCell {
         DispatchQueue.main.async {
             self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-            self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+            self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
             self.avPlayerLayer.repeatCount = 3
             self.proofedVideoView.layer.masksToBounds = true
         }
@@ -110,9 +110,9 @@ class TrendRequestCell: UICollectionViewCell {
         setImage(name: volumeUp, imageView: volumeUpImageView)
         setImage(name: volumeDown, imageView: volumeDownImageView)
     }
-    let profileImageView: UIImageView = FeedCell().profileImageView
-    let proofedVideoView: UIView = FeedCell.viewFunc()
-    let volumeUpImageView: UIImageView = FeedCell.circleImageView()
-    let volumeDownImageView: UIImageView = FeedCell.circleImageView()
-    let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
+    @objc let profileImageView: UIImageView = FeedCell().profileImageView
+    @objc let proofedVideoView: UIView = FeedCell.viewFunc()
+    @objc let volumeUpImageView: UIImageView = FeedCell.circleImageView()
+    @objc let volumeDownImageView: UIImageView = FeedCell.circleImageView()
+    @objc let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

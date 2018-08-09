@@ -127,20 +127,6 @@
 			remoteGlobalIDString = 292858F24BB5D992D1B9279E632D3FA7;
 			remoteInfo = Alamofire;
 		};
-		A1DE0A81211C011C009EEB3B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = ADD9B4A18082CCC8FA85F0D85283EFFA;
-			remoteInfo = SteviaLayout;
-		};
-		A1DE0A83211C011C009EEB3B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 36452ECD43B0E79A6D8C085B088A6EA3;
-			remoteInfo = YPImagePicker;
-		};
 		A1FA9BA3211B473600ED741A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
@@ -389,8 +375,6 @@
 				A1A06ABE2105224600F95875 /* FBSDKCoreKit.framework */,
 				A1A06AC02105224600F95875 /* FBSDKLoginKit.framework */,
 				A1A06AC22105224600F95875 /* Pods_facebookfeed2.framework */,
-				A1DE0A82211C011C009EEB3B /* Stevia.framework */,
-				A1DE0A84211C011C009EEB3B /* YPImagePicker.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -488,7 +472,7 @@
 					C7A85F2F1C78C137007E9A00 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = BYSD94TYHS;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 0940;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -562,20 +546,6 @@
 			fileType = wrapper.framework;
 			path = Alamofire.framework;
 			remoteRef = A1DD4E722115CB4F00772C51 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A1DE0A82211C011C009EEB3B /* Stevia.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Stevia.framework;
-			remoteRef = A1DE0A81211C011C009EEB3B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A1DE0A84211C011C009EEB3B /* YPImagePicker.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = YPImagePicker.framework;
-			remoteRef = A1DE0A83211C011C009EEB3B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		A1FA9BA4211B473600ED741A /* AlamofireImage.framework */ = {
@@ -884,7 +854,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -903,7 +873,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

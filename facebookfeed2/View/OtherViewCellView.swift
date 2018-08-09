@@ -17,7 +17,7 @@ class OtherViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(frame: CGRect, cellRow : Int) {
+    @objc init(frame: CGRect, cellRow : Int) {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: OtherController.cellId)
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
@@ -54,12 +54,12 @@ class OtherViewCell: UITableViewCell {
         }
     }
     
-    let logout: UILabel = FeedCell.labelCreateDef(1)
-    let settings: UILabel = FeedCell.labelCreateDef(1)
-    let support: UILabel = FeedCell.labelCreateDef(1)
-    let privacy: UILabel = FeedCell.labelCreateDef(1)
+    @objc let logout: UILabel = FeedCell.labelCreateDef(1)
+    @objc let settings: UILabel = FeedCell.labelCreateDef(1)
+    @objc let support: UILabel = FeedCell.labelCreateDef(1)
+    @objc let privacy: UILabel = FeedCell.labelCreateDef(1)
     
-    static func button(_ title: String, titleColor: UIColor) -> UIButton {
+    @objc static func button(_ title: String, titleColor: UIColor) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: UIControlState())
         button.setTitleColor(titleColor, for: UIControlState())

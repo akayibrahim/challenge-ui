@@ -10,8 +10,8 @@ import UIKit
 
 class InstagramLoginVC: UIViewController, UIWebViewDelegate {
     
-    let loginWebView:UIWebView = UIWebView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-    let loginIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
+    @objc let loginWebView:UIWebView = UIWebView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+    @objc let loginIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,13 +36,13 @@ class InstagramLoginVC: UIViewController, UIWebViewDelegate {
     }
     
     //MARK: - unSignedRequest
-    func unSignedRequest () {
+    @objc func unSignedRequest () {
         let authURL = String(format: "%@?client_id=%@&redirect_uri=%@&response_type=token&scope=%@&DEBUG=True", arguments: [INSTAGRAM_IDS.INSTAGRAM_AUTHURL,INSTAGRAM_IDS.INSTAGRAM_CLIENT_ID,INSTAGRAM_IDS.INSTAGRAM_REDIRECT_URI, INSTAGRAM_IDS.INSTAGRAM_SCOPE ])
         let urlRequest =  URLRequest.init(url: URL.init(string: authURL)!)
         loginWebView.loadRequest(urlRequest)
     }
     
-    func checkRequestForCallbackURL(request: URLRequest) -> Bool {
+    @objc func checkRequestForCallbackURL(request: URLRequest) -> Bool {
         
         let requestURLString = (request.url?.absoluteString)! as String
         if requestURLString.hasPrefix(INSTAGRAM_IDS.INSTAGRAM_REDIRECT_URI) {
@@ -53,7 +53,7 @@ class InstagramLoginVC: UIViewController, UIWebViewDelegate {
         return true
     }
     
-    func handleAuth(authToken: String)  {
+    @objc func handleAuth(authToken: String)  {
         if authToken != "" {
             fetchUserInfo(withToken: authToken)
             // print("Instagram authentication token ==", authToken)
@@ -63,7 +63,7 @@ class InstagramLoginVC: UIViewController, UIWebViewDelegate {
         }
     }
     
-    func fetchUserInfo(withToken token: String) {
+    @objc func fetchUserInfo(withToken token: String) {
         let urlString = "https://api.instagram.com/v1/users/self/?access_token=\(token)"
         let jsonURL = URL(string: urlString)!
         jsonURL.get { data, response, error in

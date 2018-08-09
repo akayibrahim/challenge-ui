@@ -9,35 +9,35 @@
 import UIKit
 
 class Post: SafeJsonObject {
-    var id: String?
-    var name: String?
-    var thinksAboutChallenge: String?
-    var countOfComments: NSNumber?
-    var untilDateStr: NSString?
-    var type: String?
-    var subject: String?
+    @objc var id: String?
+    @objc var name: String?
+    @objc var thinksAboutChallenge: String?
+    @objc var countOfComments: NSNumber?
+    @objc var untilDateStr: NSString?
+    @objc var type: String?
+    @objc var subject: String?
     var done : Bool?
     var isComeFromSelf : Bool?
-    var firstTeamCount : String?
-    var secondTeamCount : String?
-    var challengerFBId : String?
-    var challengerId : String?
+    @objc var firstTeamCount : String?
+    @objc var secondTeamCount : String?
+    @objc var challengerFBId : String?
+    @objc var challengerId : String?
     @nonobjc var versusAttendanceList = [VersusAttendance]()
     @nonobjc var joinAttendanceList = [JoinAttendance]()
     var supportFirstTeam : Bool?
     var supportSecondTeam : Bool?
-    var firstTeamSupportCount : NSNumber?
-    var secondTeamSupportCount : NSNumber?
-    var countOfProofs: NSNumber?
-    var insertTime : String?
-    var status : String?
-    var firstTeamScore : String?
-    var secondTeamScore : String?
+    @objc var firstTeamSupportCount : NSNumber?
+    @objc var secondTeamSupportCount : NSNumber?
+    @objc var countOfProofs: NSNumber?
+    @objc var insertTime : String?
+    @objc var status : String?
+    @objc var firstTeamScore : String?
+    @objc var secondTeamScore : String?
     var proofed: Bool?
     var active: Bool?
     var proofedByChallenger: Bool?
-    var goal: String?
-    var result: String?
+    @objc var goal: String?
+    @objc var result: String?
     var canJoin: Bool?
     var joined: Bool?
     var homeWin: Bool?

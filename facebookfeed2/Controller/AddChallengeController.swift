@@ -37,18 +37,18 @@ let proofIndexPath = IndexPath(item: proofIndex, section: 0)
 let commentIndexPath = IndexPath(item: commentIndex, section: 0)
 
 class AddChallengeController: UITableViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    let screenSize = UIScreen.main.bounds
-    var tableRowHeightHeight: CGFloat = 44
-    var chlViewHeight: CGFloat = 17.5/30
+    @objc let screenSize = UIScreen.main.bounds
+    @objc var tableRowHeightHeight: CGFloat = 44
+    @objc var chlViewHeight: CGFloat = 17.5/30
     var leftSide = [SelectedItems]()
     var rightSide = [SelectedItems]()
-    var deadLine = Int()
-    var bottomConstraint: NSLayoutConstraint?
-    var addChallengeIns = [AddChallenge]()
-    var firstPage : Bool = true
-    var rightButton : UIBarButtonItem?
-    var cancelButton : UIBarButtonItem?
-    var nextButton : UIBarButtonItem?
+    @objc var deadLine = Int()
+    @objc var bottomConstraint: NSLayoutConstraint?
+    @objc var addChallengeIns = [AddChallenge]()
+    @objc var firstPage : Bool = true
+    @objc var rightButton : UIBarButtonItem?
+    @objc var cancelButton : UIBarButtonItem?
+    @objc var nextButton : UIBarButtonItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,7 +71,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         self.leftSide.append(getMember())
     }
     
-    func nextPage() {
+    @objc func nextPage() {
         let subjectCell = getCell(path: subjectIndexPath)
         /*
         if commentCell.commentView.text == "Comment" {
@@ -98,14 +98,14 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    func cancel() {
+    @objc func cancel() {
         navigationItem.setRightBarButton(nextButton, animated: true)
         navigationItem.leftBarButtonItem = nil
         firstPage = true
         enableDisableCells(disable: true)
     }
     
-    func getType() -> String {
+    @objc func getType() -> String {
         let typeCell = getCell(path: segControlIndexPath)
         var type: String = ""
         if typeCell.mySegControl.selectedSegmentIndex == 0 {
@@ -120,29 +120,29 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         return type
     }
     
-    func isSelf() -> Bool {
+    @objc func isSelf() -> Bool {
         return getType() == SELF
     }
     
-    func isPublic() -> Bool {
+    @objc func isPublic() -> Bool {
         return getType() == PUBLIC
     }
     
-    func isPrivate() -> Bool {
+    @objc func isPrivate() -> Bool {
         return getType() == PRIVATE
     }
     
-    func isToWorld() -> Bool {
+    @objc func isToWorld() -> Bool {
         let typeCell = getCell(path: segControlIndexPath)
         return typeCell.mySegControl.selectedSegmentIndex == 3
     }
     
-    func closeCalendar() {
+    @objc func closeCalendar() {
         switchDateP = false
         tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
     }
     
-    func enableDisableCells(disable: Bool) {
+    @objc func enableDisableCells(disable: Bool) {
         closeCalendar()
         let doneCell = getCell(path: doneIndexPath)
         let addViewCell = getCell(path: addViewIndexPath)
@@ -205,12 +205,12 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    func isDone() -> Bool {
+    @objc func isDone() -> Bool {
         let doneCell = getCell(path: doneIndexPath)
         return doneCell.isDone.isOn
     }
     
-    func createAddChallenge(labelText : String, resultText : String, resultId : Int, resultBool : Bool, labelAtt : NSMutableAttributedString) -> AddChallenge {
+    @objc func createAddChallenge(labelText : String, resultText : String, resultId : Int, resultBool : Bool, labelAtt : NSMutableAttributedString) -> AddChallenge {
         let addChl = AddChallenge()
         addChl.labelText = labelText
         addChl.resultText = resultText
@@ -220,14 +220,14 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         return addChl
     }
     
-    func getDateAsFormatted(date : Date) -> String {
+    @objc func getDateAsFormatted(date : Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd-MM-yyyy HH:mm"
         let formattedDate = formatter.string(from: date)
         return formattedDate
     }
     
-    func createAddChallengeInstance() {
+    @objc func createAddChallengeInstance() {
         addChallengeIns = [AddChallenge]()
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Type", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
@@ -245,11 +245,11 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
     
-    func getCell(path: IndexPath) -> TableViewCellContent {
+    @objc func getCell(path: IndexPath) -> TableViewCellContent {
         return tableView.cellForRow(at: path) as! TableViewCellContent
     }
     
-    func addChallenge() {
+    @objc func addChallenge() {
         self.navigationItem.rightBarButtonItem?.isEnabled = false
         if switchDateP == true {
             switchDateP = false
@@ -388,7 +388,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }).resume()
     }
     
-    func clear() {
+    @objc func clear() {
         DispatchQueue.main.async {
             self.createAddChallengeInstance()
             self.cancel()
@@ -402,7 +402,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    func addMedia(result: NSString) {
+    @objc func addMedia(result: NSString) {
         let proofCell = getCell(path: proofIndexPath)
         let parameters = ["challengeId": result as String, "memberId": memberID as String]
         let urlOfUpload = URL(string: uploadImageURL)!
@@ -482,8 +482,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         return selItem
     }
     
-    let imagePickerController = UIImagePickerController()
-    func imagePickerForProofUpload() {
+    @objc let imagePickerController = UIImagePickerController()
+    @objc func imagePickerForProofUpload() {
         imagePickerController.delegate = self
         imagePickerController.mediaTypes = ["public.image", "public.movie"]
         let actionsheet = UIAlertController(title: "", message: "Choose a photo source", preferredStyle :.actionSheet)
@@ -511,9 +511,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         self.present(actionsheet, animated: true, completion: nil)
     }
 
-    var videoURL: NSURL?
+    @objc var videoURL: NSURL?
     
-    var isImg: Bool = true
+    @objc var isImg: Bool = true
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             let proofCell = self.getCell(path: proofIndexPath)
@@ -528,7 +528,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         dismiss(animated: true, completion: nil)
     }
     
-    func getDayBetweenDates(isSelect : Bool) -> Int {
+    @objc func getDayBetweenDates(isSelect : Bool) -> Int {
         let cellContent = getCell(path: calenddarIndexPath)
         let cCellContent = getCell(path: deadlineIndexPath)
         let formatter = DateFormatter()
@@ -562,7 +562,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         return daysBetween
     }
     
-    func getHeight(switchOfCell: Bool) -> CGFloat {
+    @objc func getHeight(switchOfCell: Bool) -> CGFloat {
         if switchOfCell {
             return tableRowHeightHeight
         } else {
@@ -570,20 +570,20 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    var switchType : Bool = true;
-    var switchDateP : Bool = false;
-    var switchDeadline : Bool = false;
-    var switchProofCell : Bool = false;
-    var switchLeftPeopleCell : Bool = false;
-    var switchRightPeopleCell : Bool = false;
-    var switchDone : Bool = true;
-    var switchScore : Bool = false;
-    var switchResult : Bool = false;
-    var switchProof : Bool = false;
-    var switchSubject : Bool = true;
-    var switchComment : Bool = true;
-    var zeroHeight : CGFloat = 0
-    var commentCellHeight : CGFloat = 44
+    @objc var switchType : Bool = true;
+    @objc var switchDateP : Bool = false;
+    @objc var switchDeadline : Bool = false;
+    @objc var switchProofCell : Bool = false;
+    @objc var switchLeftPeopleCell : Bool = false;
+    @objc var switchRightPeopleCell : Bool = false;
+    @objc var switchDone : Bool = true;
+    @objc var switchScore : Bool = false;
+    @objc var switchResult : Bool = false;
+    @objc var switchProof : Bool = false;
+    @objc var switchSubject : Bool = true;
+    @objc var switchComment : Bool = true;
+    @objc var zeroHeight : CGFloat = 0
+    @objc var commentCellHeight : CGFloat = 44
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath == leftSideIndex {
             return getHeight(switchOfCell: switchLeftPeopleCell)
@@ -709,7 +709,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         return textView.text.count + (text.count - range.length) <= commentCharacterLimit
     }
     
-    var beforeEstimatedSize = CGSize(width: screenWidth, height: 44)
+    @objc var beforeEstimatedSize = CGSize(width: screenWidth, height: 44)
     override func textViewDidChange(_ textView: UITextView) {
         let commentContent = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
         let size = CGSize(width: commentContent.commentView.frame.width, height: .infinity)
@@ -727,19 +727,19 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    func updateTable() {
+    @objc func updateTable() {
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
     }
     
-    func deadlinesChanged() {
+    @objc func deadlinesChanged() {
         let calendarContent = tableView.cellForRow(at: calenddarIndexPath) as! TableViewCellContent
         let selectedIndex = calendarContent.deadLines.selectedSegmentIndex
         let day : Int = selectedIndex == 0 ? 1 : (selectedIndex == 1 ? 7 : (selectedIndex == 2 ? 30 : 365) )
         calendarContent.datePicker.date = Calendar.current.date(byAdding: .day, value: day, to: Date())!
     }
     
-    func doneSwitch() {
+    @objc func doneSwitch() {
         let addViewContent = getCell(path: addViewIndexPath)
         let doneSwitch = getCell(path: doneIndexPath)
         if (doneSwitch.isDone.isOn) {
@@ -811,7 +811,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    func segControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
+    @objc func segControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
         createAddChallengeInstance()
         let segControlContent = getCell(path: segControlIndexPath)
         var selItems = [SelectedItems]()
@@ -935,14 +935,14 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    func updateScoreAndResult(indexPath: IndexPath) {
+    @objc func updateScoreAndResult(indexPath: IndexPath) {
         if indexPath == scoreIndexPath {
             let scoreContent = getCell(path: scoreIndexPath)
-            addChallengeIns[scoreIndex].labelAtt = NSMutableAttributedString(string: scoreContent.labelOtherSide.text!, attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
+            addChallengeIns[scoreIndex].labelAtt = NSMutableAttributedString(string: scoreContent.labelOtherSide.text!, attributes: [NSAttributedStringKey.font: UIFont(name: "EuphemiaUCAS", size: 18)!])
         }
         if indexPath == resultIndexPath {
             let resultContent = getCell(path: resultIndexPath)
-            addChallengeIns[resultIndex].labelAtt = NSMutableAttributedString(string: resultContent.labelOtherSide.text!, attributes: [NSFontAttributeName: UIFont(name: "EuphemiaUCAS", size: 18)!])
+            addChallengeIns[resultIndex].labelAtt = NSMutableAttributedString(string: resultContent.labelOtherSide.text!, attributes: [NSAttributedStringKey.font: UIFont(name: "EuphemiaUCAS", size: 18)!])
         }
     }
 }

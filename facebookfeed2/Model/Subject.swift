@@ -9,6 +9,6 @@
 import UIKit
 
 class Subject: SafeJsonObject {
-    var name: String?
-    var id : String?
+    @objc var name: String?
+    @objc var id : String?
 }

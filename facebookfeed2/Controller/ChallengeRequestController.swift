@@ -10,9 +10,9 @@ import UIKit
 
 class ChallengeRequestController: UITableViewController {
     
-    let cellId = "cellId"
-    let headerId = "headerId"
-    var challengeRequest = [ChallengeRequest]()
+    @objc let cellId = "cellId"
+    @objc let headerId = "headerId"
+    @objc var challengeRequest = [ChallengeRequest]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,13 +31,13 @@ class ChallengeRequestController: UITableViewController {
         loadFollowRequest()
     }
     
-    func onRefesh() {
+    @objc func onRefesh() {
         self.loadFollowRequest()
         self.tableView?.reloadData()
         refreshControl?.endRefreshing()
     }
     
-    func loadFollowRequest() {
+    @objc func loadFollowRequest() {
         if dummyServiceCall == false {
             fetchData(url: getChallengeRequestURL)
         } else {
@@ -45,7 +45,7 @@ class ChallengeRequestController: UITableViewController {
         }
     }
     
-    func fetchData(url: String) {
+    @objc func fetchData(url: String) {
         URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
                 do {
@@ -103,7 +103,7 @@ class ChallengeRequestController: UITableViewController {
         return cell
     }
     
-    func acceptOrJoinChallenge(sender: subclasssedUIButton) {
+    @objc func acceptOrJoinChallenge(sender: subclasssedUIButton) {
         if sender.type == accept {
             acceptChallengeService(challengeId: sender.challengeId!, accept: true)
         } else if sender.type == join {
@@ -111,7 +111,7 @@ class ChallengeRequestController: UITableViewController {
         }
     }
     
-    func rejectChallenge(sender: subclasssedUIButton) {
+    @objc func rejectChallenge(sender: subclasssedUIButton) {
         if sender.type == accept {
             acceptChallengeService(challengeId: sender.challengeId!, accept: false)
         } else if sender.type == join {
@@ -119,7 +119,7 @@ class ChallengeRequestController: UITableViewController {
         }
     }
     
-    func acceptChallengeService(challengeId: String, accept: Bool) {
+    @objc func acceptChallengeService(challengeId: String, accept: Bool) {
         let json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID,
                                    "accept": accept
@@ -145,7 +145,7 @@ class ChallengeRequestController: UITableViewController {
         }).resume()
     }
     
-    func joinToChallengeService(challengeId: String, join: Bool) {
+    @objc func joinToChallengeService(challengeId: String, join: Bool) {
         let json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID,
                                    "join": join

@@ -18,14 +18,14 @@ class ActivityCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var activity : Activities? {
+    @objc var activity : Activities? {
         didSet {
             if let fbID = activity?.facebookID {
                 setImage(fbID: fbID, imageView: profileImageView)
             }
             if let content = activity?.content, let name = activity?.name {
-                let nameAtt = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
-                let contentAtt = NSMutableAttributedString(string: " \(content)", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)])
+                let nameAtt = NSMutableAttributedString(string: "\(name)", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
+                let contentAtt = NSMutableAttributedString(string: " \(content)", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)])
                 nameAtt.append(contentAtt)
                 contentText.attributedText = nameAtt
             }
@@ -33,7 +33,7 @@ class ActivityCell: UITableViewCell {
         }
     }
     
-    func setupViews() {
+    @objc func setupViews() {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         
@@ -51,6 +51,6 @@ class ActivityCell: UITableViewCell {
         contentText.isUserInteractionEnabled = false
     }
     
-    let profileImageView: UIImageView = FeedCell().profileImageView
-    let contentText : UITextView = FeedCell().thinksAboutChallengeView
+    @objc let profileImageView: UIImageView = FeedCell().profileImageView
+    @objc let contentText : UITextView = FeedCell().thinksAboutChallengeView
 }

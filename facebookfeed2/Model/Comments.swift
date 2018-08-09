@@ -9,9 +9,9 @@
 import UIKit
 
 class Comments: SafeJsonObject {
-    var name: String?
-    var comment : String?
-    var fbID : String?
-    var challengeId: String?
-    var memberId: String?
+    @objc var name: String?
+    @objc var comment : String?
+    @objc var fbID : String?
+    @objc var challengeId: String?
+    @objc var memberId: String?
 }

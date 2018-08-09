@@ -9,18 +9,18 @@
 import UIKit
 
 class CommentTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
-    let screenSize = UIScreen.main.bounds
-    var tableTitle : String!
-    var tableView : UITableView!
-    var comments = [Comments]()
-    var commentCellView = CommentCellView()
-    var bottomConstraint: NSLayoutConstraint?
-    var heightOfCommentView : CGFloat = 50
-    var challengeId : String!
-    var refreshControl : UIRefreshControl!
-    var commentedMemberId: String!
-    var currentPage : Int = 0
-    var nowMoreData: Bool = false
+    @objc let screenSize = UIScreen.main.bounds
+    @objc var tableTitle : String!
+    @objc var tableView : UITableView!
+    @objc var comments = [Comments]()
+    @objc var commentCellView = CommentCellView()
+    @objc var bottomConstraint: NSLayoutConstraint?
+    @objc var heightOfCommentView : CGFloat = 50
+    @objc var challengeId : String!
+    @objc var refreshControl : UIRefreshControl!
+    @objc var commentedMemberId: String!
+    @objc var currentPage : Int = 0
+    @objc var nowMoreData: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +50,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         tableView?.addSubview(refreshControl)
     }
     
-    func loadChallenges() {
+    @objc func loadChallenges() {
         if dummyServiceCall == false {
             fetchData(url: getCommentsURL)
         } else {
@@ -58,18 +58,18 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         }
     }
     
-    func onRefresh() {
+    @objc func onRefresh() {
         reloadPage()
         refreshControl.endRefreshing()
     }
     
-    func reloadPage() {
+    @objc func reloadPage() {
         currentPage = 0
         self.comments = [Comments]()
         self.loadChallenges()
     }
     
-    func fetchData(url: String) {
+    @objc func fetchData(url: String) {
         let jsonURL = URL(string: url + self.challengeId + "&page=\(currentPage)")!
         jsonURL.get { data, response, error in
             guard
@@ -103,8 +103,8 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         }
     }
     
-    var tableBottomHeight : CGFloat = 0
-    func handleKeyboardNotification(notification: NSNotification) {
+    @objc var tableBottomHeight : CGFloat = 0
+    @objc func handleKeyboardNotification(notification: NSNotification) {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
             let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
@@ -136,20 +136,20 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         }
     }
     
-    func scrollToLastRow() {
+    @objc func scrollToLastRow() {
         if self.comments.count != 0 {
             let indexPath = IndexPath(item: self.comments.count - 1, section: 0)
             self.tableView?.scrollToRow(at: indexPath as IndexPath, at: .bottom, animated: true)
         }
     }
     
-    let messageInputContainerView: UIView = {
+    @objc let messageInputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
         return view
     }()
     
-    let sendButton: UIButton = {
+    @objc let sendButton: UIButton = {
         let button = UIButton(type: UIButtonType.system)
         button.setTitle("Send", for: .normal)
         let titleColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
@@ -158,7 +158,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         return button
     }()
     
-    let profileImageView: UIImageView = FeedCell().profileImageView
+    @objc let profileImageView: UIImageView = FeedCell().profileImageView
     
     private func setupInputComponents() {
         profileImageView.removeFromSuperview()
@@ -194,7 +194,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         sendButton.addTarget(self, action: #selector(self.addComment), for: UIControlEvents.touchUpInside)
     }
     
-    func addComment() {
+    @objc func addComment() {
         if textView.text == addComents {
             self.popupAlert(message: "Please enter your comment!", willDelay: false)
         }
@@ -230,11 +230,11 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         }).resume()
     }
     
-    let heighForRow : CGFloat = UIScreen.main.bounds.width * 0.9 / 10
+    @objc let heighForRow : CGFloat = UIScreen.main.bounds.width * 0.9 / 10
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let thinksAboutChl = comments[indexPath.item].comment
         if let thinksAboutChallenge = thinksAboutChl {
-            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
+            let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)], context: nil)
             return rect.height + heighForRow
         }
         return heighForRow
@@ -265,19 +265,19 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         return cell
     }
     
-    func getCommentText(indexPath:IndexPath) -> NSMutableAttributedString {
-        let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
-        let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
+    @objc func getCommentText(indexPath:IndexPath) -> NSMutableAttributedString {
+        let commentAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].name!)): ", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 12)])
+        let nameAtt = NSMutableAttributedString(string: "\(String(describing: comments[indexPath.row].comment!))", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)])
         commentAtt.append(nameAtt)
         return commentAtt
     }
     
-    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
         openProfile(name: comments[tappedImage.tag].name!, memberId: comments[tappedImage.tag].memberId!, memberFbId: comments[tappedImage.tag].fbID!)
     }
     
-    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
         let textview = tapGestureRecognizer.view as! UITextView
         let textRange = NSMakeRange(0, (comments[textview.tag].name?.count)!)
         if tapGestureRecognizer.didTapAttributedTextInTextView(label: textview, inRange: textRange) {
@@ -310,12 +310,12 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         }
     }
  
-    func setTextViewToDefault() {
+    @objc func setTextViewToDefault() {
         self.textView.text = addComents
         self.textView.textColor = UIColor.lightGray
     }
     
-    let textView: UITextView = {
+    @objc let textView: UITextView = {
         let textView = UITextView()
         textView.textColor = UIColor.lightGray
         textView.text = addComents
@@ -330,7 +330,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         return textView
     }()
     
-    func openProfile(name: String, memberId: String, memberFbId:String) {
+    @objc func openProfile(name: String, memberId: String, memberFbId:String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
         group.wait()
@@ -347,11 +347,11 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
-    var countOfFollowersForFriend = 0
-    var countOfFollowingForFriend = 0
-    var friendIsPrivate = false
-    let group = DispatchGroup()
-    func getMemberInfo(memberId: String) {
+    @objc var countOfFollowersForFriend = 0
+    @objc var countOfFollowingForFriend = 0
+    @objc var friendIsPrivate = false
+    @objc let group = DispatchGroup()
+    @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in

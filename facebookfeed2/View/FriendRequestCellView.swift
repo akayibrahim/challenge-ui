@@ -19,14 +19,14 @@ class FriendRequestCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let nameLabel: UILabel = {
+    @objc let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Sample Name"
         label.font = UIFont.boldSystemFont(ofSize: 12)
         return label
     }()
     
-    let requestImageView: UIImageView = {
+    @objc let requestImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = UIColor.blue
@@ -34,7 +34,7 @@ class FriendRequestCell: UITableViewCell {
         return imageView
     }()
     
-    let confirmButton: subclasssedUIButton = {
+    @objc let confirmButton: subclasssedUIButton = {
         let button = subclasssedUIButton()
         button.setTitle(followButtonText, for: UIControlState())
         button.setTitleColor(UIColor.white, for: UIControlState())
@@ -44,7 +44,7 @@ class FriendRequestCell: UITableViewCell {
         return button
     }()
     
-    let deleteButton: subclasssedUIButton = {
+    @objc let deleteButton: subclasssedUIButton = {
         let button = subclasssedUIButton()
         button.setTitle("Remove", for: UIControlState())
         button.setTitleColor(UIColor(white: 0.3, alpha: 1), for: UIControlState())
@@ -55,7 +55,7 @@ class FriendRequestCell: UITableViewCell {
         return button
     }()
     
-    func setupViews() {
+    @objc func setupViews() {
         let contentGuide = self.readableContentGuide
         addSubview(requestImageView)
         addSubview(nameLabel)

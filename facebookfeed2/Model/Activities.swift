@@ -9,13 +9,13 @@
 import UIKit
 
 class Activities: SafeJsonObject {
-    var name: String?
-    var content : String?
-    var facebookID : String?    
-    var challengeId: String?
-    var fromMemberId: String?
-    var toMemberId: String?
-    var type: String?
-    var activityTableId: String?
-    var mediaObjectId: String?
+    @objc var name: String?
+    @objc var content : String?
+    @objc var facebookID : String?    
+    @objc var challengeId: String?
+    @objc var fromMemberId: String?
+    @objc var toMemberId: String?
+    @objc var type: String?
+    @objc var activityTableId: String?
+    @objc var mediaObjectId: String?
 }

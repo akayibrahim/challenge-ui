@@ -18,15 +18,15 @@ class AddChallengeView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var widthOfImage: CGFloat = 1/3
-    var heightOfFullImage: CGFloat = 1/2
-    var heightOfHalfImage: CGFloat = 0.975/4
-    var widthOfQuarterImage: CGFloat = 0.975/6
-    var heightOfMiddle: CGFloat = 0.05/4
-    var widthOfMiddle: CGFloat = 0.05/6
-    var pickerData: [String] = [String]()
+    @objc var widthOfImage: CGFloat = 1/3
+    @objc var heightOfFullImage: CGFloat = 1/2
+    @objc var heightOfHalfImage: CGFloat = 0.975/4
+    @objc var widthOfQuarterImage: CGFloat = 0.975/6
+    @objc var heightOfMiddle: CGFloat = 0.05/4
+    @objc var widthOfMiddle: CGFloat = 0.05/6
+    @objc var pickerData: [String] = [String]()
 
-    func setupViews() {
+    @objc func setupViews() {
         let contentGuide = self.readableContentGuide
         addLayoutGuide(middleHeight)
         addLayoutGuide(rightMiddleTopWidth)
@@ -134,7 +134,7 @@ class AddChallengeView: UIView {
         subjectLabel.backgroundColor = UIColor(white: 1, alpha: 0)
     }
     
-    func removeChlrFromChallengeView(challengeView : UIView) {
+    @objc func removeChlrFromChallengeView(challengeView : UIView) {
         self.firstOneChlrPeopleImageView.removeFromSuperview()
         self.firstTwoChlrPeopleImageView.removeFromSuperview()
         self.secondTwoChlrPeopleImageView.removeFromSuperview()
@@ -147,7 +147,7 @@ class AddChallengeView: UIView {
         self.moreFourPeopleImageView.removeFromSuperview()
     }
     
-    func generateFirstTeam(count : Int) {
+    @objc func generateFirstTeam(count : Int) {
         removeChlrFromChallengeView(challengeView: self.challengeView)
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
@@ -227,7 +227,7 @@ class AddChallengeView: UIView {
         }
     }
     
-    func removeFromChallengeView(challengeView : UIView) {
+    @objc func removeFromChallengeView(challengeView : UIView) {
         self.firstOnePeopleImageView.removeFromSuperview()
         self.firstTwoPeopleImageView.removeFromSuperview()
         self.secondTwoPeopleImageView.removeFromSuperview()
@@ -241,7 +241,7 @@ class AddChallengeView: UIView {
         self.moreFourPeopleImageView.removeFromSuperview()
     }
     
-    func generateSecondTeam(count : Int) {
+    @objc func generateSecondTeam(count : Int) {
         removeFromChallengeView(challengeView: self.challengeView)
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
@@ -318,36 +318,36 @@ class AddChallengeView: UIView {
         }
     }
     
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    @objc func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    let firstOnePeopleImageView: UIImageView = FeedCell.imageView()
-    let firstOneChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstTwoPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondTwoPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstThreePeopleImageView: UIImageView = FeedCell.imageView()
-    let secondThreePeopleImageView: UIImageView = FeedCell.imageView()
-    let thirdThreePeopleImageView: UIImageView = FeedCell.imageView()
-    let firstFourPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondFourPeopleImageView: UIImageView = FeedCell.imageView()
-    let thirdFourPeopleImageView: UIImageView = FeedCell.imageView()
-    let moreFourPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstTwoChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondTwoChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let thirdThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let firstFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let secondFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let thirdFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
-    let moreFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let firstOnePeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let firstOneChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let firstTwoPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let secondTwoPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let firstThreePeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let secondThreePeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let thirdThreePeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let firstFourPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let secondFourPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let thirdFourPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let moreFourPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let firstTwoChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let secondTwoChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let firstThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let secondThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let thirdThreeChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let firstFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let secondFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let thirdFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
+    @objc let moreFourChlrPeopleImageView: UIImageView = FeedCell.imageView()
     
-    let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
+    @objc let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
     
-    let challengeView: UIView = FeedCell.viewFunc()
+    @objc let challengeView: UIView = FeedCell.viewFunc()
     
-    static func segmentedControl(myArray : NSArray) -> UISegmentedControl {
+    @objc static func segmentedControl(myArray : NSArray) -> UISegmentedControl {
         let mySegControl : UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
         mySegControl.backgroundColor = UIColor.white
         mySegControl.layer.cornerRadius = 5.0
@@ -355,25 +355,25 @@ class AddChallengeView: UIView {
         return mySegControl
     }
     
-    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["AS A TEAM", "TO PEOPLE", "TO MYSELF", "TO WORLD"])    
+    @objc let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["AS A TEAM", "TO PEOPLE", "TO MYSELF", "TO WORLD"])    
     
-    let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
-    let finishFlag: UIButton = FeedCell.buttonForTitle("", imageName: "finishFlag")
+    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
+    @objc let finishFlag: UIButton = FeedCell.buttonForTitle("", imageName: "finishFlag")
     
-    let vsImageView: UIImageView = {
+    @objc let vsImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.semanticContentAttribute = .forceRightToLeft
         return imageView
     }()
     
-    let middleHeight = UILayoutGuide()
-    let middleTopGuide = UILayoutGuide()
-    let rightMiddleTopWidth = UILayoutGuide()
-    let leftMiddleTopWidth = UILayoutGuide()
-    let rightMiddleBottomWidth = UILayoutGuide()
-    let leftMiddleBottomWidth = UILayoutGuide()
+    @objc let middleHeight = UILayoutGuide()
+    @objc let middleTopGuide = UILayoutGuide()
+    @objc let rightMiddleTopWidth = UILayoutGuide()
+    @objc let leftMiddleTopWidth = UILayoutGuide()
+    @objc let rightMiddleBottomWidth = UILayoutGuide()
+    @objc let leftMiddleBottomWidth = UILayoutGuide()
     
-    let clapping = FeedCell.buttonForTitle("", imageName: "clap")
-    let score: UILabel = FeedCell.label(12)
+    @objc let clapping = FeedCell.buttonForTitle("", imageName: "clap")
+    @objc let score: UILabel = FeedCell.label(12)
 }

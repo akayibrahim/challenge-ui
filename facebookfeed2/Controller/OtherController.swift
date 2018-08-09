@@ -10,10 +10,10 @@ import UIKit
 import FBSDKLoginKit
 
 class OtherController: UITableViewController {
-    static let headerId = "headerId"
-    static let cellId = "cellId"
-    let screenSize = UIScreen.main.bounds
-    var logoutIndex : Int = 4
+    @objc static let headerId = "headerId"
+    @objc static let cellId = "cellId"
+    @objc let screenSize = UIScreen.main.bounds
+    @objc var logoutIndex : Int = 4
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +26,7 @@ class OtherController: UITableViewController {
         tableView.sectionHeaderHeight = 26
     }
     
-    var tableRowHeightHeight: CGFloat = 44
+    @objc var tableRowHeightHeight: CGFloat = 44
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // let cell =  tableView.dequeueReusableCell(withIdentifier: OtherController.cellId, for: indexPath)
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
@@ -77,23 +77,23 @@ class OtherController: UITableViewController {
         return header
     }
     
-    lazy var loginManager: FBSDKLoginManager = {
+    @objc lazy var loginManager: FBSDKLoginManager = {
         return FBSDKLoginManager()
     }()
     
-    func logout() {
+    @objc func logout() {
         FBSDKLoginManager().logOut()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = FacebookController()
     }
     
-    func settings() {
+    @objc func settings() {
     }
     
-    func privacy() {
+    @objc func privacy() {
     }
     
-    func support() {
+    @objc func support() {
     }
 }
 

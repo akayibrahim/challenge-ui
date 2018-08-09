@@ -10,7 +10,7 @@ import UIKit
 
 extension UIViewController
 {
-    func setImage(fbID: String?, imageView: UIImageView) {
+    @objc func setImage(fbID: String?, imageView: UIImageView) {
         if let peoplefbID = fbID {
             let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
             // imageView.load(url: url!)
@@ -24,7 +24,7 @@ extension UIViewController
         }
     }
     
-    func getTrendImage(challengeId: String, challengerId: String, completion: @escaping (_ image:UIImage?)->()) {
+    @objc func getTrendImage(challengeId: String, challengerId: String, completion: @escaping (_ image:UIImage?)->()) {
         if dummyServiceCall == false {
             let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {                
@@ -39,7 +39,7 @@ extension UIViewController
         }
     }
     
-    func getVideo(challengeId: String, challengerId: String, completion: @escaping (_ video:URL?)->()) {
+    @objc func getVideo(challengeId: String, challengerId: String, completion: @escaping (_ video:URL?)->()) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
@@ -56,7 +56,7 @@ extension UIViewController
         }
     }
     
-    func getProofImageByObjectId(imageView: UIImageView, objectId: String, completion: @escaping (_ image:UIImage?)->()) {
+    @objc func getProofImageByObjectId(imageView: UIImageView, objectId: String, completion: @escaping (_ image:UIImage?)->()) {
         let url = URL(string: downloadProofImageByObjectIdURL + "?objectId=\(objectId)")
         if let urlOfImage = url {
             ImageService.getImage(withURL: urlOfImage) { image in
@@ -67,13 +67,13 @@ extension UIViewController
         }
     }
     
-    func setImage(name: String?, imageView: UIImageView) {
+    @objc func setImage(name: String?, imageView: UIImageView) {
         if let peopleImage = name {
             imageView.image = UIImage(named: peopleImage)
         }
     }
     
-    func hideKeyboardWhenTappedAround() {
+    @objc func hideKeyboardWhenTappedAround() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UITableViewController.dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
@@ -83,7 +83,7 @@ extension UIViewController
         view.endEditing(true)
     }
     
-    func popupAlert(message: String, willDelay: Bool) {
+    @objc func popupAlert(message: String, willDelay: Bool) {
         DispatchQueue.main.async {
             let selectAlert: UIAlertController = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.alert)
             if !willDelay {

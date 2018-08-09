@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIView {
-    func setImage(fbID: String?, imageView: UIImageView) {
+    @objc func setImage(fbID: String?, imageView: UIImageView) {
         if let peoplefbID = fbID {
             let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
             // imageView.load(url: url!)
@@ -23,7 +23,7 @@ extension UIView {
         }
     }
     
-    func setImage(name: String?, imageView: UIImageView) {
+    @objc func setImage(name: String?, imageView: UIImageView) {
         if let peopleImage = name {
             imageView.image = UIImage(named: peopleImage)
         }
@@ -40,37 +40,37 @@ extension UIView {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutFormatOptions(), metrics: nil, views: viewsDictionary))
     }
     
-    func addTopAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutYAxisAnchor>, constant: CGFloat) {
+    @objc func addTopAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutYAxisAnchor>, constant: CGFloat) {
         view.topAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func addBottomAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutYAxisAnchor>, constant: CGFloat) {
+    @objc func addBottomAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutYAxisAnchor>, constant: CGFloat) {
         view.bottomAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func addLeadingAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutXAxisAnchor>, constant: CGFloat) {
+    @objc func addLeadingAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutXAxisAnchor>, constant: CGFloat) {
         view.leadingAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func addTrailingAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutXAxisAnchor>, constant: CGFloat) {
+    @objc func addTrailingAnchor(_ view: UIView, anchor: NSLayoutAnchor<NSLayoutXAxisAnchor>, constant: CGFloat) {
         view.trailingAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func addWidthAnchor(_ view: UIView, multiplier: CGFloat) {
+    @objc func addWidthAnchor(_ view: UIView, multiplier: CGFloat) {
         let screenSize = UIScreen.main.bounds
         view.widthAnchor.constraint(equalToConstant: screenSize.width * multiplier).isActive = true
     }
     
-    func addHeightAnchor(_ view: UIView, multiplier: CGFloat) {
+    @objc func addHeightAnchor(_ view: UIView, multiplier: CGFloat) {
         let screenSize = UIScreen.main.bounds
         view.heightAnchor.constraint(equalToConstant: screenSize.width * multiplier).isActive = true
     }
     
-    func addBorders(edges: UIRectEdge = .all, color: UIColor = .black, width: CGFloat = 1.0) {
+    @objc func addBorders(edges: UIRectEdge = .all, color: UIColor = .black, width: CGFloat = 1.0) {
         func createBorder() -> UIView {
             let borderView = UIView(frame: CGRect.zero)
             borderView.translatesAutoresizingMaskIntoConstraints = false

@@ -9,13 +9,13 @@
 import UIKit
 
 class VersusAttendance: SafeJsonObject {
-    var memberId: String?
+    @objc var memberId: String?
     var accept: Bool?
     var firstTeamMember: Bool?
     var secondTeamMember: Bool?
-    var FacebookID: String?
+    @objc var FacebookID: String?
     
-    init(data: [String : AnyObject]) {
+    @objc init(data: [String : AnyObject]) {
         self.memberId = data["memberId"] as? String ?? ""
         self.accept = data["accept"] as? Bool ?? false
         self.firstTeamMember = data["firstTeamMember"] as? Bool ?? false

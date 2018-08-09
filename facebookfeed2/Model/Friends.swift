@@ -9,10 +9,10 @@
 import UIKit
 
 class Friends: SafeJsonObject {
-    var name: String?
-    var surname: String?
-    var id : String?
-    var facebookID : String?
-    var phoneModel: String?
-    var region: String?
+    @objc var name: String?
+    @objc var surname: String?
+    @objc var id : String?
+    @objc var facebookID : String?
+    @objc var phoneModel: String?
+    @objc var region: String?
 }

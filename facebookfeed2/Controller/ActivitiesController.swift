@@ -9,14 +9,14 @@
 import UIKit
 
 class ActivitiesController: UITableViewController {
-    let cellId = "cellId"
-    let followCellId = "followCellId"
-    var activities = [Activities]()
-    var challengeRequestCount: Int = 0
-    let group = DispatchGroup()
-    var currentPage : Int = 0
-    var nowMoreData: Bool = false
-    var goForward: Bool = false
+    @objc let cellId = "cellId"
+    @objc let followCellId = "followCellId"
+    @objc var activities = [Activities]()
+    @objc var challengeRequestCount: Int = 0
+    @objc let group = DispatchGroup()
+    @objc var currentPage : Int = 0
+    @objc var nowMoreData: Bool = false
+    @objc var goForward: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,20 +48,20 @@ class ActivitiesController: UITableViewController {
         super.viewWillDisappear(animated)
     }
     
-    func onRefesh() {
+    @objc func onRefesh() {
         if (refreshControl?.isRefreshing)! {
             self.reloadPage()
             refreshControl?.endRefreshing()
         }
     }
 
-    func reloadPage() {
+    @objc func reloadPage() {
         currentPage = 0
         self.activities = [Activities]()
         self.loadActivities()
     }
     
-    func loadActivities() {
+    @objc func loadActivities() {
         if dummyServiceCall == false {
             fetchChallengeRequest()
             group.wait()
@@ -74,7 +74,7 @@ class ActivitiesController: UITableViewController {
         }
     }
     
-    func fetchActivities() {
+    @objc func fetchActivities() {
         let jsonURL = URL(string: getActivitiesURL + memberID + "&page=\(currentPage)")!
         jsonURL.get { data, response, error in
             guard
@@ -98,7 +98,7 @@ class ActivitiesController: UITableViewController {
         }
     }
     
-    func fetchChallengeRequest() {
+    @objc func fetchChallengeRequest() {
         group.enter()
         var challengeRequest = [ChallengeRequest]()
         let jsonURL = URL(string: getChallengeRequestURL + memberID)!
@@ -187,7 +187,7 @@ class ActivitiesController: UITableViewController {
         return UITableViewCell()
     }
     
-    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
         let textview = tapGestureRecognizer.view as! UITextView
         let textRange = NSMakeRange(0, (activities[textview.tag].name?.count)!)
         if tapGestureRecognizer.didTapAttributedTextInTextView(label: textview, inRange: textRange) {
@@ -197,19 +197,19 @@ class ActivitiesController: UITableViewController {
         }
     }
     
-    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
         openProfile(name: activities[tappedImage.tag].name!, memberId: activities[tappedImage.tag].fromMemberId!, memberFbId: activities[tappedImage.tag].facebookID!)
     }
     
-    let heighForRow : CGFloat = UIScreen.main.bounds.width * 1 / 10
+    @objc let heighForRow : CGFloat = UIScreen.main.bounds.width * 1 / 10
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if (indexPath.section == 0 || indexPath.section == 1) && indexPath.row == 0 {
             return UIScreen.main.bounds.width * 1.2 / 10
         }
         if activities.count != 0 {
             if  let thinksAboutChallenge = activities[indexPath.row].content {
-                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)], context: nil)
+                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)], context: nil)
                 return rect.height + heighForRow
             }
         }
@@ -225,7 +225,7 @@ class ActivitiesController: UITableViewController {
         return nil
     }
     
-    var lastContentOffSet : CGFloat = 0
+    @objc var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
             // move down
@@ -253,7 +253,7 @@ class ActivitiesController: UITableViewController {
         }
     }
     
-    func openBackgroundOfActivity(indexPath: IndexPath) {
+    @objc func openBackgroundOfActivity(indexPath: IndexPath) {
         let type = activities[indexPath.row].type
         if type == comment {
             viewComments(challengeId: activities[indexPath.row].challengeId!)
@@ -272,7 +272,7 @@ class ActivitiesController: UITableViewController {
         }
     }
     
-    func openExplorer(challengeId: String) {
+    @objc func openExplorer(challengeId: String) {
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
@@ -281,7 +281,7 @@ class ActivitiesController: UITableViewController {
         self.navigationController?.pushViewController(challengeController, animated: true)
     }
     
-    func viewComments(challengeId: String) {
+    @objc func viewComments(challengeId: String) {
         let commentsTable = CommentTableViewController()
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments        
@@ -291,7 +291,7 @@ class ActivitiesController: UITableViewController {
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
-    func viewProofs(challengeId: String) {
+    @objc func viewProofs(challengeId: String) {
         let proofsTable = ProofTableViewController()
         proofsTable.tableTitle = proofsTableTitle
         // TODO commentsTable.comments = self.comments
@@ -301,14 +301,14 @@ class ActivitiesController: UITableViewController {
         self.navigationController?.pushViewController(proofsTable, animated: true)
     }
     
-    func followRequest() {
+    @objc func followRequest() {
         let followRequest = FollowRequestController()
         followRequest.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(followRequest, animated: true)
     }
     
-    func challengeRequest() {
+    @objc func challengeRequest() {
         let challengeRequest = ChallengeRequestController()
         goForward = true
         challengeRequest.hidesBottomBarWhenPushed = true
@@ -316,7 +316,7 @@ class ActivitiesController: UITableViewController {
         self.navigationController?.pushViewController(challengeRequest, animated: true)
     }
     
-    func openProfile(name: String, memberId: String, memberFbId:String) {
+    @objc func openProfile(name: String, memberId: String, memberFbId:String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
         group.wait()
@@ -333,10 +333,10 @@ class ActivitiesController: UITableViewController {
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
-    var countOfFollowersForFriend = 0
-    var countOfFollowingForFriend = 0
-    var friendIsPrivate = false
-    func getMemberInfo(memberId: String) {
+    @objc var countOfFollowersForFriend = 0
+    @objc var countOfFollowingForFriend = 0
+    @objc var friendIsPrivate = false
+    @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in

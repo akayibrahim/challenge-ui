@@ -9,10 +9,10 @@
 import UIKit
 
 class ConnectionProblemController: UIViewController {
-    var imageView : UIImageView!
-    var label: UILabel!
-    var window: UIWindow?
-    let still = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
+    @objc var imageView : UIImageView!
+    @objc var label: UILabel!
+    @objc var window: UIWindow?
+    @objc let still = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,7 +78,7 @@ class ConnectionProblemController: UIViewController {
         self.view.addGestureRecognizer(tabToReload)
     }
     
-    func reload() {
+    @objc func reload() {
         still.alpha = 1
         if Reachability.isConnectedToNetwork() {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate

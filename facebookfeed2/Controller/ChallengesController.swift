@@ -31,30 +31,30 @@ class SafeJsonObject: NSObject {
 }
 
 class Feed: SafeJsonObject {
-    var feedUrl, title, link, author, type: String?
+    @objc var feedUrl, title, link, author, type: String?
 }
 
 class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
     	
-    var posts = [Post]()
-    var donePosts = [Post]()
-    var notDonePosts = [Post]()
-    var explorer : Bool = false
-    var challengIdForTrendAndExplorer: String?
-    var profile: Bool = false
-    var memberIdForFriendProfile: String?
-    var memberFbIdForFriendProfile: String?
-    var memberNameForFriendProfile: String?
+    @objc var posts = [Post]()
+    @objc var donePosts = [Post]()
+    @objc var notDonePosts = [Post]()
+    @objc var explorer : Bool = false
+    @objc var challengIdForTrendAndExplorer: String?
+    @objc var profile: Bool = false
+    @objc var memberIdForFriendProfile: String?
+    @objc var memberFbIdForFriendProfile: String?
+    @objc var memberNameForFriendProfile: String?
     var memberCountOfFollowerForFriendProfile: Int?
     var memberCountOfFollowingForFriendProfile: Int?
     var memberIsPrivateForFriendProfile: Bool?
-    var isProfileFriend: Bool = false
-    var currentPage : Int = 0
-    var selfCurrentPage : Int = 0
-    var explorerCurrentPage : Int = 0
-    var nowMoreData: Bool = false
-    var challangeCount: String = "0"
-    var goForward: Bool = false
+    @objc var isProfileFriend: Bool = false
+    @objc var currentPage : Int = 0
+    @objc var selfCurrentPage : Int = 0
+    @objc var explorerCurrentPage : Int = 0
+    @objc var nowMoreData: Bool = false
+    @objc var challangeCount: String = "0"
+    @objc var goForward: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,11 +84,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
     }
     
-    func isTabIndex(_ index: Int) -> Bool {
+    @objc func isTabIndex(_ index: Int) -> Bool {
         return self.tabBarController?.selectedIndex == index
     }
     
-    func getActivityCount() {
+    @objc func getActivityCount() {
         let jsonURL = URL(string: getActivityCountURL + memberID)!
         jsonURL.get { data, response, error in
             guard
@@ -108,27 +108,27 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func onRefesh() {
+    @objc func onRefesh() {
         if refreshControl.isRefreshing {
             reloadChlPage()
             refreshControl.endRefreshing()
         }
     }
     
-    func reloadChlPage() {
+    @objc func reloadChlPage() {
         currentPage = 0
         self.posts = [Post]()
         self.loadChallenges()
     }
     
-    func onSelfRefesh() {
+    @objc func onSelfRefesh() {
         if selfRefreshControl.isRefreshing {
             reloadSelfPage()
             selfRefreshControl.endRefreshing()
         }
     }
     
-    func reloadSelfPage() {
+    @objc func reloadSelfPage() {
         selfCurrentPage = 0
         self.posts = [Post]()
         self.donePosts = [Post]()
@@ -136,7 +136,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.loadChallenges()
     }
     
-    func loadChallenges() {
+    @objc func loadChallenges() {
         if dummyServiceCall == false {
             // Asynchronous Http call to your api url, using NSURLSession:
             if self.profile {
@@ -186,7 +186,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func fetchChallenges(url: String, profile : Bool) {
+    @objc func fetchChallenges(url: String, profile : Bool) {
         let jsonURL = URL(string: url)!
         jsonURL.get { data, response, error in
             guard
@@ -231,7 +231,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func fetchChallengeSize(memberId: String) {
+    @objc func fetchChallengeSize(memberId: String) {
         let jsonURL = URL(string: getChallengeSizeOfMemberURL + memberId)!
         jsonURL.get { data, response, error in
             guard
@@ -372,7 +372,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func createProfile() -> ProfileCellView {
+    @objc func createProfile() -> ProfileCellView {
         let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10), memberFbId: (profile ? memberFbIdForFriendProfile! : memberFbID) , name: (profile ? memberNameForFriendProfile! : memberName))
         if profile {
             profileCell.other.alpha = 0
@@ -424,7 +424,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return profileCell
     }
     
-    func unFollowProfile(sender: subclasssedUIButton) {
+    @objc func unFollowProfile(sender: subclasssedUIButton) {
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=false"
         followOrUnfollowFriend(url: url, isRemove: true)
         group.wait()
@@ -432,7 +432,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.reloadData()
     }
     
-    func followProfile(sender: subclasssedUIButton) {
+    @objc func followProfile(sender: subclasssedUIButton) {
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
         followOrUnfollowFriend(url: url, isRemove: false)
         group.wait()
@@ -440,7 +440,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.reloadData()
     }
     
-    func followOrUnfollowFriend(url: String, isRemove: Bool) {
+    @objc func followOrUnfollowFriend(url: String, isRemove: Bool) {
         group.enter()
         let jsonURL = URL(string: url)!
         jsonURL.get { data, response, error in
@@ -527,7 +527,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return feedCell
     }
     
-    func imageEnable(_ feedCell: FeedCell, yes: Bool) {
+    @objc func imageEnable(_ feedCell: FeedCell, yes: Bool) {
         feedCell.proofedVideoView.alpha = yes ? 0 : 1
         feedCell.volumeUpImageView.alpha = yes ? 0 : 1
         feedCell.volumeDownImageView.alpha = yes ? 0 : 1
@@ -605,7 +605,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         )
     )
     */
-    func changeVolume(gesture: UITapGestureRecognizer) {
+    @objc func changeVolume(gesture: UITapGestureRecognizer) {
         DispatchQueue.main.async {
             let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
             let feedCell = self.collectionView?.cellForItem(at: index) as! FeedCell
@@ -613,7 +613,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func changeVolumeOfFeedCell(feedCell : FeedCell, isSilentRing : Bool, silentRingSwitch : Int) {
+    @objc func changeVolumeOfFeedCell(feedCell : FeedCell, isSilentRing : Bool, silentRingSwitch : Int) {
         DispatchQueue.main.async {
             if !isSilentRing {
                 if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 0))! {
@@ -630,7 +630,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func changeVolumeUpDownView(feedCell : FeedCell, silentRingSwitch : Int) {
+    @objc func changeVolumeUpDownView(feedCell : FeedCell, silentRingSwitch : Int) {
         if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 1))! {
             feedCell.volumeUpImageView.alpha = 1
             feedCell.volumeDownImageView.alpha = 0
@@ -642,7 +642,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     // var avPlayer : AVPlayer = AVPlayer.init()
     
-    func addTargetToFeedCell(feedCell: FeedCell, indexPath : IndexPath) {        
+    @objc func addTargetToFeedCell(feedCell: FeedCell, indexPath : IndexPath) {        
         if feedCell.post?.type == PUBLIC {
             feedCell.joinToChl.tag = indexPath.row
             feedCell.joinToChl.challengeId = posts[indexPath.item].id
@@ -750,9 +750,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.proofedMediaView.layer.zPosition = 1
     }
     
-    var isZooming = false
+    @objc var isZooming = false
     var originalImageCenter: CGPoint?
-    func pan(sender: UIPanGestureRecognizer) {
+    @objc func pan(sender: UIPanGestureRecognizer) {
         if self.isZooming && sender.state == .began {
             self.originalImageCenter = sender.view?.center
         } else if self.isZooming && sender.state == .changed {
@@ -766,7 +766,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     var lastScale:CGFloat!
-    func zoom(sender:UIPinchGestureRecognizer) {
+    @objc func zoom(sender:UIPinchGestureRecognizer) {
         let postImage = sender.view as! UIImageView
         if(sender.state == .began) {
             // Reset the last scale, necessary if there are multiple objects with different scales
@@ -800,30 +800,30 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return true
     }
     
-    func addTargetToImageView(image: subclasssedUIImageView) {
+    @objc func addTargetToImageView(image: subclasssedUIImageView) {
         let tapGestureRecognizerOpenProfile = UITapGestureRecognizer(target: self, action: #selector(openProfileForImage(tapGestureRecognizer:)))
         image.isUserInteractionEnabled = true
         image.addGestureRecognizer(tapGestureRecognizerOpenProfile)
     }
     
-    func openProfileForImage(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func openProfileForImage(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! subclasssedUIImageView
         if tappedImage.memberId != nil {
             openProfile(memberId: tappedImage.memberId!)
         }
     }
     
-    func homeMoreAttendances(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func homeMoreAttendances(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedLabel = tapGestureRecognizer.view as! UIImageView
         openAttendanceList(index: tappedLabel.tag, firstTeam: true)
     }
     
-    func awayMoreAttendances(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func awayMoreAttendances(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedLabel = tapGestureRecognizer.view as! UIImageView
         openAttendanceList(index: tappedLabel.tag, firstTeam: false)
     }
     
-    func openAttendanceList(index: Int, firstTeam: Bool) {
+    @objc func openAttendanceList(index: Int, firstTeam: Bool) {
         let selectionTable = SelectionTableViewController()
         selectionTable.tableTitle = "Attendance List"
         selectionTable.listMode = true
@@ -835,17 +835,17 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
-    func supportList(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func supportList(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedLabel = tapGestureRecognizer.view as! subclasssedUILabel
         openSupportList(index: tappedLabel.index!, firstTeam: true)
     }
     
-    func supportMatchList(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func supportMatchList(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedLabel = tapGestureRecognizer.view as! subclasssedUILabel
         openSupportList(index: tappedLabel.index!, firstTeam: false)
     }
     
-    func openSupportList(index: Int, firstTeam: Bool) {
+    @objc func openSupportList(index: Int, firstTeam: Bool) {
         let selectionTable = SelectionTableViewController()
         selectionTable.tableTitle = "Support List"
         selectionTable.listMode = true
@@ -860,17 +860,17 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
-    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
         openProfile(memberId: posts[tappedImage.tag].challengerId!)
     }
     
-    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UILabel
         openProfile(memberId: posts[tappedImage.tag].challengerId!)
     }
     
-    func deleteChallenge(_ sender: subclasssedUIButton) {
+    @objc func deleteChallenge(_ sender: subclasssedUIButton) {
         URLSession.shared.dataTask(with: NSURL(string: deleteChallengeURL + sender.challengeId!)! as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
             }
@@ -880,12 +880,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }).resume()
     }
     
-    func handleChallengeCountTap(sender:UILabel){
+    @objc func handleChallengeCountTap(sender:UILabel){
         let firstChlRow = IndexPath(item: 0, section: 1)
         collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
     }
     
-    func handleFollowersCountTap(sender:UILabel){
+    @objc func handleFollowersCountTap(sender:UILabel){
         let selectionTable = SelectionTableViewController()
         selectionTable.tableTitle = "Followers"
         selectionTable.listMode = true
@@ -897,7 +897,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
-    func handleFollowingCountTap(sender:UILabel){
+    @objc func handleFollowingCountTap(sender:UILabel){
         let selectionTable = SelectionTableViewController()
         selectionTable.tableTitle = "Following"
         selectionTable.listMode = true
@@ -909,7 +909,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
-    func updateProgress(_ sender: subclasssedUIButton) {
+    @objc func updateProgress(_ sender: subclasssedUIButton) {
         if sender.type == PUBLIC {
             openProofScreen(challengeId: sender.challengeId!, proofed: sender.proofed!, canJoin: sender.canJoin!, proveCount: sender.count!, index: sender.tag)
         } else {
@@ -931,13 +931,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func openOthers(sender: UIButton) {
+    @objc func openOthers(sender: UIButton) {
         let other = OtherController()
         other.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(other, animated: true)
     }
     
-    func addComments(sender: subclasssedUIButton) {
+    @objc func addComments(sender: subclasssedUIButton) {
         let commentsTable = CommentTableViewController()        
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
@@ -951,7 +951,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
-    func viewComments(sender: subclasssedUIButton) {
+    @objc func viewComments(sender: subclasssedUIButton) {
         let commentsTable = CommentTableViewController()
         commentsTable.tableTitle = commentsTableTitle
         // TODO commentsTable.comments = self.comments
@@ -964,11 +964,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
-    func addProofs(sender: subclasssedUIButton) {
+    @objc func addProofs(sender: subclasssedUIButton) {
         openProofScreen(challengeId: sender.challengeId!, proofed: sender.proofed!, canJoin: sender.canJoin!, proveCount: sender.count!, index: sender.tag)
     }
     
-    func openProofScreen(challengeId: String, proofed: Bool, canJoin: Bool, proveCount: Int, index: Int) {
+    @objc func openProofScreen(challengeId: String, proofed: Bool, canJoin: Bool, proveCount: Int, index: Int) {
         let commentsTable = ProofTableViewController()
         commentsTable.tableTitle = proofsTableTitle
         commentsTable.challengeId = challengeId
@@ -981,11 +981,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
-    func viewProofs(sender: subclasssedUIButton) {
+    @objc func viewProofs(sender: subclasssedUIButton) {
         openProofScreen(challengeId: sender.challengeId!, proofed: sender.proofed!, canJoin: sender.canJoin!, proveCount: sender.count!, index: sender.tag)
     }
     
-    func supportChallenge(sender: subclasssedUIButton) {
+    @objc func supportChallenge(sender: subclasssedUIButton) {
         let index = IndexPath(item: sender.tag, section: 0)
         let feedCell = collectionView?.cellForItem(at: index) as! FeedCell
         let currentImage = sender.currentImage
@@ -1008,7 +1008,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func supportChallengeService(support:Bool, challengeId: String, feedCell: FeedCell, isHome: Bool, index: IndexPath) {
+    @objc func supportChallengeService(support:Bool, challengeId: String, feedCell: FeedCell, isHome: Bool, index: IndexPath) {
         var json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID
         ]
@@ -1052,7 +1052,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }).resume()
     }
     
-    func supportChallengeMatch(sender: subclasssedUIButton) {
+    @objc func supportChallengeMatch(sender: subclasssedUIButton) {
         let index = IndexPath(item: sender.tag, section: 0)
         let feedCell = collectionView?.cellForItem(at: index) as! FeedCell
         let currentImage = sender.currentImage
@@ -1075,7 +1075,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func joinToChallenge(sender: subclasssedUIButton) {
+    @objc func joinToChallenge(sender: subclasssedUIButton) {
         let index = IndexPath(item: sender.tag, section: 0)
         let feedCell = collectionView?.cellForItem(at: index) as! FeedCell
         let currentImage = feedCell.joinButton.currentImage
@@ -1087,7 +1087,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func joinToChallengeService(challengeId: String, feedCell: FeedCell) {
+    @objc func joinToChallengeService(challengeId: String, feedCell: FeedCell) {
         let json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID,
                                    "join": true
@@ -1114,7 +1114,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }).resume()
     }
 
-    let screenSize = UIScreen.main.bounds
+    @objc let screenSize = UIScreen.main.bounds
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if (self.tabBarController?.selectedIndex == profileIndex && !explorer) || profile {
             if indexPath.row == 0 && indexPath.section == 0 {
@@ -1152,14 +1152,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return 8
     }
     
-    let zoomImageView = UIImageView()
-    let blackBackgroundView = UIView()
-    let navBarCoverView = UIView()
-    let tabBarCoverView = UIView()
+    @objc let zoomImageView = UIImageView()
+    @objc let blackBackgroundView = UIView()
+    @objc let navBarCoverView = UIView()
+    @objc let tabBarCoverView = UIView()
     
-    var statusImageView: UIImageView?
+    @objc var statusImageView: UIImageView?
     
-    func animateImageView(_ statusImageView: UIImageView) {
+    @objc func animateImageView(_ statusImageView: UIImageView) {
         self.statusImageView = statusImageView
         if let startingFrame = statusImageView.superview?.convert(statusImageView.frame, to: nil) {
             statusImageView.alpha = 0
@@ -1196,7 +1196,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func zoomOut() {
+    @objc func zoomOut() {
         if let startingFrame = statusImageView!.superview?.convert(statusImageView!.frame, to: nil) {
             
             UIView.animate(withDuration: 0.75, animations: { () -> Void in
@@ -1217,7 +1217,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    var lastContentOffSet : CGFloat = 0
+    @objc var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if explorer {
             return
@@ -1266,7 +1266,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func openExplorer(challengeId: String) {
+    @objc func openExplorer(challengeId: String) {
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
@@ -1275,7 +1275,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(challengeController, animated: true)
     }
     
-    func openProfile(memberId: String) {
+    @objc func openProfile(memberId: String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
         isMyFriend(friendMemberId: memberId)
@@ -1293,13 +1293,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
-    var countOfFollowersForOpenProfile = 0
-    var countOfFollowingForOpenProfile = 0
-    var nameForOpenProfile = ""
-    var facebookIDForOpenProfile = ""
-    var friendIsPrivate = false
-    let group = DispatchGroup()
-    func getMemberInfo(memberId: String) {
+    @objc var countOfFollowersForOpenProfile = 0
+    @objc var countOfFollowingForOpenProfile = 0
+    @objc var nameForOpenProfile = ""
+    @objc var facebookIDForOpenProfile = ""
+    @objc var friendIsPrivate = false
+    @objc let group = DispatchGroup()
+    @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in
@@ -1322,7 +1322,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func isMyFriend(friendMemberId: String) {
+    @objc func isMyFriend(friendMemberId: String) {
         let jsonURL = URL(string: isMyFriendURL + memberID + "&friendMemberId=" + friendMemberId)!
         group.enter()
         jsonURL.get { data, response, error in
@@ -1351,7 +1351,7 @@ class ChallengeHeader: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let nameLabel: UILabel = {
+    @objc let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "FRIEND REQUESTS"
         label.font = UIFont.systemFont(ofSize: 10)
@@ -1359,13 +1359,13 @@ class ChallengeHeader: UICollectionReusableView {
         return label
     }()
     
-    let bottomBorderView: UIView = {
+    @objc let bottomBorderView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.rgb(229, green: 231, blue: 235)
         return view
     }()
     
-    func setupViews() {
+    @objc func setupViews() {
         let contentGuide = self.readableContentGuide
         
         addSubview(nameLabel)

@@ -20,18 +20,18 @@ class ForwardChange: NSObject, NSCoding {
         aCoder.encode(index, forKey: "index")
     }
     
-    init(index: IndexPath, forwardScreen: String) {
+    @objc init(index: IndexPath, forwardScreen: String) {
         self.index = index
         self.forwardScreen = forwardScreen
     }
     
-    init(index: IndexPath, forwardScreen: String, viewCommentsCount: Int) {
+    @objc init(index: IndexPath, forwardScreen: String, viewCommentsCount: Int) {
         self.index = index
         self.forwardScreen = forwardScreen
         self.viewCommentsCount = viewCommentsCount
     }
     
-    init(index: IndexPath, forwardScreen: String, viewProofsCount: Int, joined: Bool, proved: Bool) {
+    @objc init(index: IndexPath, forwardScreen: String, viewProofsCount: Int, joined: Bool, proved: Bool) {
         self.index = index
         self.forwardScreen = forwardScreen
         self.viewProofsCount = viewProofsCount
@@ -50,12 +50,12 @@ class ForwardChange: NSObject, NSCoding {
         index = aDecoder.decodeObject(forKey: "index") as? IndexPath
     }
     
-    var forwardScreen: String?
+    @objc var forwardScreen: String?
     var viewCommentsCount: Int?
     var viewProofsCount: Int?
     var joined: Bool?
     var proved: Bool?
-    var firstTeamScore: String?
-    var secondTeamScore: String?
-    var index: IndexPath?
+    @objc var firstTeamScore: String?
+    @objc var secondTeamScore: String?
+    @objc var index: IndexPath?
 }

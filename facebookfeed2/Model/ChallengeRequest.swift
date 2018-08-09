@@ -9,10 +9,10 @@
 import UIKit
 
 class ChallengeRequest: SafeJsonObject {
-    var name: String?
-    var surname: String?
-    var challengeId : String?
-    var facebookID : String?
-    var type: String?
-    var subject: String?
+    @objc var name: String?
+    @objc var surname: String?
+    @objc var challengeId : String?
+    @objc var facebookID : String?
+    @objc var type: String?
+    @objc var subject: String?
 }

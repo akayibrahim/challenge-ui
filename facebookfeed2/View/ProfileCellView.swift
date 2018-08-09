@@ -13,7 +13,7 @@ class ProfileCellView: UICollectionViewCell {
         super.init(frame: frame)
     }
     
-    init(frame: CGRect, memberFbId: String, name: String) {
+    @objc init(frame: CGRect, memberFbId: String, name: String) {
         super.init(frame: frame)
         setupViews(memberFbId: memberFbId, name: name)
     }
@@ -22,14 +22,14 @@ class ProfileCellView: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let screenSize = UIScreen.main.bounds
-    func setupViews(memberFbId: String, name: String) {
+    @objc let screenSize = UIScreen.main.bounds
+    @objc func setupViews(memberFbId: String, name: String) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         generateProfile(contentGuide, memberFbId: memberFbId, name: name)
     }
     
-    func generateProfile(_ contentGuide: UILayoutGuide, memberFbId: String, name: String) {
+    @objc func generateProfile(_ contentGuide: UILayoutGuide, memberFbId: String, name: String) {
         addSubview(profileImageView)
         addTopAnchor(profileImageView, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: 0)
@@ -41,7 +41,7 @@ class ProfileCellView: UICollectionViewCell {
         profileImageView.contentMode = .scaleAspectFill
         
         addSubview(nameLabel)
-        let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 18)])
+        let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 18)])
         nameLabel.attributedText = attributedText
         addTopAnchor(nameLabel, anchor: profileImageView.topAnchor, constant: screenSize.width * 0.15 / 10)
         addLeadingAnchor(nameLabel, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.5 / 10)
@@ -116,18 +116,18 @@ class ProfileCellView: UICollectionViewCell {
          */
     }
     
-    let profileImageView: UIImageView = FeedCell().profileImageView
-    let other = FeedCell.buttonForTitle("", imageName: "settings")
-    let activity = FeedCell.buttonForTitle("", imageName: "activity")
-    let nameLabel: UILabel = FeedCell.labelCreateDef(1)
-    let followersCount: UILabel = FeedCell.labelCreateDef(1)
-    let followersLabel: UILabel = FeedCell.labelCreateDef(1)
-    let followingCount: UILabel = FeedCell.labelCreateDef(1)
-    let followingLabel: UILabel = FeedCell.labelCreateDef(1)
-    let challangeCount: UILabel = FeedCell.labelCreateDef(1)
-    let challangeLabel: UILabel = FeedCell.labelCreateDef(1)
+    @objc let profileImageView: UIImageView = FeedCell().profileImageView
+    @objc let other = FeedCell.buttonForTitle("", imageName: "settings")
+    @objc let activity = FeedCell.buttonForTitle("", imageName: "activity")
+    @objc let nameLabel: UILabel = FeedCell.labelCreateDef(1)
+    @objc let followersCount: UILabel = FeedCell.labelCreateDef(1)
+    @objc let followersLabel: UILabel = FeedCell.labelCreateDef(1)
+    @objc let followingCount: UILabel = FeedCell.labelCreateDef(1)
+    @objc let followingLabel: UILabel = FeedCell.labelCreateDef(1)
+    @objc let challangeCount: UILabel = FeedCell.labelCreateDef(1)
+    @objc let challangeLabel: UILabel = FeedCell.labelCreateDef(1)
     
-    static func followButton(text: String) -> subclasssedUIButton {
+    @objc static func followButton(text: String) -> subclasssedUIButton {
         let button = subclasssedUIButton()
         button.setTitle(text, for: UIControlState())
         button.setTitleColor(UIColor.white, for: UIControlState())
@@ -137,7 +137,7 @@ class ProfileCellView: UICollectionViewCell {
         return button
     }
     
-    let follow: subclasssedUIButton = ProfileCellView.followButton(text: followButtonText)
-    let unfollow: subclasssedUIButton = ProfileCellView.followButton(text: "Unfollow")
-    let privateLabel : UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.red)
+    @objc let follow: subclasssedUIButton = ProfileCellView.followButton(text: followButtonText)
+    @objc let unfollow: subclasssedUIButton = ProfileCellView.followButton(text: "Unfollow")
+    @objc let privateLabel : UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.red)
 }

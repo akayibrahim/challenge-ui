@@ -10,19 +10,19 @@ import UIKit
 import AVKit
 
 class ProofTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate {
-    let screenSize = UIScreen.main.bounds
-    var tableTitle : String!
-    var tableView : UITableView!
-    var proofs = [Prove]()
-    var proofCellView = ProofCellView()
-    var bottomConstraint: NSLayoutConstraint?
-    var heightOfCommentView : CGFloat = 50
-    var challengeId : String!
-    var refreshControl : UIRefreshControl!
-    var currentPage : Int = 0
-    var nowMoreData: Bool = false
-    var proofed: Bool = false
-    var canJoin: Bool = false
+    @objc let screenSize = UIScreen.main.bounds
+    @objc var tableTitle : String!
+    @objc var tableView : UITableView!
+    @objc var proofs = [Prove]()
+    @objc var proofCellView = ProofCellView()
+    @objc var bottomConstraint: NSLayoutConstraint?
+    @objc var heightOfCommentView : CGFloat = 50
+    @objc var challengeId : String!
+    @objc var refreshControl : UIRefreshControl!
+    @objc var currentPage : Int = 0
+    @objc var nowMoreData: Bool = false
+    @objc var proofed: Bool = false
+    @objc var canJoin: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,11 +62,11 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func joinChallenge() {
+    @objc func joinChallenge() {
         joinToChallengeService(challengeId: challengeId)
     }
     
-    func joinToChallengeService(challengeId: String) {
+    @objc func joinToChallengeService(challengeId: String) {
         let json: [String: Any] = ["challengeId": challengeId,
                                    "memberId": memberID,
                                    "join": true
@@ -96,7 +96,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }).resume()
     }
     
-    func loadChallenges() {
+    @objc func loadChallenges() {
         if dummyServiceCall == false {
             self.fetchData(url: getProofInfoListByChallengeURL)
         } else {
@@ -104,18 +104,18 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func onRefresh() {
+    @objc func onRefresh() {
         reloadPage()
         refreshControl.endRefreshing()
     }
     
-    func reloadPage() {
+    @objc func reloadPage() {
         currentPage = 0
         self.proofs = [Prove]()
         self.loadChallenges()
     }
     
-    func fetchData(url: String) {
+    @objc func fetchData(url: String) {
         let jsonURL = URL(string: url + self.challengeId + "&page=\(currentPage)")!
         jsonURL.get { data, response, error in
             guard
@@ -140,7 +140,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func handleKeyboardNotification(notification: NSNotification) {
+    @objc func handleKeyboardNotification(notification: NSNotification) {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
             let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
@@ -156,19 +156,19 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    let messageInputContainerView: UIView = {
+    @objc let messageInputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
         return view
     }()
     
-    let inputTextField: UITextField = {
+    @objc let inputTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Add a proof..."
         return textField
     }()
     
-    let sendButton: UIButton = {
+    @objc let sendButton: UIButton = {
         let button = UIButton(type: UIButtonType.system)
         button.setTitle("Send", for: .normal)
         let titleColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
@@ -177,7 +177,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         return button
     }()
     
-    let proofImageView: UIImageView = {
+    @objc let proofImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = UIColor.blue
@@ -185,8 +185,8 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         return imageView
     }()
     
-    let profileImageView: UIImageView = FeedCell().profileImageView
-    let addProofBtn = FeedCell.subClasssButtonForTitle("Add your proof..", imageName: "")
+    @objc let profileImageView: UIImageView = FeedCell().profileImageView
+    @objc let addProofBtn = FeedCell.subClasssButtonForTitle("Add your proof..", imageName: "")
     
     private func setupInputComponents() {
         let topBorderView = UIView()
@@ -241,12 +241,12 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         sendButton.addTarget(self, action: #selector(self.sendProof), for: UIControlEvents.touchUpInside)
     }
     
-    func addProof() {
+    @objc func addProof() {
         imagePickerForProofUpload()
     }
     
-    let imagePickerController = UIImagePickerController()
-    func imagePickerForProofUpload() {
+    @objc let imagePickerController = UIImagePickerController()
+    @objc func imagePickerForProofUpload() {
         imagePickerController.delegate = self
         imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
         imagePickerController.allowsEditing = false
@@ -261,7 +261,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         dismiss(animated: true, completion: nil)
     }
     
-    func sendProof() {
+    @objc func sendProof() {
         if proofImageView.image == nil {
             popupAlert(message: "You have to add your poor first.", willDelay: false)
             return
@@ -310,7 +310,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    let heighForRow : CGFloat = (screenWidth * 0.7 / 10) + (screenWidth / 2) + (screenWidth * 0.1 / 2)
+    @objc let heighForRow : CGFloat = (screenWidth * 0.7 / 10) + (screenWidth / 2) + (screenWidth * 0.1 / 2)
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return heighForRow
     }
@@ -324,7 +324,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         // let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
         // let cell = ProofCellView(frame: frameOfCell, cellRow: indexPath.row)
         DispatchQueue.main.async {
-            let nameAtt = NSMutableAttributedString(string: "\(String(describing: self.proofs[indexPath.row].name!))", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
+            let nameAtt = NSMutableAttributedString(string: "\(String(describing: self.proofs[indexPath.row].name!))", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
             cell.thinksAboutChallengeView.attributedText = nameAtt
             let fbID = self.proofs[indexPath.item].fbID
             self.setImage(fbID: fbID, imageView: cell.profileImageView)
@@ -387,9 +387,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     // var avPlayer : AVPlayer = AVPlayer.init()
-    var isZooming = false
+    @objc var isZooming = false
     var originalImageCenter: CGPoint?
-    func pan(sender: UIPanGestureRecognizer) {
+    @objc func pan(sender: UIPanGestureRecognizer) {
         if self.isZooming && sender.state == .began {
             self.originalImageCenter = sender.view?.center
         } else if self.isZooming && sender.state == .changed {
@@ -403,7 +403,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     var lastScale:CGFloat!
-    func zoom(sender:UIPinchGestureRecognizer) {
+    @objc func zoom(sender:UIPinchGestureRecognizer) {
         let postImage = sender.view as! UIImageView
         if(sender.state == .began) {
             // Reset the last scale, necessary if there are multiple objects with different scales
@@ -437,12 +437,12 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         return true
     }
     
-    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UITextView
         openProfile(name: proofs[tappedImage.tag].name!, memberId: proofs[tappedImage.tag].memberId!, memberFbId: proofs[tappedImage.tag].fbID!)
     }
     
-    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
         openProfile(name: proofs[tappedImage.tag].name!, memberId: proofs[tappedImage.tag].memberId!, memberFbId: proofs[tappedImage.tag].fbID!)
     }
@@ -455,7 +455,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         // scrollView.keyboardDismissMode = .interactive
     }
     
-    func openProfile(name: String, memberId: String, memberFbId:String) {
+    @objc func openProfile(name: String, memberId: String, memberFbId:String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
         group.wait()
@@ -472,11 +472,11 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
-    var countOfFollowersForFriend = 0
-    var countOfFollowingForFriend = 0
-    var friendIsPrivate = false
-    let group = DispatchGroup()
-    func getMemberInfo(memberId: String) {
+    @objc var countOfFollowersForFriend = 0
+    @objc var countOfFollowingForFriend = 0
+    @objc var friendIsPrivate = false
+    @objc let group = DispatchGroup()
+    @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in

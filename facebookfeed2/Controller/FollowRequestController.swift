@@ -10,11 +10,11 @@ import UIKit
 
 class FollowRequestController: UITableViewController, UISearchBarDelegate {
     
-    let cellId = "cellId"
-    let headerId = "headerId"
-    var friendRequest = [SuggestionFriends]()
-    let searchBar = UISearchBar()
-    var search : Bool = false
+    @objc let cellId = "cellId"
+    @objc let headerId = "headerId"
+    @objc var friendRequest = [SuggestionFriends]()
+    @objc let searchBar = UISearchBar()
+    @objc var search : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +47,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         onRefesh()
     }
     
-    func searchBarCancelButton() {
+    @objc func searchBarCancelButton() {
         searchBar.showsCancelButton = false
         searchBar.text = ""
         searchBar.resignFirstResponder()
@@ -60,7 +60,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-    func searchFriends(key: String) {
+    @objc func searchFriends(key: String) {
         let jsonURL = URL(string: searchFriendsURL + key)!
         jsonURL.get { data, response, error in
             guard
@@ -83,13 +83,13 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-    func onRefesh() {
+    @objc func onRefesh() {
         self.loadFollowRequest()
         self.tableView?.reloadData()
         refreshControl?.endRefreshing()
     }
     
-    func loadFollowRequest() {
+    @objc func loadFollowRequest() {
         if dummyServiceCall == false {
             fetchData(url: getSuggestionsForFollowingURL)
         } else {
@@ -97,7 +97,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-    func fetchData(url: String) {
+    @objc func fetchData(url: String) {
         let jsonURL = URL(string: url + memberID)!
         jsonURL.get { data, response, error in
             guard
@@ -146,17 +146,17 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         openProfile(name: "\(friendRequest[indexPath.row].name!) \(friendRequest[indexPath.row].surname!)", memberId: friendRequest[indexPath.row].id!, memberFbId: friendRequest[indexPath.row].facebookID!)
     }
     
-    func followFriend(sender: subclasssedUIButton) {
+    @objc func followFriend(sender: subclasssedUIButton) {
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
         deleteOrFollowFriend(url: url, isDelete: false)
     }
     
-    func unFollowFriend(sender: subclasssedUIButton) {
+    @objc func unFollowFriend(sender: subclasssedUIButton) {
         let url = deleteSuggestionURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId!
         deleteOrFollowFriend(url: url, isDelete: true)
     }
     
-    func deleteOrFollowFriend(url: String, isDelete: Bool) {
+    @objc func deleteOrFollowFriend(url: String, isDelete: Bool) {
         let jsonURL = URL(string: url)!
         jsonURL.get { data, response, error in
             guard
@@ -195,7 +195,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         return header
     }
     
-    func openProfile(name: String, memberId: String, memberFbId:String) {
+    @objc func openProfile(name: String, memberId: String, memberFbId:String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
         group.wait()
@@ -212,11 +212,11 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
-    var countOfFollowersForFriend = 0
-    var countOfFollowingForFriend = 0
-    var friendIsPrivate = false
-    let group = DispatchGroup()
-    func getMemberInfo(memberId: String) {
+    @objc var countOfFollowersForFriend = 0
+    @objc var countOfFollowingForFriend = 0
+    @objc var friendIsPrivate = false
+    @objc let group = DispatchGroup()
+    @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in
@@ -250,7 +250,7 @@ class RequestHeader: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let nameLabel: UILabel = {
+    @objc let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "FRIEND REQUESTS"
         label.font = UIFont.systemFont(ofSize: 10)
@@ -258,13 +258,13 @@ class RequestHeader: UITableViewHeaderFooterView {
         return label
     }()
     
-    let bottomBorderView: UIView = {
+    @objc let bottomBorderView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.rgb(229, green: 231, blue: 235)
         return view
     }()
     
-    func setupViews() {
+    @objc func setupViews() {
         let contentGuide = self.readableContentGuide
         
         addSubview(nameLabel)

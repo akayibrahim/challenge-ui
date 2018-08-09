@@ -10,12 +10,12 @@ import UIKit
 import AVKit
 
 class TrendsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
-    let searchBar = UISearchBar()
-    var trendRequest = [TrendRequest]()
-    let cellId = "cellId"
-    var refreshControl : UIRefreshControl!
-    var currentPage : Int = 0
-    var nowMoreData: Bool = false
+    @objc let searchBar = UISearchBar()
+    @objc var trendRequest = [TrendRequest]()
+    @objc let cellId = "cellId"
+    @objc var refreshControl : UIRefreshControl!
+    @objc var currentPage : Int = 0
+    @objc var nowMoreData: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +49,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         onRefesh()
     }
     
-    func searchBarCancelButton() {
+    @objc func searchBarCancelButton() {
         searchBar.showsCancelButton = false
         searchBar.text = ""
         searchBar.resignFirstResponder()
@@ -71,7 +71,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         
     }
     
-    func searchDummy() {
+    @objc func searchDummy() {
         if let path = Bundle.main.path(forResource: "trend_request_1", ofType: "json") {
             do {
                 let data = try(Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions.mappedIfSafe))
@@ -96,19 +96,19 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         super.viewWillAppear(animated)        
     }
     
-    func onRefesh() {
+    @objc func onRefesh() {
         self.reloadPage()
         self.collectionView?.reloadData()
         refreshControl.endRefreshing()
     }
     
-    func reloadPage() {
+    @objc func reloadPage() {
         currentPage = 0
         self.trendRequest = [TrendRequest]()
         self.loadTrends()
     }
     
-    func loadTrends() {
+    @objc func loadTrends() {
         if dummyServiceCall == false {
             self.fetchTrendChallenges(key: "")
             return
@@ -118,7 +118,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         }
     }
     
-    func fetchTrendChallenges(key: String) {
+    @objc func fetchTrendChallenges(key: String) {
         let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=" + key + "&page=\(currentPage)"
         let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
         let url = NSURL(string: urlStrWithPerm!)!
@@ -163,7 +163,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         }
     }
     
-    var downImage: UIImage?
+    @objc var downImage: UIImage?
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width, height: self.view.frame.width * 1.3 / 2)
@@ -224,12 +224,12 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     // var avPlayer : AVPlayer = AVPlayer.init()
 
-    func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
         openProfile(name: trendRequest[tappedImage.tag].name!, memberId: trendRequest[tappedImage.tag].challengerId!, memberFbId: trendRequest[tappedImage.tag].prooferFbID!)
     }
 
-    func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func profileImageTappedName(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UILabel        
         let textRange = NSMakeRange(0, (trendRequest[tappedImage.tag].name?.count)!)
         if tapGestureRecognizer.didTapAttributedTextInLabel(label: tappedImage, inRange: textRange) {
@@ -243,7 +243,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         openExplorer(challengeId: trendRequest[indexPath.row].challengeId!)
     }
     
-    func openExplorer(challengeId: String) {
+    @objc func openExplorer(challengeId: String) {
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.hidesBottomBarWhenPushed = true
@@ -256,7 +256,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         return trendRequest.count
     }
     
-    var lastContentOffSet : CGFloat = 0
+    @objc var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
             // move down
@@ -274,7 +274,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         self.lastContentOffSet = scrollView.contentOffset.y
     }
     
-    func openProfile(name: String, memberId: String, memberFbId:String) {
+    @objc func openProfile(name: String, memberId: String, memberFbId:String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
         isMyFriend(friendMemberId: memberId)
@@ -292,11 +292,11 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
-    var countOfFollowersForFriend = 0
-    var countOfFollowingForFriend = 0
-    var friendIsPrivate = false
-    let group = DispatchGroup()
-    func getMemberInfo(memberId: String) {
+    @objc var countOfFollowersForFriend = 0
+    @objc var countOfFollowingForFriend = 0
+    @objc var friendIsPrivate = false
+    @objc let group = DispatchGroup()
+    @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in
@@ -317,8 +317,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         }
     }
     
-    var isProfileFriend = false
-    func isMyFriend(friendMemberId: String) {
+    @objc var isProfileFriend = false
+    @objc func isMyFriend(friendMemberId: String) {
         let jsonURL = URL(string: isMyFriendURL + memberID + "&friendMemberId=" + friendMemberId)!
         group.enter()
         jsonURL.get { data, response, error in

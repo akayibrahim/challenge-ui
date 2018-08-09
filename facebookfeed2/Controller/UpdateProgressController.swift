@@ -9,17 +9,17 @@
 import UIKit
 
 class UpdateProgressController : UIViewController {
-    var result : Bool = false
-    var score : Bool = false
-    var updateProgress : Bool = false
-    var challengeId : String?
-    var challengeType : String?
-    var goal: String?
-    var homeScore: String?
-    var awayScore: String?
-    var doneSwitch: Bool = false
-    var checkedImg = UIImage(named: "checked")
-    var unCheckedImg = UIImage(named: "unchecked")
+    @objc var result : Bool = false
+    @objc var score : Bool = false
+    @objc var updateProgress : Bool = false
+    @objc var challengeId : String?
+    @objc var challengeType : String?
+    @objc var goal: String?
+    @objc var homeScore: String?
+    @objc var awayScore: String?
+    @objc var doneSwitch: Bool = false
+    @objc var checkedImg = UIImage(named: "checked")
+    @objc var unCheckedImg = UIImage(named: "unchecked")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -145,10 +145,10 @@ class UpdateProgressController : UIViewController {
         awayScoreText.keyboardType = .numberPad
     }
     
-    var rightButton: UIBarButtonItem!
-    var rightButtonFinished: UIBarButtonItem!
+    @objc var rightButton: UIBarButtonItem!
+    @objc var rightButtonFinished: UIBarButtonItem!
     
-    func homeWinIt(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func homeWinIt(tapGestureRecognizer: UITapGestureRecognizer) {
         if awayWin.image == checkedImg {
            awayWin.image = unCheckedImg
         }
@@ -165,7 +165,7 @@ class UpdateProgressController : UIViewController {
         }
     }
     
-    func awayWinIt(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func awayWinIt(tapGestureRecognizer: UITapGestureRecognizer) {
         if homeWin.image == checkedImg {
             homeWin.image = unCheckedImg
         }
@@ -182,15 +182,15 @@ class UpdateProgressController : UIViewController {
         }
     }
     
-    func finish() {
+    @objc func finish() {
         done(done: true)
     }
     
-    func isWin(_ img: UIImageView) -> Bool {
+    @objc func isWin(_ img: UIImageView) -> Bool {
         return img.image == checkedImg ? true : false
     }
     
-    func done(done: Bool) {
+    @objc func done(done: Bool) {
         if updateProgress {
             var url : String?
             let firstTeamScore: Int = homeScoreText.text != "" ? Int(homeScoreText.text!)! : -1
@@ -283,7 +283,7 @@ class UpdateProgressController : UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    func updateProgres(url: String) {
+    @objc func updateProgres(url: String) {
         URLSession.shared.dataTask(with: NSURL(string: url)! as URL, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
@@ -302,23 +302,23 @@ class UpdateProgressController : UIViewController {
         }).resume()
     }
     
-    let backView: UIView = FeedCell.viewFunc()
+    @objc let backView: UIView = FeedCell.viewFunc()
     
-    static func imageView() -> UIImageView {
+    @objc static func imageView() -> UIImageView {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.semanticContentAttribute = .forceRightToLeft
         return imageView
     }
     
-    let vsImageView: UIImageView = UpdateProgressController.imageView()
-    let homeWin: UIImageView = UpdateProgressController.imageView()
-    let awayWin: UIImageView = UpdateProgressController.imageView()
+    @objc let vsImageView: UIImageView = UpdateProgressController.imageView()
+    @objc let homeWin: UIImageView = UpdateProgressController.imageView()
+    @objc let awayWin: UIImageView = UpdateProgressController.imageView()
     
-    let homeScoreText: UITextField = UpdateProgressController.textField()
-    let awayScoreText: UITextField = UpdateProgressController.textField()
+    @objc let homeScoreText: UITextField = UpdateProgressController.textField()
+    @objc let awayScoreText: UITextField = UpdateProgressController.textField()
     
-    static func label(_ fontSize: CGFloat) -> UILabel {
+    @objc static func label(_ fontSize: CGFloat) -> UILabel {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: fontSize)
         label.textAlignment = .center
@@ -326,14 +326,14 @@ class UpdateProgressController : UIViewController {
         return label
     }
     
-    let homeScoreLabel: UILabel = FeedCell.label(15)
-    let awayScoreLabel: UILabel = FeedCell.label(15)
-    let doneLabel: UILabel = FeedCell.label(15)
-    let middleLabel: UILabel = FeedCell.label(25)
-    let optionalLabel: UILabel = FeedCell.label(10)
-    let succeedLabel: UILabel = FeedCell.label(15)
+    @objc let homeScoreLabel: UILabel = FeedCell.label(15)
+    @objc let awayScoreLabel: UILabel = FeedCell.label(15)
+    @objc let doneLabel: UILabel = FeedCell.label(15)
+    @objc let middleLabel: UILabel = FeedCell.label(25)
+    @objc let optionalLabel: UILabel = FeedCell.label(10)
+    @objc let succeedLabel: UILabel = FeedCell.label(15)
     
-    static func textField() -> UITextField {
+    @objc static func textField() -> UITextField {
         let textField = UITextField()
         textField.placeholder = " Enter result..."
         textField.layer.borderColor = UIColor (red:204.0/255.0, green:204.0/255.0, blue:204.0/255.0, alpha:1.0).cgColor;
@@ -344,7 +344,7 @@ class UpdateProgressController : UIViewController {
         return textField
     }
     
-    var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
+    @objc var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
     
     override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }

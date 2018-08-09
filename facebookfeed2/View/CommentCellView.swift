@@ -19,7 +19,7 @@ class CommentCellView: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setups() {        
+    @objc func setups() {        
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         
@@ -37,6 +37,6 @@ class CommentCellView: UITableViewCell {
     }
 
     
-    let profileImageView: UIImageView = FeedCell().profileImageView
-    let thinksAboutChallengeView: UITextView = FeedCell().thinksAboutChallengeView
+    @objc let profileImageView: UIImageView = FeedCell().profileImageView
+    @objc let thinksAboutChallengeView: UITextView = FeedCell().thinksAboutChallengeView
 }

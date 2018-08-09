@@ -45,10 +45,10 @@ class FollowCellView: UITableViewCell {
     }
 
     
-    let profileImageView: UIImageView = FeedCell().profileImageView
-    let thinksAboutChallengeView: UILabel = FeedCell.label(12)
+    @objc let profileImageView: UIImageView = FeedCell().profileImageView
+    @objc let thinksAboutChallengeView: UILabel = FeedCell.label(12)
     
-    let followButton: subclasssedUIButton = {
+    @objc let followButton: subclasssedUIButton = {
         let button = subclasssedUIButton()
         button.setTitle(followButtonText, for: UIControlState())
         button.setTitleColor(UIColor.white, for: UIControlState())

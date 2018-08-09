@@ -11,9 +11,9 @@ import AVKit
 
 class FeedCell: UICollectionViewCell {
     
-    var feedController: FeedController?
+    @objc var feedController: FeedController?
     
-    func animate() {
+    @objc func animate() {
         feedController?.animateImageView(proofedMediaView)
     }
     
@@ -91,17 +91,17 @@ class FeedCell: UICollectionViewCell {
         super.prepareForReuse()
     }
     
-    var post: Post? {
+    @objc var post: Post? {
         didSet {
             if let name = post?.name, let status = post?.status {
-                let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
-                let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
+                let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 12)])
+                let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)])
                 attributedText.append(statusText)
                 nameAndStatusLabel.attributedText = attributedText
             }
             if let thinksAboutChallenge = post?.thinksAboutChallenge, let name = post?.name {
-                let commentAtt = NSMutableAttributedString(string: "\(name): ", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 12)])
-                let nameAtt = NSMutableAttributedString(string: "\(thinksAboutChallenge)", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)])
+                let commentAtt = NSMutableAttributedString(string: "\(name): ", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 12)])
+                let nameAtt = NSMutableAttributedString(string: "\(thinksAboutChallenge)", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)])
                 commentAtt.append(nameAtt)
                 thinksAboutChallengeView.attributedText = commentAtt
             }
@@ -182,9 +182,9 @@ class FeedCell: UICollectionViewCell {
                     subjectImageView.image = UIImage(named: subject)
                 }
                 if let done = post?.done, let firstTeamScore = post?.firstTeamScore, let secondTeamScore = post?.secondTeamScore {
-                    let firstTeamScoreAtt = NSMutableAttributedString(string: "\(firstTeamScore)", attributes: [NSFontAttributeName: UIFont(name: "Optima-ExtraBlack", size: 34)!])
-                    let scoreForPriAtt = NSMutableAttributedString(string: "\(scoreForPrivate)", attributes: [NSFontAttributeName: UIFont(name: "Optima-ExtraBlack", size: 35)!])
-                    let secondTeamScoreAtt = NSMutableAttributedString(string: "\(secondTeamScore)", attributes: [NSFontAttributeName: UIFont(name: "Optima-ExtraBlack", size: 34)!])
+                    let firstTeamScoreAtt = NSMutableAttributedString(string: "\(firstTeamScore)", attributes: [NSAttributedStringKey.font: UIFont(name: "Optima-ExtraBlack", size: 34)!])
+                    let scoreForPriAtt = NSMutableAttributedString(string: "\(scoreForPrivate)", attributes: [NSAttributedStringKey.font: UIFont(name: "Optima-ExtraBlack", size: 35)!])
+                    let secondTeamScoreAtt = NSMutableAttributedString(string: "\(secondTeamScore)", attributes: [NSAttributedStringKey.font: UIFont(name: "Optima-ExtraBlack", size: 34)!])
                     //firstTeamScoreAtt.append(scoreForPriAtt)
                     //firstTeamScoreAtt.append(secondTeamScoreAtt)
                     // scoreText.text = "\(firstTeamScore)\(scoreForPrivate)\(secondTeamScore)"
@@ -296,9 +296,9 @@ class FeedCell: UICollectionViewCell {
                 }
                 // goalLabel.text = "GOAL: \(goal)"
                 if let result = post?.result, let goal = post?.goal {
-                    let resultAtt = NSMutableAttributedString(string: "\(result)", attributes: [NSFontAttributeName: UIFont(name: "Optima-ExtraBlack", size: 34)!])
-                    let scoreForSelfAtt = NSMutableAttributedString(string: "\(scoreForSelf)", attributes: [NSFontAttributeName: UIFont(name: "Optima-ExtraBlack", size: 30)!])
-                    let goalAtt = NSMutableAttributedString(string: "\(goal)", attributes: [NSFontAttributeName: UIFont(name: "Optima-ExtraBlack", size: 34)!])
+                    let resultAtt = NSMutableAttributedString(string: "\(result)", attributes: [NSAttributedStringKey.font: UIFont(name: "Optima-ExtraBlack", size: 34)!])
+                    let scoreForSelfAtt = NSMutableAttributedString(string: "\(scoreForSelf)", attributes: [NSAttributedStringKey.font: UIFont(name: "Optima-ExtraBlack", size: 30)!])
+                    let goalAtt = NSMutableAttributedString(string: "\(goal)", attributes: [NSAttributedStringKey.font: UIFont(name: "Optima-ExtraBlack", size: 34)!])
                     //resultAtt.append(scoreForSelfAtt)
                     //resultAtt.append(goalAtt)
                     //scoreText.text = "\(result)\(scoreForSelf)\(goal)"
@@ -395,8 +395,8 @@ class FeedCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }    
     
-    let screenSize = UIScreen.main.bounds
-    func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool) {
+    @objc let screenSize = UIScreen.main.bounds
+    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -436,7 +436,7 @@ class FeedCell: UICollectionViewCell {
                 
                 DispatchQueue.main.async {
                     self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-                    self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
                     self.avPlayerLayer.repeatCount = 3
                     self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
                     self.proofedVideoView.layer.masksToBounds = true
@@ -540,7 +540,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func generateTopView(_ contentGuide: UILayoutGuide, isComeFromSelf : Bool) {
+    @objc func generateTopView(_ contentGuide: UILayoutGuide, isComeFromSelf : Bool) {
         if !isComeFromSelf {
             addSubview(challengerImageView)
             addTopAnchor(challengerImageView, anchor: contentGuide.topAnchor, constant: 0)
@@ -561,7 +561,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, result: String, goal: String, proofedByChallenger: Bool, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool) {
+    @objc func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, result: String, goal: String, proofedByChallenger: Bool, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool) {
         let middleTopGuide = UILayoutGuide()
         let middleCenterGuide = UILayoutGuide()
         let middleBottomGuide = UILayoutGuide()
@@ -860,13 +860,13 @@ class FeedCell: UICollectionViewCell {
         generateSecondTeam(contentGuide, secondTeamCount: secondTeamCount, type: type)
     }
     
-    var widthOfImage: CGFloat = 1/3
-    var heightOfFullImage: CGFloat = 1/2
-    var heightOfHalfImage: CGFloat = 0.975/4
-    var widthOfQuarterImage: CGFloat = 0.975/6
-    var heightOfMiddle: CGFloat = 0.05/4
-    var widthOfMiddle: CGFloat = 0.05/6
-    func generateFirstTeam(_ contentGuide: UILayoutGuide, firstTeamCount: String) {
+    @objc var widthOfImage: CGFloat = 1/3
+    @objc var heightOfFullImage: CGFloat = 1/2
+    @objc var heightOfHalfImage: CGFloat = 0.975/4
+    @objc var widthOfQuarterImage: CGFloat = 0.975/6
+    @objc var heightOfMiddle: CGFloat = 0.05/4
+    @objc var widthOfMiddle: CGFloat = 0.05/6
+    @objc func generateFirstTeam(_ contentGuide: UILayoutGuide, firstTeamCount: String) {
         let screenSize = UIScreen.main.bounds
         middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
         if firstTeamCount == teamCountOne {
@@ -933,7 +933,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func generateSecondTeam(_ contentGuide: UILayoutGuide, secondTeamCount: String, type: String) {
+    @objc func generateSecondTeam(_ contentGuide: UILayoutGuide, secondTeamCount: String, type: String) {
         let screenSize = UIScreen.main.bounds
         middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
         if (secondTeamCount == teamCountZero || secondTeamCount == teamCountOne) {
@@ -997,7 +997,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func addGeneralSubViews() {
+    @objc func addGeneralSubViews() {
         addSubview(profileImageView)
         addSubview(nameAndStatusLabel)        
         addSubview(vsImageView)
@@ -1034,20 +1034,20 @@ class FeedCell: UICollectionViewCell {
         addSubview(moreFourPeopleImageView)
     }
     
-    let middleHeight = UILayoutGuide()
-    let leftMiddleTopWidth = UILayoutGuide()
-    let leftMiddleBottomWidth = UILayoutGuide()
-    let rightMiddleTopWidth = UILayoutGuide()
-    let rightMiddleBottomWidth = UILayoutGuide()
+    @objc let middleHeight = UILayoutGuide()
+    @objc let leftMiddleTopWidth = UILayoutGuide()
+    @objc let leftMiddleBottomWidth = UILayoutGuide()
+    @objc let rightMiddleTopWidth = UILayoutGuide()
+    @objc let rightMiddleBottomWidth = UILayoutGuide()
     
-    let countOfLikeAndCommentLabel: UILabel = {
+    @objc let countOfLikeAndCommentLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 10)
         label.textAlignment = NSTextAlignment.right;
         return label
     }()
     
-    let thinksAboutChallengeView: UITextView = {
+    @objc let thinksAboutChallengeView: UITextView = {
         let textView = UITextView()
         // textView.font = UIFont.systemFont(ofSize: 12)
         textView.textAlignment = NSTextAlignment.left
@@ -1060,7 +1060,7 @@ class FeedCell: UICollectionViewCell {
         return textView
     }()
     
-    static func circleImageView() -> UIImageView {
+    @objc static func circleImageView() -> UIImageView {
         let imageView = UIImageView()
         // imageView.layer.cornerRadius = 15.0
         imageView.roundedImage()
@@ -1068,12 +1068,12 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }
     
-    let profileImageView: UIImageView = FeedCell.circleImageView()
-    let challengerImageView: UIImageView = FeedCell.circleImageView()
-    let volumeUpImageView: UIImageView = FeedCell.circleImageView()
-    let volumeDownImageView: UIImageView = FeedCell.circleImageView()
+    @objc let profileImageView: UIImageView = FeedCell.circleImageView()
+    @objc let challengerImageView: UIImageView = FeedCell.circleImageView()
+    @objc let volumeUpImageView: UIImageView = FeedCell.circleImageView()
+    @objc let volumeDownImageView: UIImageView = FeedCell.circleImageView()
     
-    let proofedMediaView: UIImageView = {
+    @objc let proofedMediaView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
@@ -1081,23 +1081,23 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }()
     
-    let vsImageView: UIImageView = {
+    @objc let vsImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.semanticContentAttribute = .forceRightToLeft
         return imageView
     }()
     
-    static func labelCreateDef(_ line: Int) -> UILabel {
+    @objc static func labelCreateDef(_ line: Int) -> UILabel {
         let label = UILabel()
         label.numberOfLines = line
         label.font = UIFont.boldSystemFont(ofSize: 10)
         return label
     }
     
-    let nameAndStatusLabel: UILabel = FeedCell.labelCreateDef(1)
+    @objc let nameAndStatusLabel: UILabel = FeedCell.labelCreateDef(1)
     
-    static func labelCreate(_ fontSize: CGFloat, backColor: UIColor, textColor: UIColor) -> UILabel {
+    @objc static func labelCreate(_ fontSize: CGFloat, backColor: UIColor, textColor: UIColor) -> UILabel {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: fontSize)
         label.textAlignment = .center
@@ -1108,13 +1108,13 @@ class FeedCell: UICollectionViewCell {
         return label
     }
     
-    let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
-    let activeLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
-    let goalLabel: UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
-    let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
-    let insertTime: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
+    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
+    @objc let activeLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
+    @objc let goalLabel: UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
+    @objc let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
+    @objc let insertTime: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
     
-    static func label(_ fontSize: CGFloat) -> subclasssedUILabel {
+    @objc static func label(_ fontSize: CGFloat) -> subclasssedUILabel {
         let label = subclasssedUILabel()
         label.font = UIFont.boldSystemFont(ofSize: fontSize)
         label.textAlignment = .center
@@ -1122,21 +1122,21 @@ class FeedCell: UICollectionViewCell {
         return label
     }
     
-    let updateRefreshLabel: UILabel = FeedCell.label(5)
-    let supportLabel: subclasssedUILabel = FeedCell.label(12)
-    let supportTextLabel: UILabel = FeedCell.label(8)
-    let supportMatchLabel: subclasssedUILabel = FeedCell.label(12)
-    let scoreHome: UILabel = FeedCell.label(14)
-    let scoreAway: UILabel = FeedCell.label(14)
-    let scoreText: UILabel = FeedCell.label(14)
-    let homeScoreText: UILabel = FeedCell.label(12)
-    let awayScoreText: UILabel = FeedCell.label(12)
-    let homeWinBase: UILabel = FeedCell.label(12)
-    let awayWinBase: UILabel = FeedCell.label(12)
-    let resultText: UILabel = FeedCell.label(14)
-    let proofText: UILabel = FeedCell.label(14)
+    @objc let updateRefreshLabel: UILabel = FeedCell.label(5)
+    @objc let supportLabel: subclasssedUILabel = FeedCell.label(12)
+    @objc let supportTextLabel: UILabel = FeedCell.label(8)
+    @objc let supportMatchLabel: subclasssedUILabel = FeedCell.label(12)
+    @objc let scoreHome: UILabel = FeedCell.label(14)
+    @objc let scoreAway: UILabel = FeedCell.label(14)
+    @objc let scoreText: UILabel = FeedCell.label(14)
+    @objc let homeScoreText: UILabel = FeedCell.label(12)
+    @objc let awayScoreText: UILabel = FeedCell.label(12)
+    @objc let homeWinBase: UILabel = FeedCell.label(12)
+    @objc let awayWinBase: UILabel = FeedCell.label(12)
+    @objc let resultText: UILabel = FeedCell.label(14)
+    @objc let proofText: UILabel = FeedCell.label(14)
     
-    static func lineForDivider() -> UIView {
+    @objc static func lineForDivider() -> UIView {
         let view = UIView()
         // view.backgroundColor = UIColor.red
         view.layer.cornerRadius = 1.5
@@ -1146,11 +1146,11 @@ class FeedCell: UICollectionViewCell {
         return view
     }
     
-    let dividerLineView: UIView = FeedCell.lineForDivider()
-    let dividerLineView1: UIView = FeedCell.lineForDivider()
-    let dividerLineView2: UIView = FeedCell.lineForDivider()
+    @objc let dividerLineView: UIView = FeedCell.lineForDivider()
+    @objc let dividerLineView1: UIView = FeedCell.lineForDivider()
+    @objc let dividerLineView2: UIView = FeedCell.lineForDivider()
     
-    static func buttonForTitle(_ title: String, imageName: String) -> UIButton {
+    @objc static func buttonForTitle(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()
         // button.semanticContentAttribute = .forceRightToLeft
         button.setTitle(title, for: UIControlState())
@@ -1164,11 +1164,11 @@ class FeedCell: UICollectionViewCell {
         return button
     }
     
-    let multiplierSign = FeedCell.buttonForTitle("", imageName: "multipliersign")
-    let clapping = FeedCell.buttonForTitle("", imageName: "clap")
-    let clappingHome = FeedCell.buttonForTitle("", imageName: "clap")
+    @objc let multiplierSign = FeedCell.buttonForTitle("", imageName: "multipliersign")
+    @objc let clapping = FeedCell.buttonForTitle("", imageName: "clap")
+    @objc let clappingHome = FeedCell.buttonForTitle("", imageName: "clap")
     
-    static func subClasssButtonForTitle(_ title: String, imageName: String) -> subclasssedUIButton {
+    @objc static func subClasssButtonForTitle(_ title: String, imageName: String) -> subclasssedUIButton {
         let button = subclasssedUIButton()
         // button.semanticContentAttribute = .forceRightToLeft
         button.setTitle(title, for: UIControlState())
@@ -1180,18 +1180,18 @@ class FeedCell: UICollectionViewCell {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         return button
     }
-    let updateProgress = FeedCell.subClasssButtonForTitle("UPDATE\nPROGRESS", imageName: "")
-    let viewComments = FeedCell.subClasssButtonForTitle(viewAllComments, imageName: "")
-    let viewProofs = FeedCell.subClasssButtonForTitle(viewAllProofs, imageName: "")
-    let addComments = FeedCell.subClasssButtonForTitle(addComents, imageName: "")
-    let addProofs = FeedCell.subClasssButtonForTitle(addProofsVar, imageName: "")
-    let joinToChl = FeedCell.subClasssButtonForTitle(joinToChlVar, imageName: "")
-    let supportButton = FeedCell.subClasssButtonForTitle("", imageName: support)
-    let supportButtonMatch = FeedCell.subClasssButtonForTitle("", imageName: support)
-    let joinButton = FeedCell.subClasssButtonForTitle("", imageName: acceptedBlack)
-    let proofButton = FeedCell.subClasssButtonForTitle("", imageName: acceptedRed)
+    @objc let updateProgress = FeedCell.subClasssButtonForTitle("UPDATE\nPROGRESS", imageName: "")
+    @objc let viewComments = FeedCell.subClasssButtonForTitle(viewAllComments, imageName: "")
+    @objc let viewProofs = FeedCell.subClasssButtonForTitle(viewAllProofs, imageName: "")
+    @objc let addComments = FeedCell.subClasssButtonForTitle(addComents, imageName: "")
+    @objc let addProofs = FeedCell.subClasssButtonForTitle(addProofsVar, imageName: "")
+    @objc let joinToChl = FeedCell.subClasssButtonForTitle(joinToChlVar, imageName: "")
+    @objc let supportButton = FeedCell.subClasssButtonForTitle("", imageName: support)
+    @objc let supportButtonMatch = FeedCell.subClasssButtonForTitle("", imageName: support)
+    @objc let joinButton = FeedCell.subClasssButtonForTitle("", imageName: acceptedBlack)
+    @objc let proofButton = FeedCell.subClasssButtonForTitle("", imageName: acceptedRed)
     
-    static func buttonForTitleWithBorder(_ title: String, imageName: String) -> UIButton {
+    @objc static func buttonForTitleWithBorder(_ title: String, imageName: String) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: UIControlState())
         button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
@@ -1210,7 +1210,7 @@ class FeedCell: UICollectionViewCell {
         return button
     }
     
-    static func subClassbuttonForTitleWithBorder(_ title: String, imageName: String) -> subclasssedUIButton {
+    @objc static func subClassbuttonForTitleWithBorder(_ title: String, imageName: String) -> subclasssedUIButton {
         let button = subclasssedUIButton()
         button.setTitle(title, for: UIControlState())
         button.setTitleColor(UIColor.rgb(143, green: 150, blue: 163), for: UIControlState())
@@ -1229,9 +1229,9 @@ class FeedCell: UICollectionViewCell {
         return button
     }
     
-    let others = FeedCell.subClassbuttonForTitleWithBorder("Remove!", imageName: "")
+    @objc let others = FeedCell.subClassbuttonForTitleWithBorder("Remove!", imageName: "")
     
-    static func imageView() -> subclasssedUIImageView {
+    @objc static func imageView() -> subclasssedUIImageView {
         let imageView = subclasssedUIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 4.0
@@ -1239,28 +1239,28 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }
     
-    let firstOnePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let firstTwoPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let secondTwoPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let firstThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let secondThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let thirdThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let firstFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let secondFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let thirdFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let moreFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let firstOneChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let firstTwoChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let secondTwoChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let firstThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let secondThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let thirdThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let firstFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let secondFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let thirdFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    let moreFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let firstOnePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let firstTwoPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let secondTwoPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let firstThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let secondThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let thirdThreePeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let firstFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let secondFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let thirdFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let moreFourPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let firstOneChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let firstTwoChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let secondTwoChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let firstThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let secondThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let thirdThreeChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let firstFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let secondFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let thirdFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let moreFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
     
-    static func imageViewFit() -> UIImageView {
+    @objc static func imageViewFit() -> UIImageView {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 4.0
@@ -1268,22 +1268,22 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }
     
-    let subjectImageView: UIImageView = FeedCell.imageViewFit()
-    let finishFlag: UIImageView = FeedCell.imageViewFit()
+    @objc let subjectImageView: UIImageView = FeedCell.imageViewFit()
+    @objc let finishFlag: UIImageView = FeedCell.imageViewFit()
     
-    static func viewFunc() -> UIView {
+    @objc static func viewFunc() -> UIView {
         let view = UIView()
         view.backgroundColor=UIColor.white
         return view
     }
     
-    let middleView: UIView = FeedCell.viewFunc()
-    let peopleView: UIView = FeedCell.viewFunc()
-    let chlrPeopleView: UIView = FeedCell.viewFunc()
-    let view: UIView = FeedCell.viewFunc()
-    let proofedVideoView: UIView = FeedCell.viewFunc()
+    @objc let middleView: UIView = FeedCell.viewFunc()
+    @objc let peopleView: UIView = FeedCell.viewFunc()
+    @objc let chlrPeopleView: UIView = FeedCell.viewFunc()
+    @objc let view: UIView = FeedCell.viewFunc()
+    @objc let proofedVideoView: UIView = FeedCell.viewFunc()
     
-    static func segmentedControl() -> UISegmentedControl {
+    @objc static func segmentedControl() -> UISegmentedControl {
         let myArray : NSArray = ["", ""]
         let mySegControl : UISegmentedControl = UISegmentedControl(items: myArray as [AnyObject])
         mySegControl.backgroundColor = UIColor.white
@@ -1293,19 +1293,19 @@ class FeedCell: UICollectionViewCell {
         return mySegControl
     }
     
-    let mySegControl: UISegmentedControl = FeedCell.segmentedControl()
+    @objc let mySegControl: UISegmentedControl = FeedCell.segmentedControl()
     
-    let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
+    @objc let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
     // let avPlayer : AVPlayer = AVPlayer.init()
 }
 
 class subclasssedUIButton : UIButton {
-    var challengeId: String?
-    var type: String?
-    var memberId: String?
-    var goal: String?
-    var homeScore: String?
-    var awayScore: String?
+    @objc var challengeId: String?
+    @objc var type: String?
+    @objc var memberId: String?
+    @objc var goal: String?
+    @objc var homeScore: String?
+    @objc var awayScore: String?
     var proofed: Bool?
     var canJoin: Bool?
     var count: Int?
@@ -1316,7 +1316,7 @@ class subclasssedUILabel : UILabel {
 }
 
 class subclasssedUIImageView : UIImageView {
-    var memberId: String?
-    var name: String?
-    var fbID: String?
+    @objc var memberId: String?
+    @objc var name: String?
+    @objc var fbID: String?
 }

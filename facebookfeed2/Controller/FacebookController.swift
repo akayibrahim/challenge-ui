@@ -11,8 +11,8 @@ import FBSDKLoginKit
 import FBSDKCoreKit
 
 class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
-    var imageView : UIImageView!
-    var label: UILabel!
+    @objc var imageView : UIImageView!
+    @objc var label: UILabel!
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         print("User Logged In")
@@ -37,7 +37,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         print("logout")
     }
     
-    lazy var loginManager: FBSDKLoginManager = {
+    @objc lazy var loginManager: FBSDKLoginManager = {
         return FBSDKLoginManager()
     }()
             
@@ -133,31 +133,31 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         uzunButton.addTarget(self, action: #selector(self.uzun), for: UIControlEvents.touchUpInside)
     }
     
-    func loginWithInstagram() {
+    @objc func loginWithInstagram() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = InstagramLoginVC()
     }
     
-    func akay() {
+    @objc func akay() {
         openMember(id: isLocal ? "5b32959a1cb19909e464f6f5" : "5b5a3c61d35c65260545d832")
     }
-    func melis() {
+    @objc func melis() {
         openMember(id: isLocal ? "5b3152c51cb199f1fadc0faf" : "5b5aa83dd35c650e3ffeeb62")
     }
-    func belkay() {
+    @objc func belkay() {
         openMember(id: isLocal ? "5b3152b91cb199f1fadc0fae" : "5b5aa85bd35c650e3ffeeb63")
     }
-    func aykut() {
+    @objc func aykut() {
         openMember(id: isLocal ? "5b3152d31cb199f1fadc0fb0" : "5b5aa7aad35c650e3ffeeb61")
     }
-    func can() {
+    @objc func can() {
         openMember(id: isLocal ? "5b3152821cb199f1fadc0fab" : "")
     }
-    func uzun() {
+    @objc func uzun() {
         openMember(id: isLocal ? "5b3152a71cb199f1fadc0fad" : "5b5aa8a4d35c650e3ffeeb64")
     }
-    let group = DispatchGroup()
-    func getMemberInfo(memberId: String) {
+    @objc let group = DispatchGroup()
+    @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in
@@ -181,8 +181,8 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         }
     }
     
-    var splashTimer: Timer?
-    func openMember(id:String) {
+    @objc var splashTimer: Timer?
+    @objc func openMember(id:String) {
         let defaults = UserDefaults.standard
         defaults.set(id, forKey: "memberID")
         defaults.synchronize()
@@ -193,12 +193,12 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
     }
     
-    func splashScreenToMain() {
+    @objc func splashScreenToMain() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = CustomTabBarController()
     }
     
-    func fetchFacebookProfile() {
+    @objc func fetchFacebookProfile() {
         //print permissions, such as public_profile
         let params = ["fields": "id, first_name, last_name, name, email, picture,friends"]
 
@@ -235,7 +235,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         connection.start()
     }
     
-    func addMember(firstName: String, surname: String, email: String, facebookID: String) {
+    @objc func addMember(firstName: String, surname: String, email: String, facebookID: String) {
         let json: [String: Any] = ["name": firstName,
                                    "surname": surname,
                                    "email": email,
@@ -272,7 +272,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         }).resume()
     }
     
-    let instagramLogin: UIButton = {
+    @objc let instagramLogin: UIButton = {
         let button = UIButton(type: UIButtonType.system)
         button.setTitle("Continue with Instagram", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)

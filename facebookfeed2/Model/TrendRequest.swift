@@ -9,11 +9,11 @@
 import UIKit
 
 class TrendRequest: SafeJsonObject {
-    var name: String?
-    var challengeId : String?
-    var proof : String?
-    var prooferFbID : String?
-    var subject : String?
-    var challengerId : String?
+    @objc var name: String?
+    @objc var challengeId : String?
+    @objc var proof : String?
+    @objc var prooferFbID : String?
+    @objc var subject : String?
+    @objc var challengerId : String?
     var provedWithImage: Bool?
 }

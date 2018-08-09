@@ -89,7 +89,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         return true
     }
     
-    func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem) {
+    @objc func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem) {
         
     }
     

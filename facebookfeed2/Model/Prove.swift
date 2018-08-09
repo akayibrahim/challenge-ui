@@ -9,10 +9,10 @@
 import UIKit
 
 class Prove: SafeJsonObject {
-    var name: String?
-    var fbID: String?
-    var proofObjectId: String?
-    var challangeId: String?
-    var memberId: String?
+    @objc var name: String?
+    @objc var fbID: String?
+    @objc var proofObjectId: String?
+    @objc var challangeId: String?
+    @objc var memberId: String?
     var provedWithImage: Bool?
 }

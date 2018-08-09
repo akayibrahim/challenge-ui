@@ -9,42 +9,42 @@
 import UIKit
 
 class SelectionTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
-    let screenSize = UIScreen.main.bounds
+    @objc let screenSize = UIScreen.main.bounds
     var items = [SelectedItems]()
     var unfilteredItems = [SelectedItems]()
-    var tableTitle : String!
-    var tableView : UITableView!
-    var popIndexPath : IndexPath!
+    @objc var tableTitle : String!
+    @objc var tableView : UITableView!
+    @objc var popIndexPath : IndexPath!
     var otherSideCount : Int!
     var segmentIndex : Int!
-    var switchCustomeSubject : Bool = false
-    var listMode : Bool = false
-    var isFollower : Bool = false
-    var followers = [Followers]()
-    var unfilteredFollowers = [Followers]()
-    var isFollowing : Bool = false
-    var following = [Following]()
-    var unfilteredFollowing = [Following]()
-    var labelCell = "labelCell"
-    var followCell = "followCell"
-    var profile: Bool = false
-    var memberIdForFriendProfile: String?
+    @objc var switchCustomeSubject : Bool = false
+    @objc var listMode : Bool = false
+    @objc var isFollower : Bool = false
+    @objc var followers = [Followers]()
+    @objc var unfilteredFollowers = [Followers]()
+    @objc var isFollowing : Bool = false
+    @objc var following = [Following]()
+    @objc var unfilteredFollowing = [Following]()
+    @objc var labelCell = "labelCell"
+    @objc var followCell = "followCell"
+    @objc var profile: Bool = false
+    @objc var memberIdForFriendProfile: String?
     var isProfileFriend: Bool?
-    var searchBar = UISearchBar()
-    var subjects = [Subject]()
-    var self_subjects = [Subject]()
+    @objc var searchBar = UISearchBar()
+    @objc var subjects = [Subject]()
+    @objc var self_subjects = [Subject]()
     var leftSide = [SelectedItems]()
     var rightSide = [SelectedItems]()
-    var friends = [Friends]()
-    var supportList: Bool = false
-    var challengeId: String?
-    var supportedMemberId: String?
+    @objc var friends = [Friends]()
+    @objc var supportList: Bool = false
+    @objc var challengeId: String?
+    @objc var supportedMemberId: String?
     var firstTeam: Bool?
-    var listOfSupports = [Support]()
-    var unfilteredSupports = [Support]()
-    var isMoreAttendance: Bool = false
-    var attendanceList = [Attendance]()
-    var unfilteredAttendanceList = [Attendance]()
+    @objc var listOfSupports = [Support]()
+    @objc var unfilteredSupports = [Support]()
+    @objc var isMoreAttendance: Bool = false
+    @objc var attendanceList = [Attendance]()
+    @objc var unfilteredAttendanceList = [Attendance]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +66,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         self.hideKeyboardWhenTappedAround()
     }
     
-    func reload() {
+    @objc func reload() {
         if !listMode {
             self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: labelCell)
             if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex {
@@ -113,7 +113,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func fetchData(url: String, type: String) {
+    @objc func fetchData(url: String, type: String) {
         group.enter()
         let jsonURL = URL(string: url)!
         jsonURL.get { data, response, error in
@@ -153,7 +153,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func fillItems(type: String) {
+    @objc func fillItems(type: String) {
         var selItems = [SelectedItems]()
         if type == "SUBJECT" {
             for subj in self.subjects {
@@ -259,7 +259,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         tableView.reloadData()
     }
     
-    func loadFollowings() {
+    @objc func loadFollowings() {
         if dummyServiceCall == false {
             fetchFollowingsData(url: getFollowingListURL)
         } else {
@@ -268,13 +268,13 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func loadMoreAttendance() {
+    @objc func loadMoreAttendance() {
         if dummyServiceCall == false {
             fetchMoreAttendances(url: getChallengerListURL)
         }
     }
     
-    func fetchMoreAttendances(url: String) {
+    @objc func fetchMoreAttendances(url: String) {
         let jsonURL = URL(string: url + challengeId! + "&memberId=\(memberID)&firstTeam=\(firstTeam!)")!
         jsonURL.get { data, response, error in
             guard
@@ -300,13 +300,13 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func loadSupportList() {
+    @objc func loadSupportList() {
         if dummyServiceCall == false {
             fetchSupportList(url: getSupportListURL)
         }
     }
     
-    func fetchSupportList(url: String) {
+    @objc func fetchSupportList(url: String) {
         let jsonURL = URL(string: url + challengeId! + "&memberId=\(memberID)&supportedMemberId=\((supportedMemberId == nil ? "" : supportedMemberId)!)&firstTeam=\(firstTeam!)")!
         jsonURL.get { data, response, error in
             guard
@@ -332,7 +332,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func loadFollowers() {
+    @objc func loadFollowers() {
         if dummyServiceCall == false {
             fetchFollowersData(url: getFollowerListURL)
         } else {
@@ -341,7 +341,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func fetchFollowingsData(url: String) {
+    @objc func fetchFollowingsData(url: String) {
         let jsonURL = URL(string: url + (profile ? memberIdForFriendProfile! : memberID))!
         jsonURL.get { data, response, error in
             guard
@@ -366,7 +366,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func fetchFollowersData(url: String) {
+    @objc func fetchFollowersData(url: String) {
         let jsonURL = URL(string: url + (profile ? memberIdForFriendProfile! : memberID))!
         jsonURL.get { data, response, error in
             guard
@@ -391,7 +391,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func keyboardWasShown (notification: NSNotification) {
+    @objc func keyboardWasShown (notification: NSNotification) {
         var info = notification.userInfo
         let keyboardFrame = (info![UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
         
@@ -399,12 +399,12 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         tableView.scrollIndicatorInsets = tableView.contentInset
     }
     
-    func keyboardWillBeHidden (notification: NSNotification) {
+    @objc func keyboardWillBeHidden (notification: NSNotification) {
         tableView.contentInset = UIEdgeInsets.zero
         tableView.scrollIndicatorInsets = UIEdgeInsets.zero
     }
     
-    func showEditing() {
+    @objc func showEditing() {
         if let controller = navigationController?.viewController(class: AddChallengeController.self) {
             if tableView.indexPathsForSelectedRows == nil {
                 let selectAlert: UIAlertController = UIAlertController(title: "Alert", message: "You have to select at least one person!", preferredStyle: UIAlertControllerStyle.alert)
@@ -437,15 +437,15 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         navigationController?.popViewController(animated: true)
     }
     
-    func isHome() -> Bool {
+    @objc func isHome() -> Bool {
         return popIndexPath != nil ? popIndexPath == leftSideIndex : false
     }
     
-    func isAway() -> Bool {
+    @objc func isAway() -> Bool {
         return popIndexPath == rightSideIndex
     }
     
-    func isSubject() -> Bool {
+    @objc func isSubject() -> Bool {
         return popIndexPath == subjectIndexPath
     }
     
@@ -487,7 +487,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func openProfile(name: String, memberId: String, memberFbId:String) {
+    @objc func openProfile(name: String, memberId: String, memberFbId:String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
         isMyFriend(friendMemberId: memberId)
@@ -505,11 +505,11 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
-    var countOfFollowersForFriend = 0
-    var countOfFollowingForFriend = 0
-    var friendIsPrivate = false
-    let group = DispatchGroup()
-    func getMemberInfo(memberId: String) {
+    @objc var countOfFollowersForFriend = 0
+    @objc var countOfFollowingForFriend = 0
+    @objc var friendIsPrivate = false
+    @objc let group = DispatchGroup()
+    @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()
         jsonURL.get { data, response, error in
@@ -530,7 +530,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func isMyFriend(friendMemberId: String) {
+    @objc func isMyFriend(friendMemberId: String) {
         let jsonURL = URL(string: isMyFriendURL + memberID + "&friendMemberId=" + friendMemberId)!
         group.enter()
         jsonURL.get { data, response, error in
@@ -548,7 +548,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func updateAndPopViewController(subjectName : String) {
+    @objc func updateAndPopViewController(subjectName : String) {
         if let controller = navigationController?.viewController(class: AddChallengeController.self) {
             var selItems = [SelectedItems]()
             let selItem = SelectedItems()
@@ -570,15 +570,15 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         return 44
     }
     
-    func isSelf() -> Bool {
+    @objc func isSelf() -> Bool {
         return segmentIndex == 2
     }
     
-    func isPrivate() -> Bool {
+    @objc func isPrivate() -> Bool {
         return segmentIndex == 0
     }
     
-    func isPublic() -> Bool {
+    @objc func isPublic() -> Bool {
         return segmentIndex == 1 || segmentIndex == 3
     }
     
@@ -663,12 +663,12 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func follow(sender: subclasssedUIButton) {
+    @objc func follow(sender: subclasssedUIButton) {
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
         followFriend(url: url)
     }
     
-    func followFriend(url: String) {
+    @objc func followFriend(url: String) {
         let jsonURL = URL(string: url)!
         jsonURL.get { data, response, error in
             guard
@@ -686,10 +686,10 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func save() {
+    @objc func save() {
         updateAndPopViewController(subjectName: customeSubjectText.text!)
     }
     
-    let customeSubjectText: UITextField = UpdateProgressController.textField()
-    let saveButton = FeedCell.buttonForTitleWithBorder("Save", imageName: "")
+    @objc let customeSubjectText: UITextField = UpdateProgressController.textField()
+    @objc let saveButton = FeedCell.buttonForTitleWithBorder("Save", imageName: "")
 }

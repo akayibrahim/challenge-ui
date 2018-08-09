@@ -16,9 +16,9 @@ import FBSDKLoginKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var isCont: Bool = false
-    var splashTimer: Timer?
-    var customTabBarController: CustomTabBarController!
+    @objc var isCont: Bool = false
+    @objc var splashTimer: Timer?
+    @objc var customTabBarController: CustomTabBarController!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         UINavigationBar.appearance().barTintColor = navAndTabColor
-        UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)!, NSForegroundColorAttributeName: UIColor.white]
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)!, NSAttributedStringKey.foregroundColor: UIColor.white]
         
         UITabBar.appearance().tintColor = navAndTabColor
         
@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func openApp() {
+    @objc func openApp() {
         if(FBSDKAccessToken.current() != nil) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 if dummyServiceCall == false {
@@ -68,11 +68,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func splashScreenToMain() {
+    @objc func splashScreenToMain() {
         window?.rootViewController = customTabBarController
     }
     
-    func playAudioWithOther() {
+    @objc func playAudioWithOther() {
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: AVAudioSessionCategoryOptions.mixWithOthers)
             do {
@@ -109,8 +109,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-     let group = DispatchGroup()
-    func getMemberInfo(memberId: String) {
+     @objc let group = DispatchGroup()
+    @objc func getMemberInfo(memberId: String) {
         group.enter()
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         jsonURL.get { data, response, error in

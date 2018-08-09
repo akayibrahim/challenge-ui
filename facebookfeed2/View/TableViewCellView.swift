@@ -18,21 +18,21 @@ class TableViewCellContent: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
     
-    var pickerData: [String] = [String]()
-    var myUIPicker: UIPickerView!
-    var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
-    var datePicker: UIDatePicker = UIDatePicker(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
-    var addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.width * 17.5/30) + 22))
+    @objc var pickerData: [String] = [String]()
+    @objc var myUIPicker: UIPickerView!
+    @objc var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
+    @objc var datePicker: UIDatePicker = UIDatePicker(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
+    @objc var addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.width * 17.5/30) + 22))
     
-    let screenSize = UIScreen.main.bounds
-    var chlViewHeight: CGFloat = 17.5/30
-    var tableRowHeightHeight: CGFloat = 44
+    @objc let screenSize = UIScreen.main.bounds
+    @objc var chlViewHeight: CGFloat = 17.5/30
+    @objc var tableRowHeightHeight: CGFloat = 44
     
     var firstTeamScore: Int!
     var secondTeamScore: Int!
     var homeWin: Bool!
     var awayWin: Bool!
-    init(frame: CGRect, cellRow : Int, typeIndex : Int) {
+    @objc init(frame: CGRect, cellRow : Int, typeIndex : Int) {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
         let contentGuide = self.readableContentGuide
         
@@ -48,7 +48,7 @@ class TableViewCellContent: UITableViewCell {
             mySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             mySegControl.selectedSegmentIndex = 0
             let font = UIFont.systemFont(ofSize: 11)
-            mySegControl.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
+            mySegControl.setTitleTextAttributes([NSAttributedStringKey.font: font], for: .normal)
             mySegControl.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -61,7 +61,7 @@ class TableViewCellContent: UITableViewCell {
             addTopAnchor(deadLines, anchor: contentGuide.topAnchor, constant: (screenWidth * 0 / 10))
             deadLines.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
             let font = UIFont.systemFont(ofSize: 10)
-            deadLines.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
+            deadLines.setTitleTextAttributes([NSAttributedStringKey.font: font], for: .normal)
             
             addSubview(datePicker)
             addTopAnchor(datePicker, anchor: deadLines.bottomAnchor, constant: -(screenWidth * 0.25 / 10))
@@ -76,7 +76,7 @@ class TableViewCellContent: UITableViewCell {
             visibilitySegControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             addWidthAnchor(visibilitySegControl, multiplier: 2 / 3)
             let font = UIFont.boldSystemFont(ofSize: 10)
-            visibilitySegControl.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
+            visibilitySegControl.setTitleTextAttributes([NSAttributedStringKey.font: font], for: .normal)
             if typeIndex == 1 || typeIndex == 3 {
                 visibilitySegControl.selectedSegmentIndex = 2
             } else if typeIndex == 2 {
@@ -112,36 +112,36 @@ class TableViewCellContent: UITableViewCell {
         }
     }
     
-    func addNew() {
+    @objc func addNew() {
         self.removeFromSuperview()
     }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
+    @objc func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
         return pickerData.count
     }
     
-    func pickerView(_ pickerView: UIPickerView!, titleForRow row: Int, forComponent component: Int) -> String! {
+    @objc func pickerView(_ pickerView: UIPickerView!, titleForRow row: Int, forComponent component: Int) -> String! {
         return pickerData[row]
     }
     
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    @objc func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    let proofImageView: UIImageView = {
+    @objc let proofImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.semanticContentAttribute = .forceRightToLeft
         return imageView
     }()
     
-    let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Team Members", "Friends", "Everyone"])
-    let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["TEAM", "FRIENDS", "MYSELF", "EVERYONE"])
-    let deadLines: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["A DAY", "A WEEK", "A MONTH", "A YEAR"])
-    let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
-    let labelOtherSide: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.gray)
-    let homeScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
-    let awayScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
+    @objc let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Team Members", "Friends", "Everyone"])
+    @objc let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["TEAM", "FRIENDS", "MYSELF", "EVERYONE"])
+    @objc let deadLines: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["A DAY", "A WEEK", "A MONTH", "A YEAR"])
+    @objc let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
+    @objc let labelOtherSide: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.gray)
+    @objc let homeScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
+    @objc let awayScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
 }
 
 class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
@@ -152,10 +152,10 @@ class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
-    let screenSize = UIScreen.main.bounds
-    var chlViewHeight: CGFloat = 17.5/30
-    var tableRowHeightHeight: CGFloat = 44
-    init(frame: CGRect, cellRow : Int, typeIndex : Int) {
+    @objc let screenSize = UIScreen.main.bounds
+    @objc var chlViewHeight: CGFloat = 17.5/30
+    @objc var tableRowHeightHeight: CGFloat = 44
+    @objc init(frame: CGRect, cellRow : Int, typeIndex : Int) {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
         let contentGuide = self.readableContentGuide
         /*
@@ -173,9 +173,9 @@ class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
         commentView.heightAnchor.constraint(equalToConstant: globalHeight - 10).isActive = true
     }
     
-    let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
+    @objc let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
     
-    let commentView: UITextView = {
+    @objc let commentView: UITextView = {
         let textView = UITextView()
         textView.textColor = UIColor.lightGray
         textView.text = "Comment"

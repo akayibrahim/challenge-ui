@@ -9,9 +9,9 @@
 import UIKit
 
 class AddChallenge: SafeJsonObject {
-    var labelText: String?
-    var resultText : String?
+    @objc var labelText: String?
+    @objc var resultText : String?
     var resultId : Int?
     var resultBool : Bool?
-    var labelAtt : NSMutableAttributedString?
+    @objc var labelAtt : NSMutableAttributedString?
 }

@@ -20,7 +20,7 @@ class ProofCellView: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup() {
+    @objc func setup() {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         
@@ -51,7 +51,7 @@ class ProofCellView: UITableViewCell {
         DispatchQueue.main.async {
             self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-            self.avPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+            self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
             self.avPlayerLayer.repeatCount = 3
             self.proofedVideoView.layer.masksToBounds = true
         }
@@ -74,10 +74,10 @@ class ProofCellView: UITableViewCell {
     }
 
     
-    let profileImageView: UIImageView = FeedCell().profileImageView
-    let thinksAboutChallengeView: UITextView = FeedCell().thinksAboutChallengeView
+    @objc let profileImageView: UIImageView = FeedCell().profileImageView
+    @objc let thinksAboutChallengeView: UITextView = FeedCell().thinksAboutChallengeView
     
-    let proofImageView: UIImageView = {
+    @objc let proofImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = UIColor.blue
@@ -85,8 +85,8 @@ class ProofCellView: UITableViewCell {
         return imageView
     }()
     
-    let proofedVideoView: UIView = FeedCell.viewFunc()
-    let volumeUpImageView: UIImageView = FeedCell.circleImageView()
-    let volumeDownImageView: UIImageView = FeedCell.circleImageView()
-    let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
+    @objc let proofedVideoView: UIView = FeedCell.viewFunc()
+    @objc let volumeUpImageView: UIImageView = FeedCell.circleImageView()
+    @objc let volumeDownImageView: UIImageView = FeedCell.circleImageView()
+    @objc let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

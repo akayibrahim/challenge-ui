@@ -10,7 +10,7 @@ import UIKit
 import AVKit
 
 extension UIDevice {
-    var isSimulator: Bool {
+    @objc var isSimulator: Bool {
         #if arch(i386) || arch(x86_64)
             return true
         #else
@@ -47,7 +47,7 @@ extension UIViewController: UITextFieldDelegate {
 }
 
 extension NSNumber {
-    func getSuppportCountAsK() -> String {
+    @objc func getSuppportCountAsK() -> String {
         let selfStr = self.stringValue
         if selfStr.count > 3 {
             let endIndex = selfStr.index(selfStr.endIndex, offsetBy: -3)
@@ -61,7 +61,7 @@ extension NSNumber {
 
 extension UITapGestureRecognizer {
     
-    func didTapAttributedTextInTextView(label: UITextView, inRange targetRange: NSRange) -> Bool {
+    @objc func didTapAttributedTextInTextView(label: UITextView, inRange targetRange: NSRange) -> Bool {
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
         let layoutManager = NSLayoutManager()
         let textContainer = NSTextContainer(size: CGSize.zero)
@@ -90,7 +90,7 @@ extension UITapGestureRecognizer {
         return NSLocationInRange(indexOfCharacter + 5, targetRange)
     }
     
-    func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
+    @objc func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
         let layoutManager = NSLayoutManager()
         let textContainer = NSTextContainer(size: CGSize.zero)
@@ -139,7 +139,7 @@ extension URL {
 extension String {
     func heightOf(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: font], context: nil)
         
         return ceil(boundingBox.height)
     }
@@ -172,14 +172,14 @@ extension String {
 fileprivate extension String {
     func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: font], context: nil)
         
         return ceil(boundingBox.height)
     }
     
     func width(withConstraintedHeight height: CGFloat, font: UIFont) -> CGFloat {
         let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: font], context: nil)
         
         return ceil(boundingBox.width)
     }
@@ -214,7 +214,7 @@ extension UIFont {
 extension UILabel {
     /// Will auto resize the contained text to a font size which fits the frames bounds
     /// Uses the pre-set font to dynamicly determine the proper sizing
-    func fitTextToBounds() {
+    @objc func fitTextToBounds() {
         guard let text = text, let currentFont = font else { return }
         
         if let dynamicFontSize = UIFont.bestFitFontSize(for: text, in: bounds, fontName: currentFont.fontName) {
@@ -225,12 +225,12 @@ extension UILabel {
 
 extension UIImageView {
     
-    func roundedImage() {
+    @objc func roundedImage() {
         self.layer.cornerRadius = screenWidth * 0.6 / 10 / 2
         self.clipsToBounds = true
     }
     
-    func load(challengeId: String, challengerId: String) {
+    @objc func load(challengeId: String, challengerId: String) {
         if dummyServiceCall == false {
             let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
@@ -247,7 +247,7 @@ extension UIImageView {
 }
 
 extension AVPlayerLayer {
-    func load(challengeId: String, challengerId: String) {
+    @objc func load(challengeId: String, challengerId: String) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
@@ -269,14 +269,14 @@ extension AVPlayerLayer {
 
 extension UIColor {
     
-    static func rgb(_ red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
+    @objc static func rgb(_ red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
         return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
     }
     
 }
 
 extension UIRefreshControl {
-    func beginRefreshingManually() {
+    @objc func beginRefreshingManually() {
         if let scrollView = superview as? UIScrollView {
             scrollView.setContentOffset(CGPoint(x: 0, y: scrollView.contentOffset.y - frame.height), animated: true)
         }

@@ -9,11 +9,11 @@
 import UIKit
 
 class Attendance: SafeJsonObject {
-    var challengeId: String?
-    var memberId: String?
-    var supportedMemberId : String?
-    var name: String?
-    var surname: String?
-    var facebookId: String?
+    @objc var challengeId: String?
+    @objc var memberId: String?
+    @objc var supportedMemberId : String?
+    @objc var name: String?
+    @objc var surname: String?
+    @objc var facebookId: String?
     var followed: Bool?
 }

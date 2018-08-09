@@ -11,9 +11,9 @@ import FBSDKLoginKit
 import FBSDKCoreKit
 
 class SplashScreenController: UIViewController {
-    var imageView : UIImageView!
-    var label: UILabel!
-    var window: UIWindow?
+    @objc var imageView : UIImageView!
+    @objc var label: UILabel!
+    @objc var window: UIWindow?
     
     override func viewDidLoad() {
         super.viewDidLoad()

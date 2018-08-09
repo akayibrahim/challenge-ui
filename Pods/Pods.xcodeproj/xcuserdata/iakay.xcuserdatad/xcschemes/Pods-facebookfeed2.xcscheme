@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0940"
+   LastUpgradeVersion = "0700"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "348704E381F7587A82A2E6542960849F"
+               BlueprintIdentifier = "6F51B7BE083C2059C5A42F648BF9491C"
                BuildableName = "Pods_facebookfeed2.framework"
                BlueprintName = "Pods-facebookfeed2"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "348704E381F7587A82A2E6542960849F"
+            BlueprintIdentifier = "6F51B7BE083C2059C5A42F648BF9491C"
             BuildableName = "Pods_facebookfeed2.framework"
             BlueprintName = "Pods-facebookfeed2"
             ReferencedContainer = "container:Pods.xcodeproj">

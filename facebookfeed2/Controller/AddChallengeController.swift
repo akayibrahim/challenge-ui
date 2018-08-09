@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import YPImagePicker
 
 var chlIndex : Int = 0
 var typeIndex : Int = 1
@@ -269,7 +270,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             popupAlert(message: "Away cannot be empty.", willDelay: false)
             return
         }
-        if isImg && isPublic() && proofCell.proofImageView.image == nil {
+        if isPublic() && proofCell.proofImageView.image == nil {
             popupAlert(message: "Proof cannot be empty.", willDelay: false)
             return
         }
@@ -390,6 +391,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     
     @objc func clear() {
         DispatchQueue.main.async {
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
             self.createAddChallengeInstance()
             self.cancel()
             self.tableView.reloadData()
@@ -398,7 +400,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 self.leftSide.append(self.getMember())
             }
             self.navigationController?.tabBarController?.selectedIndex = profileIndex
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
         }
     }
     
@@ -484,6 +485,26 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     
     @objc let imagePickerController = UIImagePickerController()
     @objc func imagePickerForProofUpload() {
+        let picker = YPImagePicker(configuration: Util.conficOfYpImagePicker())
+        picker.didFinishPicking { [unowned picker] items, cancelled in
+            let proofCell = self.getCell(path: proofIndexPath)
+            for item in items {
+                switch item {
+                case .photo(let photo):
+                    proofCell.proofImageView.image = photo.modifiedImage
+                    proofCell.proofImageView.alpha = 1
+                    self.isImg = true
+                case .video(let video):
+                    self.videoURL = video.url as NSURL
+                    proofCell.proofImageView.image = video.thumbnail
+                    proofCell.proofImageView.alpha = 1
+                    self.isImg = false
+                }
+            }
+            picker.dismiss(animated: true, completion: nil)
+        }
+        present(picker, animated: true, completion: nil)
+        /*
         imagePickerController.delegate = self
         imagePickerController.mediaTypes = ["public.image", "public.movie"]
         let actionsheet = UIAlertController(title: "", message: "Choose a photo source", preferredStyle :.actionSheet)
@@ -509,10 +530,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         actionsheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         self.present(actionsheet, animated: true, completion: nil)
+         */
     }
 
     @objc var videoURL: NSURL?
-    
     @objc var isImg: Bool = true
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {

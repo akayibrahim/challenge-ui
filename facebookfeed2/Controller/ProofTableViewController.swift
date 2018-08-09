@@ -8,6 +8,7 @@
 
 import UIKit
 import AVKit
+import YPImagePicker
 
 class ProofTableViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate {
     @objc let screenSize = UIScreen.main.bounds
@@ -245,12 +246,32 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         imagePickerForProofUpload()
     }
     
+    @objc var videoURL: NSURL?
+    @objc var isImg: Bool = true
     @objc let imagePickerController = UIImagePickerController()
     @objc func imagePickerForProofUpload() {
-        imagePickerController.delegate = self
+        let picker = YPImagePicker(configuration: Util.conficOfYpImagePicker())
+        picker.didFinishPicking { [unowned picker] items, cancelled in
+            for item in items {
+                switch item {
+                case .photo(let photo):
+                    self.proofImageView.image = photo.modifiedImage
+                    self.proofImageView.alpha = 1
+                    self.isImg = true
+                case .video(let video):
+                    self.videoURL = video.url as NSURL
+                    self.proofImageView.image = video.thumbnail
+                    self.proofImageView.alpha = 1
+                    self.isImg = false
+                }
+            }
+            picker.dismiss(animated: true, completion: nil)
+        }
+        present(picker, animated: true, completion: nil)
+        /*imagePickerController.delegate = self
         imagePickerController.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
         imagePickerController.allowsEditing = false
-        self.present(imagePickerController, animated: true, completion: nil)
+        self.present(imagePickerController, animated: true, completion: nil)*/
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -263,15 +284,20 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     @objc func sendProof() {
         if proofImageView.image == nil {
-            popupAlert(message: "You have to add your poor first.", willDelay: false)
+            popupAlert(message: "You have to add your prove first.", willDelay: false)
             return
         }
         let parameters = ["challengeId": challengeId as String, "memberId": memberID as String]
         let urlOfUpload = URL(string: uploadImageURL)!
-        let requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: self.proofImageView.image!)
+        var requestOfUpload: URLRequest?
+        if self.isImg {
+            requestOfUpload = ServiceLocator.prepareRequestForMedia(url: urlOfUpload, parameters: parameters, image: self.proofImageView.image!)
+        } else {
+            requestOfUpload = ServiceLocator.prepareRequestForVideo(url: urlOfUpload, parameters: parameters, videoUrl: videoURL!)
+        }
         group.enter()
         self.sendButton.alpha = 0
-        URLSession.shared.dataTask(with: requestOfUpload, completionHandler: { (data, response, error) -> Void in
+        URLSession.shared.dataTask(with: requestOfUpload!, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
                 return
@@ -323,6 +349,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProofCell", for: indexPath as IndexPath) as! ProofCellView
         // let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
         // let cell = ProofCellView(frame: frameOfCell, cellRow: indexPath.row)
+        if self.proofs.count == 0 {
+            return cell
+        }
         DispatchQueue.main.async {
             let nameAtt = NSMutableAttributedString(string: "\(String(describing: self.proofs[indexPath.row].name!))", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
             cell.thinksAboutChallengeView.attributedText = nameAtt

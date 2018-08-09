@@ -1084,6 +1084,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         } else {
             feedCell.joinButton.setImage(UIImage(named: acceptedRed), for: .normal)
             joinToChallengeService(challengeId: sender.challengeId!, feedCell: feedCell)
+            self.posts[index.row].joined = true
+            self.posts[index.row].canJoin = false
+            self.collectionView?.reloadItems(at: [index])
         }
     }
     

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import AVFoundation
+import YPImagePicker
 
 public class Util {
     static func addForwardChange(forwardChange: ForwardChange) {
@@ -28,5 +30,35 @@ public class Util {
             return forwardChange
         }
         return ForwardChange(index: IndexPath(item:0, section: 0), forwardScreen: "")
+    }
+    
+    static func conficOfYpImagePicker() -> YPImagePickerConfiguration {
+        var config = YPImagePickerConfiguration()
+        config.library.mediaType = .photoAndVideo
+        config.library.onlySquare  = false
+        config.onlySquareImagesFromCamera = true
+        config.targetImageSize = .original
+        config.usesFrontCamera = true
+        config.showsFilters = true
+        // config.filters = [YPFilterDescriptor(name: "Normal", filterName: ""),
+        //               YPFilterDescriptor(name: "Mono", filterName: "CIPhotoEffectMono")]
+        config.shouldSaveNewPicturesToAlbum = false
+        config.video.compression =  AVAssetExportPresetMediumQuality
+        config.albumName = "MyGreatAppName"
+        config.screens = [.library, .photo, .video]
+        config.startOnScreen = .library
+        config.video.recordingTimeLimit = 20
+        config.video.trimmerMaxDuration = 20
+        // config.video.libraryTimeLimit = 20
+        config.showsCrop = .rectangle(ratio: (Double(screenWidth / (screenWidth / 2))))
+        config.wordings.libraryTitle = "Gallery"
+        config.hidesStatusBar = true
+        //config.overlayView = myOverlayView
+        config.library.maxNumberOfItems = 1
+        config.library.minNumberOfItems = 1
+        config.library.numberOfItemsInRow = 3
+        config.library.spacingBetweenItems = 2
+        config.isScrollToChangeModesEnabled = false
+        return config
     }
 }

@@ -10,6 +10,14 @@ import UIKit
 import AVKit
 import PINRemoteImage
 
+extension String
+{
+    func replace(target: String, withString: String) -> String
+    {
+        return self.replacingOccurrences(of: target, with: withString, options: NSString.CompareOptions.literal, range: nil)
+    }
+}
+
 extension UIDevice {
     @objc var isSimulator: Bool {
         #if arch(i386) || arch(x86_64)
@@ -242,7 +250,7 @@ extension UIImageView {
                 self.pin_setImage(from: url!) { (result) in
                     ImageService.cache(withURL: url!, image: self.image!)
                 }
-            }            
+            }
             /*if let urlOfImage = url {
                 ImageService.getImage(withURL: urlOfImage) { image in
                     if image != nil {

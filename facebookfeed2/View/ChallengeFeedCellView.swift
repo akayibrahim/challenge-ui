@@ -290,7 +290,7 @@ class FeedCell: UICollectionViewCell {
                 setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
                 firstOneChlrPeopleImageView.memberId = post?.challengerId
                 if let subject = post?.subject {
-                    setImage(name: subject, imageView: firstOnePeopleImageView)
+                    setImage(name: subject.replace(target: " ", withString: "_"), imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.memberId = nil
                     firstOnePeopleImageView.contentMode = .scaleAspectFill
                 }

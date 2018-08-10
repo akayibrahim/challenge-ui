@@ -34,8 +34,7 @@ class Feed: SafeJsonObject {
     @objc var feedUrl, title, link, author, type: String?
 }
 
-class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
-    	
+class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UICollectionViewDataSourcePrefetching {
     @objc var posts = [Post]()
     @objc var donePosts = [Post]()
     @objc var notDonePosts = [Post]()
@@ -55,6 +54,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc var nowMoreData: Bool = false
     @objc var challangeCount: String = "0"
     @objc var goForward: Bool = false
+    var isFetchingNextPage = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +82,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "selfCellId")
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
+        collectionView?.prefetchDataSource = self
+        collectionView?.isPrefetchingEnabled = true
     }
     
     @objc func isTabIndex(_ index: Int) -> Bool {
@@ -138,6 +140,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func loadChallenges() {
         if dummyServiceCall == false {
+            guard !isFetchingNextPage else { return }
             if Util.controlNetwork() {
                 return
             }
@@ -190,6 +193,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     @objc func fetchChallenges(url: String, profile : Bool) {
+        isFetchingNextPage = true
         let jsonURL = URL(string: url)!
         jsonURL.get { data, response, error in
             guard
@@ -226,6 +230,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         }
                     }
                 }
+                self.isFetchingNextPage = false
                 if self.nowMoreData == false {
                     self.collectionView?.reloadData()
                 }
@@ -347,7 +352,37 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
     }
     
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex && !profile
+        let isSelf = self.tabBarController?.selectedIndex == profileIndex
+        let isTrend = self.tabBarController?.selectedIndex == trendsIndex && explorer
+        let needsFetch = indexPaths.contains { $0.row >= self.posts.count - 1 }
+        let needsFetchSelf = indexPaths.contains { $0.row >= self.notDonePosts.count - 1  || $0.row >= self.donePosts.count - 1 }
+        if (isChallenge || isTrend) && needsFetch && !nowMoreData && !dummyServiceCall {
+            if isChallenge {
+                currentPage += 1
+                print("challenge:\(currentPage)")
+            }
+            if isTrend {
+                explorerCurrentPage += 1
+            }
+            self.loadChallenges()
+        }
+        if isSelf && needsFetchSelf && !nowMoreData && !dummyServiceCall {
+            if isSelf || memberIdForFriendProfile == memberID {
+                selfCurrentPage += 1
+                print("self:\(selfCurrentPage)")
+            }
+            self.loadChallenges()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+        
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        /*
         let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex && !profile
         let isSelf = self.tabBarController?.selectedIndex == profileIndex
         let isTrend = self.tabBarController?.selectedIndex == trendsIndex && explorer
@@ -373,6 +408,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
             self.loadChallenges()
         }
+     */
     }
     
     @objc func createProfile() -> ProfileCellView {

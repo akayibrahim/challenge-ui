@@ -16,20 +16,26 @@ class VideoService {
     static func downloadVideo(withURL url:URL, completion: @escaping (_ video:URL?)->()) {
         let urls = url.absoluteString.split(separator: "?")
         let tempUrl = FileManager.default.temporaryDirectory.appendingPathComponent("\(urls[1]).mov")
-        let destination: DownloadRequest.DownloadFileDestination = { _, _ in return (tempUrl, [.removePreviousFile, .createIntermediateDirectories]) }
-        Alamofire.download(url, to: destination).responseData { (response) in
-            print(tempUrl)
-            switch response.result {
-            case .failure( _):
-                break;
-            case .success( _):
-                cache.setObject(tempUrl as NSURL, forKey: url.absoluteString as NSString)
-                DispatchQueue.main.async {
-                    completion(tempUrl)
-                }
-                break;
+        if FileManager.default.fileExists(atPath: tempUrl.path) {
+            DispatchQueue.main.async {
+                completion(tempUrl)
             }
-            
+        } else {
+            let destination: DownloadRequest.DownloadFileDestination = { _, _ in return (tempUrl, [.removePreviousFile, .createIntermediateDirectories]) }
+            Alamofire.download(url, to: destination).responseData { (response) in
+                print(tempUrl)
+                switch response.result {
+                case .failure( _):
+                    break;
+                case .success( _):
+                    cache.setObject(tempUrl as NSURL, forKey: url.absoluteString as NSString)
+                    DispatchQueue.main.async {
+                        completion(tempUrl)
+                    }
+                    break;
+                }
+                
+            }
         }
     }
     

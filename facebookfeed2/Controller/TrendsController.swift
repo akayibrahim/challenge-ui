@@ -174,16 +174,10 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
             cell.trendRequest = self.trendRequest[indexPath.row]
             if self.trendRequest[indexPath.row].provedWithImage! {
                 cell.requestImageView.load(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
-                cell.proofedVideoView.alpha = 0
-                cell.volumeUpImageView.alpha = 0
-                cell.volumeDownImageView.alpha = 0
-                cell.requestImageView.alpha = 1
+                self.imageEnable(cell, yes: true)
             } else {
                 cell.avPlayerLayer.load(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!)
-                cell.proofedVideoView.alpha = 1
-                cell.volumeUpImageView.alpha = 0
-                cell.volumeDownImageView.alpha = 1
-                cell.requestImageView.alpha = 0
+                self.imageEnable(cell, yes: false)
             }
         }
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.profileImageTapped(tapGestureRecognizer:)))
@@ -197,6 +191,12 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         return cell
     }
     
+    @objc func imageEnable(_ feedCell: TrendRequestCell, yes: Bool) {
+        feedCell.proofedVideoView.alpha = yes ? 0 : 1
+        feedCell.volumeUpImageView.alpha = yes ? 0 : 0
+        feedCell.volumeDownImageView.alpha = yes ? 0 : 1
+        feedCell.requestImageView.alpha = yes ? 1 : 0
+    }
     // var avPlayer : AVPlayer = AVPlayer.init()
 
     @objc func profileImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {

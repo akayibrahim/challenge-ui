@@ -236,9 +236,7 @@ extension UIImageView {
             if let urlOfImage = url {
                 ImageService.getImage(withURL: urlOfImage) { image in
                     if image != nil {
-                        DispatchQueue.main.async {
-                            self.image = image
-                        }
+                        self.image = image
                     }
                 }
             }
@@ -253,13 +251,11 @@ extension AVPlayerLayer {
             if let urlOfImage = url {
                 VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
                     if let video = videoData {
-                        DispatchQueue.main.async {
-                            let avPlayer = AVPlayer.init()
-                            avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: video))
-                            avPlayer.volume = volume
-                            self.player = avPlayer
-                            self.player?.play()
-                        }
+                        let avPlayer = AVPlayer.init()
+                        avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: video))
+                        avPlayer.volume = volume
+                        self.player = avPlayer
+                        self.player?.play()
                     }
                 })
             }

@@ -13,5 +13,6 @@ pod 'FBSDKCoreKit', '4.29.0'
 pod 'Alamofire'
 pod 'AlamofireImage'
 pod 'YPImagePicker'
+pod 'PINRemoteImage'
 
 end

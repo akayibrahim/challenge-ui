@@ -8,6 +8,7 @@
 
 import UIKit
 import AVKit
+import PINRemoteImage
 
 extension UIDevice {
     @objc var isSimulator: Bool {
@@ -233,13 +234,37 @@ extension UIImageView {
     @objc func load(challengeId: String, challengerId: String) {
         if dummyServiceCall == false {
             let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
-            if let urlOfImage = url {
+            if ImageService.cached(withURL: url!) {
+                self.image = ImageService.fromCache(withURL: url!)
+            } else {
+                PINRemoteImageManager.shared().setProgressThresholds([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], completion: nil)
+                self.pin_updateWithProgress = true
+                self.pin_setImage(from: url!) { (result) in
+                    ImageService.cache(withURL: url!, image: self.image!)
+                }
+            }            
+            /*if let urlOfImage = url {
                 ImageService.getImage(withURL: urlOfImage) { image in
                     if image != nil {
                         self.image = image
                     }
                 }
-            }
+            }*/
+        }
+    }
+    
+    @objc func load(url: URL) {
+        if dummyServiceCall == false {
+            PINRemoteImageManager.shared().setProgressThresholds([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], completion: nil)
+            self.pin_updateWithProgress = true
+            self.pin_setImage(from: url)
+            /*if let urlOfImage = url {
+             ImageService.getImage(withURL: urlOfImage) { image in
+             if image != nil {
+             self.image = image
+             }
+             }
+             }*/
         }
     }
 }

@@ -7,19 +7,14 @@
 //
 
 import UIKit
+import PINRemoteImage
+import PINCache
 
 extension UIView {
     @objc func setImage(fbID: String?, imageView: UIImageView) {
         if let peoplefbID = fbID {
             let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
-            // imageView.load(url: url!)
-            ImageService.getImage(withURL: url!) { image in
-                if image != nil {
-                    imageView.image = image
-                } else {
-                    self.setImage(name: unknown, imageView: imageView)
-                }
-            }
+            imageView.load(url: url!)            
         }
     }
     

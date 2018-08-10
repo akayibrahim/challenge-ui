@@ -45,6 +45,23 @@ class ImageService {
         }
     }
     
+    static func cache(withURL url:URL, image: UIImage) {
+        if cache.object(forKey: url.absoluteString as NSString) == nil {
+            cache.setObject(image, forKey: url.absoluteString as NSString)
+        }
+    }
+    
+    static func fromCache(withURL url:URL) -> UIImage {
+        return cache.object(forKey: url.absoluteString as NSString)!
+    }
+    
+    static func cached(withURL url:URL) -> Bool {
+        if cache.object(forKey: url.absoluteString as NSString) != nil {
+            return true
+        }
+        return false
+    }
+    
     static func getImage(withURL url:URL, completion: @escaping (_ image:UIImage?)->()) {
         if let image = cache.object(forKey: url.absoluteString as NSString) {
             DispatchQueue.main.async {

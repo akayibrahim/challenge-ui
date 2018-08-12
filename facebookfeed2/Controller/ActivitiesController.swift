@@ -36,6 +36,23 @@ class ActivitiesController: UITableViewController {
         self.reloadPage()
     }
 
+    @objc func getActivityCount() {
+        let jsonURL = URL(string: getActivityCountURL + memberID + "&delete=true")!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil
+                else {
+                    if data != nil {
+                        ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: getActivityCountURL, inputs: "memberID=\(memberID)")
+                    }
+                    return
+            }
+            DispatchQueue.main.async {
+                self.navigationController?.tabBarController?.tabBar.items?[3].badgeValue = nil
+            }
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if goForward {
@@ -69,7 +86,7 @@ class ActivitiesController: UITableViewController {
             fetchChallengeRequest()
             group.wait()
             fetchActivities()
-            self.navigationController?.tabBarController?.tabBar.items?[3].badgeValue = nil
+            getActivityCount()
             return
         } else {
             self.activities = ServiceLocator.getActivitiesFromDummy(jsonFileName: "activities")
@@ -299,6 +316,8 @@ class ActivitiesController: UITableViewController {
         proofsTable.tableTitle = proofsTableTitle
         // TODO commentsTable.comments = self.comments
         proofsTable.challengeId = challengeId
+        proofsTable.canJoin = false
+        proofsTable.proofed = true
         proofsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(proofsTable, animated: true)

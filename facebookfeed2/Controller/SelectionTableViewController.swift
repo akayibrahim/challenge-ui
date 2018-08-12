@@ -60,7 +60,6 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         navigationItem.title = tableTitle  
         
         reload()
-        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.hideKeyboardWhenTappedAround()
@@ -469,8 +468,8 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     switchCustomeSubject = !switchCustomeSubject
                     let customSubjectIndex = IndexPath(item: items.count + 2, section: 0)
                     tableView.reloadRows(at: [customSubjectIndex], with: .fade)
-                    customeSubjectText.becomeFirstResponder()
                     tableView.scrollToRow(at: customSubjectIndex, at: UITableViewScrollPosition.bottom, animated: true)
+                    customeSubjectText.becomeFirstResponder()
                 } else if (indexPath.row == items.count) {
                     // nothing
                 } else {
@@ -606,6 +605,22 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         return 0
     }
     
+    func prepareCustomSubjectView() -> UIView {
+        let customSubjectView = UIView()
+        customSubjectView.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: globalHeight)
+        customSubjectView.addSubview(customeSubjectText)
+        customeSubjectText.frame = CGRect(x: 0, y: 0, width: view.frame.width * 4 / 5, height: globalHeight)
+        customeSubjectText.placeholder = "Enter custom subject..."
+        customeSubjectText.autocapitalizationType = .allCharacters
+        customSubjectView.addSubview(saveButton)
+        saveButton.frame = CGRect(x: view.frame.width * 4 / 5, y: 0, width: view.frame.width * 1 / 5, height: globalHeight)
+        saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)
+        saveButton.backgroundColor = navAndTabColor
+        saveButton.layer.borderWidth = 0
+        saveButton.setTitleColor(UIColor.white, for: UIControlState())
+        return customSubjectView
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if !listMode {
             let cell = tableView.dequeueReusableCell(withIdentifier: labelCell, for: indexPath as IndexPath)
@@ -616,19 +631,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 }
             } else {
                 if (indexPath.row == (items.count + 2)) {
-                    let view = UIView()
-                    view.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: globalHeight)
-                    view.addSubview(customeSubjectText)
-                    customeSubjectText.frame = CGRect(x: 0, y: 0, width: view.frame.width * 4 / 5, height: globalHeight)
-                    customeSubjectText.placeholder = "Enter custom subject..."
-                    customeSubjectText.autocapitalizationType = .allCharacters
-                    view.addSubview(saveButton)
-                    saveButton.frame = CGRect(x: view.frame.width * 4 / 5, y: 0, width: view.frame.width * 1 / 5, height: globalHeight)
-                    saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)                    
-                    saveButton.backgroundColor = navAndTabColor
-                    saveButton.layer.borderWidth = 0
-                    saveButton.setTitleColor(UIColor.white, for: UIControlState())
-                    cell.addSubview(view)
+                    cell.addSubview(prepareCustomSubjectView())
                     cell.isHidden = !switchCustomeSubject
                 } else if (indexPath.row == (items.count + 1)) {
                     cell.textLabel?.text = customSubjectLabel

@@ -40,7 +40,7 @@ class ProofCellView: UITableViewCell {
         addTopAnchor(proofImageView, anchor: profileImageView.bottomAnchor, constant: screenWidth * 0.05 / 2)
         addWidthAnchor(proofImageView, multiplier: 1)
         addHeightAnchor(proofImageView, multiplier: 1 / 2)
-        setImage(name: unknown, imageView: proofImageView)
+        // setImage(name: unknown, imageView: proofImageView)
         proofImageView.alpha = 0
         
         addSubview(proofedVideoView)
@@ -80,7 +80,7 @@ class ProofCellView: UITableViewCell {
     @objc let proofImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = UIColor.blue
+        // imageView.backgroundColor = UIColor.blue
         imageView.layer.masksToBounds = true
         return imageView
     }()

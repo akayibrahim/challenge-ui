@@ -368,31 +368,10 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             self.setImage(fbID: fbID, imageView: cell.profileImageView)
             if let proofObjectId = self.proofs[indexPath.item].proofObjectId {
                 if self.proofs[indexPath.item].provedWithImage! {
-                    self.getProofImageByObjectId(imageView: cell.proofImageView, objectId: proofObjectId) {
-                        image in
-                        if image != nil {
-                            cell.proofImageView.image = image
-                            cell.proofImageView.alpha = 1
-                        }
-                    }
+                    cell.proofImageView.loadByObjectId(objectId: proofObjectId)
+                    cell.proofImageView.alpha = 1
                 } else {
-                    // var video: Data?
-                    //self.group.enter()
-                    // let params = "?challengeId=\(self.challengeId!)&memberId=\(self.proofs[indexPath.row].memberId!)"
-                    // let urlV = URL(string: downloadVideoURL + params)
-                    self.getVideo(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!) {
-                        video in
-                        if let vid = video {
-                            let avPlayer = AVPlayer.init()
-                            avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: vid))
-                            avPlayer.volume = volume
-                            cell.avPlayerLayer.player = avPlayer
-                            cell.avPlayerLayer.player?.play()
-                            //self.group.leave()
-                        }
-                    }
-                    //self.group.wait()
-                    //let url = URL(fileURLWithPath:  + ".mov")
+                    cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!)
                     cell.proofedVideoView.alpha = 1
                     cell.volumeUpImageView.alpha = 0
                     cell.volumeDownImageView.alpha = 1

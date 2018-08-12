@@ -54,7 +54,9 @@ extension UIViewController
         if let urlOfImage = url {
             ImageService.getImage(withURL: urlOfImage) { image in
                 if image != nil {
-                    completion(image)
+                    DispatchQueue.main.async {
+                        completion(image)
+                    }
                 }
             }
         }

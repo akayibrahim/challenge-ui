@@ -140,11 +140,11 @@ class AddChallengeView: UIView {
         self.secondTwoChlrPeopleImageView.removeFromSuperview()
         self.firstThreeChlrPeopleImageView.removeFromSuperview()
         self.secondThreeChlrPeopleImageView.removeFromSuperview()
-        self.thirdThreePeopleImageView.removeFromSuperview()
-        self.firstFourPeopleImageView.removeFromSuperview()
-        self.secondFourPeopleImageView.removeFromSuperview()
-        self.thirdFourPeopleImageView.removeFromSuperview()
-        self.moreFourPeopleImageView.removeFromSuperview()
+        self.thirdThreeChlrPeopleImageView.removeFromSuperview()
+        self.firstFourChlrPeopleImageView.removeFromSuperview()
+        self.secondFourChlrPeopleImageView.removeFromSuperview()
+        self.thirdFourChlrPeopleImageView.removeFromSuperview()
+        self.moreFourChlrPeopleImageView.removeFromSuperview()
     }
     
     @objc func generateFirstTeam(count : Int) {
@@ -232,7 +232,6 @@ class AddChallengeView: UIView {
         self.firstTwoPeopleImageView.removeFromSuperview()
         self.secondTwoPeopleImageView.removeFromSuperview()
         self.firstThreePeopleImageView.removeFromSuperview()
-        self.secondThreePeopleImageView.removeFromSuperview()
         self.secondThreePeopleImageView.removeFromSuperview()
         self.thirdThreePeopleImageView.removeFromSuperview()
         self.firstFourPeopleImageView.removeFromSuperview()

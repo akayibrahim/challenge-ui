@@ -11,9 +11,11 @@ import UIKit
 extension UITableViewController
 {
     @objc func setImage(fbID: String?, imageView: UIImageView, reset : Bool) {
-        if let peoplefbID = fbID {
+        if reset && fbID != memberFbID {
+            setImage(name: unknown, imageView: imageView)
+        } else if let peoplefbID = fbID {            
             let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")
-            imageView.load(url: url!)            
+            imageView.load(url: url!)
         }
     }
     

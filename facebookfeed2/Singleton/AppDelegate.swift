@@ -18,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     @objc var isCont: Bool = false
     @objc var splashTimer: Timer?
-    @objc var customTabBarController: CustomTabBarController!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -59,7 +58,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if isCont {
-            self.customTabBarController = CustomTabBarController()
             window?.rootViewController = SplashScreenController()
             splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
         } else {
@@ -69,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     @objc func splashScreenToMain() {
-        window?.rootViewController = customTabBarController
+        window?.rootViewController = CustomTabBarController()
     }
     
     @objc func playAudioWithOther() {

@@ -72,7 +72,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         collectionView?.alwaysBounceVertical = true
         
-        if !(self.tabBarController?.selectedIndex == profileIndex && !self.profile) {
+        if !(self.tabBarController?.selectedIndex == profileIndex && !self.profile && !explorer) {
             reloadChlPage()
         }
         
@@ -91,7 +91,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     @objc func getActivityCount() {
-        let jsonURL = URL(string: getActivityCountURL + memberID)!
+        let jsonURL = URL(string: getActivityCountURL + memberID + "&delete=false")!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data
@@ -120,6 +120,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc func reloadChlPage() {
         currentPage = 0
         self.posts = [Post]()
+        self.collectionView?.reloadData()
         self.loadChallenges()
     }
     
@@ -150,8 +151,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
                     self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
                 } else if self.memberIdForFriendProfile == memberID {
-                    self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
                     self.fetchChallengeSize(memberId: memberID)
+                    self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
                 }
                 return
             } else if self.explorer {
@@ -161,8 +162,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(self.explorerCurrentPage)", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == profileIndex {
-                self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
                 self.fetchChallengeSize(memberId: memberID)
+                self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
                 FacebookController().getMemberInfo(memberId: memberID)
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
@@ -211,32 +212,33 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if postsArray?.isEmpty == false {
                     for postDictionary in postsArray! {
                         let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
-                        /*if post.proofedByChallenger! {
-                            if post.provedWithImage! { // } self.currentPage != 0 || self.selfCurrentPage != 0 {
-                                let url = URL(string: downloadImageURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                                ImageService.cacheImage(withURL: url!)
-                            } else {
-                                let url = URL(string: downloadVideoURL + "?challengeId=\(post.id!)&memberId=\(post.challengerId!)")
-                                VideoService.cacheImage(withURL: url!)
-                            }
-                        }*/
                         self.posts.append(post)
                         if profile {
                             if post.done == true {
                                 self.donePosts.append(post)
+                                // self.insertItem(self.donePosts.count - 1, section: 2)
                             } else {
                                 self.notDonePosts.append(post)
+                                // self.insertItem(self.notDonePosts.count - 1, section: 1)
                             }
+                        } else {
+                            self.insertItem(self.posts.count - 1, section: 0)
                         }
                     }
                 }
                 self.isFetchingNextPage = false
-                if self.nowMoreData == false {
+                if profile { // }&& self.nowMoreData == false {
                     self.collectionView?.reloadData()
                 }
             }
             //}
         }
+    }
+    
+    func insertItem(_ row:Int, section: Int) {
+        let indexPath = IndexPath(row:row, section: section)
+        self.collectionView?.insertItems(at: [indexPath])
+        
     }
     
     @objc func fetchChallengeSize(memberId: String) {
@@ -250,7 +252,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                     return
             }
-            self.challangeCount = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)! as String
+            DispatchQueue.main.async {
+                self.challangeCount = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)! as String
+            }
         }
     }
     
@@ -326,7 +330,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             if !self.profile {
                 if self.tabBarController?.selectedIndex == chanllengeIndex {
                     // self.reloadChlPage()
-                } else if self.tabBarController?.selectedIndex == profileIndex {
+                } else if self.tabBarController?.selectedIndex == profileIndex && !self.explorer {
                     self.reloadSelfPage()
                 }
             }
@@ -361,19 +365,18 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if (isChallenge || isTrend) && needsFetch && !nowMoreData && !dummyServiceCall {
             if isChallenge {
                 currentPage += 1
-                print("challenge:\(currentPage)")
+                self.loadChallenges()
             }
             if isTrend {
                 explorerCurrentPage += 1
+                self.loadChallenges()
             }
-            self.loadChallenges()
         }
         if isSelf && needsFetchSelf && !nowMoreData && !dummyServiceCall {
             if isSelf || memberIdForFriendProfile == memberID {
                 selfCurrentPage += 1
-                print("self:\(selfCurrentPage)")
+                self.loadChallenges()
             }
-            self.loadChallenges()
         }
     }
     
@@ -787,20 +790,19 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         myPanGestureRecognizer.delegate = self
         feedCell.proofedMediaView.addGestureRecognizer(myPanGestureRecognizer)
         feedCell.proofedMediaView.layer.zPosition = 1
+        feedCell.proofedMediaView.tag = indexPath.row
     }
     
     @objc var isZooming = false
     var originalImageCenter: CGPoint?
     @objc func pan(sender: UIPanGestureRecognizer) {
+        let postImage = sender.view as! UIImageView
         if self.isZooming && sender.state == .began {
-            self.originalImageCenter = sender.view?.center
+            self.originalImageCenter = postImage.center
         } else if self.isZooming && sender.state == .changed {
-            let translation = sender.translation(in: sender.view)
-            // note: 'view' is optional and need to be unwrapped
-            if !((sender.view?.frame.minX)! <= CGFloat(-32) && (sender.view?.frame.maxX)! >= self.view.frame.maxX + 32) {
-            }
-            sender.view!.center = CGPoint(x: sender.view!.center.x + translation.x, y: sender.view!.center.y + translation.y)
-            sender.setTranslation(CGPoint.zero, in: self.view.superview)
+            let translation = sender.translation(in: postImage.superview)
+            sender.view?.center = CGPoint(x: postImage.center.x + translation.x, y: postImage.center.y + translation.y)
+            sender.setTranslation(CGPoint.zero, in: postImage.superview)
         }
     }
     
@@ -1300,9 +1302,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if (self.tabBarController?.selectedIndex == profileIndex  && !explorer) || profile {
-            if indexPath.section == 1 {
+            if indexPath.section == 1 && notDonePosts.count != 0 {
                 openExplorer(challengeId: notDonePosts[indexPath.row].id!)
-            } else if indexPath.section == 2 {
+            } else if indexPath.section == 2 && donePosts.count != 0 {
                 openExplorer(challengeId: donePosts[indexPath.row].id!)
             }
         }
@@ -1313,7 +1315,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
         challengeController.challengIdForTrendAndExplorer = challengeId        
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }
     

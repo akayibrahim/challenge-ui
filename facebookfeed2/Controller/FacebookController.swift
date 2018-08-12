@@ -191,18 +191,19 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         defaults.set(id, forKey: "memberID")
         defaults.synchronize()
         getMemberInfo(memberId: id)
-        group.wait()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = SplashScreenController()
         splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
     }
     
     @objc func splashScreenToMain() {
+        group.wait()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = CustomTabBarController()
     }
     
     @objc func fetchFacebookProfile() {
+        self.group.enter()
         //print permissions, such as public_profile
         let params = ["fields": "id, first_name, last_name, name, email, picture,friends"]
 
@@ -258,12 +259,12 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
             }
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
+                    self.group.leave()
                     DispatchQueue.main.async {
                         let idOfMember = NSString(data: data, encoding: String.Encoding.utf8.rawValue)!
                         memberID = idOfMember as String
                         memberFbID = facebookID
-                        memberName = "\(firstName) \(surname)"                        
-                        
+                        memberName = "\(firstName) \(surname)"
                         let defaults = UserDefaults.standard
                         defaults.set(memberID, forKey: "memberID")
                         defaults.synchronize()

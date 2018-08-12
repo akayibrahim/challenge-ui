@@ -74,10 +74,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 let controllers = tabBarController.viewControllers
                 let navC = controllers![profileIndex] as! UINavigationController
                 let feedC = navC.viewController(class: FeedController.self)
-                feedC?.selfCurrentPage += 1
-                feedC?.loadChallenges()
-                let firstChlRow = IndexPath(item: 0, section: 0)
-                feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+                feedC?.onSelfRefesh()
                 return true
             }
             return false

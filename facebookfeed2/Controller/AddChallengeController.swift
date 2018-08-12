@@ -885,7 +885,16 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             if isLeftSide {
                 setChlrPeopleImages(result : result, reset: false)
                 if rightSide.count != leftSide.count {
-                    setPeopleImages(result : result, reset: true)
+                    var resultForReset = [SelectedItems]()
+                    for _ in 0...leftSide.count - 1 {
+                        let items = SelectedItems()
+                        items.fbId = ""
+                        items.id = ""
+                        items.name = ""
+                        resultForReset.append(items)
+                    }
+                    rightSide = resultForReset
+                    setPeopleImages(result : resultForReset, reset: true)
                 } else {
                     setPeopleImages(result : rightSide, reset: false)
                 }
@@ -893,7 +902,19 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             if isRightSide {
                 setPeopleImages(result : result, reset: false)
                 if rightSide.count != leftSide.count {
-                    setChlrPeopleImages(result : result, reset: true)
+                    var resultForReset = [SelectedItems]()
+                    for _ in 0...rightSide.count - 1 {
+                        let items = SelectedItems()
+                        items.fbId = ""
+                        items.id = ""
+                        items.name = ""
+                        resultForReset.append(items)
+                    }
+                    resultForReset[0].fbId = memberFbID
+                    resultForReset[0].id = memberID
+                    resultForReset[0].name = memberName
+                    leftSide = resultForReset
+                    setChlrPeopleImages(result : resultForReset, reset: true)
                 } else {
                     setChlrPeopleImages(result : leftSide, reset: false)
                 }

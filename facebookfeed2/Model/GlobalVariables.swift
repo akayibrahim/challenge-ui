@@ -52,6 +52,8 @@ var accept = "ACCEPT"
 var commentCharacterLimit : Int = 400
 var FRWRD_CHNG_CMMNT = "CMMNT"
 var FRWRD_CHNG_PRV = "PRV"
+var FRWRD_CHNG_SCR = "SCR"
+var reloadProfile:Bool = false
 
 // Assets Name
 var supported = "supported"

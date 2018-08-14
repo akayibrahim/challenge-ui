@@ -103,6 +103,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     @objc func reloadPage() {
+        searchBar.text = ""
         currentPage = 0
         self.trendRequest = [TrendRequest]()
         self.loadTrends()
@@ -170,13 +171,16 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TrendRequestCell
+        if trendRequest.count == 0 {
+            return cell
+        }
         DispatchQueue.main.async {
             cell.trendRequest = self.trendRequest[indexPath.row]
             if self.trendRequest[indexPath.row].provedWithImage! {
                 cell.requestImageView.load(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
                 self.imageEnable(cell, yes: true)
             } else {
-                cell.avPlayerLayer.load(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!)
+                cell.avPlayerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!)
                 self.imageEnable(cell, yes: false)
             }
         }

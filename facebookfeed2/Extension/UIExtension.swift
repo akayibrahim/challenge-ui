@@ -291,7 +291,9 @@ extension UIImageView {
                 PINRemoteImageManager.shared().setProgressThresholds([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], completion: nil)
                 self.pin_updateWithProgress = true
                 self.pin_setImage(from: url) { (result) in
-                    ImageService.cache(withURL: url, image: self.image!)
+                    if let image = self.image {
+                        ImageService.cache(withURL: url, image: image)
+                    }
                 }
             }
             /*if let urlOfImage = url {
@@ -307,6 +309,14 @@ extension UIImageView {
 
 extension AVPlayerLayer {
     @objc func load(challengeId: String, challengerId: String) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume)
+    }
+    
+    @objc func loadWithZeroVolume(challengeId: String, challengerId: String) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0)
+    }
+    
+    func loadPlayer(challengeId: String, challengerId: String, volume: Float) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {

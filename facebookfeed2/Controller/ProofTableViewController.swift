@@ -27,7 +27,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height), style: UITableViewStyle.plain)
+        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - (!proofed && !canJoin ? heightOfCommentView : 0)), style: UITableViewStyle.plain)
         self.tableView.register(ProofCellView.self, forCellReuseIdentifier: "ProofCell")
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -57,10 +57,6 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.onRefresh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl)
-        
-        if self.tabBarController?.selectedIndex == profileIndex {
-            Util.removeForwardChange();
-        }
     }
     
     @objc func joinChallenge() {
@@ -91,6 +87,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             } else {
                 DispatchQueue.main.async { // Correct
                     self.messageInputContainerView.alpha = 1
+                    self.tableView.frame.size.height = screenHeight - self.heightOfCommentView
                     self.setupInputComponents()
                     self.navigationItem.rightBarButtonItem = nil
                     let forwardChange = Util.getForwardChange();
@@ -314,9 +311,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     self.group.leave()
+                    DispatchQueue.main.async {
+                        self.messageInputContainerView.alpha = 0
+                        self.tableView.frame.size.height = screenHeight
+                    }
                     self.reloadPage()
                     let forwardChange = Util.getForwardChange();
-                    if forwardChange.forwardScreen != "" {
+                    if forwardChange.forwardScreen == FRWRD_CHNG_PRV {
                         Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount! + 1, joined: forwardChange.joined!, proved: true))
                     }
                     self.group.wait()
@@ -368,17 +369,21 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             self.setImage(fbID: fbID, imageView: cell.profileImageView)
             if let proofObjectId = self.proofs[indexPath.item].proofObjectId {
                 if self.proofs[indexPath.item].provedWithImage! {
+                    self.imageEnable(cell, yes: true)
                     cell.proofImageView.loadByObjectId(objectId: proofObjectId)
-                    cell.proofImageView.alpha = 1
                 } else {
+                    self.imageEnable(cell, yes: false)
                     cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!)
-                    cell.proofedVideoView.alpha = 1
-                    cell.volumeUpImageView.alpha = 0
-                    cell.volumeDownImageView.alpha = 1
                 }
             }
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
+        
+        let volumeChangeGesture : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.changeVolume))
+        volumeChangeGesture.numberOfTapsRequired = 1
+        cell.proofedVideoView.tag = indexPath.row
+        cell.proofedVideoView.isUserInteractionEnabled = true
+        cell.proofedVideoView.addGestureRecognizer(volumeChangeGesture)
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
         cell.profileImageView.tag = indexPath.row
@@ -401,6 +406,48 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         cell.proofImageView.layer.zPosition = 1
         
         return cell
+    }
+    
+    @objc func imageEnable(_ feedCell: ProofCellView, yes: Bool) {
+        feedCell.proofedVideoView.alpha = yes ? 0 : 1
+        feedCell.volumeUpImageView.alpha = !yes && volume == 1 ? 1 : 0
+        feedCell.volumeDownImageView.alpha = !yes && volume == 0 ? 1 : 0
+        feedCell.proofImageView.alpha = yes ? 1 : 0
+    }
+    
+    @objc func changeVolume(gesture: UITapGestureRecognizer) {
+        DispatchQueue.main.async {
+            let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
+            let feedCell = self.tableView?.cellForRow(at: index) as! ProofCellView
+            self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
+        }
+    }
+    
+    @objc func changeVolumeOfFeedCell(feedCell : ProofCellView, isSilentRing : Bool, silentRingSwitch : Int) {
+        DispatchQueue.main.async {
+            if !isSilentRing {
+                if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 0))! {
+                    feedCell.avPlayerLayer.player?.volume = 1
+                    self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 1)
+                } else {
+                    feedCell.avPlayerLayer.player?.volume = 0
+                    self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0)
+                }
+            } else {
+                feedCell.avPlayerLayer.player?.volume = Float(silentRingSwitch)
+                self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: silentRingSwitch )
+            }
+        }
+    }
+    
+    @objc func changeVolumeUpDownView(feedCell : ProofCellView, silentRingSwitch : Int) {
+        if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 1))! {
+            feedCell.volumeUpImageView.alpha = 1
+            feedCell.volumeDownImageView.alpha = 0
+        } else {
+            feedCell.volumeUpImageView.alpha = 0
+            feedCell.volumeDownImageView.alpha = 1
+        }
     }
     
     // var avPlayer : AVPlayer = AVPlayer.init()

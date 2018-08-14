@@ -107,13 +107,15 @@ class ActivitiesController: UITableViewController {
                     return
             }
             self.nowMoreData = postsArray?.count == 0 ? true : false
-            for postDictionary in postsArray! {
-                let activity = Activities()
-                activity.setValuesForKeys(postDictionary)
-                self.activities.append(activity)
-            }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+            if let postsArray = postsArray {
+                for postDictionary in postsArray {
+                    let activity = Activities()
+                    activity.setValuesForKeys(postDictionary)
+                    self.activities.append(activity)
+                }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
         }
     }
@@ -278,7 +280,7 @@ class ActivitiesController: UITableViewController {
         if type == comment {
             viewComments(challengeId: activities[indexPath.row].challengeId!)
         } else if type == proof {
-            viewProofs(challengeId: activities[indexPath.row].challengeId!)
+            openExplorer(challengeId: activities[indexPath.row].challengeId!)
         } else if type == supportType {
             openExplorer(challengeId: activities[indexPath.row].challengeId!)
         } else if type == join {

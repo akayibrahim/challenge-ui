@@ -18,6 +18,12 @@ class ForwardChange: NSObject, NSCoding {
         aCoder.encode(firstTeamScore, forKey: "firstTeamScore")
         aCoder.encode(secondTeamScore, forKey: "secondTeamScore")
         aCoder.encode(index, forKey: "index")
+        aCoder.encode(homeWinner, forKey: "homeWinner")
+        aCoder.encode(awayWinner, forKey: "awayWinner")
+        aCoder.encode(homeScore, forKey: "homeScore")
+        aCoder.encode(awayScore, forKey: "awayScore")
+        aCoder.encode(goal, forKey: "goal")
+        aCoder.encode(result, forKey: "result")
     }
     
     @objc init(index: IndexPath, forwardScreen: String) {
@@ -39,6 +45,23 @@ class ForwardChange: NSObject, NSCoding {
         self.proved = proved
     }
     
+    @objc init(index: IndexPath, forwardScreen: String, homeWinner: Bool, goal: String, result: String) {
+        self.index = index
+        self.forwardScreen = forwardScreen        
+        self.homeWinner = homeWinner
+        self.goal = goal
+        self.result = result
+    }
+    
+    @objc init(index: IndexPath, forwardScreen: String, homeWinner: Bool, awayWinner: Bool, homeScore: String, awayScore: String) {
+        self.index = index
+        self.forwardScreen = forwardScreen
+        self.homeWinner = homeWinner
+        self.awayWinner = awayWinner
+        self.homeScore = homeScore
+        self.awayScore = awayScore        
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         forwardScreen = aDecoder.decodeObject(forKey: "forwardScreen") as? String
         viewCommentsCount = aDecoder.decodeObject(forKey: "viewCommentsCount") as? Int
@@ -48,6 +71,12 @@ class ForwardChange: NSObject, NSCoding {
         firstTeamScore = aDecoder.decodeObject(forKey: "firstTeamScore") as? String
         secondTeamScore = aDecoder.decodeObject(forKey: "secondTeamScore") as? String
         index = aDecoder.decodeObject(forKey: "index") as? IndexPath
+        homeWinner = aDecoder.decodeObject(forKey: "homeWinner") as? Bool
+        awayWinner = aDecoder.decodeObject(forKey: "awayWinner") as? Bool
+        homeScore = aDecoder.decodeObject(forKey: "homeScore") as? String
+        awayScore = aDecoder.decodeObject(forKey: "awayScore") as? String
+        goal = aDecoder.decodeObject(forKey: "goal") as? String
+        result = aDecoder.decodeObject(forKey: "result") as? String        
     }
     
     @objc var forwardScreen: String?
@@ -58,4 +87,10 @@ class ForwardChange: NSObject, NSCoding {
     @objc var firstTeamScore: String?
     @objc var secondTeamScore: String?
     @objc var index: IndexPath?
+    var homeWinner: Bool?
+    var awayWinner: Bool?
+    @objc var homeScore: String?
+    @objc var awayScore: String?
+    @objc var goal: String?
+    @objc var result: String?
 }

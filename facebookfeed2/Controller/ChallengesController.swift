@@ -74,6 +74,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         if !(self.tabBarController?.selectedIndex == profileIndex && !self.profile && !explorer) {
             reloadChlPage()
+        } else {
+            reloadSelfPage()
         }
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
@@ -136,6 +138,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.posts = [Post]()
         self.donePosts = [Post]()
         self.notDonePosts = [Post]()
+        self.collectionView?.reloadData()
         self.loadChallenges()
     }
     
@@ -163,6 +166,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 return
             } else if self.tabBarController?.selectedIndex == profileIndex {
                 self.fetchChallengeSize(memberId: memberID)
+                group.wait()
                 self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
                 FacebookController().getMemberInfo(memberId: memberID)
                 return
@@ -216,10 +220,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         if profile {
                             if post.done == true {
                                 self.donePosts.append(post)
-                                // self.insertItem(self.donePosts.count - 1, section: 2)
+                                self.insertItem(self.donePosts.count - 1, section: 2)
                             } else {
                                 self.notDonePosts.append(post)
-                                // self.insertItem(self.notDonePosts.count - 1, section: 1)
+                                self.insertItem(self.notDonePosts.count - 1, section: 1)
                             }
                         } else {
                             self.insertItem(self.posts.count - 1, section: 0)
@@ -228,7 +232,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 }
                 self.isFetchingNextPage = false
                 if profile { // }&& self.nowMoreData == false {
-                    self.collectionView?.reloadData()
+                    // self.collectionView?.reloadData()
                 }
             }
             //}
@@ -242,6 +246,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     @objc func fetchChallengeSize(memberId: String) {
+        group.enter()
         let jsonURL = URL(string: getChallengeSizeOfMemberURL + memberId)!
         jsonURL.get { data, response, error in
             guard
@@ -252,6 +257,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                     return
             }
+            self.group.leave()
             DispatchQueue.main.async {
                 self.challangeCount = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)! as String
             }
@@ -317,6 +323,20 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.posts[forwardChange.index!.row].canJoin = forwardChange.joined
                 self.posts[forwardChange.index!.row].joined = !forwardChange.joined!
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
+            } else if forwardChange.forwardScreen == FRWRD_CHNG_SCR {
+                if self.posts[forwardChange.index!.row].type == SELF {
+                    self.posts[forwardChange.index!.row].homeWin = forwardChange.homeWinner
+                    self.posts[forwardChange.index!.row].goal = forwardChange.goal
+                    self.posts[forwardChange.index!.row].result = forwardChange.result
+                    self.posts[forwardChange.index!.row].done = forwardChange.homeWinner
+                } else if self.posts[forwardChange.index!.row].type == PRIVATE {
+                    self.posts[forwardChange.index!.row].homeWin = forwardChange.homeWinner
+                    self.posts[forwardChange.index!.row].awayWin = forwardChange.awayWinner
+                    self.posts[forwardChange.index!.row].firstTeamScore = forwardChange.homeScore
+                    self.posts[forwardChange.index!.row].secondTeamScore = forwardChange.awayScore
+                    self.posts[forwardChange.index!.row].done = forwardChange.homeWinner! || forwardChange.awayWinner!
+                }
+                self.collectionView?.reloadItems(at: [forwardChange.index!])
             }
         }
         DispatchQueue.main.async {
@@ -331,7 +351,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if self.tabBarController?.selectedIndex == chanllengeIndex {
                     // self.reloadChlPage()
                 } else if self.tabBarController?.selectedIndex == profileIndex && !self.explorer {
+                    // self.reloadSelfPage()
+                }
+                if reloadProfile {
                     self.reloadSelfPage()
+                    reloadProfile = false
                 }
             }
         }
@@ -525,6 +549,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     feedCellForSelf.updateProgress.goal = self.notDonePosts[indexPath.row].goal
                     feedCellForSelf.updateProgress.proofed = self.notDonePosts[indexPath.row].proofed
                     feedCellForSelf.updateProgress.canJoin = self.notDonePosts[indexPath.row].canJoin
+                    feedCellForSelf.updateProgress.tag = indexPath.row
                     if self.notDonePosts[indexPath.row].type == SELF {
                         feedCellForSelf.updateProgress.homeScore = self.notDonePosts[indexPath.row].result
                     } else if self.notDonePosts[indexPath.row].type == PRIVATE {
@@ -571,8 +596,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func imageEnable(_ feedCell: FeedCell, yes: Bool) {
         feedCell.proofedVideoView.alpha = yes ? 0 : 1
-        feedCell.volumeUpImageView.alpha = yes ? 0 : 1
-        feedCell.volumeDownImageView.alpha = yes ? 0 : 1
+        feedCell.volumeUpImageView.alpha = !yes && volume == 1 ? 1 : 0
+        feedCell.volumeDownImageView.alpha = !yes && volume == 0 ? 1 : 0
         feedCell.proofedMediaView.alpha = yes ? 1 : 0
     }
     /*
@@ -963,9 +988,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             updateProgress.awayScore = sender.awayScore
             if sender.type == PRIVATE {
                 updateProgress.homeScoreText.becomeFirstResponder()
+                Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 1), forwardScreen: FRWRD_CHNG_SCR, homeWinner: false, awayWinner: false, homeScore: sender.homeScore!, awayScore: sender.awayScore!))
             } else {
                 updateProgress.awayScoreText.becomeFirstResponder()
+                Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 1), forwardScreen: FRWRD_CHNG_SCR, homeWinner: false, goal: sender.goal != nil ? sender.goal! : "-", result: sender.homeScore != nil ? sender.homeScore! : "-"))
             }
+            goForward = true
             updateProgress.hidesBottomBarWhenPushed = true
             self.navigationController?.setNavigationBarHidden(false, animated: false)
             self.navigationController?.pushViewController(updateProgress, animated: true)
@@ -1015,7 +1043,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.challengeId = challengeId
         commentsTable.proofed = proofed
         commentsTable.canJoin = canJoin
-        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: canJoin, proved: proofed))
+        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: isTabIndex(profileIndex) && !explorer ? 1 : 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: canJoin, proved: proofed))
         goForward = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -1041,6 +1069,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if feedCell.supportMatchLabel.tag == 0 {
                     feedCell.supportMatchLabel.alpha = 0
                 }
+                self.posts[index.row].supportSecondTeam = false
+                self.posts[index.row].secondTeamSupportCount = feedCell.supportMatchLabel.tag as NSNumber
             }
             supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: true, index: index)
         } else {
@@ -1080,6 +1110,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         if feedCell.supportLabel.tag == 0 {
                             feedCell.supportLabel.alpha = 0
                         }
+                        self.posts[index.row].supportFirstTeam = true
+                        self.posts[index.row].firstTeamSupportCount = feedCell.supportLabel.tag as NSNumber
                     } else {
                         let supportMatchCount : NSNumber = NSNumber(value: feedCell.supportMatchLabel.tag + (support ? 1 : -1))
                         feedCell.supportMatchLabel.text = "+\(supportMatchCount.getSuppportCountAsK())"
@@ -1087,6 +1119,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         if feedCell.supportMatchLabel.tag == 0 {
                             feedCell.supportMatchLabel.alpha = 0
                         }
+                        self.posts[index.row].supportSecondTeam = true
+                        self.posts[index.row].secondTeamSupportCount = feedCell.supportMatchLabel.tag as NSNumber
                     }
                 }
             }
@@ -1108,6 +1142,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if feedCell.supportLabel.tag == 0 {
                     feedCell.supportLabel.alpha = 0
                 }
+                self.posts[index.row].supportFirstTeam = false
+                self.posts[index.row].firstTeamSupportCount = feedCell.supportLabel.tag as NSNumber
             }
             supportChallengeService(support: true, challengeId: sender.challengeId!, feedCell: feedCell, isHome: false, index: index)
         } else {

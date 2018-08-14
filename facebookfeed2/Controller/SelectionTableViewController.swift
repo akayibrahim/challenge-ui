@@ -45,6 +45,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     @objc var isMoreAttendance: Bool = false
     @objc var attendanceList = [Attendance]()
     @objc var unfilteredAttendanceList = [Attendance]()
+    @objc var bottomConstraint: NSLayoutConstraint?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,23 +53,80 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         self.tableView.delegate = self
         self.tableView.dataSource = self
         searchBar.delegate = self
-        self.customeSubjectText.delegate = self as UITextFieldDelegate
+        self.customeSubjectText.delegate = self
         navigationItem.titleView = searchBar
-        unfilteredItems = items
         tableView.tableFooterView = UIView()
         self.view.addSubview(tableView)
         navigationItem.title = tableTitle  
+        self.view.backgroundColor = UIColor.white
+        self.tableView.keyboardDismissMode = .onDrag
+        if !isSelf() && !listMode && popIndexPath.row == subjectIndex {
+            self.tableView.frame.size.height = screenSize.height - (globalHeight + 10)
+            view.addSubview(customSubjectView)
+            customSubjectView.widthAnchor.constraint(equalToConstant: screenWidth).isActive = true
+            customSubjectView.heightAnchor.constraint(equalToConstant: globalHeight + 10).isActive = true
+            customSubjectView.translatesAutoresizingMaskIntoConstraints = false
+            bottomConstraint = NSLayoutConstraint(item: customSubjectView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: -5)
+            view.addConstraint(bottomConstraint!)
+            prepareCustomSubjectView()
+        }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        self.hideKeyboardWhenTappedAround()
         
         reload()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        self.hideKeyboardWhenTappedAround()
     }
+    
+    func prepareCustomSubjectView() {
+        customeSubjectText.removeFromSuperview()
+        saveButton.removeFromSuperview()
+        
+        // customSubjectView.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: globalHeight)
+        customSubjectView.addSubview(customeSubjectText)
+        customSubjectView.addSubview(saveButton)
+        
+        customeSubjectText.text = enterCustomSubject
+        customeSubjectText.bottomAnchor.constraint(equalTo: customSubjectView.bottomAnchor, constant: -(screenWidth * 0.2 / 10)).isActive = true
+        customeSubjectText.leadingAnchor.constraint(equalTo: customSubjectView.leadingAnchor, constant : screenWidth * 0.2 / 10).isActive = true
+        customeSubjectText.trailingAnchor.constraint(equalTo: saveButton.leadingAnchor, constant : -(screenWidth * 0.2 / 10)).isActive = true
+        customeSubjectText.heightAnchor.constraint(equalToConstant: globalHeight - 5).isActive = true
+        customeSubjectText.translatesAutoresizingMaskIntoConstraints = false
+        customeSubjectText.autocapitalizationType = .allCharacters
+        
+        saveButton.bottomAnchor.constraint(equalTo: customSubjectView.bottomAnchor, constant: -(screenWidth * 0.2 / 10)).isActive = true
+        saveButton.widthAnchor.constraint(equalToConstant: globalHeight * 1.5).isActive = true
+        saveButton.heightAnchor.constraint(equalToConstant: globalHeight - 5).isActive = true
+        saveButton.trailingAnchor.constraint(equalTo: customSubjectView.trailingAnchor, constant : -(screenWidth * 0.2 / 10)).isActive = true
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)
+        saveButton.backgroundColor = navAndTabColor
+        saveButton.layer.borderWidth = 0
+        saveButton.setTitleColor(UIColor.white, for: UIControlState())
+    }
+    
+    @objc func handleKeyboardNotification(notification: NSNotification) {
+        if let userInfo = notification.userInfo {
+            let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
+            let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
+            bottomConstraint?.constant = isKeyboardShowing ? -keyboardFrame!.height : -5
+            self.tableView.frame.size.height = (keyboardFrame?.origin.y)! - (self.customSubjectView.frame.height + 10)
+            if !isKeyboardShowing {
+            }
+        }
+    }
+    
+    @objc let customSubjectView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        return view
+    }()
     
     @objc func reload() {
         if Util.controlNetwork() {
             return
         }
+        searchBar.text = ""
         if !listMode {
             self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: labelCell)
             if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex {
@@ -80,6 +138,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 if dummyServiceCall == false {
                     fetchData(url: getFollowingListURL + memberID, type: "FRIENDS")
                     group.wait()
+                    unfilteredItems = items
                     self.tableView?.reloadData()
                 } else {
                     self.friends = ServiceLocator.getFriendsFromDummy(jsonFileName: "friends")
@@ -92,6 +151,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                         fetchData(url: getSelfSubjectsURL, type: "SELF_SUBJECT")
                     }
                     group.wait()
+                    unfilteredItems = items
                     self.tableView?.reloadData()
                 } else {
                     self.subjects = ServiceLocator.getSubjectFromDummy(jsonFileName: "subject")
@@ -462,7 +522,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if !listMode {
             if popIndexPath.row == 2 {
-                if (indexPath.row == (items.count + 2)) {
+                /*if (indexPath.row == (items.count + 2)) {
                     // nothing
                 } else if (indexPath.row == (items.count + 1)) {
                     switchCustomeSubject = !switchCustomeSubject
@@ -470,7 +530,8 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     tableView.reloadRows(at: [customSubjectIndex], with: .fade)
                     tableView.scrollToRow(at: customSubjectIndex, at: UITableViewScrollPosition.bottom, animated: true)
                     customeSubjectText.becomeFirstResponder()
-                } else if (indexPath.row == items.count) {
+                } else */
+                if (indexPath.row == items.count) {
                     // nothing
                 } else {
                     updateAndPopViewController(subjectName: items[indexPath.row].name)
@@ -563,11 +624,11 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if !listMode {
-            if (indexPath.row == (items.count + 2)) {
+            /*if (indexPath.row == (items.count + 2)) {
                 if !switchCustomeSubject {
                     return 0
                 }
-            }
+            }*/
         }
         return 44
     }
@@ -589,7 +650,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             if ((popIndexPath.row == 3 || popIndexPath.row == 4) || (popIndexPath.row == 2 && isSelf())) {
                 return items.count
             } else {
-                return items.count + 3
+                return items.count
             }
         } else {
             if isFollower {
@@ -605,22 +666,6 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         return 0
     }
     
-    func prepareCustomSubjectView() -> UIView {
-        let customSubjectView = UIView()
-        customSubjectView.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: globalHeight)
-        customSubjectView.addSubview(customeSubjectText)
-        customeSubjectText.frame = CGRect(x: 0, y: 0, width: view.frame.width * 4 / 5, height: globalHeight)
-        customeSubjectText.placeholder = "Enter custom subject..."
-        customeSubjectText.autocapitalizationType = .allCharacters
-        customSubjectView.addSubview(saveButton)
-        saveButton.frame = CGRect(x: view.frame.width * 4 / 5, y: 0, width: view.frame.width * 1 / 5, height: globalHeight)
-        saveButton.addTarget(self, action: #selector(self.save), for: UIControlEvents.touchUpInside)
-        saveButton.backgroundColor = navAndTabColor
-        saveButton.layer.borderWidth = 0
-        saveButton.setTitleColor(UIColor.white, for: UIControlState())
-        return customSubjectView
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if !listMode {
             let cell = tableView.dequeueReusableCell(withIdentifier: labelCell, for: indexPath as IndexPath)
@@ -630,12 +675,13 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
                 }
             } else {
-                if (indexPath.row == (items.count + 2)) {
+                /*if (indexPath.row == (items.count + 2)) {
                     cell.addSubview(prepareCustomSubjectView())
                     cell.isHidden = !switchCustomeSubject
                 } else if (indexPath.row == (items.count + 1)) {
                     cell.textLabel?.text = customSubjectLabel
-                } else if (indexPath.row == items.count) {
+                } else */
+                if (indexPath.row == items.count) {
                     cell.backgroundColor = pagesBackColor
                     cell.selectionStyle = UITableViewCellSelectionStyle.none
                 } else {
@@ -693,9 +739,36 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     @objc func save() {
+        if customeSubjectText.text! == enterCustomSubject {
+            self.popupAlert(message: "Enter a subject!", willDelay: false)
+            return
+        }
         updateAndPopViewController(subjectName: customeSubjectText.text!)
     }
     
-    @objc let customeSubjectText: UITextField = UpdateProgressController.textField()
+    @objc let customeSubjectText: UITextView = CommentTableViewController().textView
     @objc let saveButton = FeedCell.buttonForTitleWithBorder("Save", imageName: "")
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            setTextViewToDefault()
+        }
+    }
+    
+    let enterCustomSubject = "Enter Custom Subject"
+    @objc func setTextViewToDefault() {
+        self.customeSubjectText.text = enterCustomSubject
+        self.customeSubjectText.textColor = UIColor.lightGray
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        return textView.text.count + (text.count - range.length) <= 25
+    }
 }

@@ -10,13 +10,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/SelectionTableViewController.swift"
-            timestampString = "555799625.485121"
+            timestampString = "555964985.713539"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "464"
-            endingLineNumber = "464"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "handleKeyboardNotification(notification:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

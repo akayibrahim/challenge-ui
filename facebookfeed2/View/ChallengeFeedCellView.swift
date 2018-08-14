@@ -95,8 +95,8 @@ class FeedCell: UICollectionViewCell {
         self.multiplierSign.removeFromSuperview()
         // self.playerController.player?.replaceCurrentItem(with: nil)
         // self.playerController.view.removeFromSuperview()
-        self.volumeUpImageView.image = UIImage()
-        self.volumeDownImageView.image = UIImage()
+        self.volumeUpImageView.removeFromSuperview()
+        self.volumeDownImageView.removeFromSuperview()
         self.others.removeFromSuperview()
         self.activeLabel.removeFromSuperview()
         self.profileImageView.removeFromSuperview()
@@ -388,10 +388,8 @@ class FeedCell: UICollectionViewCell {
                 }
             }
             // CONSTANTS
-            if (self.post?.proofed)! {
-                setImage(name: volumeUp, imageView: volumeUpImageView)
-                setImage(name: volumeDown, imageView: volumeDownImageView)
-            }
+            setImage(name: volumeUp, imageView: volumeUpImageView)
+            setImage(name: volumeDown, imageView: volumeDownImageView)
             // END CONSTANTS
             
             if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined,
@@ -474,7 +472,7 @@ class FeedCell: UICollectionViewCell {
                 addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
                 addWidthAnchor(volumeDownImageView, multiplier: 0.04)
                 addHeightAnchor(volumeDownImageView, multiplier: 0.04)
-                volumeDownImageView.alpha = 1
+                volumeDownImageView.alpha = 0
             }
             
             if(!thinksAboutChallengeView.text.isEmpty) {
@@ -785,7 +783,7 @@ class FeedCell: UICollectionViewCell {
             addHeightAnchor(clappingHome, multiplier: 0.5 / 6)
             clappingHome.alpha = 0
         
-            if type == PUBLIC && proofedByChallenger && isComeFromSelf {
+            if type == PUBLIC && (proofedByChallenger || proofed) && isComeFromSelf {
                 clappingHome.alpha = 1
             }
             if done {
@@ -798,6 +796,7 @@ class FeedCell: UICollectionViewCell {
                 homeWinBase.layer.cornerRadius = 5
                 homeWinBase.layer.masksToBounds = true
                 homeWinBase.alpha = 0
+                homeWinBase.layer.zPosition = -1
                 
                 addSubview(awayWinBase)
                 addTopAnchor(awayWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
@@ -808,6 +807,7 @@ class FeedCell: UICollectionViewCell {
                 awayWinBase.layer.cornerRadius = 5
                 awayWinBase.layer.masksToBounds = true
                 awayWinBase.alpha = 0
+                awayWinBase.layer.zPosition = -1
                 
                 if type == PUBLIC {
                     if proofedByChallenger || (proofed && isComeFromSelf) {

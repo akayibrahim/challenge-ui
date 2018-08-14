@@ -402,6 +402,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             if self.leftSide.count == 0 {
                 self.leftSide.append(self.getMember())
             }
+            reloadProfile = true
             self.navigationController?.tabBarController?.selectedIndex = profileIndex
         }
     }
@@ -461,12 +462,14 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             let updateProgress = UpdateProgressController()
             updateProgress.result = true
             updateProgress.doneSwitch = isDone()
+            updateProgress.challengeType = SELF
             updateProgress.awayScoreText.becomeFirstResponder()
             updateProgress.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(updateProgress, animated: true)
         } else if indexPath == scoreIndexPath {
             let updateProgress = UpdateProgressController()
             updateProgress.doneSwitch = isDone()
+            updateProgress.challengeType = PRIVATE
             updateProgress.homeScoreText.becomeFirstResponder()
             updateProgress.score = true
             updateProgress.hidesBottomBarWhenPushed = true

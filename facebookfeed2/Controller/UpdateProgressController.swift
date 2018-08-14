@@ -163,6 +163,9 @@ class UpdateProgressController : UIViewController {
                 navigationItem.rightBarButtonItem = rightButtonFinished
             }
         }
+        if homeWin.image == checkedImg && challengeType == SELF && !(awayScoreText.text?.isEmpty)! {
+            homeScoreText.text = awayScoreText.text
+        }
     }
     
     @objc func awayWinIt(tapGestureRecognizer: UITapGestureRecognizer) {
@@ -205,6 +208,8 @@ class UpdateProgressController : UIViewController {
                     return
                 }
                 url = updateProgressOrDoneForSelfURL  + "?challengeId=\(challengeId!)&homeWin=\(isWin(homeWin))&result=\(firstTeamScore)&goal=\(secondTeamScore)&done=\(isWin(homeWin))"
+                let forwardChange = Util.getForwardChange();
+                Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, homeWinner: isWin(homeWin), goal: "\(secondTeamScore)", result: "\(firstTeamScore)"))
             } else if challengeType == PRIVATE {
                 if done && (!isWin(homeWin) && !isWin(awayWin)) {
                     self.popupAlert(message: "Select winner?", willDelay: false)
@@ -216,6 +221,8 @@ class UpdateProgressController : UIViewController {
                     return
                 }
                 url = updateResultsOfVersusURL  + "?challengeId=\(challengeId!)&homeWin=\(isWin(homeWin))&awayWin=\(isWin(awayWin))&firstTeamScore=\(firstTeamScore)&secondTeamScore=\(secondTeamScore)&done=\((isWin(homeWin) || isWin(awayWin) ? "true" : "false"))"
+                let forwardChange = Util.getForwardChange();
+                Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, homeWinner: isWin(homeWin), awayWinner: isWin(awayWin), homeScore: "\(firstTeamScore)", awayScore: "\(secondTeamScore)"))
             }
             updateProgres(url: url!)
         }

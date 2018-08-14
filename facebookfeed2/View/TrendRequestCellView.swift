@@ -43,8 +43,9 @@ class TrendRequestCell: UICollectionViewCell {
     
     @objc let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Sample Name"
         label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
         return label
     }()
     
@@ -72,9 +73,11 @@ class TrendRequestCell: UICollectionViewCell {
         profileImageView.layer.masksToBounds = true
         profileImageView.contentMode = .scaleAspectFill
         
-        addTopAnchor(nameLabel, anchor: contentGuide.topAnchor, constant: 0)
+        // addTopAnchor(nameLabel, anchor: contentGuide.topAnchor, constant: 0)
+        nameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
         addLeadingAnchor(nameLabel, anchor: profileImageView.trailingAnchor, constant: screenWidth * 0.05 / 2)
-        addHeightAnchor(nameLabel, multiplier: 0.2 / 2)
+        addTrailingAnchor(nameLabel, anchor: contentGuide.trailingAnchor, constant: 0)
+        // addHeightAnchor(nameLabel, multiplier: 0.2 / 2)
         
         addTopAnchor(requestImageView, anchor: profileImageView.bottomAnchor, constant: screenWidth * 0.05 / 2)
         // addLeadingAnchor(requestImageView, anchor: contentGuide.leadingAnchor, constant: 0)

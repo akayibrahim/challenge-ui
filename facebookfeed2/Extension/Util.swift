@@ -56,7 +56,7 @@ public class Util {
         config.startOnScreen = .library
         config.video.recordingTimeLimit = 20
         config.video.trimmerMaxDuration = 20
-        // config.video.libraryTimeLimit = 20
+        config.video.libraryTimeLimit = 600
         config.showsCrop = .rectangle(ratio: (Double(screenWidth / (screenWidth / 2))))
         config.wordings.libraryTitle = "Gallery"
         config.hidesStatusBar = true

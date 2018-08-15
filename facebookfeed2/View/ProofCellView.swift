@@ -52,7 +52,7 @@ class ProofCellView: UITableViewCell {
             self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
             self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-            self.avPlayerLayer.repeatCount = 3
+            self.avPlayerLayer.repeatCount = 10            
             self.proofedVideoView.layer.masksToBounds = true
         }
         addSubview(volumeUpImageView)

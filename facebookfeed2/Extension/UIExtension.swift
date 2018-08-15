@@ -9,6 +9,173 @@
 import UIKit
 import AVKit
 import PINRemoteImage
+import Foundation
+import RxSwift
+import RxCocoa
+import RxGesture
+
+private var zoomPinchCoverView: ZoomPinchCoverView? = nil
+private var isZooming = false
+private var originCenter: CGPoint? = nil
+
+/**
+ It is an extension of UIImageView to support pinching zoom and panning looks like one Instagram has.
+ Usage:
+ ...
+ imageView.setupZoomPinchGesture().disposed(by: disposeBag)
+ imageView.setupZoomPanGesture().disposed(by: disposeBag)
+ ...
+ */
+extension UIImageView
+{
+    @discardableResult
+    func setupZoomPanGesture() -> Disposable {
+        self.isUserInteractionEnabled = false
+        return self.rx.panGesture(minimumNumberOfTouches: 2, maximumNumberOfTouches: 2, configuration: { recognizer, delegate in
+            delegate.simultaneousRecognitionPolicy = .custom { gesture, other in
+                return other is UIPinchGestureRecognizer
+            }
+            
+        })
+            .bind { [weak self] gesture in
+                guard let strongSelf = self else { return }
+                if gesture.state == .began {
+                    originCenter = gesture.view?.center
+                } else if isZooming, gesture.state == .changed {
+                    let translation = gesture.translation(in: strongSelf.superview!)
+                    if let view = gesture.view {
+                        view.center = CGPoint(x:view.center.x + translation.x, y:view.center.y + translation.y)
+                    }
+                    if let coverView = zoomPinchCoverView {
+                        coverView.cloneView.center = CGPoint(x:coverView.cloneView.center.x + translation.x, y:coverView.cloneView.center.y + translation.y)
+                    }
+                    gesture.setTranslation(.zero, in: strongSelf.superview)
+                }
+        }
+    }
+    
+    @discardableResult
+    func setupZoomPinchGesture() -> Disposable {
+        self.isUserInteractionEnabled = true
+        return self.rx.pinchGesture(configuration: { recognizer, delegate in
+            delegate.simultaneousRecognitionPolicy = .custom { gesture, other in
+                return false
+            }
+        })
+            .bind { gesture in
+                guard let view = gesture.view as? UIImageView else { return }
+                
+                if gesture.state == .began || gesture.state == .changed {
+                    if gesture.state == .began {
+                        isZooming = true
+                        if let coverView = zoomPinchCoverView {
+                            coverView.removeFromSuperview()
+                        }
+                        if let keyWindow = UIApplication.shared.keyWindow {
+                            let coverFrame = keyWindow.convert(view.frame, from: view.superview!)
+                            let coverView = UIImageView(frame: coverFrame)
+                            coverView.image = view.image
+                            coverView.contentMode = view.contentMode
+                            zoomPinchCoverView = ZoomPinchCoverView(targetView: coverView)
+                            zoomPinchCoverView!.frame = UIScreen.main.bounds
+                            keyWindow.addSubview(zoomPinchCoverView!)
+                        }
+                    }
+                    
+                    let pinchCenter = CGPoint(x: gesture.location(in: view).x - view.bounds.midX, y: gesture.location(in: view).y - view.bounds.midY)
+                    let transform = view.transform.translatedBy(x: pinchCenter.x, y: pinchCenter.y)
+                        .scaledBy(x: gesture.scale, y: gesture.scale)
+                        .translatedBy(x: -pinchCenter.x, y: -pinchCenter.y)
+                    
+                    let currentScale = view.frame.size.width / view.bounds.size.width
+                    let newScale = min(max(currentScale * gesture.scale, 1.0), 3.0)
+                    
+                    if let coverView = zoomPinchCoverView {
+                        if newScale == 1 {
+                            let transform = CGAffineTransform(scaleX: newScale, y: newScale)
+                            view.transform = transform
+                            coverView.cloneView.transform = transform
+                        } else if newScale < 3 {
+                            view.transform = transform
+                            coverView.cloneView.transform = transform
+                        }
+                        gesture.scale = 1
+                        
+                        // If you want to adjust a degree of fading, change a divider 1.3
+                        coverView.bgView.backgroundColor = UIColor(hexString: "0x000000").withAlphaComponent((newScale - 1.0) / 1.3)
+                    }
+                    
+                } else if gesture.state == .ended || gesture.state == .failed || gesture.state == .cancelled {
+                    if let coverView = zoomPinchCoverView {
+                        UIView.animate(withDuration: 0.3, animations: {
+                            view.transform = CGAffineTransform.identity
+                            coverView.cloneView.transform = CGAffineTransform.identity
+                            coverView.bgView.alpha = 0.0
+                            
+                            if let center = originCenter {
+                                view.center = center
+                                coverView.cloneView.center = view.superview!.convert(center, to: coverView)
+                            }
+                            
+                        }, completion: { finished in
+                            coverView.removeFromSuperview()
+                            zoomPinchCoverView = nil
+                            originCenter = nil
+                            isZooming = false
+                        })
+                    }
+                }
+        }
+    }
+}
+
+private class ZoomPinchCoverView: UIView {
+    let bgView = UIView()
+    var cloneView: UIImageView! {
+        return _cloneView
+    }
+    private let _cloneView: UIImageView!
+    
+    init(targetView: UIImageView) {
+        _cloneView = targetView
+        super.init(frame: .zero)
+        
+        self.isUserInteractionEnabled = false
+        _cloneView.isUserInteractionEnabled = false
+        
+        self.addSubview(bgView)
+        self.addSubview(_cloneView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        bgView.frame = self.bounds
+    }
+}
+
+extension UIColor {
+    convenience init(hexString: String) {
+        let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int = UInt32()
+        Scanner(string: hex).scanHexInt32(&int)
+        let a, r, g, b: UInt32
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+        self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
+    }
+}
 
 extension String
 {
@@ -307,26 +474,32 @@ extension UIImageView {
     }
 }
 
+var videoLooper: AVPlayerLooper!
 extension AVPlayerLayer {
     @objc func load(challengeId: String, challengerId: String) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume)
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, trend: false)
     }
     
     @objc func loadWithZeroVolume(challengeId: String, challengerId: String) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0)
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, trend: true)
     }
     
-    func loadPlayer(challengeId: String, challengerId: String, volume: Float) {
+    func loadPlayer(challengeId: String, challengerId: String, volume: Float, trend: Bool) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
                 VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
                     if let video = videoData {
+                        let item = AVPlayerItem.init(url: video)
                         let avPlayer = AVPlayer.init()
-                        avPlayer.replaceCurrentItem(with: AVPlayerItem.init(url: video))
+                        avPlayer.replaceCurrentItem(with: item)
                         avPlayer.volume = volume
+                        // let avPlayer = AVQueuePlayer(playerItem: item)
+                        // videoLooper = AVPlayerLooper(player: avPlayer, templateItem: item)
                         self.player = avPlayer
-                        self.player?.play()
+                        if trend {
+                            self.player?.play()
+                        }
                     }
                 })
             }

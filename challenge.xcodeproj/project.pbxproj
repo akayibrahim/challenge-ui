@@ -92,6 +92,69 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A189B6C02124609B00F4B879 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 27CBBC3E648FED916D1721ACC26C88C4;
+			remoteInfo = RxCocoa;
+		};
+		A189B6C22124609B00F4B879 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F293684AC4D2848EE33C4AACCA300E9B;
+			remoteInfo = RxGesture;
+		};
+		A189B6C42124609B00F4B879 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C17133A35A06028715CE7034D70ADA78;
+			remoteInfo = RxSwift;
+		};
+		A19536EF212365A000EA3449 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4560A88AA7442B4DF2523577B50BE770;
+			remoteInfo = FLAnimatedImage;
+		};
+		A19536F1212365A000EA3449 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2C380AEA7E71D544740D25068F8D524E;
+			remoteInfo = PINCache;
+		};
+		A19536F3212365A000EA3449 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AA3F49286A80AA2EA746F75C07E90788;
+			remoteInfo = PINRemoteImage;
+		};
+		A19536F5212365A000EA3449 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E9D16D5899E2E619E29A75265629F2E1;
+			remoteInfo = PryntTrimmerView;
+		};
+		A19536F7212365A000EA3449 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FC97F099917C5ACF66B273F919B2306D;
+			remoteInfo = SteviaLayout;
+		};
+		A19536F9212365A000EA3449 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 060EC2127B99BFD3BBFBDEEDF346D974;
+			remoteInfo = YPImagePicker;
+		};
 		A1A06ABB2105224600F95875 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
@@ -217,7 +280,7 @@
 		BD7C5B0D0ACCAB6DD1AF9AD7 /* Pods-facebookfeed2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-facebookfeed2.release.xcconfig"; path = "Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2.release.xcconfig"; sourceTree = "<group>"; };
 		C780A7B11C88C582007023FD /* single_post.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = single_post.json; sourceTree = "<group>"; };
 		C780A7B31C88CEFB007023FD /* getChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getChallenges.json; sourceTree = "<group>"; };
-		C7A85F301C78C137007E9A00 /* facebookfeed2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = facebookfeed2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7A85F301C78C137007E9A00 /* Challenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Challenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A85F331C78C137007E9A00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C7A85F351C78C137007E9A00 /* ChallengesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengesController.swift; sourceTree = "<group>"; };
 		C7A85F3A1C78C137007E9A00 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -374,7 +437,16 @@
 				A1A06ABC2105224600F95875 /* Bolts.framework */,
 				A1A06ABE2105224600F95875 /* FBSDKCoreKit.framework */,
 				A1A06AC02105224600F95875 /* FBSDKLoginKit.framework */,
+				A19536F0212365A000EA3449 /* FLAnimatedImage.framework */,
+				A19536F2212365A000EA3449 /* PINCache.framework */,
+				A19536F4212365A000EA3449 /* PINRemoteImage.framework */,
 				A1A06AC22105224600F95875 /* Pods_facebookfeed2.framework */,
+				A19536F6212365A000EA3449 /* PryntTrimmerView.framework */,
+				A189B6C12124609B00F4B879 /* RxCocoa.framework */,
+				A189B6C32124609B00F4B879 /* RxGesture.framework */,
+				A189B6C52124609B00F4B879 /* RxSwift.framework */,
+				A19536F8212365A000EA3449 /* Stevia.framework */,
+				A19536FA212365A000EA3449 /* YPImagePicker.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -404,7 +476,7 @@
 		C7A85F311C78C137007E9A00 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C7A85F301C78C137007E9A00 /* facebookfeed2.app */,
+				C7A85F301C78C137007E9A00 /* Challenge.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -456,7 +528,7 @@
 			);
 			name = facebookfeed2;
 			productName = facebookfeed2;
-			productReference = C7A85F301C78C137007E9A00 /* facebookfeed2.app */;
+			productReference = C7A85F301C78C137007E9A00 /* Challenge.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -513,6 +585,69 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		A189B6C12124609B00F4B879 /* RxCocoa.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = RxCocoa.framework;
+			remoteRef = A189B6C02124609B00F4B879 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A189B6C32124609B00F4B879 /* RxGesture.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = RxGesture.framework;
+			remoteRef = A189B6C22124609B00F4B879 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A189B6C52124609B00F4B879 /* RxSwift.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = RxSwift.framework;
+			remoteRef = A189B6C42124609B00F4B879 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A19536F0212365A000EA3449 /* FLAnimatedImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = FLAnimatedImage.framework;
+			remoteRef = A19536EF212365A000EA3449 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A19536F2212365A000EA3449 /* PINCache.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PINCache.framework;
+			remoteRef = A19536F1212365A000EA3449 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A19536F4212365A000EA3449 /* PINRemoteImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PINRemoteImage.framework;
+			remoteRef = A19536F3212365A000EA3449 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A19536F6212365A000EA3449 /* PryntTrimmerView.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PryntTrimmerView.framework;
+			remoteRef = A19536F5212365A000EA3449 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A19536F8212365A000EA3449 /* Stevia.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Stevia.framework;
+			remoteRef = A19536F7212365A000EA3449 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A19536FA212365A000EA3449 /* YPImagePicker.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = YPImagePicker.framework;
+			remoteRef = A19536F9212365A000EA3449 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		A1A06ABC2105224600F95875 /* Bolts.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -602,6 +737,9 @@
 				"${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework",
 				"${BUILT_PRODUCTS_DIR}/PINRemoteImage/PINRemoteImage.framework",
 				"${BUILT_PRODUCTS_DIR}/PryntTrimmerView/PryntTrimmerView.framework",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxGesture/RxGesture.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SteviaLayout/Stevia.framework",
 				"${BUILT_PRODUCTS_DIR}/YPImagePicker/YPImagePicker.framework",
 			);
@@ -616,6 +754,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINCache.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINRemoteImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PryntTrimmerView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxGesture.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stevia.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YPImagePicker.framework",
 			);
@@ -864,7 +1005,7 @@
 				INFOPLIST_FILE = facebookfeed2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Challenge;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 			};
@@ -883,7 +1024,7 @@
 				INFOPLIST_FILE = facebookfeed2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Challenge;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 			};

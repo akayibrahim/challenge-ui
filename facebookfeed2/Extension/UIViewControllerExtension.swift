@@ -8,6 +8,14 @@
 
 import UIKit
 
+extension UICollectionView {
+    public func isRowCompletelyVisible(_ indexPath: IndexPath) -> Bool {
+        let rect = self.collectionViewLayout.layoutAttributesForItem(at: indexPath)?.frame
+        let completelyVisible = self.bounds.contains(rect!)
+        return completelyVisible
+    }
+}
+
 extension UIViewController
 {
     @objc func setImage(fbID: String?, imageView: UIImageView) {

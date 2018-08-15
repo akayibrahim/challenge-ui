@@ -373,7 +373,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     cell.proofImageView.loadByObjectId(objectId: proofObjectId)
                 } else {
                     self.imageEnable(cell, yes: false)
-                    cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!)
+                    cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!)                    
                 }
             }
         }
@@ -395,6 +395,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         cell.thinksAboutChallengeView.isUserInteractionEnabled = true
         cell.thinksAboutChallengeView.addGestureRecognizer(tapGestureRecognizerName)
         
+        /**
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(zoom))
         pinch.delegate = self
         cell.proofImageView.isUserInteractionEnabled = true
@@ -404,7 +405,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         myPanGestureRecognizer.delegate = self
         cell.proofImageView.addGestureRecognizer(myPanGestureRecognizer)
         cell.proofImageView.layer.zPosition = 1
-        
+         */
+        cell.proofImageView.setupZoomPinchGesture()
+        cell.proofImageView.setupZoomPanGesture()
         return cell
     }
     
@@ -516,7 +519,26 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // scrollView.keyboardDismissMode = .interactive
+        for visIndex in (self.tableView?.indexPathsForVisibleRows)! {
+            if self.tableView.isRowCompletelyVisible(at: visIndex) {
+                if let cell = tableView.cellForRow(at: visIndex) {
+                    let feedCell = cell as! ProofCellView
+                    // let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width, y: UIScreen.main.bounds.size.height)
+                    //if feedCell.proofedVideoView.frame.contains(frameSize)  {
+                        if let player = feedCell.avPlayerLayer.player { // && !self.proofs[index.row].provedWithImage! {
+                            player.play()
+                        }
+                    //}
+                }
+            } else {
+                if let cell = tableView.cellForRow(at: visIndex) {
+                    let feedCell = cell as! ProofCellView
+                    if let player = feedCell.avPlayerLayer.player {
+                        player.pause()
+                    }
+                }
+            }
+        }
     }
     
     @objc func openProfile(name: String, memberId: String, memberFbId:String) {
@@ -557,6 +579,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
                 self.friendIsPrivate = (post["privateMember"] as? Bool)!
             }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let cell = cell as! ProofCellView
+        if let player = cell.avPlayerLayer.player {
+            player.pause()
         }
     }
 }

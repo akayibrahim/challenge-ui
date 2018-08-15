@@ -9,6 +9,7 @@
 import UIKit
 import AVKit
 import AVFoundation
+import RxSwift
     
 let cellId = "cellId"
 var chlScrollMoveDown : Bool = false
@@ -342,10 +343,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         DispatchQueue.main.async {
             let indexPaths = self.collectionView?.indexPathsForVisibleItems
             for indexPath in indexPaths! {
-                let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
-                cell.avPlayerLayer.player?.play()
-                // TODO get Challenge from server
-                // self.collectionView?.reloadItems(at: [indexPath])
+                self.playVideo(indexPath)
             }
             if !self.profile {
                 if self.tabBarController?.selectedIndex == chanllengeIndex {
@@ -377,7 +375,25 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
+        let cell = cell as! FeedCell
+        if let player = cell.avPlayerLayer.player {
+            player.pause()
+        }
+    }
+    
+    func playVideo(_ indexPath: IndexPath) {
+        if let cellForIndex = self.collectionView?.cellForItem(at: indexPath) {
+            let cell = cellForIndex as! FeedCell
+            if (self.collectionView?.isRowCompletelyVisible(indexPath))! {
+                if let player = cell.avPlayerLayer.player {
+                    player.play()
+                }
+            } else {
+                if let player = cell.avPlayerLayer.player {
+                    player.pause()
+                }
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
@@ -674,6 +690,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     */
     @objc func changeVolume(gesture: UITapGestureRecognizer) {
         DispatchQueue.main.async {
+            volume = volume.isEqual(to: 0) ? 1 : 0
+            let defaults = UserDefaults.standard
+            defaults.set(volume, forKey: "volume")
+            defaults.synchronize()
             let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
             let feedCell = self.collectionView?.cellForItem(at: index) as! FeedCell
             self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
@@ -807,7 +827,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         addTargetToImageView(image:feedCell.secondFourChlrPeopleImageView)
         addTargetToImageView(image:feedCell.thirdFourChlrPeopleImageView)
         
-        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(zoom))
+        /*let pinch = UIPinchGestureRecognizer(target: self, action: #selector(zoom))
         pinch.delegate = self
         feedCell.proofedMediaView.addGestureRecognizer(pinch)
         
@@ -815,7 +835,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         myPanGestureRecognizer.delegate = self
         feedCell.proofedMediaView.addGestureRecognizer(myPanGestureRecognizer)
         feedCell.proofedMediaView.layer.zPosition = 1
-        feedCell.proofedMediaView.tag = indexPath.row
+        feedCell.proofedMediaView.tag = indexPath.row*/
+        feedCell.proofedMediaView.setupZoomPinchGesture()
+        feedCell.proofedMediaView.setupZoomPanGesture()
     }
     
     @objc var isZooming = false
@@ -1301,6 +1323,30 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if explorer {
             return
+        }
+        let visibleRect = CGRect(origin: (collectionView?.contentOffset)!, size: (collectionView?.bounds.size)!)
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        let indexPath = collectionView?.indexPathForItem(at: visiblePoint)
+        for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
+            if visIndex != indexPath {
+                if let cell = collectionView?.cellForItem(at: visIndex) {
+                    let feedCell = cell as! FeedCell
+                    if let player = feedCell.avPlayerLayer.player {
+                        player.pause()
+                    }
+                }
+            }
+        }
+        if let index = indexPath {
+            if let cell = collectionView?.cellForItem(at: index) {
+                let feedCell = cell as! FeedCell
+                let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
+                if feedCell.proofedVideoView.frame.contains(frameSize) && !self.posts[index.row].provedWithImage! {
+                    if let player = feedCell.avPlayerLayer.player {
+                        player.play()
+                    }
+                }
+            }
         }
         if self.tabBarController?.selectedIndex == chanllengeIndex || self.tabBarController?.selectedIndex == profileIndex {
             if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {

@@ -24,6 +24,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
+        if let vol = UserDefaults.standard.object(forKey: "volume") {
+            volume = vol as! Float
+        }
+        
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
         if !Reachability.isConnectedToNetwork() {
@@ -49,6 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if(FBSDKAccessToken.current() != nil) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 if dummyServiceCall == false {
+                    fetchFacebookProfile()
                     getMemberInfo(memberId: memberId as! String)
                     self.group.wait()
                 } else {
@@ -64,6 +69,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             FBSDKLoginManager().logOut()
             window?.rootViewController = FacebookController()
         }
+    }
+    
+    @objc func fetchFacebookProfile() {
+        let params = ["fields": "id, first_name, last_name, name, email, picture,friends"]
+        let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: params)
+        let connection = FBSDKGraphRequestConnection()
+        connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
+            if error == nil {
+                // print(result!)
+                let data = result as! [String : Any]
+                let user_friends = data["friends"]
+                let friends = user_friends as! [String : Any]
+                print(friends)
+            } else {
+                print("Error Getting Friends \(error!)");
+            }
+        })
+        connection.start()
     }
     
     @objc func splashScreenToMain() {

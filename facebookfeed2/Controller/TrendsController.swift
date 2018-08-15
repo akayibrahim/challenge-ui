@@ -225,7 +225,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     @objc func openExplorer(challengeId: String) {
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
-        challengeController.hidesBottomBarWhenPushed = true
+        // challengeController.hidesBottomBarWhenPushed = true
         challengeController.challengIdForTrendAndExplorer = challengeId
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(challengeController, animated: true)

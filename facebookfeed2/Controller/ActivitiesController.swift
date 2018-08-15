@@ -75,6 +75,9 @@ class ActivitiesController: UITableViewController {
     @objc func reloadPage() {
         currentPage = 0
         self.activities = [Activities]()
+        if (refreshControl?.isRefreshing)! {
+            self.tableView.reloadData()
+        }
         self.loadActivities()
     }
     
@@ -108,21 +111,26 @@ class ActivitiesController: UITableViewController {
             }
             self.nowMoreData = postsArray?.count == 0 ? true : false
             if let postsArray = postsArray {
-                for postDictionary in postsArray {
-                    let activity = Activities()
-                    activity.setValuesForKeys(postDictionary)
-                    self.activities.append(activity)
-                }
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    for postDictionary in postsArray {
+                        let activity = Activities()
+                        activity.setValuesForKeys(postDictionary)
+                        self.activities.append(activity)
+                        self.insertItem(self.activities.count - 1, section: 2)
+                    }
+                    // self.tableView.reloadData()
                 }
             }
         }
     }
     
+    func insertItem(_ row:Int, section: Int) {
+        let indexPath = IndexPath(row:row, section: section)
+        self.tableView.insertRows(at: [indexPath], with: .fade)
+    }
+        
     @objc func fetchChallengeRequest() {
         group.enter()
-        var challengeRequest = [ChallengeRequest]()
         let jsonURL = URL(string: getChallengeRequestURL + memberID)!
         jsonURL.get { data, response, error in
             guard
@@ -134,13 +142,8 @@ class ActivitiesController: UITableViewController {
                     }
                     return
             }
+            self.challengeRequestCount = postsArray != nil ? (postsArray?.count)! : 0
             self.group.leave()
-            for postDictionary in postsArray! {
-                let challenge = ChallengeRequest()
-                challenge.setValuesForKeys(postDictionary)
-                challengeRequest.append(challenge)
-            }
-            self.challengeRequestCount = challengeRequest.count
         }
     }
     

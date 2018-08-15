@@ -455,7 +455,7 @@ class FeedCell: UICollectionViewCell {
                 DispatchQueue.main.async {
                     self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
                     self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-                    self.avPlayerLayer.repeatCount = 3
+                    self.avPlayerLayer.repeatCount = 10
                     self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
                     self.proofedVideoView.layer.masksToBounds = true
                 }

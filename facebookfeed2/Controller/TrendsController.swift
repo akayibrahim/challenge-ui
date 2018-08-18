@@ -9,7 +9,7 @@
 import UIKit
 import AVKit
 
-class TrendsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
+class TrendsController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, UICollectionViewDataSourcePrefetching {
     @objc let searchBar = UISearchBar()
     @objc var trendRequest = [TrendRequest]()
     @objc let cellId = "cellId"
@@ -30,7 +30,9 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         collectionView?.showsVerticalScrollIndicator = false
-
+        collectionView?.prefetchDataSource = self
+        collectionView?.isPrefetchingEnabled = true
+        
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         collectionView?.addSubview(refreshControl)
@@ -150,13 +152,24 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         }).resume()
     }
     
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        let needsFetch = indexPaths.contains { $0.row >= self.trendRequest.count - 1 }
+        if needsFetch && !nowMoreData && !dummyServiceCall {
+            currentPage += 1
+            self.loadTrends()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let checkPoint = trendRequest.count - 1
+        /*let checkPoint = trendRequest.count - 1
         let shouldLoadMore = checkPoint == indexPath.row
         if shouldLoadMore && !nowMoreData && !dummyServiceCall {
             currentPage += 1
             self.loadTrends()
-        }
+        }*/
     }
     
     @objc var downImage: UIImage?
@@ -175,12 +188,15 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
             return cell
         }
         DispatchQueue.main.async {
+            cell.layer.shouldRasterize = true
+            cell.layer.rasterizationScale = UIScreen.main.scale
+            cell.prepareForReuse()
             cell.trendRequest = self.trendRequest[indexPath.row]
             if self.trendRequest[indexPath.row].provedWithImage! {
                 cell.requestImageView.load(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
                 self.imageEnable(cell, yes: true)
             } else {
-                cell.avPlayerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!)
+                cell.avPlayerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!, play: true)
                 self.imageEnable(cell, yes: false)
             }
         }

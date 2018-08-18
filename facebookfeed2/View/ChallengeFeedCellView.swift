@@ -39,26 +39,26 @@ class FeedCell: UICollectionViewCell {
         self.secondFourPeopleImageView.image = UIImage()
         self.thirdFourPeopleImageView.image = UIImage()
         self.moreFourPeopleImageView.image = UIImage()
-        self.firstOneChlrPeopleImageView.memberId = nil
-        self.firstTwoChlrPeopleImageView.memberId = nil
-        self.secondTwoChlrPeopleImageView.memberId = nil
-        self.firstThreeChlrPeopleImageView.memberId = nil
-        self.secondThreeChlrPeopleImageView.memberId = nil
-        self.thirdThreeChlrPeopleImageView.memberId = nil
-        self.firstFourChlrPeopleImageView.memberId = nil
-        self.secondFourChlrPeopleImageView.memberId = nil
-        self.thirdFourChlrPeopleImageView.memberId = nil
-        self.moreFourChlrPeopleImageView.memberId = nil
-        self.firstOnePeopleImageView.memberId = nil
-        self.firstTwoPeopleImageView.memberId = nil
-        self.secondTwoPeopleImageView.memberId = nil
-        self.firstThreePeopleImageView.memberId = nil
-        self.secondThreePeopleImageView.memberId = nil
-        self.thirdThreePeopleImageView.memberId = nil
-        self.firstFourPeopleImageView.memberId = nil
-        self.secondFourPeopleImageView.memberId = nil
-        self.thirdFourPeopleImageView.memberId = nil
-        self.moreFourPeopleImageView.memberId = nil
+        self.firstOneChlrPeopleImageView.removeFromSuperview()
+        self.firstTwoChlrPeopleImageView.removeFromSuperview()
+        self.secondTwoChlrPeopleImageView.removeFromSuperview()
+        self.firstThreeChlrPeopleImageView.removeFromSuperview()
+        self.secondThreeChlrPeopleImageView.removeFromSuperview()
+        self.thirdThreeChlrPeopleImageView.removeFromSuperview()
+        self.firstFourChlrPeopleImageView.removeFromSuperview()
+        self.secondFourChlrPeopleImageView.removeFromSuperview()
+        self.thirdFourChlrPeopleImageView.removeFromSuperview()
+        self.moreFourChlrPeopleImageView.removeFromSuperview()
+        self.firstOnePeopleImageView.removeFromSuperview()
+        self.firstTwoPeopleImageView.removeFromSuperview()
+        self.secondTwoPeopleImageView.removeFromSuperview()
+        self.firstThreePeopleImageView.removeFromSuperview()
+        self.secondThreePeopleImageView.removeFromSuperview()
+        self.thirdThreePeopleImageView.removeFromSuperview()
+        self.firstFourPeopleImageView.removeFromSuperview()
+        self.secondFourPeopleImageView.removeFromSuperview()
+        self.thirdFourPeopleImageView.removeFromSuperview()
+        self.moreFourPeopleImageView.removeFromSuperview()
         self.vsImageView.image = UIImage()
         self.subjectImageView.image = UIImage()
         self.thinksAboutChallengeView.text = nil
@@ -107,6 +107,7 @@ class FeedCell: UICollectionViewCell {
         self.homeWinBase.removeFromSuperview()
         self.awayWinBase.removeFromSuperview()
         self.avPlayerLayer.removeFromSuperlayer()
+        self.timesUpFlag.image = UIImage()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }
@@ -393,14 +394,14 @@ class FeedCell: UICollectionViewCell {
             // END CONSTANTS
             
             if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined,
-                let rejectedByAllAttendance = self.post?.rejectedByAllAttendance {
+                let rejectedByAllAttendance = self.post?.rejectedByAllAttendance, let timesUp = self.post?.timesUp {
                 let firstTeamScore = self.post?.firstTeamScore != nil ? self.post?.firstTeamScore : "-1"
                 let secondTeamScore = self.post?.secondTeamScore != nil ? self.post?.secondTeamScore : "-1"
                 let result = self.post?.result != nil ? self.post?.result : "-1"
                 let goal = self.post?.goal != nil ? self.post?.goal : "-1"
                 let homeWin = self.post?.homeWin != nil ? self.post?.homeWin : false
                 let awayWin = self.post?.awayWin != nil ? self.post?.awayWin : false
-                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance)
+                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp)
             }
         }
     }
@@ -414,7 +415,7 @@ class FeedCell: UICollectionViewCell {
     }    
     
     @objc let screenSize = UIScreen.main.bounds
-    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool) {
+    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -429,7 +430,7 @@ class FeedCell: UICollectionViewCell {
         addTrailingAnchor(dividerLineView, anchor: contentGuide.trailingAnchor, constant: 0)
         dividerLineView.heightAnchor.constraint(equalToConstant: 0).isActive = true
         
-        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore, active: active, result: result, goal: goal, proofedByChallenger: proofedByChallenger, joined: joined, homeWin: homeWin, awayWin: awayWin, rejectedByAllAttendance: rejectedByAllAttendance)
+        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore, active: active, result: result, goal: goal, proofedByChallenger: proofedByChallenger, joined: joined, homeWin: homeWin, awayWin: awayWin, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp)
         
         if !isComeFromSelf {
             if type == PUBLIC && proofedByChallenger {
@@ -446,18 +447,18 @@ class FeedCell: UICollectionViewCell {
                 // setImage(name: "gandhi", imageView: proofedMediaView)
                 proofedMediaView.alpha = 0
                 
-                addSubview(proofedVideoView)
-                addTopAnchor(proofedVideoView, anchor: dividerLineView1.bottomAnchor, constant: 0)
-                addWidthAnchor(proofedVideoView, multiplier: 1)
-                addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
+                self.addSubview(self.proofedVideoView)
+                self.addTopAnchor(self.proofedVideoView, anchor: self.dividerLineView1.bottomAnchor, constant: 0)
+                self.addWidthAnchor(self.proofedVideoView, multiplier: 1)
+                self.addHeightAnchor(self.proofedVideoView, multiplier: 1 / 2)
                 proofedVideoView.alpha = 1
+                self.proofedVideoView.layer.masksToBounds = true
                 
                 DispatchQueue.main.async {
-                    self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+                    self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
                     self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
                     self.avPlayerLayer.repeatCount = 10
-                    self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
-                    self.proofedVideoView.layer.masksToBounds = true
+                    self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
                 }
                 
                 addSubview(volumeUpImageView)
@@ -579,7 +580,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    @objc func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, result: String, goal: String, proofedByChallenger: Bool, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool) {
+    @objc func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, result: String, goal: String, proofedByChallenger: Bool, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool) {
         let middleTopGuide = UILayoutGuide()
         let middleCenterGuide = UILayoutGuide()
         let middleBottomGuide = UILayoutGuide()
@@ -592,147 +593,157 @@ class FeedCell: UICollectionViewCell {
         generateFirstTeam(contentGuide, firstTeamCount: firstTeamCount);
         
         middleTopGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 6).isActive = true
-        
         middleTopGuide.topAnchor.constraint(equalTo: dividerLineView.bottomAnchor, constant: 1).isActive = true
-        
-        if done {
-            addSubview(finishFlag)
-            addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0 / 6))
-            finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addWidthAnchor(finishFlag, multiplier: 2 / 6)
-            addHeightAnchor(finishFlag, multiplier: 1 / 6)
-            setImage(name: "finishFlag", imageView: finishFlag)
-            finishFlag.alpha = 1
-            vsImageView.alpha = 0
-            
-            addSubview(multiplierSign)
-            addBottomAnchor(multiplierSign, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.3 / 6))
-            multiplierSign.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addWidthAnchor(multiplierSign, multiplier: 2 / 6)
-            addHeightAnchor(multiplierSign, multiplier: 0.5 / 6)
-            multiplierSign.alpha = 0
-        } else {
-            vsImageView.alpha = 1
-            
-            addSubview(untilDateLabel)
-            addBottomAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
-            addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
-            untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addHeightAnchor(untilDateLabel, multiplier: 1/6)
-            untilDateLabel.alpha = 1
-            
-            if rejectedByAllAttendance {
-                activeLabel.text = "REJECTED BY ALL PARTICIPANT"
-            } else {
-                activeLabel.text = "WAITING FOR PARTICIPANTS"
-            }
-            activeLabel.font = UIFont (name: fontMarkerFelt, size: 23)
-            activeLabel.textAlignment = .center
-            activeLabel.numberOfLines = 2;
-            activeLabel.textColor = UIColor.gray
-            activeLabel.adjustsFontSizeToFitWidth = true
-            
-            addSubview(activeLabel)
-            addBottomAnchor(activeLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
-            addWidthAnchor(activeLabel, multiplier: 0.7/3)
-            activeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-            addHeightAnchor(activeLabel, multiplier: 1/6)
-            activeLabel.alpha = 0
-            
-            if !active {
-                untilDateLabel.alpha = 0
-                activeLabel.alpha = 1
-            }
-        }
-        
-        addSubview(proofText)
-        addTopAnchor(proofText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
-        proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
-        addWidthAnchor(proofText, multiplier: 1.3 / 6)
-        addHeightAnchor(proofText, multiplier: 0.5 / 6)
-        proofText.font = UIFont(name: "MarkerFelt-Thin", size: 40)
-        proofText.backgroundColor = scoreColor
-        proofText.textColor = UIColor.white
-        proofText.layer.cornerRadius = 5
-        proofText.layer.masksToBounds = true
-        // proofText.addBorders(edges: [.top, .bottom], width: 1)
-        proofText.adjustsFontSizeToFitWidth = true
-        proofText.alpha = 0
-        
-        addSubview(homeScoreText)
-        addTopAnchor(homeScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
-        homeScoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.8 / 10)).isActive = true
-        addWidthAnchor(homeScoreText, multiplier: 0.5 / 6)
-        addHeightAnchor(homeScoreText, multiplier: 0.5 / 6)
-        homeScoreText.backgroundColor = scoreColor
-        // scoreText.font = UIFont(name: "Optima-ExtraBlack", size: 44)
-        homeScoreText.textColor = UIColor.white
-        homeScoreText.textAlignment = .center
-        homeScoreText.layer.cornerRadius = 5
-        homeScoreText.layer.masksToBounds = true
-        // scoreText.addBorders(edges: [.top, .bottom], width: 1)
-        homeScoreText.adjustsFontSizeToFitWidth = true
-        homeScoreText.baselineAdjustment = .alignCenters
-        homeScoreText.alpha = 0
-        
-        addSubview(scoreText)
-        addTopAnchor(scoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
-        scoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0 / 10)).isActive = true
-        addWidthAnchor(scoreText, multiplier: 0.2 / 6)
-        addHeightAnchor(scoreText, multiplier: 0.5 / 6)
-        // scoreText.backgroundColor = UIColor.white
-        // scoreText.font = UIFont(name: "Optima-ExtraBlack", size: 44)
-        scoreText.textColor = scoreColor
-        // scoreText.layer.cornerRadius = 5
-        // scoreText.layer.masksToBounds = true
-        // scoreText.addBorders(edges: [.top, .bottom], width: 1)
-        scoreText.adjustsFontSizeToFitWidth = true
-        scoreText.alpha = 0
-        
-        addSubview(awayScoreText)
-        addTopAnchor(awayScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
-        awayScoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.8 / 10)).isActive = true
-        addWidthAnchor(awayScoreText, multiplier: 0.5 / 6)
-        addHeightAnchor(awayScoreText, multiplier: 0.5 / 6)
-        awayScoreText.backgroundColor = scoreColor
-        // scoreText.font = UIFont(name: "Optima-ExtraBlack", size: 44)
-        awayScoreText.textColor = UIColor.white
-        awayScoreText.layer.cornerRadius = 5
-        awayScoreText.layer.masksToBounds = true
-        // scoreText.addBorders(edges: [.top, .bottom], width: 1)
-        awayScoreText.adjustsFontSizeToFitWidth = true
-        awayScoreText.baselineAdjustment = .alignCenters
-        awayScoreText.alpha = 0
-        
-        if done || isComeFromSelf {
-            if type == PUBLIC {
-                homeScoreText.alpha = 0
-                awayScoreText.alpha = 0
-                scoreText.alpha = 0
-                if proofedByChallenger || (proofed && isComeFromSelf) {
-                    proofText.text = proofedText
-                    proofText.alpha = 1
-                } else if joined {
-                    proofText.text = "JOINED" // TODO
-                    proofText.alpha = 1
-                }
-            } else if type == PRIVATE && firstTeamScore != "-1" && secondTeamScore != "-1" {
-                homeScoreText.alpha = 1
-                awayScoreText.alpha = 1
-                scoreText.alpha = 1
-                proofText.alpha = 0
-            } else if type == SELF && result != "-1" {
-                homeScoreText.alpha = 1
-                awayScoreText.alpha = 1
-                scoreText.alpha = 1
-                proofText.alpha = 0
-            }
-            vsImageView.alpha = 0
-        }
         
         addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: 0)
         vsImageView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         addHeightAnchor(vsImageView, multiplier: 1/6)
+        vsImageView.alpha = 0
+        
+        if !timesUp {
+            if done {
+                addSubview(finishFlag)
+                addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0 / 6))
+                finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                addWidthAnchor(finishFlag, multiplier: 2 / 6)
+                addHeightAnchor(finishFlag, multiplier: 1 / 6)
+                setImage(name: "finishFlag", imageView: finishFlag)
+                finishFlag.alpha = 1
+                vsImageView.alpha = 0
+                
+                addSubview(multiplierSign)
+                addBottomAnchor(multiplierSign, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.3 / 6))
+                multiplierSign.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                addWidthAnchor(multiplierSign, multiplier: 2 / 6)
+                addHeightAnchor(multiplierSign, multiplier: 0.5 / 6)
+                multiplierSign.alpha = 0
+            } else {
+                vsImageView.alpha = 1
+                
+                addSubview(untilDateLabel)
+                addBottomAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
+                addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
+                untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                addHeightAnchor(untilDateLabel, multiplier: 1/6)
+                untilDateLabel.alpha = 1
+                
+                if rejectedByAllAttendance {
+                    activeLabel.text = "REJECTED BY ALL PARTICIPANT"
+                } else {
+                    activeLabel.text = "WAITING FOR PARTICIPANTS"
+                }
+                activeLabel.font = UIFont (name: fontMarkerFelt, size: 23)
+                activeLabel.textAlignment = .center
+                activeLabel.numberOfLines = 2;
+                activeLabel.textColor = UIColor.gray
+                activeLabel.adjustsFontSizeToFitWidth = true
+                
+                addSubview(activeLabel)
+                addBottomAnchor(activeLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
+                addWidthAnchor(activeLabel, multiplier: 0.7/3)
+                activeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                addHeightAnchor(activeLabel, multiplier: 1/6)
+                activeLabel.alpha = 0
+                
+                if !active {
+                    untilDateLabel.alpha = 0
+                    activeLabel.alpha = 1
+                }
+            }
+            
+            addSubview(proofText)
+            addTopAnchor(proofText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+            proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
+            addWidthAnchor(proofText, multiplier: 1.3 / 6)
+            addHeightAnchor(proofText, multiplier: 0.5 / 6)
+            proofText.font = UIFont(name: "MarkerFelt-Thin", size: 40)
+            proofText.backgroundColor = scoreColor
+            proofText.textColor = UIColor.white
+            proofText.layer.cornerRadius = 5
+            proofText.layer.masksToBounds = true
+            // proofText.addBorders(edges: [.top, .bottom], width: 1)
+            proofText.adjustsFontSizeToFitWidth = true
+            proofText.alpha = 0
+            
+            addSubview(homeScoreText)
+            addTopAnchor(homeScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+            homeScoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.8 / 10)).isActive = true
+            addWidthAnchor(homeScoreText, multiplier: 0.5 / 6)
+            addHeightAnchor(homeScoreText, multiplier: 0.5 / 6)
+            homeScoreText.backgroundColor = scoreColor
+            // scoreText.font = UIFont(name: "Optima-ExtraBlack", size: 44)
+            homeScoreText.textColor = UIColor.white
+            homeScoreText.textAlignment = .center
+            homeScoreText.layer.cornerRadius = 5
+            homeScoreText.layer.masksToBounds = true
+            // scoreText.addBorders(edges: [.top, .bottom], width: 1)
+            homeScoreText.adjustsFontSizeToFitWidth = true
+            homeScoreText.baselineAdjustment = .alignCenters
+            homeScoreText.alpha = 0
+            
+            addSubview(scoreText)
+            addTopAnchor(scoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+            scoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0 / 10)).isActive = true
+            addWidthAnchor(scoreText, multiplier: 0.2 / 6)
+            addHeightAnchor(scoreText, multiplier: 0.5 / 6)
+            // scoreText.backgroundColor = UIColor.white
+            // scoreText.font = UIFont(name: "Optima-ExtraBlack", size: 44)
+            scoreText.textColor = scoreColor
+            // scoreText.layer.cornerRadius = 5
+            // scoreText.layer.masksToBounds = true
+            // scoreText.addBorders(edges: [.top, .bottom], width: 1)
+            scoreText.adjustsFontSizeToFitWidth = true
+            scoreText.alpha = 0
+            
+            addSubview(awayScoreText)
+            addTopAnchor(awayScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+            awayScoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.8 / 10)).isActive = true
+            addWidthAnchor(awayScoreText, multiplier: 0.5 / 6)
+            addHeightAnchor(awayScoreText, multiplier: 0.5 / 6)
+            awayScoreText.backgroundColor = scoreColor
+            // scoreText.font = UIFont(name: "Optima-ExtraBlack", size: 44)
+            awayScoreText.textColor = UIColor.white
+            awayScoreText.layer.cornerRadius = 5
+            awayScoreText.layer.masksToBounds = true
+            // scoreText.addBorders(edges: [.top, .bottom], width: 1)
+            awayScoreText.adjustsFontSizeToFitWidth = true
+            awayScoreText.baselineAdjustment = .alignCenters
+            awayScoreText.alpha = 0
+            
+            if done || isComeFromSelf {
+                if type == PUBLIC {
+                    homeScoreText.alpha = 0
+                    awayScoreText.alpha = 0
+                    scoreText.alpha = 0
+                    if proofedByChallenger || (proofed && isComeFromSelf) {
+                        proofText.text = proofedText
+                        proofText.alpha = 1
+                    } else if joined {
+                        proofText.text = "JOINED" // TODO
+                        proofText.alpha = 1
+                    }
+                } else if type == PRIVATE && firstTeamScore != "-1" && secondTeamScore != "-1" {
+                    homeScoreText.alpha = 1
+                    awayScoreText.alpha = 1
+                    scoreText.alpha = 1
+                    proofText.alpha = 0
+                } else if type == SELF && result != "-1" {
+                    homeScoreText.alpha = 1
+                    awayScoreText.alpha = 1
+                    scoreText.alpha = 1
+                    proofText.alpha = 0
+                }
+                vsImageView.alpha = 0
+            }
+        } else {
+            addSubview(timesUpFlag)
+            addTopAnchor(timesUpFlag, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.35 / 6))
+            timesUpFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            addWidthAnchor(timesUpFlag, multiplier: 2.5 / 6)
+            addHeightAnchor(timesUpFlag, multiplier: 1.25 / 6)
+            setImage(name: "multipliersign", imageView: timesUpFlag)
+            timesUpFlag.alpha = 1
+        }
         
         middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
@@ -766,97 +777,98 @@ class FeedCell: UICollectionViewCell {
                 }
             }
             
-            
-            addSubview(clapping)
-            addBottomAnchor(clapping, anchor: awayScoreText.topAnchor, constant: -(screenWidth * 0.07 / 10))
-            clapping.centerXAnchor.constraint(equalTo: awayScoreText.centerXAnchor, constant: screenWidth * 0 / 10).isActive = true
-            // addTrailingAnchor(clapping, anchor: awayScoreText.trailingAnchor, constant: 0)
-            addWidthAnchor(clapping, multiplier: 0.5 / 6)
-            addHeightAnchor(clapping, multiplier: 0.5 / 6)
-            clapping.alpha = 0
-            
-            addSubview(clappingHome)
-            addBottomAnchor(clappingHome, anchor: homeScoreText.topAnchor, constant: -(screenWidth * 0.07 / 10))
-            clappingHome.centerXAnchor.constraint(equalTo: homeScoreText.centerXAnchor, constant: -(screenWidth * 0 / 10)).isActive = true
-            // addLeadingAnchor(clappingHome, anchor: homeScoreText.leadingAnchor, constant: 0)
-            addWidthAnchor(clappingHome, multiplier: 0.5 / 6)
-            addHeightAnchor(clappingHome, multiplier: 0.5 / 6)
-            clappingHome.alpha = 0
-        
-            if type == PUBLIC && (proofedByChallenger || proofed) && isComeFromSelf {
-                clappingHome.alpha = 1
-            }
-            if done {
-                addSubview(homeWinBase)
-                addTopAnchor(homeWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
-                homeWinBase.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.8 / 10)).isActive = true
-                addWidthAnchor(homeWinBase, multiplier: 0.5 / 6)
-                addHeightAnchor(homeWinBase, multiplier: 0.1 / 6)
-                homeWinBase.backgroundColor = scoreColor
-                homeWinBase.layer.cornerRadius = 5
-                homeWinBase.layer.masksToBounds = true
-                homeWinBase.alpha = 0
-                homeWinBase.layer.zPosition = -1
+            if !timesUp {
+                addSubview(clapping)
+                addBottomAnchor(clapping, anchor: awayScoreText.topAnchor, constant: -(screenWidth * 0.07 / 10))
+                clapping.centerXAnchor.constraint(equalTo: awayScoreText.centerXAnchor, constant: screenWidth * 0 / 10).isActive = true
+                // addTrailingAnchor(clapping, anchor: awayScoreText.trailingAnchor, constant: 0)
+                addWidthAnchor(clapping, multiplier: 0.5 / 6)
+                addHeightAnchor(clapping, multiplier: 0.5 / 6)
+                clapping.alpha = 0
                 
-                addSubview(awayWinBase)
-                addTopAnchor(awayWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
-                awayWinBase.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.8 / 10)).isActive = true
-                addWidthAnchor(awayWinBase, multiplier: 0.5 / 6)
-                addHeightAnchor(awayWinBase, multiplier: 0.1 / 6)
-                awayWinBase.backgroundColor = scoreColor
-                awayWinBase.layer.cornerRadius = 5
-                awayWinBase.layer.masksToBounds = true
-                awayWinBase.alpha = 0
-                awayWinBase.layer.zPosition = -1
+                addSubview(clappingHome)
+                addBottomAnchor(clappingHome, anchor: homeScoreText.topAnchor, constant: -(screenWidth * 0.07 / 10))
+                clappingHome.centerXAnchor.constraint(equalTo: homeScoreText.centerXAnchor, constant: -(screenWidth * 0 / 10)).isActive = true
+                // addLeadingAnchor(clappingHome, anchor: homeScoreText.leadingAnchor, constant: 0)
+                addWidthAnchor(clappingHome, multiplier: 0.5 / 6)
+                addHeightAnchor(clappingHome, multiplier: 0.5 / 6)
+                clappingHome.alpha = 0
                 
-                if type == PUBLIC {
-                    if proofedByChallenger || (proofed && isComeFromSelf) {
-                        clappingHome.alpha = 1
-                    }
-                } else if type == PRIVATE {
-                    if homeWin {
-                        clappingHome.alpha = 1
-                        clapping.alpha = 0.2
-                        homeWinBase.alpha = 1
-                        awayWinBase.alpha = 0.2
-                    } else if awayWin {
-                        clapping.alpha = 1
-                        clappingHome.alpha = 0.2
-                        awayWinBase.alpha = 1
-                        homeWinBase.alpha = 0.2
+                if type == PUBLIC && (proofedByChallenger || proofed) && isComeFromSelf {
+                    clappingHome.alpha = 1
+                }
+                if done {
+                    addSubview(homeWinBase)
+                    addTopAnchor(homeWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+                    homeWinBase.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.8 / 10)).isActive = true
+                    addWidthAnchor(homeWinBase, multiplier: 0.5 / 6)
+                    addHeightAnchor(homeWinBase, multiplier: 0.1 / 6)
+                    homeWinBase.backgroundColor = scoreColor
+                    homeWinBase.layer.cornerRadius = 5
+                    homeWinBase.layer.masksToBounds = true
+                    homeWinBase.alpha = 0
+                    homeWinBase.layer.zPosition = -1
+                    
+                    addSubview(awayWinBase)
+                    addTopAnchor(awayWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+                    awayWinBase.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.8 / 10)).isActive = true
+                    addWidthAnchor(awayWinBase, multiplier: 0.5 / 6)
+                    addHeightAnchor(awayWinBase, multiplier: 0.1 / 6)
+                    awayWinBase.backgroundColor = scoreColor
+                    awayWinBase.layer.cornerRadius = 5
+                    awayWinBase.layer.masksToBounds = true
+                    awayWinBase.alpha = 0
+                    awayWinBase.layer.zPosition = -1
+                    
+                    if type == PUBLIC {
+                        if proofedByChallenger || (proofed && isComeFromSelf) {
+                            clappingHome.alpha = 1
+                        }
+                    } else if type == PRIVATE {
+                        if homeWin {
+                            clappingHome.alpha = 1
+                            clapping.alpha = 0.2
+                            homeWinBase.alpha = 1
+                            awayWinBase.alpha = 0.2
+                        } else if awayWin {
+                            clapping.alpha = 1
+                            clappingHome.alpha = 0.2
+                            awayWinBase.alpha = 1
+                            homeWinBase.alpha = 0.2
+                        }
+                    } else {
+                        if homeWin {
+                            clappingHome.alpha = 1
+                            homeWinBase.alpha = 1
+                        }
                     }
                 } else {
-                    if homeWin {
-                        clappingHome.alpha = 1
-                        homeWinBase.alpha = 1
+                    if isComeFromSelf {
+                        addSubview(updateProgress)
+                        addBottomAnchor(updateProgress, anchor: middleBottomGuide.topAnchor, constant: -(screenWidth * 0.15 / 6))
+                        updateProgress.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                        addWidthAnchor(updateProgress, multiplier: 1.3 / 6)
+                        addHeightAnchor(updateProgress, multiplier: 0.6 / 6)
+                        updateProgress.titleLabel?.numberOfLines = 2
+                        updateProgress.titleLabel?.textAlignment = .center
+                        updateProgress.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
+                        updateProgress.setTitleColor(UIColor.white, for: UIControlState())
+                        updateProgress.backgroundColor = blueColor
+                        updateProgress.layer.cornerRadius = 5.0
+                        updateProgress.clipsToBounds = true
+                        updateProgress.titleLabel?.adjustsFontSizeToFitWidth = true
+                        updateProgress.alpha = type == PUBLIC && proofed ? 0 : 1
+                        
+                        /*
+                         addSubview(updateRefreshLabel)
+                         addTopAnchor(updateRefreshLabel, anchor: updateProgress.bottomAnchor, constant: -(screenWidth * 0.5 / 6))
+                         updateRefreshLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                         addWidthAnchor(updateRefreshLabel, multiplier: 1/3)
+                         addHeightAnchor(updateRefreshLabel, multiplier: 1/15)
+                         updateRefreshLabel.text = "Update\nProgress"
+                         updateRefreshLabel.numberOfLines = 2
+                         */
                     }
-                }
-            } else {
-                if isComeFromSelf {
-                    addSubview(updateProgress)
-                    addBottomAnchor(updateProgress, anchor: middleBottomGuide.topAnchor, constant: -(screenWidth * 0.15 / 6))
-                    updateProgress.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                    addWidthAnchor(updateProgress, multiplier: 1.3 / 6)
-                    addHeightAnchor(updateProgress, multiplier: 0.6 / 6)
-                    updateProgress.titleLabel?.numberOfLines = 2
-                    updateProgress.titleLabel?.textAlignment = .center
-                    updateProgress.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
-                    updateProgress.setTitleColor(UIColor.white, for: UIControlState())
-                    updateProgress.backgroundColor = blueColor
-                    updateProgress.layer.cornerRadius = 5.0
-                    updateProgress.clipsToBounds = true
-                    updateProgress.titleLabel?.adjustsFontSizeToFitWidth = true
-                    updateProgress.alpha = type == PUBLIC && proofed ? 0 : 1
-                    
-                    /*
-                     addSubview(updateRefreshLabel)
-                     addTopAnchor(updateRefreshLabel, anchor: updateProgress.bottomAnchor, constant: -(screenWidth * 0.5 / 6))
-                     updateRefreshLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                     addWidthAnchor(updateRefreshLabel, multiplier: 1/3)
-                     addHeightAnchor(updateRefreshLabel, multiplier: 1/15)
-                     updateRefreshLabel.text = "Update\nProgress"
-                     updateRefreshLabel.numberOfLines = 2
-                     */
                 }
             }
         }
@@ -1290,6 +1302,7 @@ class FeedCell: UICollectionViewCell {
     
     @objc let subjectImageView: UIImageView = FeedCell.imageViewFit()
     @objc let finishFlag: UIImageView = FeedCell.imageViewFit()
+    @objc let timesUpFlag: UIImageView = FeedCell.imageViewFit()
     
     @objc static func viewFunc() -> UIView {
         let view = UIView()

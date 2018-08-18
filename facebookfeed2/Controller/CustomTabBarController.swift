@@ -77,6 +77,14 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 let firstChlRow = IndexPath(item: 0, section: 0)
                 feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
                 return true
+            } else if tabBarController.selectedIndex == trendsIndex {
+                let controllers = tabBarController.viewControllers
+                let navC = controllers![trendsIndex] as! UINavigationController
+                let feedC = navC.viewController(class: TrendsController.self)
+                // feedC?.reloadSelfPage()
+                let firstChlRow = IndexPath(item: 0, section: 0)
+                feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+                return true
             }
             return false
         }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 extension UICollectionView {
     public func isRowCompletelyVisible(_ indexPath: IndexPath) -> Bool {
@@ -17,7 +18,7 @@ extension UICollectionView {
 }
 
 extension UIViewController
-{
+{   
     @objc func setImage(fbID: String?, imageView: UIImageView) {
         if let peoplefbID = fbID {
             let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")

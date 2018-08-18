@@ -111,6 +111,7 @@ var getSuggestionsForFollowingURL = defaultURL + "/getSuggestionsForFollowing?me
 var getFollowingListURL = defaultURL + "/getFollowingList?memberId="
 var getFollowerListURL = defaultURL + "/getFollowerList?memberId="
 var followingFriendURL = defaultURL + "/followingFriend"
+var followingFriendListURL = defaultURL + "/followingFriendList"
 var deleteSuggestionURL = defaultURL + "/deleteSuggestion"
 var updateProgressOrDoneForSelfURL = defaultURL + "/updateProgressOrDoneForSelf"
 var updateResultsOfVersusURL = defaultURL + "/updateResultsOfVersus"

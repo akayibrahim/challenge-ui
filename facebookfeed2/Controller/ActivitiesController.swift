@@ -56,6 +56,7 @@ class ActivitiesController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if goForward {
+            self.challengeRequestCount = 0
             self.reloadPage()
             goForward = false
         }
@@ -73,11 +74,16 @@ class ActivitiesController: UITableViewController {
     }
 
     @objc func reloadPage() {
+        if dummyServiceCall == false && Util.controlNetwork(){
+            return
+        }
         currentPage = 0
         self.activities = [Activities]()
-        if (refreshControl?.isRefreshing)! {
+        if (refreshControl?.isRefreshing)! || goForward {
             self.tableView.reloadData()
         }
+        fetchChallengeRequest()
+        self.group.wait()
         self.loadActivities()
     }
     
@@ -86,8 +92,6 @@ class ActivitiesController: UITableViewController {
             if Util.controlNetwork() {
                 return
             }
-            fetchChallengeRequest()
-            group.wait()
             fetchActivities()
             getActivityCount()
             return

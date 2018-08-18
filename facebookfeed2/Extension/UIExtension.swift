@@ -474,36 +474,53 @@ extension UIImageView {
     }
 }
 
-var videoLooper: AVPlayerLooper!
+extension AVPlayer {
+    var isPlaying: Bool {
+        return rate != 0 && error == nil
+    }
+}
+
 extension AVPlayerLayer {
-    @objc func load(challengeId: String, challengerId: String) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, trend: false)
+    @objc func load(challengeId: String, challengerId: String, play: Bool) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play)
     }
     
-    @objc func loadWithZeroVolume(challengeId: String, challengerId: String) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, trend: true)
+    @objc func loadWithZeroVolume(challengeId: String, challengerId: String, play: Bool) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, play: play)
     }
     
-    func loadPlayer(challengeId: String, challengerId: String, volume: Float, trend: Bool) {
+    func loadPlayer(challengeId: String, challengerId: String, volume: Float, play: Bool) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
+                if let player = self.player {
+                    if player.currentItem != nil {
+                        return
+                    }
+                }
                 VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
                     if let video = videoData {
-                        let item = AVPlayerItem.init(url: video)
-                        let avPlayer = AVPlayer.init()
-                        avPlayer.replaceCurrentItem(with: item)
-                        avPlayer.volume = volume
-                        // let avPlayer = AVQueuePlayer(playerItem: item)
-                        // videoLooper = AVPlayerLooper(player: avPlayer, templateItem: item)
-                        self.player = avPlayer
-                        if trend {
-                            self.player?.play()
+                        DispatchQueue.main.async {
+                            var queuePlayer: AVQueuePlayer?
+                            let item = AVPlayerItem.init(url: video)
+                            queuePlayer = AVQueuePlayer(items: [item])
+                            queuePlayer?.actionAtItemEnd = .none
+                            queuePlayer?.volume = volume
+                            self.player = queuePlayer
+                            if play {
+                                self.player?.play()
+                            }
                         }
+                        NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
                     }
                 })
             }
         }
+    }
+    
+    @objc func playerDidFinishPlaying(note: NSNotification) {
+        let p: AVPlayerItem = note.object as! AVPlayerItem
+        p.seek(to: kCMTimeZero, completionHandler: nil)
     }
 }
 

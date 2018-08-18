@@ -152,10 +152,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             // Asynchronous Http call to your api url, using NSURLSession:
             if self.profile {
                 if (!self.memberIsPrivateForFriendProfile! || (self.memberIsPrivateForFriendProfile! && self.isProfileFriend)) && self.memberIdForFriendProfile != memberID {
-                    self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
                     self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
+                    group.wait()
+                    self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
                 } else if self.memberIdForFriendProfile == memberID {
                     self.fetchChallengeSize(memberId: memberID)
+                    group.wait()
                     self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
                 }
                 return
@@ -166,10 +168,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(self.explorerCurrentPage)", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == profileIndex {
+                FacebookController().getMemberInfo(memberId: memberID)
                 self.fetchChallengeSize(memberId: memberID)
                 group.wait()
-                self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
-                FacebookController().getMemberInfo(memberId: memberID)
+                self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)                
                 return
             } else if self.tabBarController?.selectedIndex == chanllengeIndex {
                 self.getActivityCount()
@@ -258,10 +260,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                     return
             }
+            self.challangeCount = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)! as String
             self.group.leave()
-            DispatchQueue.main.async {
-                self.challangeCount = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)! as String
-            }
         }
     }
     
@@ -341,10 +341,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
         }
         DispatchQueue.main.async {
-            let indexPaths = self.collectionView?.indexPathsForVisibleItems
-            for indexPath in indexPaths! {
-                self.playVideo(indexPath)
-            }
+            self.playVisibleVideo()
             if !self.profile {
                 if self.tabBarController?.selectedIndex == chanllengeIndex {
                     // self.reloadChlPage()
@@ -372,27 +369,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        // playVisibleVideo()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let cell = cell as! FeedCell
         if let player = cell.avPlayerLayer.player {
             player.pause()
-        }
-    }
-    
-    func playVideo(_ indexPath: IndexPath) {
-        if let cellForIndex = self.collectionView?.cellForItem(at: indexPath) {
-            let cell = cellForIndex as! FeedCell
-            if (self.collectionView?.isRowCompletelyVisible(indexPath))! {
-                if let player = cell.avPlayerLayer.player {
-                    player.play()
-                }
-            } else {
-                if let player = cell.avPlayerLayer.player {
-                    player.pause()
-                }
-            }
         }
     }
     
@@ -421,10 +404,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-        
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        // playVisibleVideo()
         /*
         let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex && !profile
         let isSelf = self.tabBarController?.selectedIndex == profileIndex
@@ -599,7 +582,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if (self.posts[indexPath.item].proofedByChallenger)! {
                     if !self.posts[indexPath.item].provedWithImage! {
                         self.imageEnable(feedCell, yes: false)
-                        feedCell.avPlayerLayer.load(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)
+                        feedCell.avPlayerLayer.load(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!, play: indexPath.row == 0 ? true : false)                        
                     } else {
                         self.imageEnable(feedCell, yes: true)
                         feedCell.proofedMediaView.load(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)
@@ -1063,9 +1046,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let commentsTable = ProofTableViewController()
         commentsTable.tableTitle = proofsTableTitle
         commentsTable.challengeId = challengeId
-        commentsTable.proofed = proofed
-        commentsTable.canJoin = canJoin
-        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: isTabIndex(profileIndex) && !explorer ? 1 : 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: canJoin, proved: proofed))
+        commentsTable.done = posts[index].done!
+        commentsTable.proofed = posts[index].done! ? false : proofed
+        commentsTable.canJoin = posts[index].done! ? false : canJoin
+        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: isTabIndex(profileIndex) && !explorer ? 1 : 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: posts[index].done! ? false : canJoin, proved: posts[index].done! ? false : proofed))
         goForward = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -1319,11 +1303,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    @objc var lastContentOffSet : CGFloat = 0
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if explorer {
-            return
-        }
+    func playVisibleVideo() {
         let visibleRect = CGRect(origin: (collectionView?.contentOffset)!, size: (collectionView?.bounds.size)!)
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         let indexPath = collectionView?.indexPathForItem(at: visiblePoint)
@@ -1343,11 +1323,20 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
                 if feedCell.proofedVideoView.frame.contains(frameSize) && !self.posts[index.row].provedWithImage! {
                     if let player = feedCell.avPlayerLayer.player {
+                        player.volume = volume
                         player.play()
                     }
                 }
             }
         }
+    }
+    
+    @objc var lastContentOffSet : CGFloat = 0
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if explorer {
+            return
+        }
+        playVisibleVideo()
         if self.tabBarController?.selectedIndex == chanllengeIndex || self.tabBarController?.selectedIndex == profileIndex {
             if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
                 // move down

@@ -152,7 +152,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         openMember(id: isLocal ? "5b3152d31cb199f1fadc0fb0" : "5b5aa7aad35c650e3ffeeb61")
     }
     @objc func can() {
-        openMember(id: isLocal ? "5b3152821cb199f1fadc0fab" : "")
+        openMember(id: isLocal ? "5b3152821cb199f1fadc0fab" : "5b60b05ad35c6506237e6ae7")
     }
     @objc func uzun() {
         openMember(id: isLocal ? "5b3152a71cb199f1fadc0fad" : "5b5aa8a4d35c650e3ffeeb64")
@@ -215,23 +215,10 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                 // print(result!)
                 //print("https://graph.facebook.com/10156204749600712/invitable_friends?access_token=\(FBSDKAccessToken.current().tokenString)")
                 let data = result as! [String : Any]
-                // self.label.text = data["name"] as? String
-                // let name = data["name"] as? String
-                // print("name: " + name!)
                 let first_name = data["first_name"] as? String
-                // print("first_name: " + first_name!)
                 let last_name = data["last_name"] as? String
-                // print("last_name: " + last_name!)
                 let email = data["email"] as? String
-                // print("email: " + email!)
                 let FBid = data["id"] as? String
-                // print("facebook ID: " + FBid!)
-                // let url = NSURL(string: "https://graph.facebook.com/\(FBid!)/picture?type=large&return_ssl_resources=1")
-                // print("picture url: \(url!)")
-                // let user_friends = data["friends"]
-                // TODO let friends = user_friends as! [String : Any]
-                // print(friends)
-                // self.imageView.image = UIImage(data: NSData(contentsOf: url! as URL)! as Data)
                 self.addMember(firstName: first_name!, surname: last_name!, email: email!, facebookID: FBid!)
             } else {
                 print("Error Getting Friends \(error!)");

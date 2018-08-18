@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FBSDKCoreKit
 
 class ServiceLocator {
     static func getChallengesFromDummy(jsonFileName : String) -> [Post] {
@@ -258,6 +259,7 @@ class ServiceLocator {
         post.awayWin = postDictionary["awayWin"] as? Bool
         post.provedWithImage = postDictionary["provedWithImage"] as? Bool
         post.rejectedByAllAttendance = postDictionary["rejectedByAllAttendance"] as? Bool
+        post.timesUp = postDictionary["timesUp"] as? Bool
         return post
     }
     
@@ -377,5 +379,41 @@ class ServiceLocator {
             }
         }
         return activities
+    }
+    
+    @objc static func fetchFacebookFriends() {
+        DispatchQueue.global(qos: .background).async {
+            let params = ["fields": "id, first_name, last_name, name, email, picture,friends"]
+            let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: params)
+            let connection = FBSDKGraphRequestConnection()
+            connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
+                if error == nil {
+                    // print(result!)
+                    let data = result as! [String : Any]
+                    let user_friends = data["friends"]
+                    if user_friends != nil {
+                        let friends = user_friends as! [String : Any]
+                        let array = friends["data"]! as! NSArray
+                        print(array)
+                        // print(array.value(forKey: "id") as! NSArray)
+                        // addFirends(friends: array.value(forKey: "id") as! NSArray)
+                        // print(friends["data"])
+                    }
+                } else {
+                    print("Error Getting Friends \(error!)");
+                }
+            })
+            connection.start()
+        }
+    }
+    
+    @objc static func addFirends(friends: NSArray) {
+        DispatchQueue.global(qos: .background).async {
+            let json: [String: Any] = ["memberId": memberID,
+                                       "friendMemberIdList": friends
+            ]
+            let request : URLRequest! = ServiceLocator.prepareRequest(url: URL(string: followingFriendListURL)!, json: json)
+            URLSession.shared.dataTask(with: request).resume()
+        }
     }
 }

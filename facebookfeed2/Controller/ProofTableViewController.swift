@@ -24,10 +24,11 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     @objc var nowMoreData: Bool = false
     @objc var proofed: Bool = false
     @objc var canJoin: Bool = false
+    @objc var done: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - (!proofed && !canJoin ? heightOfCommentView : 0)), style: UITableViewStyle.plain)
+        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - (!proofed && !canJoin && !done ? heightOfCommentView : 0)), style: UITableViewStyle.plain)
         self.tableView.register(ProofCellView.self, forCellReuseIdentifier: "ProofCell")
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -41,12 +42,14 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         bottomConstraint = NSLayoutConstraint(item: messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint!)
         messageInputContainerView.alpha = 0
-        if canJoin {
-            let joinButton = UIBarButtonItem(title: "Join", style: UIBarButtonItemStyle.plain, target: self, action: #selector(joinChallenge))
-            navigationItem.rightBarButtonItem = joinButton
-        } else if !proofed {
-            messageInputContainerView.alpha = 1
-            setupInputComponents()
+        if !done {
+            if canJoin {
+                let joinButton = UIBarButtonItem(title: "Join", style: UIBarButtonItemStyle.plain, target: self, action: #selector(joinChallenge))
+                navigationItem.rightBarButtonItem = joinButton
+            } else if !proofed {
+                messageInputContainerView.alpha = 1
+                setupInputComponents()
+            }
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
@@ -373,7 +376,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     cell.proofImageView.loadByObjectId(objectId: proofObjectId)
                 } else {
                     self.imageEnable(cell, yes: false)
-                    cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!)                    
+                    cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: indexPath.row == 0 ? true : false)                    
                 }
             }
         }
@@ -420,6 +423,10 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     @objc func changeVolume(gesture: UITapGestureRecognizer) {
         DispatchQueue.main.async {
+            volume = volume.isEqual(to: 0) ? 1 : 0
+            let defaults = UserDefaults.standard
+            defaults.set(volume, forKey: "volume")
+            defaults.synchronize()
             let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
             let feedCell = self.tableView?.cellForRow(at: index) as! ProofCellView
             self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
@@ -518,27 +525,32 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         return 44
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func playVisibleVideo() {
         for visIndex in (self.tableView?.indexPathsForVisibleRows)! {
             if self.tableView.isRowCompletelyVisible(at: visIndex) {
                 if let cell = tableView.cellForRow(at: visIndex) {
                     let feedCell = cell as! ProofCellView
                     // let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width, y: UIScreen.main.bounds.size.height)
                     //if feedCell.proofedVideoView.frame.contains(frameSize)  {
-                        if let player = feedCell.avPlayerLayer.player { // && !self.proofs[index.row].provedWithImage! {
-                            player.play()
-                        }
+                    if let player = feedCell.avPlayerLayer.player { // && !self.proofs[index.row].provedWithImage! {
+                        player.play()
+                    }
                     //}
                 }
             } else {
                 if let cell = tableView.cellForRow(at: visIndex) {
                     let feedCell = cell as! ProofCellView
                     if let player = feedCell.avPlayerLayer.player {
+                        player.volume = volume
                         player.pause()
                     }
                 }
             }
         }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        playVisibleVideo()
     }
     
     @objc func openProfile(name: String, memberId: String, memberFbId:String) {

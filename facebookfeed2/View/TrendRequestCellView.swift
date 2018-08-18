@@ -15,6 +15,14 @@ class TrendRequestCell: UICollectionViewCell {
         super.init(frame: frame)
     }
     
+    override func prepareForReuse() {
+        self.requestImageView.image = UIImage()
+        self.profileImageView.image = UIImage()
+        self.nameLabel.removeFromSuperview()
+        self.proofedVideoView.removeFromSuperview()
+        super.prepareForReuse()
+    }
+    
     @objc var trendRequest : TrendRequest? {
         didSet {
             if let name = trendRequest?.name, let subject = trendRequest?.subject {
@@ -90,10 +98,10 @@ class TrendRequestCell: UICollectionViewCell {
         addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
         proofedVideoView.alpha = 0
         DispatchQueue.main.async {
-            self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
             self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-            self.avPlayerLayer.repeatCount = 3
+            self.avPlayerLayer.repeatCount = 10
+            self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.proofedVideoView.layer.masksToBounds = true
         }
         addSubview(volumeUpImageView)

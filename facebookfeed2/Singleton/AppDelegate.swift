@@ -8,9 +8,9 @@
 
 import UIKit
 import FBSDKCoreKit
+import FBSDKLoginKit
 import MediaPlayer
 import AudioToolbox
-import FBSDKLoginKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -50,10 +50,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     @objc func openApp() {
-        if(FBSDKAccessToken.current() != nil) {
+        let token = FBSDKAccessToken.current()
+        if(token != nil) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 if dummyServiceCall == false {
-                    fetchFacebookProfile()
+                    ServiceLocator.fetchFacebookFriends()
                     getMemberInfo(memberId: memberId as! String)
                     self.group.wait()
                 } else {
@@ -69,24 +70,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             FBSDKLoginManager().logOut()
             window?.rootViewController = FacebookController()
         }
-    }
-    
-    @objc func fetchFacebookProfile() {
-        let params = ["fields": "id, first_name, last_name, name, email, picture,friends"]
-        let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: params)
-        let connection = FBSDKGraphRequestConnection()
-        connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
-            if error == nil {
-                // print(result!)
-                let data = result as! [String : Any]
-                let user_friends = data["friends"]
-                let friends = user_friends as! [String : Any]
-                print(friends)
-            } else {
-                print("Error Getting Friends \(error!)");
-            }
-        })
-        connection.start()
     }
     
     @objc func splashScreenToMain() {
@@ -154,12 +137,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     return
                 }
                 self.isCont = true
-                self.group.leave()
                 memberFbID = facebookID
                 memberID = (post["id"] as? String)!
                 memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
                 countOffollowers = (post["followerCount"] as? Int)!
                 countOffollowing = (post["followingCount"] as? Int)!
+                self.group.leave()
             }
         }
     }

@@ -13,7 +13,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 import RxGesture
-import MMPlayerView
 
 private var zoomPinchCoverView: ZoomPinchCoverView? = nil
 private var isZooming = false
@@ -517,44 +516,6 @@ extension AVPlayerLayer {
     
     @objc func resumeDidFinishPlaying(note: NSNotification) {
         self.player?.play()
-    }
-}
-
-var mmPlayer: MMPlayerLayer = {
-    let l = MMPlayerLayer()
-    l.cacheType = .memory(count: 5)
-    l.coverFitType = .fitToPlayerView
-    l.videoGravity = .resizeAspectFill
-    // l.changeViewClearPlayer = true
-    return l
-}()
-extension UIView {
-    @objc func load(challengeId: String, challengerId: String, play: Bool) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play)
-    }
-    
-    @objc func loadWithZeroVolume(challengeId: String, challengerId: String, play: Bool) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, play: play)
-    }
-    
-    func loadPlayer(challengeId: String, challengerId: String, volume: Float, play: Bool) {
-        if dummyServiceCall == false {
-            let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
-            if let urlOfImage = url {
-                VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
-                    if let video = videoData {
-                        DispatchQueue.main.async {
-                            let player = mmPlayer
-                            mmPlayer.stopLoading()
-                            player.playView = self
-                            player.set(url: video, state: { (status) in
-                            })
-                            player.startLoading()
-                        }
-                    }
-                })
-            }
-        }
     }
 }
 

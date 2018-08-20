@@ -13,7 +13,6 @@ PODS:
   - FBSDKLoginKit (4.29.0):
     - FBSDKCoreKit
   - FLAnimatedImage (1.0.12)
-  - MMPlayerView (3.1.4)
   - PINCache (2.3)
   - PINRemoteImage (2.1.4):
     - PINRemoteImage/FLAnimatedImage (= 2.1.4)
@@ -39,7 +38,6 @@ DEPENDENCIES:
   - AlamofireImage
   - FBSDKCoreKit (= 4.29.0)
   - FBSDKLoginKit (= 4.29.0)
-  - MMPlayerView
   - PINRemoteImage
   - RxCocoa (~> 4.0)
   - RxGesture
@@ -53,7 +51,6 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: 6f139173dc63a1deaff4430a55f2fe5bb222d2af
   FBSDKLoginKit: 56a057ca6822535ea0faa25f57a7c41edb697fd4
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  MMPlayerView: 816fe3ee53d77d8c5bb7d6b1727c856d0918ae03
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   PINRemoteImage: 4ac4011c5caefd6befd99758e09becede05d3226
   PryntTrimmerView: 4260ae497a2f3e1bbfc0b71247eb74ab92bf0490
@@ -63,6 +60,6 @@ SPEC CHECKSUMS:
   SteviaLayout: 0d2112caea45707695e8c718262c8ea3dd37ef17
   YPImagePicker: 049aa31e2858c63730ace6b6358bba946178dfe3
 
-PODFILE CHECKSUM: 7df52cf7faa10b8489609df4e3de2ca1491adae6
+PODFILE CHECKSUM: ce35e8eb63007492229f570baf6aa2846a3f9c54
 
 COCOAPODS: 1.3.1

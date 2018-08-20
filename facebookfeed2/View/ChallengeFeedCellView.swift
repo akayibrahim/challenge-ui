@@ -93,8 +93,6 @@ class FeedCell: UICollectionViewCell {
         self.proofedMediaView.image = UIImage()
         self.proofedVideoView.removeFromSuperview()
         self.multiplierSign.removeFromSuperview()
-        // self.playerController.player?.replaceCurrentItem(with: nil)
-        // self.playerController.view.removeFromSuperview()
         self.volumeUpImageView.removeFromSuperview()
         self.volumeDownImageView.removeFromSuperview()
         self.others.removeFromSuperview()
@@ -106,7 +104,7 @@ class FeedCell: UICollectionViewCell {
         self.awayScoreText.removeFromSuperview()
         self.homeWinBase.removeFromSuperview()
         self.awayWinBase.removeFromSuperview()
-        self.avPlayerLayer.removeFromSuperlayer()
+        // self.avPlayerLayer.removeFromSuperlayer()        
         self.timesUpFlag.image = UIImage()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
@@ -434,12 +432,6 @@ class FeedCell: UICollectionViewCell {
         
         if !isComeFromSelf {
             if type == PUBLIC && proofedByChallenger {
-                
-                // TODO choose pic / video
-                if secondTeamCount == "0" {
-                } else {
-                }
-                
                 addSubview(proofedMediaView)
                 addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
                 addWidthAnchor(proofedMediaView, multiplier: 1)
@@ -454,12 +446,12 @@ class FeedCell: UICollectionViewCell {
                 proofedVideoView.alpha = 1
                 self.proofedVideoView.layer.masksToBounds = true
                 
-                DispatchQueue.main.async {
+                /*DispatchQueue.main.async {
                     self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
                     self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-                    self.avPlayerLayer.repeatCount = 10
+                    // self.avPlayerLayer.repeatCount = 10
                     self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-                }
+                }*/
                 
                 addSubview(volumeUpImageView)
                 addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
@@ -1314,7 +1306,7 @@ class FeedCell: UICollectionViewCell {
     @objc let peopleView: UIView = FeedCell.viewFunc()
     @objc let chlrPeopleView: UIView = FeedCell.viewFunc()
     @objc let view: UIView = FeedCell.viewFunc()
-    @objc let proofedVideoView: UIView = FeedCell.viewFunc()
+    @objc let proofedVideoView: PlayerView = PlayerView()
     
     @objc static func segmentedControl() -> UISegmentedControl {
         let myArray : NSArray = ["", ""]
@@ -1328,8 +1320,9 @@ class FeedCell: UICollectionViewCell {
     
     @objc let mySegControl: UISegmentedControl = FeedCell.segmentedControl()
     
-    @objc let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
-    // let avPlayer : AVPlayer = AVPlayer.init()
+    /*@objc lazy var avPlayerLayer: AVPlayerLayer = {
+        return AVPlayerLayer()
+    }()*/
 }
 
 class subclasssedUIButton : UIButton {

@@ -13,6 +13,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import RxGesture
+import MMPlayerView
 
 private var zoomPinchCoverView: ZoomPinchCoverView? = nil
 private var isZooming = false
@@ -474,12 +475,7 @@ extension UIImageView {
     }
 }
 
-extension AVPlayer {
-    var isPlaying: Bool {
-        return rate != 0 && error == nil
-    }
-}
-
+// var avPlayer : AVPlayer = AVPlayer()
 extension AVPlayerLayer {
     @objc func load(challengeId: String, challengerId: String, play: Bool) {
         loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play)
@@ -493,25 +489,21 @@ extension AVPlayerLayer {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
-                if let player = self.player {
-                    if player.currentItem != nil {
-                        return
-                    }
-                }
                 VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
                     if let video = videoData {
                         DispatchQueue.main.async {
-                            var queuePlayer: AVQueuePlayer?
-                            let item = AVPlayerItem.init(url: video)
-                            queuePlayer = AVQueuePlayer(items: [item])
-                            queuePlayer?.actionAtItemEnd = .none
-                            queuePlayer?.volume = volume
-                            self.player = queuePlayer
+                            // let item = AVPlayerItem.init(url: video)
+                            let avPlayer = AVPlayer(url: video)
+                            avPlayer.actionAtItemEnd = .none
+                            avPlayer.volume = volume
+                            self.player = avPlayer
+                            self.player?.automaticallyWaitsToMinimizeStalling = false
                             if play {
-                                self.player?.play()
+                                self.player?.playImmediately(atRate: 1.0)
                             }
+                            NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
+                            NotificationCenter.default.addObserver(self, selector:  #selector(self.resumeDidFinishPlaying), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
                         }
-                        NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
                     }
                 })
             }
@@ -521,6 +513,48 @@ extension AVPlayerLayer {
     @objc func playerDidFinishPlaying(note: NSNotification) {
         let p: AVPlayerItem = note.object as! AVPlayerItem
         p.seek(to: kCMTimeZero, completionHandler: nil)
+    }
+    
+    @objc func resumeDidFinishPlaying(note: NSNotification) {
+        self.player?.play()
+    }
+}
+
+var mmPlayer: MMPlayerLayer = {
+    let l = MMPlayerLayer()
+    l.cacheType = .memory(count: 5)
+    l.coverFitType = .fitToPlayerView
+    l.videoGravity = .resizeAspectFill
+    // l.changeViewClearPlayer = true
+    return l
+}()
+extension UIView {
+    @objc func load(challengeId: String, challengerId: String, play: Bool) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play)
+    }
+    
+    @objc func loadWithZeroVolume(challengeId: String, challengerId: String, play: Bool) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, play: play)
+    }
+    
+    func loadPlayer(challengeId: String, challengerId: String, volume: Float, play: Bool) {
+        if dummyServiceCall == false {
+            let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
+            if let urlOfImage = url {
+                VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
+                    if let video = videoData {
+                        DispatchQueue.main.async {
+                            let player = mmPlayer
+                            mmPlayer.stopLoading()
+                            player.playView = self
+                            player.set(url: video, state: { (status) in
+                            })
+                            player.startLoading()
+                        }
+                    }
+                })
+            }
+        }
     }
 }
 

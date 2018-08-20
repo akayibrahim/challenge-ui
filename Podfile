@@ -17,5 +17,6 @@ pod 'PINRemoteImage'
 pod 'RxSwift',    '~> 4.0'
 pod 'RxCocoa',    '~> 4.0'
 pod 'RxGesture'
+pod 'MMPlayerView'
 
 end

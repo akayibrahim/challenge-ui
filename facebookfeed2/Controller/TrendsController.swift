@@ -238,12 +238,17 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         openExplorer(challengeId: trendRequest[indexPath.row].challengeId!)
     }
     
+    @objc lazy var challengeController: FeedController = {
+        return FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+    }()
+    
     @objc func openExplorer(challengeId: String) {
-        let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
-        challengeController.navigationItem.title = "Explorer"
-        // challengeController.hidesBottomBarWhenPushed = true
+        challengeController.navigationItem.title = "Explorer"        
         challengeController.challengIdForTrendAndExplorer = challengeId
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        challengeController.trend = true
+        challengeController.reloadChlPage()
+        // challengeController.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }
     

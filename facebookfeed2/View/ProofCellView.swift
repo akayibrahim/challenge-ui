@@ -20,6 +20,16 @@ class ProofCellView: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        self.proofImageView.removeFromSuperview()
+        self.thinksAboutChallengeView.removeFromSuperview()
+        self.profileImageView.removeFromSuperview()
+        self.proofedVideoView.removeFromSuperview()
+        self.avPlayerLayer.removeFromSuperlayer()
+        self.volumeUpImageView.removeFromSuperview()
+        self.volumeDownImageView.removeFromSuperview()
+    }
+    
     @objc func setup() {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
@@ -52,7 +62,7 @@ class ProofCellView: UITableViewCell {
             self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
             self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-            self.avPlayerLayer.repeatCount = 10            
+            // self.avPlayerLayer.repeatCount = 10            
             self.proofedVideoView.layer.masksToBounds = true
         }
         addSubview(volumeUpImageView)

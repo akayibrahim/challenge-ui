@@ -9,6 +9,44 @@
 import UIKit
 import PINRemoteImage
 import PINCache
+import AVKit
+import AVFoundation
+
+final class PlayerManager {
+    static let shared = PlayerManager()
+    private init() {}
+    
+    static var avPlayerView : PlayerView = PlayerView()
+}
+
+class PlayerView: UIView {
+    override class var layerClass: AnyClass {
+        return AVPlayerLayer.self
+    }
+    
+    var player: AVPlayer? {
+        get {
+            return playerLayer.player
+        }
+        set {
+            playerLayer.player = newValue
+        }
+    }
+    
+    var playerLayer: AVPlayerLayer {
+        return layer as! AVPlayerLayer
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+    }
+}
 
 extension UIView {
     @objc func setImage(fbID: String?, imageView: UIImageView) {

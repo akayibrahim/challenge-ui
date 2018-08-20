@@ -85,6 +85,14 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 let firstChlRow = IndexPath(item: 0, section: 0)
                 feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
                 return true
+            } else if tabBarController.selectedIndex == activityIndex {
+                let controllers = tabBarController.viewControllers
+                let navC = controllers![activityIndex] as! UINavigationController
+                let feedC = navC.viewController(class: ActivitiesController.self)
+                // feedC?.reloadSelfPage()
+                let firstChlRow = IndexPath(item: 0, section: 0)
+                feedC?.tableView?.scrollToRow(at: firstChlRow, at: .top, animated: true)
+                return true
             }
             return false
         }

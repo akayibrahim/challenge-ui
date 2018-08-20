@@ -40,6 +40,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc var donePosts = [Post]()
     @objc var notDonePosts = [Post]()
     @objc var explorer : Bool = false
+    @objc var trend : Bool = false
     @objc var challengIdForTrendAndExplorer: String?
     @objc var profile: Bool = false
     @objc var memberIdForFriendProfile: String?
@@ -164,7 +165,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             } else if self.explorer {
                 self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=false"  + "&page=\(self.explorerCurrentPage)", profile: false)
                 return
-            } else if self.tabBarController?.selectedIndex == trendsIndex {
+            } else if self.trend {
                 self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(self.explorerCurrentPage)", profile: false)
                 return
             } else if self.tabBarController?.selectedIndex == profileIndex {
@@ -186,7 +187,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.posts.append(contentsOf: notDonePosts)                
             } else if explorer {
                 self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
-            } else if self.tabBarController?.selectedIndex == trendsIndex {
+            } else if self.trend {
                 self.posts = ServiceLocator.getChallengesFromDummy(jsonFileName: "getTrendChallenges")
             } else if self.tabBarController?.selectedIndex == profileIndex {
                 self.donePosts = ServiceLocator.getOwnChallengesFromDummy(jsonFileName: "getOwnChallenges", done: true)
@@ -340,8 +341,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
             }
         }
+        self.playVisibleVideo()
         DispatchQueue.main.async {
-            self.playVisibleVideo()
             if !self.profile {
                 if self.tabBarController?.selectedIndex == chanllengeIndex {
                     // self.reloadChlPage()
@@ -361,7 +362,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let indexPaths = self.collectionView?.indexPathsForVisibleItems
         for indexPath in indexPaths! {
             let cell = self.collectionView?.cellForItem(at: indexPath) as! FeedCell
-            if let player = cell.avPlayerLayer.player {
+            if let player = cell.proofedVideoView.playerLayer.player {
                 player.pause()
             }
         }
@@ -369,12 +370,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // playVisibleVideo()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let cell = cell as! FeedCell
-        if let player = cell.avPlayerLayer.player {
+        if let player = cell.proofedVideoView.playerLayer.player {
             player.pause()
         }
     }
@@ -382,7 +382,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex && !profile
         let isSelf = self.tabBarController?.selectedIndex == profileIndex
-        let isTrend = self.tabBarController?.selectedIndex == trendsIndex && explorer
+        let isTrend = self.trend
         let needsFetch = indexPaths.contains { $0.row >= self.posts.count - 1 }
         let needsFetchSelf = indexPaths.contains { $0.row >= self.notDonePosts.count - 1  || $0.row >= self.donePosts.count - 1 }
         if (isChallenge || isTrend) && needsFetch && !nowMoreData && !dummyServiceCall {
@@ -407,7 +407,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        // playVisibleVideo()
         /*
         let isChallenge = self.tabBarController?.selectedIndex == chanllengeIndex && !profile
         let isSelf = self.tabBarController?.selectedIndex == profileIndex
@@ -582,7 +581,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if (self.posts[indexPath.item].proofedByChallenger)! {
                     if !self.posts[indexPath.item].provedWithImage! {
                         self.imageEnable(feedCell, yes: false)
-                        feedCell.avPlayerLayer.load(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!, play: indexPath.row == 0 ? true : false)                        
+                        feedCell.proofedVideoView.playerLayer.load(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!, play: indexPath.row == self.getVisibleIndex().row ? true : false)
+                        self.collectionView?.layoutIfNeeded()
                     } else {
                         self.imageEnable(feedCell, yes: true)
                         feedCell.proofedMediaView.load(challengeId: self.posts[indexPath.item].id!, challengerId: self.posts[indexPath.item].challengerId!)
@@ -686,22 +686,22 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc func changeVolumeOfFeedCell(feedCell : FeedCell, isSilentRing : Bool, silentRingSwitch : Int) {
         DispatchQueue.main.async {
             if !isSilentRing {
-                if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 0))! {
-                    feedCell.avPlayerLayer.player?.volume = 1
+                if (feedCell.proofedVideoView.playerLayer.player?.volume.isEqual(to: 0))! {
+                    feedCell.proofedVideoView.playerLayer.player?.volume = 1
                     self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 1)
                 } else {
-                    feedCell.avPlayerLayer.player?.volume = 0
+                    feedCell.proofedVideoView.playerLayer.player?.volume = 0
                     self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0)
                 }
             } else {
-                feedCell.avPlayerLayer.player?.volume = Float(silentRingSwitch)
+                feedCell.proofedVideoView.playerLayer.player?.volume = Float(silentRingSwitch)
                 self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: silentRingSwitch )
             }
         }
     }
     
     @objc func changeVolumeUpDownView(feedCell : FeedCell, silentRingSwitch : Int) {
-        if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 1))! {
+        if (feedCell.proofedVideoView.playerLayer.player?.volume.isEqual(to: 1))! {
             feedCell.volumeUpImageView.alpha = 1
             feedCell.volumeDownImageView.alpha = 0
         } else {
@@ -1303,28 +1303,32 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    func playVisibleVideo() {
+    func getVisibleIndex() -> IndexPath {
         let visibleRect = CGRect(origin: (collectionView?.contentOffset)!, size: (collectionView?.bounds.size)!)
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         let indexPath = collectionView?.indexPathForItem(at: visiblePoint)
+        return indexPath != nil ? indexPath! : IndexPath(item:0,section:0)
+    }
+    
+    func playVisibleVideo() {
+        let indexPath = getVisibleIndex()
         for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
             if visIndex != indexPath {
                 if let cell = collectionView?.cellForItem(at: visIndex) {
                     let feedCell = cell as! FeedCell
-                    if let player = feedCell.avPlayerLayer.player {
+                    if let player = feedCell.proofedVideoView.playerLayer.player {
                         player.pause()
                     }
                 }
-            }
-        }
-        if let index = indexPath {
-            if let cell = collectionView?.cellForItem(at: index) {
-                let feedCell = cell as! FeedCell
-                let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
-                if feedCell.proofedVideoView.frame.contains(frameSize) && !self.posts[index.row].provedWithImage! {
-                    if let player = feedCell.avPlayerLayer.player {
-                        player.volume = volume
-                        player.play()
+            } else {
+                if let cell = collectionView?.cellForItem(at: indexPath) {
+                    let feedCell = cell as! FeedCell
+                    let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
+                    if feedCell.proofedVideoView.frame.contains(frameSize) && !self.posts[indexPath.row].provedWithImage! {
+                        if let player = feedCell.proofedVideoView.playerLayer.player {
+                            player.volume = volume
+                            player.playImmediately(atRate: 1.0)
+                        }
                     }
                 }
             }
@@ -1381,11 +1385,15 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
+    @objc lazy var challengeController: FeedController = {
+        return FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+    }()
+    
     @objc func openExplorer(challengeId: String) {
-        let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
-        challengeController.challengIdForTrendAndExplorer = challengeId        
+        challengeController.challengIdForTrendAndExplorer = challengeId
+        challengeController.reloadChlPage()
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }

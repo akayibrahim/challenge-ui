@@ -28,7 +28,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - (!proofed && !canJoin && !done ? heightOfCommentView : 0)), style: UITableViewStyle.plain)
+        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - (!proofed && !canJoin && !done ? heightOfCommentView : 0)), style: UITableViewStyle.plain)        
         self.tableView.register(ProofCellView.self, forCellReuseIdentifier: "ProofCell")
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -360,23 +360,22 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProofCell", for: indexPath as IndexPath) as! ProofCellView
-        // let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
-        // let cell = ProofCellView(frame: frameOfCell, cellRow: indexPath.row)
-        if self.proofs.count == 0 {
-            return cell
-        }
         DispatchQueue.main.async {
-            let nameAtt = NSMutableAttributedString(string: "\(String(describing: self.proofs[indexPath.row].name!))", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
-            cell.thinksAboutChallengeView.attributedText = nameAtt
-            let fbID = self.proofs[indexPath.item].fbID
-            self.setImage(fbID: fbID, imageView: cell.profileImageView)
-            if let proofObjectId = self.proofs[indexPath.item].proofObjectId {
-                if self.proofs[indexPath.item].provedWithImage! {
-                    self.imageEnable(cell, yes: true)
-                    cell.proofImageView.loadByObjectId(objectId: proofObjectId)
-                } else {
-                    self.imageEnable(cell, yes: false)
-                    cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: indexPath.row == 0 ? true : false)                    
+            if self.proofs.count != 0 {
+                cell.prepareForReuse()
+                cell.setup()
+                let nameAtt = NSMutableAttributedString(string: "\(String(describing: self.proofs[indexPath.row].name!))", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
+                cell.thinksAboutChallengeView.attributedText = nameAtt
+                let fbID = self.proofs[indexPath.item].fbID
+                self.setImage(fbID: fbID, imageView: cell.profileImageView)
+                if let proofObjectId = self.proofs[indexPath.item].proofObjectId {
+                    if self.proofs[indexPath.item].provedWithImage! {
+                        self.imageEnable(cell, yes: true)
+                        cell.proofImageView.loadByObjectId(objectId: proofObjectId)
+                    } else {
+                        self.imageEnable(cell, yes: false)
+                        cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: indexPath.row == 0 ? true : false)
+                    }
                 }
             }
         }
@@ -398,17 +397,6 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         cell.thinksAboutChallengeView.isUserInteractionEnabled = true
         cell.thinksAboutChallengeView.addGestureRecognizer(tapGestureRecognizerName)
         
-        /**
-        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(zoom))
-        pinch.delegate = self
-        cell.proofImageView.isUserInteractionEnabled = true
-        cell.proofImageView.addGestureRecognizer(pinch)
-        
-        let myPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan)) //Update: July 18, 2016 for Xcode 7.3.1(Swift 2.2)
-        myPanGestureRecognizer.delegate = self
-        cell.proofImageView.addGestureRecognizer(myPanGestureRecognizer)
-        cell.proofImageView.layer.zPosition = 1
-         */
         cell.proofImageView.setupZoomPinchGesture()
         cell.proofImageView.setupZoomPanGesture()
         return cell

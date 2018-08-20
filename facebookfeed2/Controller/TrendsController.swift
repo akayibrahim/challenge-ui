@@ -246,6 +246,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         challengeController.navigationItem.title = "Explorer"        
         challengeController.challengIdForTrendAndExplorer = challengeId
         challengeController.trend = true
+        challengeController.explorerCurrentPage = 0
         challengeController.reloadChlPage()
         // challengeController.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)

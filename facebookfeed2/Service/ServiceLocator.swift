@@ -384,21 +384,15 @@ class ServiceLocator {
     @objc static func fetchFacebookFriends() {
         DispatchQueue.global(qos: .background).async {
             let params = ["fields": "id, first_name, last_name, name, email, picture,friends"]
-            let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: params)
+            let graphRequest = FBSDKGraphRequest(graphPath: "me/friends", parameters: params)
             let connection = FBSDKGraphRequestConnection()
             connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
                 if error == nil {
                     // print(result!)
                     let data = result as! [String : Any]
-                    let user_friends = data["friends"]
-                    if user_friends != nil {
-                        let friends = user_friends as! [String : Any]
-                        let array = friends["data"]! as! NSArray
-                        print(array)
-                        // print(array.value(forKey: "id") as! NSArray)
-                        // addFirends(friends: array.value(forKey: "id") as! NSArray)
-                        // print(friends["data"])
-                    }
+                    let user_friends = data["data"] as! NSArray
+                    print(user_friends.value(forKey: "id"))
+                    addFirends(friends: user_friends.value(forKey: "id") as! NSArray)                    
                 } else {
                     print("Error Getting Friends \(error!)");
                 }

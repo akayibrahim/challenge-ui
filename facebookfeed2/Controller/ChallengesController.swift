@@ -1393,6 +1393,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
         challengeController.challengIdForTrendAndExplorer = challengeId
+        challengeController.explorerCurrentPage = 0
         challengeController.reloadChlPage()
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)

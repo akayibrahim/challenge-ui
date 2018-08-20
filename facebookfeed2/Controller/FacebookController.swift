@@ -29,6 +29,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
             if result.grantedPermissions.contains("email") {
                 print("LoggedIn")
                 self.fetchFacebookProfile()
+                ServiceLocator.fetchFacebookFriends()
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.window?.rootViewController = SplashScreenController()
                 splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)

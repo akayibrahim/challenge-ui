@@ -119,6 +119,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     @objc func reloadPage() {
         currentPage = 0
         self.proofs = [Prove]()
+        self.tableView.showBlurLoader()
         self.loadChallenges()
     }
     
@@ -142,6 +143,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             DispatchQueue.main.async {
                 if self.nowMoreData == false {
                     self.tableView.reloadData()
+                    self.tableView.removeBluerLoader()
                 }
             }
         }

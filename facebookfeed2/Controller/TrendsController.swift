@@ -108,6 +108,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         searchBar.text = ""
         currentPage = 0
         self.trendRequest = [TrendRequest]()
+        self.collectionView?.showBlurLoader()
         self.loadTrends()
     }
     
@@ -125,22 +126,24 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     @objc func fetchTrendChallenges(key: String) {
-        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=" + key + "&page=\(currentPage)"
+        DispatchQueue.global(qos: .userInitiated).async {
+        let urlStr = getTrendChallengesURL + memberID + "&subjectSearchKey=" + key + "&page=\(self.currentPage)"
         let urlStrWithPerm = urlStr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
         let url = NSURL(string: urlStrWithPerm!)!
         URLSession.shared.dataTask(with: url as URL, completionHandler: { (data, response, error) -> Void in
             if error == nil && data != nil {
                     do {
                         if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                            DispatchQueue.main.async {
-                                self.nowMoreData = postsArray.count == 0 ? true : false
-                                for postDictionary in postsArray {
-                                    let trend = TrendRequest()
-                                    trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
-                                    trend.setValuesForKeys(postDictionary)
-                                    self.trendRequest.append(trend)                                    
-                                }
-                                if self.nowMoreData == false {
+                            self.nowMoreData = postsArray.count == 0 ? true : false
+                            for postDictionary in postsArray {
+                                let trend = TrendRequest()
+                                trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
+                                trend.setValuesForKeys(postDictionary)
+                                self.trendRequest.append(trend)
+                            }
+                            if self.nowMoreData == false {
+                                DispatchQueue.main.async {
+                                    self.collectionView?.removeBluerLoader()
                                     self.collectionView?.reloadData()
                                 }
                             }
@@ -150,6 +153,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                     }
             }
         }).resume()
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {

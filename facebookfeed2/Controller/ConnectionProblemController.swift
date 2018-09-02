@@ -13,6 +13,7 @@ class ConnectionProblemController: UIViewController {
     @objc var label: UILabel!
     @objc var window: UIWindow?
     @objc let still = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
+    @objc let reloadT = UILabel(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 30))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,14 +65,13 @@ class ConnectionProblemController: UIViewController {
         loading.font = UIFont(name: "Copperplate", size: 17)
         view.addSubview(loading)
         
-        let reload = UILabel(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 30))
-        reload.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 1.4 / 2)
-        reload.text = "Tab To Reload"
-        reload.textAlignment = NSTextAlignment.center
-        reload.textColor = UIColor.white
-        reload.lineBreakMode = .byWordWrapping
-        reload.font = UIFont(name: "Copperplate", size: 17)
-        view.addSubview(reload)
+        reloadT.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 1.4 / 2)
+        reloadT.text = "Tab To Reload"
+        reloadT.textAlignment = NSTextAlignment.center
+        reloadT.textColor = UIColor.white
+        reloadT.lineBreakMode = .byWordWrapping
+        reloadT.font = UIFont(name: "Copperplate", size: 17)
+        view.addSubview(reloadT)
         
         let tabToReload = UITapGestureRecognizer(target: self, action: #selector(self.reload))
         self.view.isUserInteractionEnabled = true
@@ -79,7 +79,18 @@ class ConnectionProblemController: UIViewController {
     }
     
     @objc func reload() {
-        still.alpha = 1
+        self.reloadT.alpha = 0
+        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        activityIndicator.center = CGPoint(x: self.view.center.x, y: UIScreen.main.bounds.height * 1.7 / 2)
+        activityIndicator.activityIndicatorViewStyle = .white
+        view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+            activityIndicator.stopAnimating()
+            activityIndicator.removeFromSuperview()
+            self.still.alpha = 1
+            self.reloadT.alpha = 1
+        })
         if Reachability.isConnectedToNetwork() {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.openApp()

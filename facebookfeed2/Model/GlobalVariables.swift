@@ -14,7 +14,8 @@ var memberName = "" //Seher Can" // dummy
 var countOffollowers: Int = 0
 var countOffollowing: Int = 0
 
-var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://107.22.156.149:8080"
+var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
+// var defaultURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
 
 // CONSTANTS
 var dummyServiceCall : Bool = false

@@ -103,7 +103,7 @@ class FeedCell: UICollectionViewCell {
         self.homeScoreText.removeFromSuperview()
         self.awayScoreText.removeFromSuperview()
         self.homeWinBase.removeFromSuperview()
-        self.awayWinBase.removeFromSuperview()
+        self.awayWinBase.removeFromSuperview()        
         // self.avPlayerLayer.removeFromSuperlayer()        
         self.timesUpFlag.image = UIImage()
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
@@ -112,6 +112,7 @@ class FeedCell: UICollectionViewCell {
     
     @objc var post: Post? {
         didSet {
+            prepareForReuse()
             if let name = post?.name, let status = post?.status {
                 let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 12)])
                 let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)])
@@ -141,6 +142,26 @@ class FeedCell: UICollectionViewCell {
             }
             setImage(fbID: post?.challengerFBId, imageView: challengerImageView)
             firstOnePeopleImageView.contentMode = .scaleAspectFill
+            firstOnePeopleImageView.memberId = nil
+            firstTwoPeopleImageView.memberId = nil
+            secondTwoPeopleImageView.memberId = nil
+            firstThreePeopleImageView.memberId = nil
+            secondThreePeopleImageView.memberId = nil
+            thirdThreePeopleImageView.memberId = nil
+            firstFourPeopleImageView.memberId = nil
+            secondFourPeopleImageView.memberId = nil
+            thirdFourPeopleImageView.memberId = nil
+            moreFourPeopleImageView.memberId = nil
+            firstOneChlrPeopleImageView.memberId = nil
+            firstTwoChlrPeopleImageView.memberId = nil
+            secondTwoChlrPeopleImageView.memberId = nil
+            firstThreeChlrPeopleImageView.memberId = nil
+            secondThreeChlrPeopleImageView.memberId = nil
+            thirdThreeChlrPeopleImageView.memberId = nil
+            firstFourChlrPeopleImageView.memberId = nil
+            secondFourChlrPeopleImageView.memberId = nil
+            thirdFourChlrPeopleImageView.memberId = nil
+            moreFourChlrPeopleImageView.memberId = nil
             if post?.type == PUBLIC {
                 if let subject = post?.subject {
                     subjectImageView.image = UIImage(named: subject)
@@ -150,9 +171,10 @@ class FeedCell: UICollectionViewCell {
                 var thirdPImg: Bool = false;
                 if post?.secondTeamCount == "0" {
                     setImage(name: worldImage, imageView: firstOnePeopleImageView)
-                    firstOnePeopleImageView.memberId = nil
                     firstOnePeopleImageView.contentMode = .scaleAspectFit
                 }
+                setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
+                firstOneChlrPeopleImageView.memberId = post?.challengerId
                 for join in (post?.joinAttendanceList)! {
                     if (join.FacebookID != post?.challengerFBId) {
                         if !firstPImg {
@@ -193,8 +215,6 @@ class FeedCell: UICollectionViewCell {
                             thirdPImg = true
                         }
                     }
-                    setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
-                    firstOneChlrPeopleImageView.memberId = post?.challengerId
                 }
             } else if post?.type == PRIVATE {
                 if let subject = post?.subject {
@@ -391,15 +411,26 @@ class FeedCell: UICollectionViewCell {
             setImage(name: volumeDown, imageView: volumeDownImageView)
             // END CONSTANTS
             
+            if let provedWithImage = self.post?.provedWithImage, let id = self.post?.id, let challengerId = self.post?.challengerId,
+                let proofedByChallenger = self.post?.proofedByChallenger, let type = self.post?.type {
+                if type == PUBLIC && proofedByChallenger {
+                    if !provedWithImage {
+                        proofedVideoView.playerLayer.load(challengeId: id, challengerId: challengerId, play: true)// indexPath.row == self.getVisibleIndex().row ? true : false)
+                    } else {
+                        proofedMediaView.load(challengeId: id, challengerId: challengerId)
+                    }
+                }
+            }
+            
             if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined,
-                let rejectedByAllAttendance = self.post?.rejectedByAllAttendance, let timesUp = self.post?.timesUp {
+                let rejectedByAllAttendance = self.post?.rejectedByAllAttendance, let timesUp = self.post?.timesUp, let provedWithImage = self.post?.provedWithImage {
                 let firstTeamScore = self.post?.firstTeamScore != nil ? self.post?.firstTeamScore : "-1"
                 let secondTeamScore = self.post?.secondTeamScore != nil ? self.post?.secondTeamScore : "-1"
                 let result = self.post?.result != nil ? self.post?.result : "-1"
                 let goal = self.post?.goal != nil ? self.post?.goal : "-1"
                 let homeWin = self.post?.homeWin != nil ? self.post?.homeWin : false
                 let awayWin = self.post?.awayWin != nil ? self.post?.awayWin : false
-                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp)
+                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp, provedWithImage: provedWithImage)
             }
         }
     }
@@ -412,8 +443,15 @@ class FeedCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }    
     
+    @objc func imageEnable(yes: Bool) {
+        proofedVideoView.alpha = yes ? 0 : 1
+        volumeUpImageView.alpha = !yes && volume == 1 ? 1 : 0
+        volumeDownImageView.alpha = !yes && volume == 0 ? 1 : 0
+        proofedMediaView.alpha = yes ? 1 : 0
+    }
+    
     @objc let screenSize = UIScreen.main.bounds
-    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool) {
+    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool, provedWithImage: Bool) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -445,6 +483,12 @@ class FeedCell: UICollectionViewCell {
                 self.addHeightAnchor(self.proofedVideoView, multiplier: 1 / 2)
                 proofedVideoView.alpha = 1
                 self.proofedVideoView.layer.masksToBounds = true
+                
+                if !provedWithImage {
+                    self.imageEnable(yes: false)
+                } else {
+                    self.imageEnable(yes: true)
+                }
                 
                 /*DispatchQueue.main.async {
                     self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
@@ -894,11 +938,14 @@ class FeedCell: UICollectionViewCell {
         let screenSize = UIScreen.main.bounds
         middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
         if firstTeamCount == teamCountOne {
+            addSubview(firstOneChlrPeopleImageView)
             addTopAnchor(firstOneChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstOneChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(firstOneChlrPeopleImageView, multiplier: widthOfImage)
-            addHeightAnchor(firstOneChlrPeopleImageView, multiplier: heightOfFullImage)
+            addHeightAnchor(firstOneChlrPeopleImageView, multiplier: heightOfFullImage)            
         } else if firstTeamCount == teamCountTwo {
+            addSubview(firstTwoChlrPeopleImageView)
+            addSubview(secondTwoChlrPeopleImageView)
             addTopAnchor(firstTwoChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstTwoChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addBottomAnchor(firstTwoChlrPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
@@ -911,6 +958,9 @@ class FeedCell: UICollectionViewCell {
             addHeightAnchor(secondTwoChlrPeopleImageView, multiplier: heightOfHalfImage)
         } else if firstTeamCount == teamCountThree {
             let screenSize = UIScreen.main.bounds
+            addSubview(firstThreeChlrPeopleImageView)
+            addSubview(secondThreeChlrPeopleImageView)
+            addSubview(thirdThreeChlrPeopleImageView)
             leftMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstThreeChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addLeadingAnchor(firstThreeChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
@@ -930,6 +980,10 @@ class FeedCell: UICollectionViewCell {
             addHeightAnchor(thirdThreeChlrPeopleImageView, multiplier: heightOfHalfImage)
         } else if firstTeamCount == teamCountFour {
             let screenSize = UIScreen.main.bounds
+            addSubview(firstFourChlrPeopleImageView)
+            addSubview(secondFourChlrPeopleImageView)
+            addSubview(thirdFourChlrPeopleImageView)
+            addSubview(moreFourChlrPeopleImageView)
             leftMiddleTopWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             leftMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstFourChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
@@ -961,11 +1015,14 @@ class FeedCell: UICollectionViewCell {
         let screenSize = UIScreen.main.bounds
         middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
         if (secondTeamCount == teamCountZero || secondTeamCount == teamCountOne) {
+            addSubview(firstOnePeopleImageView)
             addTopAnchor(firstOnePeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(firstOnePeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addWidthAnchor(firstOnePeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(firstOnePeopleImageView, multiplier: heightOfFullImage)
         } else if secondTeamCount == teamCountTwo {
+            addSubview(firstTwoPeopleImageView)
+            addSubview(secondTwoPeopleImageView)
             addTopAnchor(firstTwoPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(firstTwoPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addBottomAnchor(firstTwoPeopleImageView, anchor: middleHeight.topAnchor, constant: 0)
@@ -977,6 +1034,9 @@ class FeedCell: UICollectionViewCell {
             addWidthAnchor(secondTwoPeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(secondTwoPeopleImageView, multiplier: heightOfHalfImage)
         } else if secondTeamCount == teamCountThree {
+            addSubview(firstThreePeopleImageView)
+            addSubview(secondThreePeopleImageView)
+            addSubview(thirdThreePeopleImageView)
             rightMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstThreePeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(firstThreePeopleImageView, anchor: rightMiddleTopWidth.leadingAnchor, constant: 0)
@@ -995,6 +1055,10 @@ class FeedCell: UICollectionViewCell {
             addWidthAnchor(thirdThreePeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(thirdThreePeopleImageView, multiplier: heightOfHalfImage)
         } else if secondTeamCount == teamCountFour {
+            addSubview(firstFourPeopleImageView)
+            addSubview(secondFourPeopleImageView)
+            addSubview(thirdFourPeopleImageView)
+            addSubview(moreFourPeopleImageView)
             rightMiddleBottomWidth.widthAnchor.constraint(equalToConstant: screenSize.width * widthOfMiddle)
             addTopAnchor(firstFourPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
             addTrailingAnchor(firstFourPeopleImageView, anchor: rightMiddleTopWidth.leadingAnchor, constant: 0)
@@ -1036,26 +1100,6 @@ class FeedCell: UICollectionViewCell {
         addLayoutGuide(leftMiddleBottomWidth)
         addLayoutGuide(rightMiddleTopWidth)
         addLayoutGuide(rightMiddleBottomWidth)
-        addSubview(firstOneChlrPeopleImageView)
-        addSubview(firstTwoChlrPeopleImageView)
-        addSubview(secondTwoChlrPeopleImageView)
-        addSubview(firstThreeChlrPeopleImageView)
-        addSubview(secondThreeChlrPeopleImageView)
-        addSubview(thirdThreeChlrPeopleImageView)
-        addSubview(firstFourChlrPeopleImageView)
-        addSubview(secondFourChlrPeopleImageView)
-        addSubview(thirdFourChlrPeopleImageView)
-        addSubview(moreFourChlrPeopleImageView)
-        addSubview(firstOnePeopleImageView)
-        addSubview(firstTwoPeopleImageView)
-        addSubview(secondTwoPeopleImageView)
-        addSubview(firstThreePeopleImageView)
-        addSubview(secondThreePeopleImageView)
-        addSubview(thirdThreePeopleImageView)
-        addSubview(firstFourPeopleImageView)
-        addSubview(secondFourPeopleImageView)
-        addSubview(thirdFourPeopleImageView)
-        addSubview(moreFourPeopleImageView)
     }
     
     @objc let middleHeight = UILayoutGuide()

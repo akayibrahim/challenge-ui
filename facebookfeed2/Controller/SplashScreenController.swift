@@ -55,5 +55,11 @@ class SplashScreenController: UIViewController {
         loading.textColor = UIColor.white
         loading.font = UIFont(name: "Copperplate", size: 17)
         view.addSubview(loading)
+        
+        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        activityIndicator.center = CGPoint(x: self.view.center.x, y: UIScreen.main.bounds.height * 1.5 / 2)
+        activityIndicator.activityIndicatorViewStyle = .white
+        view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
     }
 }

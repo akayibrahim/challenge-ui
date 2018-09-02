@@ -20,7 +20,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc var splashTimer: Timer?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        let defaults = UserDefaults.standard
+        defaults.set(true, forKey: "startApp")
+        defaults.synchronize()
         
+        // window?.rootViewController = SplashScreenController()
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
@@ -55,7 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 if dummyServiceCall == false {
                     ServiceLocator.fetchFacebookFriends()
-                    getMemberInfo(memberId: memberId as! String)
+                    self.getMemberInfo(memberId: memberId as! String)
                     self.group.wait()
                 } else {
                     isCont = true
@@ -64,8 +68,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if isCont {
-            window?.rootViewController = SplashScreenController()
-            splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+            window?.rootViewController = CustomTabBarController()
+            // splashTimer = Timer.scheduledTimer(timeInterval: 0.0, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
         } else {
             FBSDKLoginManager().logOut()
             window?.rootViewController = FacebookController()

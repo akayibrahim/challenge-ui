@@ -306,7 +306,7 @@ extension NSLayoutConstraint {
 
 extension URL {
     func get(completion: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> ()) {
-        URLSession.shared.dataTask(with: self) {            
+        URLSession.shared.dataTask(with: self) {
             completion($0, $1, $2)
         }.resume()
     }
@@ -408,6 +408,7 @@ extension UIImageView {
     
     @objc func load(challengeId: String, challengerId: String) {
         if dummyServiceCall == false {
+            self.showBlurLoader()
             let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if ImageService.cached(withURL: url!) {
                 self.image = ImageService.fromCache(withURL: url!)
@@ -418,6 +419,7 @@ extension UIImageView {
                     ImageService.cache(withURL: url!, image: self.image!)
                 }
             }
+            self.removeBluerLoader()
             /*if let urlOfImage = url {
                 ImageService.getImage(withURL: urlOfImage) { image in
                     if image != nil {

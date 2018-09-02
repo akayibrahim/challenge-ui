@@ -84,6 +84,7 @@ class ActivitiesController: UITableViewController {
         }
         fetchChallengeRequest()
         self.group.wait()
+        self.tableView.showBlurLoader()
         self.loadActivities()
     }
     
@@ -102,29 +103,35 @@ class ActivitiesController: UITableViewController {
     }
     
     @objc func fetchActivities() {
-        let jsonURL = URL(string: getActivitiesURL + memberID + "&page=\(currentPage)")!
+        DispatchQueue.global(qos: .userInitiated).async {
+        let jsonURL = URL(string: getActivitiesURL + memberID + "&page=\(self.currentPage)")!
         jsonURL.get { data, response, error in
             guard
-                let returnData = data,
-                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                let returnData = data
                 else {
                     if data != nil {
                         self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
                     }
                     return
             }
-            self.nowMoreData = postsArray?.count == 0 ? true : false
-            if let postsArray = postsArray {
-                DispatchQueue.main.async {
+            
+                if let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]] {
+                self.nowMoreData = postsArray?.count == 0 ? true : false
+                if let postsArray = postsArray {
                     for postDictionary in postsArray {
                         let activity = Activities()
                         activity.setValuesForKeys(postDictionary)
                         self.activities.append(activity)
-                        self.insertItem(self.activities.count - 1, section: 2)
+                        //self.insertItem(self.activities.count - 1, section: 2)
                     }
-                    // self.tableView.reloadData()
+                    DispatchQueue.main.async {
+                        self.tableView.removeBluerLoader()
+                        self.tableView.reloadData()
+                        self.tableView.tableFooterView = UIView()
+                    }
                 }
             }
+        }
         }
     }
     
@@ -151,12 +158,21 @@ class ActivitiesController: UITableViewController {
         }
     }
     
+    let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let checkPoint = activities.count - 1
         let shouldLoadMore = checkPoint == indexPath.row
         if shouldLoadMore && !nowMoreData && !dummyServiceCall {
             currentPage += 1
             self.loadActivities()
+            let lastSectionIndex = tableView.numberOfSections - 1
+            let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
+            if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
+                // print("this is the last cell")
+                spinner.startAnimating()
+                spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
+                self.tableView.tableFooterView = spinner
+            }
         }
     }
     

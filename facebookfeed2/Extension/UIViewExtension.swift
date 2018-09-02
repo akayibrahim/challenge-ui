@@ -49,6 +49,29 @@ class PlayerView: UIView {
 }
 
 extension UIView {
+    
+    func showBlurLoader(){
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.extraLight)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = self.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        activityIndicator.startAnimating()
+        
+        blurEffectView.contentView.addSubview(activityIndicator)
+        activityIndicator.center = blurEffectView.contentView.center
+        
+        self.addSubview(blurEffectView)
+    }
+    
+    func removeBluerLoader(){
+        self.subviews.compactMap {  $0 as? UIVisualEffectView }.forEach {
+            $0.removeFromSuperview()
+        }
+    }
+    
     @objc func setImage(fbID: String?, imageView: UIImageView) {
         if let peoplefbID = fbID {
             let url = URL(string: "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1")

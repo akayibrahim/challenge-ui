@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "facebookfeed2/Controller/TrendsController.swift"
-            timestampString = "556485097.186977"
+            timestampString = "557577760.597343"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "246"
-            endingLineNumber = "246"
+            startingLineNumber = "250"
+            endingLineNumber = "250"
             landmarkName = "openExplorer(challengeId:)"
             landmarkType = "7">
          </BreakpointContent>

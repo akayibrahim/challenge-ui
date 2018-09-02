@@ -19,7 +19,7 @@ struct Media {
         self.mimeType = "image/jpeg"
         self.filename = "image.jpg"
         let uploadDataCount = UIImagePNGRepresentation(image)?.count
-        let quality = uploadDataCount! > 150 ? Double(150 / uploadDataCount!) : 1
+        let quality = uploadDataCount! > 100 ? Double(100 / uploadDataCount!) : 1
         guard let data = UIImageJPEGRepresentation(image, CGFloat(quality)) else { return nil }
         self.data = data
     }

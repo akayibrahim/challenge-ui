@@ -484,12 +484,6 @@ class FeedCell: UICollectionViewCell {
                 proofedVideoView.alpha = 1
                 self.proofedVideoView.layer.masksToBounds = true
                 
-                if !provedWithImage {
-                    self.imageEnable(yes: false)
-                } else {
-                    self.imageEnable(yes: true)
-                }
-                
                 /*DispatchQueue.main.async {
                     self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
                     self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
@@ -510,6 +504,12 @@ class FeedCell: UICollectionViewCell {
                 addWidthAnchor(volumeDownImageView, multiplier: 0.04)
                 addHeightAnchor(volumeDownImageView, multiplier: 0.04)
                 volumeDownImageView.alpha = 0
+                
+                if !provedWithImage {
+                    self.imageEnable(yes: false)
+                } else {
+                    self.imageEnable(yes: true)
+                }
             }
             
             if(!thinksAboutChallengeView.text.isEmpty) {

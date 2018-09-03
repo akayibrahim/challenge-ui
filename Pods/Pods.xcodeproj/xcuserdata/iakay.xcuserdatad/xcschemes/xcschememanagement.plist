@@ -9,12 +9,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>AlamofireImage.xcscheme</key>
+		<key>Bolts.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Bolts.xcscheme</key>
+		<key>CCBottomRefreshControl.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

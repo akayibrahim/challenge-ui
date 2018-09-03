@@ -141,22 +141,22 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     @objc func akay() {
-        openMember(id: isLocal ? "5b32959a1cb19909e464f6f5" : "5b5a3c61d35c65260545d832")
+        openMember(id: isLocal ? "5b5a3c61d35c65260545d832" : "5b5a3c61d35c65260545d832")
     }
     @objc func melis() {
-        openMember(id: isLocal ? "5b3152c51cb199f1fadc0faf" : "5b5aa83dd35c650e3ffeeb62")
+        openMember(id: isLocal ? "5b5aa83dd35c650e3ffeeb62" : "5b5aa83dd35c650e3ffeeb62")
     }
     @objc func belkay() {
-        openMember(id: isLocal ? "5b3152b91cb199f1fadc0fae" : "5b5aa85bd35c650e3ffeeb63")
+        openMember(id: isLocal ? "5b5aa85bd35c650e3ffeeb63" : "5b5aa85bd35c650e3ffeeb63")
     }
     @objc func aykut() {
-        openMember(id: isLocal ? "5b3152d31cb199f1fadc0fb0" : "5b5aa7aad35c650e3ffeeb61")
+        openMember(id: isLocal ? "5b5aa7aad35c650e3ffeeb61" : "5b5aa7aad35c650e3ffeeb61")
     }
     @objc func can() {
-        openMember(id: isLocal ? "5b3152821cb199f1fadc0fab" : "5b60b05ad35c6506237e6ae7")
+        openMember(id: isLocal ? "5b60b05ad35c6506237e6ae7" : "5b60b05ad35c6506237e6ae7")
     }
     @objc func uzun() {
-        openMember(id: isLocal ? "5b3152a71cb199f1fadc0fad" : "5b5aa8a4d35c650e3ffeeb64")
+        openMember(id: isLocal ? "5b5aa8a4d35c650e3ffeeb64" : "5b5aa8a4d35c650e3ffeeb64")
     }
     @objc let group = DispatchGroup()
     @objc func getMemberInfo(memberId: String) {

@@ -20,6 +20,8 @@ class ActivityCell: UITableViewCell {
     
     @objc var activity : Activities? {
         didSet {
+            self.profileImageView.removeFromSuperview()
+            self.proofImageView.removeFromSuperview()
             if let fbID = activity?.facebookID {
                 setImage(fbID: fbID, imageView: profileImageView)
             }
@@ -29,11 +31,16 @@ class ActivityCell: UITableViewCell {
                 nameAtt.append(contentAtt)
                 contentText.attributedText = nameAtt
             }
-            setupViews()
+            if let mediaObjectId = activity?.mediaObjectId {
+                self.proofImageView.loadByObjectId(objectId: mediaObjectId)
+            }
+            if let type = activity?.type {
+                setupViews(type: type, mediaObjectId: activity?.mediaObjectId ?? "-1")
+            }
         }
     }
     
-    @objc func setupViews() {
+    @objc func setupViews(type: String, mediaObjectId: String) {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         
@@ -46,11 +53,21 @@ class ActivityCell: UITableViewCell {
         
         addSubview(contentText)
         addLeadingAnchor(contentText, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.15/10)
-        addTrailingAnchor(contentText, anchor: contentGuide.trailingAnchor, constant: 4)        
         contentText.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
         contentText.isUserInteractionEnabled = false
+        addTrailingAnchor(contentText, anchor: contentGuide.trailingAnchor, constant: type == "PROOF" ? -(screenWidth * 1.5/10) : 4)
+        
+        if type == "PROOF" {
+            addSubview(proofImageView)
+            proofImageView.layer.cornerRadius = 0
+            addTrailingAnchor(proofImageView, anchor: contentGuide.trailingAnchor, constant: screenSize.width * 0.1/10)
+            addWidthAnchor(proofImageView, multiplier: 1.5/10)
+            addHeightAnchor(proofImageView, multiplier: 1.5/10/2)
+            proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+        }
     }
     
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
     @objc let contentText : UITextView = FeedCell().thinksAboutChallengeView
+    @objc let proofImageView: UIImageView = FeedCell().profileImageView
 }

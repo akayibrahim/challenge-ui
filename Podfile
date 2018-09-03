@@ -11,11 +11,11 @@ inhibit_all_warnings!
 pod 'FBSDKLoginKit', '4.29.0'
 pod 'FBSDKCoreKit', '4.29.0'
 pod 'Alamofire'
-pod 'AlamofireImage'
 pod 'YPImagePicker'
 pod 'PINRemoteImage'
 pod 'RxSwift',    '~> 4.0'
 pod 'RxCocoa',    '~> 4.0'
 pod 'RxGesture'
+pod 'CCBottomRefreshControl'
 
 end

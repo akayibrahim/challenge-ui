@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Alamofire
 import YPImagePicker
 
 var chlIndex : Int = 0

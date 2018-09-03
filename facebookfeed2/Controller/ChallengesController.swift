@@ -10,8 +10,8 @@ import UIKit
 import AVKit
 import AVFoundation
 import RxSwift
-import Alamofire
-    
+import CCBottomRefreshControl
+
 let cellId = "cellId"
 var chlScrollMoveDown : Bool = false
 var chlScrollMoveUp : Bool = false
@@ -64,6 +64,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         super.viewDidLoad()
         selectedTabIndex = self.tabBarController?.selectedIndex ?? 0
         if !(selectedTabIndex == profileIndex && !self.profile && !explorer) {
+            reloadChlPage()
             if let startApp = UserDefaults.standard.object(forKey: "startApp") {
                 let onStartApp = startApp as! Bool
                 if onStartApp {
@@ -73,12 +74,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     navigationController?.pushViewController(splash, animated: false)
                 }
             }
-            reloadChlPage()
         } else {
             reloadSelfPage()
         }
+        let bottomRefreshControl = UIRefreshControl()
+        collectionView?.bottomRefreshControl = bottomRefreshControl
         if profile {
-        } else if selectedTabIndex == chanllengeIndex {
+        } else if selectedTabIndex == chanllengeIndex && !explorer && !trend {
             navigationItem.title = challengeTitle
             refreshControl = UIRefreshControl()
             refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
@@ -269,12 +271,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                     DispatchQueue.main.async {
                         self.collectionView?.reloadData()
+                        self.collectionView?.bottomRefreshControl?.endRefreshing()
                     }
-                    self.isFetchingNextPage = false
                     if profile { // }&& self.nowMoreData == false {
                         // self.collectionView?.reloadData()
                     }
                 }
+                self.isFetchingNextPage = false
             }
         }
         }
@@ -428,6 +431,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             if isChallenge {
                 currentPage += 1
                 self.loadChallenges()
+                if (self.collectionView?.isAtBottom)! && !nowMoreData && currentPage != 0 {
+                    self.collectionView?.bottomRefreshControl?.beginRefreshingManually()
+                }
             }
             if isTrend {
                 explorerCurrentPage += 1
@@ -438,6 +444,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             if isSelf || memberIdForFriendProfile == memberID {
                 selfCurrentPage += 1
                 self.loadChallenges()
+                if (self.collectionView?.isAtBottom)! && !nowMoreData && selfCurrentPage != 0 {
+                    self.collectionView?.bottomRefreshControl?.beginRefreshingManually()
+                }
             }
         }
     }
@@ -1259,6 +1268,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if explorer {
             return
+        }
+        if nowMoreData {
+            self.collectionView?.bottomRefreshControl?.endRefreshing()
         }
         playVisibleVideo()
         if selectedTabIndex == chanllengeIndex || selectedTabIndex == profileIndex {

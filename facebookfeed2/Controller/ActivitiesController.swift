@@ -17,6 +17,7 @@ class ActivitiesController: UITableViewController {
     @objc var currentPage : Int = 0
     @objc var nowMoreData: Bool = false
     @objc var goForward: Bool = false
+    @objc var newFriendSuggestionCount: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +84,7 @@ class ActivitiesController: UITableViewController {
             self.tableView.reloadData()
         }
         fetchChallengeRequest()
+        fetchEwFriendSuggestions(url: getSuggestionsForFollowingURL)
         self.group.wait()
         self.tableView.showBlurLoader()
         self.loadActivities()
@@ -99,6 +101,22 @@ class ActivitiesController: UITableViewController {
         } else {
             self.activities = ServiceLocator.getActivitiesFromDummy(jsonFileName: "activities")
             return
+        }
+    }
+    
+    @objc func fetchEwFriendSuggestions(url: String) {
+        group.enter()
+        let jsonURL = URL(string: url + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
+                    return
+            }
+            self.newFriendSuggestionCount = postsArray != nil ? (postsArray?.count)! : 0
+            self.group.leave()
         }
     }
     
@@ -194,6 +212,10 @@ class ActivitiesController: UITableViewController {
         if indexPath.section == 0 && indexPath.row == 0 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
             let attributeText = NSMutableAttributedString(string: "Find Friends   ", attributes: nil)
+            if newFriendSuggestionCount != 0 {
+                let newSuggestionCountText = NSMutableAttributedString(string: "\u{2022} \(newFriendSuggestionCount) ", attributes: nil)
+                attributeText.append(newSuggestionCountText)
+            }
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
             return cell
@@ -254,7 +276,7 @@ class ActivitiesController: UITableViewController {
         }
         if activities.count != 0 {
             if  let thinksAboutChallenge = activities[indexPath.row].content {
-                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)], context: nil)
+                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: activities[indexPath.row].type == "PROOF" ? view.frame.width * 7.6 / 10 : view.frame.width * 9.1 / 10, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)], context: nil)
                 return rect.height + heighForRow
             }
         }

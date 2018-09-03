@@ -413,10 +413,12 @@ extension UIImageView {
             if ImageService.cached(withURL: url!) {
                 self.image = ImageService.fromCache(withURL: url!)
             } else {
-                PINRemoteImageManager.shared().setProgressThresholds([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], completion: nil)
-                self.pin_updateWithProgress = true
+                self.showBlurLoader()
                 self.pin_setImage(from: url!) { (result) in
-                    ImageService.cache(withURL: url!, image: self.image!)
+                    if let image = self.image {
+                        self.removeBluerLoader()
+                        ImageService.cache(withURL: url!, image: image)
+                    }
                 }
             }
             self.removeBluerLoader()
@@ -436,10 +438,12 @@ extension UIImageView {
             if ImageService.cached(withURL: url!) {
                 self.image = ImageService.fromCache(withURL: url!)
             } else {
-                PINRemoteImageManager.shared().setProgressThresholds([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], completion: nil)
-                self.pin_updateWithProgress = true
+                self.showBlurLoader()
                 self.pin_setImage(from: url!) { (result) in
-                    ImageService.cache(withURL: url!, image: self.image!)
+                    if let image = self.image {
+                        self.removeBluerLoader()
+                        ImageService.cache(withURL: url!, image: image)
+                    }
                 }
             }
             /*if let urlOfImage = url {
@@ -457,10 +461,10 @@ extension UIImageView {
             if ImageService.cached(withURL: url) {
                 self.image = ImageService.fromCache(withURL: url)
             } else {
-                PINRemoteImageManager.shared().setProgressThresholds([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], completion: nil)
-                self.pin_updateWithProgress = true
+                self.showBlurLoader()
                 self.pin_setImage(from: url) { (result) in
                     if let image = self.image {
+                        self.removeBluerLoader()
                         ImageService.cache(withURL: url, image: image)
                     }
                 }
@@ -502,9 +506,9 @@ extension AVPlayerLayer {
                             if play {
                                 self.player?.playImmediately(atRate: 1.0)
                             }
-                            NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
-                            NotificationCenter.default.addObserver(self, selector:  #selector(self.resumeDidFinishPlaying), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
                         }
+                        NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
+                        NotificationCenter.default.addObserver(self, selector:  #selector(self.resumeDidFinishPlaying), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
                     }
                 })
             }

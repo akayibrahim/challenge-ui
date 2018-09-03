@@ -190,13 +190,6 @@
 			remoteGlobalIDString = 292858F24BB5D992D1B9279E632D3FA7;
 			remoteInfo = Alamofire;
 		};
-		A1FA9BA3211B473600ED741A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 74233A4132473F516E46089A9C44C74F;
-			remoteInfo = AlamofireImage;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -433,7 +426,6 @@
 			isa = PBXGroup;
 			children = (
 				A1DD4E732115CB4F00772C51 /* Alamofire.framework */,
-				A1FA9BA4211B473600ED741A /* AlamofireImage.framework */,
 				A1A06ABC2105224600F95875 /* Bolts.framework */,
 				A1A06ABE2105224600F95875 /* FBSDKCoreKit.framework */,
 				A1A06AC02105224600F95875 /* FBSDKLoginKit.framework */,
@@ -683,13 +675,6 @@
 			remoteRef = A1DD4E722115CB4F00772C51 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		A1FA9BA4211B473600ED741A /* AlamofireImage.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = AlamofireImage.framework;
-			remoteRef = A1FA9BA3211B473600ED741A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -729,8 +714,8 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/CCBottomRefreshControl/CCBottomRefreshControl.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
@@ -746,8 +731,8 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CCBottomRefreshControl.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
@@ -1004,6 +989,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = facebookfeed2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MACH_O_TYPE = mh_execute;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
 				PRODUCT_NAME = Challenge;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1023,6 +1009,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = facebookfeed2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MACH_O_TYPE = mh_execute;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
 				PRODUCT_NAME = Challenge;
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -20,13 +20,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc var splashTimer: Timer?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        let defaults = UserDefaults.standard
-        defaults.set(true, forKey: "startApp")
-        defaults.synchronize()
         
         // window?.rootViewController = SplashScreenController()
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
+        
+        let defaults = UserDefaults.standard
+        defaults.set(true, forKey: "startApp")
+        defaults.synchronize()
         
         if let vol = UserDefaults.standard.object(forKey: "volume") {
             volume = vol as! Float

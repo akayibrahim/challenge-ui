@@ -1,4 +1,4 @@
-	//
+//
 //  ViewController.swift
 //  chlfeed
 //
@@ -51,6 +51,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var memberCountOfFollowingForFriendProfile: Int?
     var memberIsPrivateForFriendProfile: Bool?
     @objc var isProfileFriend: Bool = false
+    @objc var isProfileRequested: Bool = false
     @objc var currentPage : Int = 0
     @objc var selfCurrentPage : Int = 0
     @objc var explorerCurrentPage : Int = 0
@@ -170,6 +171,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             if self.profile {
                 getMemberInfo(memberId: memberIdForFriendProfile!)
                 isMyFriend(friendMemberId: memberIdForFriendProfile!)
+                isRequestedFriend(friendMemberId: memberIdForFriendProfile!)
                 group.wait()
                 navigationItem.title = nameForOpenProfile
                 memberNameForFriendProfile = nameForOpenProfile
@@ -177,7 +179,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 memberCountOfFollowerForFriendProfile = countOfFollowersForOpenProfile
                 memberCountOfFollowingForFriendProfile = countOfFollowingForOpenProfile
                 memberIsPrivateForFriendProfile = friendIsPrivate
-                if (!self.memberIsPrivateForFriendProfile! || (self.memberIsPrivateForFriendProfile! && self.isProfileFriend)) && self.memberIdForFriendProfile != memberID {
+                if self.memberIdForFriendProfile != memberID {
                     self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
                     group.wait()
                     self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
@@ -349,7 +351,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         if (selectedTabIndex == profileIndex && !explorer) || profile  {
             if notDonePosts.count == 0 && donePosts.count == 0 {
-               return 0
+               return 1
             }
             return 3
         }
@@ -465,7 +467,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 if isProfileFriend {
                     profileCell.unfollow.alpha = 1
                 } else {
-                    profileCell.follow.alpha = 1
+                    if isProfileRequested {
+                        profileCell.requested.alpha = 1
+                    } else {
+                        profileCell.follow.alpha = 1
+                    }
                 }
                 profileCell.follow.memberId = memberIdForFriendProfile
                 profileCell.unfollow.memberId = memberIdForFriendProfile
@@ -516,16 +522,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=false"
         followOrUnfollowFriend(url: url, isRemove: true)
         group.wait()
-        isProfileFriend = false
-        collectionView?.reloadData()
+        reloadSelfPage()
     }
     
     @objc func followProfile(sender: subclasssedUIButton) {
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=true"
         followOrUnfollowFriend(url: url, isRemove: false)
         group.wait()
-        isProfileFriend = true
-        collectionView?.reloadData()
+        reloadSelfPage()
     }
     
     @objc func followOrUnfollowFriend(url: String, isRemove: Bool) {
@@ -538,12 +542,18 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: url, inputs: "memberId=\(memberID)"), willDelay: false)
                     return
             }
-            self.loadChallenges()
             self.group.leave()
-            if !isRemove {
-                self.popupAlert(message: "Now Following!", willDelay: true)
+            if self.memberIsPrivateForFriendProfile! && !isRemove {
+                self.isProfileFriend = false
+                self.popupAlert(message: "Requested!", willDelay: true)
             } else {
-                self.popupAlert(message: "Removed!", willDelay: true)
+                if !isRemove {
+                    self.isProfileFriend = true
+                    self.popupAlert(message: "Now Following!", willDelay: true)
+                } else {
+                    self.isProfileFriend = false
+                    self.popupAlert(message: "Stop Following!", willDelay: true)
+                }
             }
         }
     }
@@ -936,7 +946,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func openOthers(sender: UIButton) {
         let other = OtherController()
-        other.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(other, animated: true)
     }
     
@@ -1399,6 +1408,22 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             self.group.leave()
             let isMyFriend = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
             self.isProfileFriend = (isMyFriend as String).toBool()
+        }
+    }
+    
+    @objc func isRequestedFriend(friendMemberId: String) {
+        let jsonURL = URL(string: isRequestedFriendURL + memberID + "&friendMemberId=" + friendMemberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data
+                else {
+                    ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: isMyFriendURL, inputs: "memberID=\(memberID), friendMemberId=\(friendMemberId)")
+                    return
+            }
+            self.group.leave()
+            let isRequested = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
+            self.isProfileRequested = (isRequested as String).toBool()
         }
     }
 }

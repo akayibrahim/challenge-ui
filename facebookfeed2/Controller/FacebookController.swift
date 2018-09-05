@@ -179,6 +179,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                 memberName = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
                 countOffollowers = (post["followerCount"] as? Int)!
                 countOffollowing = (post["followingCount"] as? Int)!
+                privateAccount = (post["privateMember"] as? Bool)!
             }
         }
     }

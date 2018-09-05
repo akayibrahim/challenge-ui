@@ -60,8 +60,13 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        onRefesh()
+    }
+    
     @objc func searchFriends(key: String) {
-        let jsonURL = URL(string: searchFriendsURL + key)!
+        let jsonURL = URL(string: searchFriendsURL + key + "&memberId=\(memberID)")!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
@@ -73,7 +78,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
             DispatchQueue.main.async {
                 self.friendRequest = [SuggestionFriends]()
                 for postDictionary in postsArray! {
-                    let friend = SuggestionFriends()
+                    let friend = SuggestionFriends()                    
                     friend.setValuesForKeys(postDictionary)
                     self.friendRequest.append(friend)
                 }

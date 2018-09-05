@@ -13,6 +13,7 @@ var memberFbID = "" //10156204749600712" // dummy
 var memberName = "" //Seher Can" // dummy
 var countOffollowers: Int = 0
 var countOffollowing: Int = 0
+var privateAccount = false
 
 var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
 // var defaultURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
@@ -135,6 +136,9 @@ var searchFriendsURL = defaultURL + "/searchFriends?searchKey="
 var getChallengeSizeOfMemberURL = defaultURL + "/getChallengeSizeOfMember?memberId="
 var getSupportListURL = defaultURL + "/getSupportList?challengeId="
 var getChallengerListURL = defaultURL + "/getChallengerList?challengeId="
+var changeAccountPrivacyURL = defaultURL + "/changeAccountPrivacy?memberId="
+var getFollowerRequestsURL = defaultURL + "/getFollowerRequests?memberId="
+var isRequestedFriendURL = defaultURL + "/isRequestedFriend?memberId="
 
 struct INSTAGRAM_IDS {
     static let INSTAGRAM_AUTHURL = "https://api.instagram.com/oauth/authorize/"

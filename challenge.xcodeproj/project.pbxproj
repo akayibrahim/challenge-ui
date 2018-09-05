@@ -34,6 +34,8 @@
 		A14A996D2075310D00B1418D /* Friends.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14A996C2075310D00B1418D /* Friends.swift */; };
 		A14BDFED204E5E780095875F /* AddChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14BDFEC204E5E780095875F /* AddChallengeView.swift */; };
 		A14D75FE20752D430005B2F2 /* SelectedItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14D75FD20752D430005B2F2 /* SelectedItems.swift */; };
+		A1539A93213FBC170015F053 /* FollowerRequestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1539A92213FBC170015F053 /* FollowerRequestController.swift */; };
+		A1539AA6213FBD710015F053 /* FollowerRequestCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1539AA5213FBD710015F053 /* FollowerRequestCellView.swift */; };
 		A159265A209ACC2900D98923 /* trend_request.json in Resources */ = {isa = PBXBuildFile; fileRef = A1592659209ACC2900D98923 /* trend_request.json */; };
 		A159265C209ACCFD00D98923 /* TrendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A159265B209ACCFD00D98923 /* TrendRequest.swift */; };
 		A159265E209ACDEC00D98923 /* TrendRequestCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A159265D209ACDEC00D98923 /* TrendRequestCellView.swift */; };
@@ -92,6 +94,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A1539AA3213FBC170015F053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EECEDFBF259794D13F555769F4440339;
+			remoteInfo = CCBottomRefreshControl;
+		};
 		A189B6C02124609B00F4B879 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
@@ -222,6 +231,8 @@
 		A14A996C2075310D00B1418D /* Friends.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friends.swift; sourceTree = "<group>"; };
 		A14BDFEC204E5E780095875F /* AddChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddChallengeView.swift; sourceTree = "<group>"; };
 		A14D75FD20752D430005B2F2 /* SelectedItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedItems.swift; sourceTree = "<group>"; };
+		A1539A92213FBC170015F053 /* FollowerRequestController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowerRequestController.swift; sourceTree = "<group>"; };
+		A1539AA5213FBD710015F053 /* FollowerRequestCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowerRequestCellView.swift; sourceTree = "<group>"; };
 		A1592659209ACC2900D98923 /* trend_request.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trend_request.json; sourceTree = "<group>"; };
 		A159265B209ACCFD00D98923 /* TrendRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendRequest.swift; sourceTree = "<group>"; };
 		A159265D209ACDEC00D98923 /* TrendRequestCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendRequestCellView.swift; sourceTree = "<group>"; };
@@ -342,6 +353,7 @@
 				C7D879AB1C8289DD008766AE /* CustomTabBarController.swift */,
 				C7D879AD1C828B36008766AE /* FollowRequestController.swift */,
 				A119611020E8EC510022E965 /* ChallengeRequestController.swift */,
+				A1539A92213FBC170015F053 /* FollowerRequestController.swift */,
 				A1C13415207F212700C6A435 /* TrendsController.swift */,
 				A1B27B03209A2F8D00263E48 /* ActivitiesController.swift */,
 				A1274107200F38E60073BFF2 /* FacebookController.swift */,
@@ -381,6 +393,7 @@
 				A13C709A2043CE000076B989 /* ChallengeFeedCellView.swift */,
 				A13C709C2043CE6E0076B989 /* FriendRequestCellView.swift */,
 				A119611620E8EC5D0022E965 /* ChallengeRequestCellView.swift */,
+				A1539AA5213FBD710015F053 /* FollowerRequestCellView.swift */,
 				A159265D209ACDEC00D98923 /* TrendRequestCellView.swift */,
 				A1D2CAB620451C9F008782D3 /* OtherViewCellView.swift */,
 				A1DC3415207E2D9800F21232 /* CommentCellView.swift */,
@@ -427,6 +440,7 @@
 			children = (
 				A1DD4E732115CB4F00772C51 /* Alamofire.framework */,
 				A1A06ABC2105224600F95875 /* Bolts.framework */,
+				A1539AA4213FBC170015F053 /* CCBottomRefreshControl.framework */,
 				A1A06ABE2105224600F95875 /* FBSDKCoreKit.framework */,
 				A1A06AC02105224600F95875 /* FBSDKLoginKit.framework */,
 				A19536F0212365A000EA3449 /* FLAnimatedImage.framework */,
@@ -577,6 +591,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		A1539AA4213FBC170015F053 /* CCBottomRefreshControl.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CCBottomRefreshControl.framework;
+			remoteRef = A1539AA3213FBC170015F053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		A189B6C12124609B00F4B879 /* RxCocoa.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -796,7 +817,9 @@
 				C7A85F361C78C137007E9A00 /* ChallengesController.swift in Sources */,
 				A1289CA820A555F100CC66B0 /* UIExtension.swift in Sources */,
 				A159265E209ACDEC00D98923 /* TrendRequestCellView.swift in Sources */,
+				A1539AA6213FBD710015F053 /* FollowerRequestCellView.swift in Sources */,
 				A1FA9B9C211B473600ED741A /* ConnectionProblemController.swift in Sources */,
+				A1539A93213FBC170015F053 /* FollowerRequestController.swift in Sources */,
 				A1DA5F0220DFA44D00044E1E /* Media.swift in Sources */,
 				A1ACBF8F20A746650019D6C5 /* UpdateProgressController.swift in Sources */,
 				A1C13416207F212700C6A435 /* TrendsController.swift in Sources */,

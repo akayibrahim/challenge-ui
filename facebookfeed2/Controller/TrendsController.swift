@@ -100,7 +100,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     @objc func onRefesh() {
         self.reloadPage()
-        self.collectionView?.reloadData()
+        //self.collectionView?.reloadData()
         refreshControl.endRefreshing()
     }
     

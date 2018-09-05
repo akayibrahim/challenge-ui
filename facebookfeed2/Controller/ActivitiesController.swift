@@ -13,6 +13,7 @@ class ActivitiesController: UITableViewController {
     @objc let followCellId = "followCellId"
     @objc var activities = [Activities]()
     @objc var challengeRequestCount: Int = 0
+    @objc var followerRequestCount: Int = 0
     @objc let group = DispatchGroup()
     @objc var currentPage : Int = 0
     @objc var nowMoreData: Bool = false
@@ -85,6 +86,7 @@ class ActivitiesController: UITableViewController {
         }
         fetchChallengeRequest()
         fetchEwFriendSuggestions(url: getSuggestionsForFollowingURL)
+        fetchFollowerRequest()
         self.group.wait()
         self.tableView.showBlurLoader()
         self.loadActivities()
@@ -176,6 +178,24 @@ class ActivitiesController: UITableViewController {
         }
     }
     
+    @objc func fetchFollowerRequest() {
+        group.enter()
+        let jsonURL = URL(string: getFollowerRequestsURL + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    }
+                    return
+            }
+            self.followerRequestCount = postsArray != nil ? (postsArray?.count)! : 0
+            self.group.leave()
+        }
+    }
+    
     let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let checkPoint = activities.count - 1
@@ -195,7 +215,7 @@ class ActivitiesController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -204,6 +224,9 @@ class ActivitiesController: UITableViewController {
         }
         if section == 1 {
             return challengeRequestCount != 0 ? 1 : 0
+        }
+        if section == 2 {
+            return followerRequestCount != 0 ? 1 : 0
         }
         return activities.count
     }
@@ -229,7 +252,17 @@ class ActivitiesController: UITableViewController {
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
             return cell
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 2 && indexPath.row == 0 {
+            let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
+            let attributeText = NSMutableAttributedString(string: "Follower Requests    ", attributes: nil)
+            if followerRequestCount != 0 {
+                let followerRequestCountText = NSMutableAttributedString(string: "\u{2022} \(followerRequestCount) ", attributes: nil)
+                attributeText.append(followerRequestCountText)
+            }
+            attributeText.append(greaterThan)
+            cell.textLabel?.attributedText = attributeText
+            return cell
+        } else if indexPath.section == 3 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ActivityCell
             if activities.count == 0 {
                 return cell
@@ -315,6 +348,8 @@ class ActivitiesController: UITableViewController {
             followRequest()
         } else if indexPath.section == 1 && indexPath.row == 0 {
             challengeRequest()
+        } else if indexPath.section == 2 && indexPath.row == 0 {
+            followerRequest()
         } else {
             openBackgroundOfActivity(indexPath: indexPath)
         }
@@ -384,6 +419,14 @@ class ActivitiesController: UITableViewController {
         challengeRequest.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeRequest, animated: true)
+    }
+    
+    @objc func followerRequest() {
+        let followerRequest = FollowerRequestController()
+        goForward = true
+        followerRequest.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.pushViewController(followerRequest, animated: true)
     }
     
     @objc func openProfile(name: String, memberId: String, memberFbId:String) {

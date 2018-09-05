@@ -13,7 +13,7 @@ class OtherController: UITableViewController {
     @objc static let headerId = "headerId"
     @objc static let cellId = "cellId"
     @objc let screenSize = UIScreen.main.bounds
-    @objc var logoutIndex : Int = 4
+    @objc var logoutIndex : Int = 3
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +32,7 @@ class OtherController: UITableViewController {
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
         let cell = OtherViewCell(frame: frameOfCell, cellRow: indexPath.row)
         cell.imageView?.backgroundColor = UIColor.black
-        if indexPath.row == 3 {
+        if indexPath.row == 2 {
             cell.backgroundColor = pagesBackColor
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
@@ -41,12 +41,10 @@ class OtherController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            settings()
+            settingsAndPrivacy()
         } else if indexPath.row == 1 {
-            privacy()
-        } else if indexPath.row == 2 {
             support()
-        } else if indexPath.row == 3 {
+        } else if indexPath.row == 2 {
         } else if indexPath.row == logoutIndex {
             logout()
         }
@@ -57,7 +55,7 @@ class OtherController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 4
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -90,10 +88,28 @@ class OtherController: UITableViewController {
         appDelegate.window?.rootViewController = FacebookController()
     }
     
-    @objc func settings() {
+    @objc func settingsAndPrivacy() {
+        let actionsheet = UIAlertController(title: "", message: "Settings & Privacy", preferredStyle :.actionSheet)
+        actionsheet.addAction(UIAlertAction(title: "Change account as \(privateAccount ? "public" : "private")?", style: .default, handler: {(action: UIAlertAction) in
+            self.changeAccountPrivacy(!privateAccount)
+        }))
+        actionsheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(actionsheet, animated: true, completion: nil)
     }
     
-    @objc func privacy() {
+    @objc func changeAccountPrivacy(_ toPrivate: Bool) {
+        let jsonURL = URL(string: changeAccountPrivacyURL + memberID + "&toPrivate=\(toPrivate)")!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil
+                else {
+                    if data != nil {
+                        ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: getActivityCountURL, inputs: "memberID=\(memberID)")
+                    }
+                    return
+            }
+            privateAccount = toPrivate
+        }
     }
     
     @objc func support() {

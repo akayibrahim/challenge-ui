@@ -22,28 +22,21 @@ class OtherViewCell: UITableViewCell {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         if cellRow == 0 {
-            settings.text = "Settings"
+            settings.text = "Settings & Privacy"
             settings.font = UIFont.preferredFont(forTextStyle: .headline)
             addSubview(settings)
             settings.translatesAutoresizingMaskIntoConstraints = false
             settings.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
             settings.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 1 {
-            privacy.text = "Privacy"
-            privacy.font = UIFont.preferredFont(forTextStyle: .headline)
-            addSubview(privacy)
-            privacy.translatesAutoresizingMaskIntoConstraints = false
-            privacy.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
-            privacy.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        } else if cellRow == 2 {
             support.text = "Support"
             support.font = UIFont.preferredFont(forTextStyle: .headline)
             addSubview(support)
             support.translatesAutoresizingMaskIntoConstraints = false
             support.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
             support.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+        } else if cellRow == 2 {
         } else if cellRow == 3 {
-        } else if cellRow == 4 {
             logout.text = "Log out"
             logout.font = UIFont.preferredFont(forTextStyle: .headline)
             logout.textColor = UIColor.red
@@ -57,7 +50,6 @@ class OtherViewCell: UITableViewCell {
     @objc let logout: UILabel = FeedCell.labelCreateDef(1)
     @objc let settings: UILabel = FeedCell.labelCreateDef(1)
     @objc let support: UILabel = FeedCell.labelCreateDef(1)
-    @objc let privacy: UILabel = FeedCell.labelCreateDef(1)
     
     @objc static func button(_ title: String, titleColor: UIColor) -> UIButton {
         let button = UIButton()

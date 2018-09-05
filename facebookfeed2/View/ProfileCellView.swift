@@ -102,6 +102,14 @@ class ProfileCellView: UICollectionViewCell {
         addHeightAnchor(unfollow, multiplier: 0.8 / 10)
         unfollow.alpha = 0
         
+        addSubview(requested)
+        addTopAnchor(requested, anchor: profileImageView.topAnchor, constant: 0)
+        addTrailingAnchor(requested, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.2 / 10))
+        addWidthAnchor(requested, multiplier: 2.4 / 10)
+        addHeightAnchor(requested, multiplier: 0.8 / 10)
+        requested.isEnabled = false
+        requested.alpha = 0
+        
         addSubview(privateLabel)
         privateLabel.text = "(Private Account)"
         addTopAnchor(privateLabel, anchor: nameLabel.bottomAnchor, constant: screenSize.width * 0.0 / 10)
@@ -139,5 +147,6 @@ class ProfileCellView: UICollectionViewCell {
     
     @objc let follow: subclasssedUIButton = ProfileCellView.followButton(text: followButtonText)
     @objc let unfollow: subclasssedUIButton = ProfileCellView.followButton(text: "Unfollow")
+    @objc let requested: subclasssedUIButton = ProfileCellView.followButton(text: "Requested")
     @objc let privateLabel : UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.red)
 }

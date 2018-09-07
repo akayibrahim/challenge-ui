@@ -382,7 +382,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     self.posts[forwardChange.index!.row].awayWin = forwardChange.awayWinner
                     self.posts[forwardChange.index!.row].firstTeamScore = forwardChange.homeScore
                     self.posts[forwardChange.index!.row].secondTeamScore = forwardChange.awayScore
-                    self.posts[forwardChange.index!.row].done = forwardChange.homeWinner! || forwardChange.awayWinner!
+                    if let homeWinner = forwardChange.homeWinner, let awayWinner = forwardChange.awayWinner {
+                        self.posts[forwardChange.index!.row].done = homeWinner || awayWinner
+                    }
                 }
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
             }
@@ -426,7 +428,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         let isTrend = self.trend
         let isChallenge = selectedTabIndex == chanllengeIndex && !profile && !isTrend
-        let isSelf = selectedTabIndex == profileIndex
+        let isSelf = selectedTabIndex == profileIndex || self.profile
         let needsFetch = indexPaths.contains { $0.row >= self.posts.count - 1 }
         let needsFetchSelf = indexPaths.contains { $0.row >= self.notDonePosts.count - 1  || $0.row >= self.donePosts.count - 1 }
         if (isChallenge || isTrend) && needsFetch && !nowMoreData && !dummyServiceCall {
@@ -498,9 +500,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleChallengeCountTap))
         profileCell.challangeCount.isUserInteractionEnabled = true
         self.group.wait()
-        DispatchQueue.main.async {
-            profileCell.challangeCount.text = self.challangeCount
-        }
+        profileCell.challangeCount.text = self.challangeCount
         if !profile || (profile && !memberIsPrivateForFriendProfile!) || (profile && memberIsPrivateForFriendProfile! && isProfileFriend) {
             profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
             profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)
@@ -604,6 +604,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.feedController = self
         feedCell.layer.shouldRasterize = true
         feedCell.layer.rasterizationScale = UIScreen.main.scale
+        self.posts[indexPath.item].firstRow = indexPath == getVisibleIndex() ? true : false
         feedCell.post = self.posts[indexPath.item]
         self.addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
         return feedCell

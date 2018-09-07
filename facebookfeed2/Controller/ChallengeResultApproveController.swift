@@ -8,11 +8,11 @@
 
 import UIKit
 
-class ChallengeRequestController: UITableViewController {
+class ChallengeResultApproveController: UITableViewController {
     
     @objc let cellId = "cellId"
     @objc let headerId = "headerId"
-    @objc var challengeRequest = [ChallengeRequest]()
+    @objc var challenges = [Post]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +42,9 @@ class ChallengeRequestController: UITableViewController {
             if Util.controlNetwork() {
                 return
             }
-            fetchData(url: getChallengeRequestURL)
+            fetchData(url: getChallengeApprovesURL)
         } else {
-            self.challengeRequest = ServiceLocator.getChallengeRequestsFromDummy(jsonFileName: "challenge_request")
+            // self.challengeRequest = ServiceLocator.getChallengeRequestsFromDummy(jsonFileName: "challenge_request")
         }
     }
     
@@ -53,11 +53,10 @@ class ChallengeRequestController: UITableViewController {
             if error == nil && data != nil {
                 do {
                     if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
-                        self.challengeRequest = [ChallengeRequest]()
+                        self.challenges = [Post]()
                         for postDictionary in postsArray {
-                            let challenge = ChallengeRequest()
-                            challenge.setValuesForKeys(postDictionary)
-                            self.challengeRequest.append(challenge)
+                            let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
+                            self.challenges.append(post)
                         }
                     }
                 } catch let err {
@@ -65,7 +64,7 @@ class ChallengeRequestController: UITableViewController {
                 }
             }
             DispatchQueue.main.async {
-                if self.challengeRequest.count == 0 {
+                if self.challenges.count == 0 {
                     self.navigationController?.popViewController(animated: true)
                 }
                 self.tableView?.reloadData()
@@ -78,90 +77,38 @@ class ChallengeRequestController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return challengeRequest.count
+        return challenges.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ChallengeRequestCell
-        setImage(fbID: challengeRequest[indexPath.row].facebookID!, imageView: cell.requestImageView, reset: false)
+        setImage(fbID: challenges[indexPath.row].sendApproveFacebookId!, imageView: cell.requestImageView, reset: false)
         cell.imageView?.backgroundColor = UIColor.black
         cell.selectionStyle = UITableViewCellSelectionStyle.none
-        cell.confirmButton.challengeId = challengeRequest[indexPath.row].challengeId
-        cell.deleteButton.challengeId = challengeRequest[indexPath.row].challengeId
+        cell.confirmButton.challengeId = challenges[indexPath.row].id
+        cell.deleteButton.challengeId = challenges[indexPath.row].id
         cell.confirmButton.addTarget(self, action: #selector(self.acceptOrJoinChallenge), for: UIControlEvents.touchUpInside)
         cell.deleteButton.addTarget(self, action: #selector(self.rejectChallenge), for: UIControlEvents.touchUpInside)
-        if challengeRequest[indexPath.row].type == join {
-            cell.nameLabel.text = "\(challengeRequest[indexPath.row].name!) \(challengeRequest[indexPath.row].surname!) request you for join to \(challengeRequest[indexPath.row].subject!) challenge."
-            cell.confirmButton.setTitle("Join", for: UIControlState())
-            cell.deleteButton.setTitle("Cancel", for: UIControlState())
-            cell.confirmButton.type = join
-            cell.deleteButton.type = join
-        } else if challengeRequest[indexPath.row].type == accept {
-            cell.nameLabel.text = "\(challengeRequest[indexPath.row].name!) \(challengeRequest[indexPath.row].surname!) request you for accept to \(challengeRequest[indexPath.row].subject!) challenge. \(challengeRequest[indexPath.row].type == PRIVATE ? "Before confirmation, check the winner team." : "")" // TODO
-            cell.confirmButton.setTitle("Accept", for: UIControlState())
-            cell.deleteButton.setTitle("Reject", for: UIControlState())
-            cell.confirmButton.type = accept
-            cell.deleteButton.type = accept
-        }
+        cell.nameLabel.text = "\(challenges[indexPath.row].sendApproveName!) request you for confirmation of challenge results."
+        cell.confirmButton.setTitle("Confirm", for: UIControlState())
+        cell.deleteButton.setTitle("Reject", for: UIControlState())
         return cell
     }
     
     @objc func acceptOrJoinChallenge(sender: subclasssedUIButton) {
-        if sender.type == accept {
-            acceptChallengeService(challengeId: sender.challengeId!, accept: true)
-        } else if sender.type == join {
-            joinToChallengeService(challengeId: sender.challengeId!, join: true)
-        }
+        acceptChallengeService(challengeId: sender.challengeId!, accept: true)
     }
     
     @objc func rejectChallenge(sender: subclasssedUIButton) {
-        if sender.type == accept {
-            acceptChallengeService(challengeId: sender.challengeId!, accept: false)
-        } else if sender.type == join {
-            joinToChallengeService(challengeId: sender.challengeId!, join: false)
-        }
+        acceptChallengeService(challengeId: sender.challengeId!, accept: false)
     }
     
     @objc func acceptChallengeService(challengeId: String, accept: Bool) {
         if Util.controlNetwork() {
             return
         }
-        let json: [String: Any] = ["challengeId": challengeId,
-                                   "memberId": memberID,
-                                   "accept": accept
-        ]
-        let url = URL(string: acceptOrRejectChlURL)!
-        let request = ServiceLocator.prepareRequest(url: url, json: json)
-        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
-            guard let data = data, error == nil else {
-                print(error?.localizedDescription ?? "No data")
-                return
-            }
-            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-            if let responseJSON = responseJSON as? [String: Any] {
-                print(responseJSON)
-                if responseJSON["message"] != nil {
-                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.onRefesh()
-                }
-            }
-        }).resume()
-    }
-    
-    @objc func joinToChallengeService(challengeId: String, join: Bool) {
-        if Util.controlNetwork() {
-            return
-        }
-        let json: [String: Any] = ["challengeId": challengeId,
-                                   "memberId": memberID,
-                                   "join": join
-        ]
-        let url = URL(string: joinToChallengeURL)!
-        let request = ServiceLocator.prepareRequest(url: url, json: json)
-        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+        let url = URL(string: approveVersusURL + challengeId + "&memberId=\(memberID)&accept=\(accept)")!
+        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) -> Void in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
                 return
@@ -185,7 +132,7 @@ class ChallengeRequestController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        openExplorer(challengeId: challengeRequest[indexPath.row].challengeId!)
+        openExplorer(challengeId: challenges[indexPath.row].id!)
     }
     
     @objc func openExplorer(challengeId: String) {

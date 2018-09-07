@@ -260,6 +260,8 @@ class ServiceLocator {
         post.provedWithImage = postDictionary["provedWithImage"] as? Bool
         post.rejectedByAllAttendance = postDictionary["rejectedByAllAttendance"] as? Bool
         post.timesUp = postDictionary["timesUp"] as? Bool
+        post.waitForApprove = postDictionary["waitForApprove"] as? Bool
+        post.scoreRejected = postDictionary["scoreRejected"] as? Bool
         return post
     }
     

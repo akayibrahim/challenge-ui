@@ -45,4 +45,11 @@ class Post: SafeJsonObject {
     var provedWithImage: Bool?
     var rejectedByAllAttendance: Bool?
     var timesUp: Bool?
+    var firstRow: Bool = false
+    @objc var sendingApproveMemberId: String?
+    @objc var sendApproveName: String?
+    @objc var sendApproveFacebookId: String?
+    var waitForApprove: Bool?
+    var scoreRejected: Bool?
+    @objc var scoreRejectName: String?
 }

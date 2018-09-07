@@ -411,7 +411,9 @@ extension UIImageView {
             self.showBlurLoader()
             let url = URL(string: downloadImageURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if ImageService.cached(withURL: url!) {
-                self.image = ImageService.fromCache(withURL: url!)
+                DispatchQueue.main.async {
+                    self.image = ImageService.fromCache(withURL: url!)
+                }
             } else {
                 self.showBlurLoader()
                 self.pin_setImage(from: url!) { (result) in

@@ -220,7 +220,7 @@ class UpdateProgressController : UIViewController {
                     self.popupAlert(message: "Score and winner is incompatible!", willDelay: false)
                     return
                 }
-                url = updateResultsOfVersusURL  + "?challengeId=\(challengeId!)&homeWin=\(isWin(homeWin))&awayWin=\(isWin(awayWin))&firstTeamScore=\(firstTeamScore)&secondTeamScore=\(secondTeamScore)&done=\((isWin(homeWin) || isWin(awayWin) ? "true" : "false"))"
+                url = updateResultsOfVersusURL  + "?challengeId=\(challengeId!)&homeWin=\(isWin(homeWin))&awayWin=\(isWin(awayWin))&firstTeamScore=\(firstTeamScore)&secondTeamScore=\(secondTeamScore)&done=\((isWin(homeWin) || isWin(awayWin) ? "true" : "false"))&memberId=\(memberID)"
                 let forwardChange = Util.getForwardChange();
                 Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, homeWinner: isWin(homeWin), awayWinner: isWin(awayWin), homeScore: "\(firstTeamScore)", awayScore: "\(secondTeamScore)"))
             }

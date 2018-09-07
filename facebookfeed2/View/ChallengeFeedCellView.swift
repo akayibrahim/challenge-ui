@@ -415,22 +415,25 @@ class FeedCell: UICollectionViewCell {
                 let proofedByChallenger = self.post?.proofedByChallenger, let type = self.post?.type {
                 if type == PUBLIC && proofedByChallenger {
                     if !provedWithImage {
-                        proofedVideoView.playerLayer.load(challengeId: id, challengerId: challengerId, play: true)// indexPath.row == self.getVisibleIndex().row ? true : false)
+                        let play = post?.firstRow
+                        proofedVideoView.playerLayer.load(challengeId: id, challengerId: challengerId, play: play!)// indexPath.row == self.getVisibleIndex().row ? true : false)
                     } else {
                         proofedMediaView.load(challengeId: id, challengerId: challengerId)
                     }
                 }
             }
             
-            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined,
-                let rejectedByAllAttendance = self.post?.rejectedByAllAttendance, let timesUp = self.post?.timesUp, let provedWithImage = self.post?.provedWithImage {
+            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined, let rejectedByAllAttendance = self.post?.rejectedByAllAttendance, let timesUp = self.post?.timesUp, let provedWithImage = self.post?.provedWithImage {
                 let firstTeamScore = self.post?.firstTeamScore != nil ? self.post?.firstTeamScore : "-1"
                 let secondTeamScore = self.post?.secondTeamScore != nil ? self.post?.secondTeamScore : "-1"
                 let result = self.post?.result != nil ? self.post?.result : "-1"
                 let goal = self.post?.goal != nil ? self.post?.goal : "-1"
                 let homeWin = self.post?.homeWin != nil ? self.post?.homeWin : false
                 let awayWin = self.post?.awayWin != nil ? self.post?.awayWin : false
-                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp, provedWithImage: provedWithImage)
+                let waitForApprove = self.post?.waitForApprove != nil ? self.post?.waitForApprove : false
+                let scoreRejected = self.post?.scoreRejected != nil ? self.post?.scoreRejected : false
+                let scoreRejectName = self.post?.scoreRejectName != nil ? self.post?.scoreRejectName : ""
+                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp, provedWithImage: provedWithImage, waitForApprove: waitForApprove!, scoreRejected: scoreRejected!, scoreRejectName: scoreRejectName!)
             }
         }
     }
@@ -451,7 +454,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     @objc let screenSize = UIScreen.main.bounds
-    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool, provedWithImage: Bool) {
+    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool, provedWithImage: Bool, waitForApprove: Bool, scoreRejected: Bool, scoreRejectName: String) {
         backgroundColor = UIColor.white
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -466,7 +469,7 @@ class FeedCell: UICollectionViewCell {
         addTrailingAnchor(dividerLineView, anchor: contentGuide.trailingAnchor, constant: 0)
         dividerLineView.heightAnchor.constraint(equalToConstant: 0).isActive = true
         
-        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore, active: active, result: result, goal: goal, proofedByChallenger: proofedByChallenger, joined: joined, homeWin: homeWin, awayWin: awayWin, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp)
+        generateMiddleTopView(contentGuide, firstTeamCount: firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: done, proofed: proofed, firstTeamScore: firstTeamScore, secondTeamScore: secondTeamScore, active: active, result: result, goal: goal, proofedByChallenger: proofedByChallenger, joined: joined, homeWin: homeWin, awayWin: awayWin, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp, waitForApprove: waitForApprove, scoreRejected: scoreRejected, scoreRejectName: scoreRejectName)
         
         if !isComeFromSelf {
             if type == PUBLIC && proofedByChallenger {
@@ -616,7 +619,7 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    @objc func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, result: String, goal: String, proofedByChallenger: Bool, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool) {
+    @objc func generateMiddleTopView(_ contentGuide: UILayoutGuide, firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done: Bool, proofed: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, result: String, goal: String, proofedByChallenger: Bool, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool, waitForApprove: Bool, scoreRejected: Bool, scoreRejectName: String) {
         let middleTopGuide = UILayoutGuide()
         let middleCenterGuide = UILayoutGuide()
         let middleBottomGuide = UILayoutGuide()
@@ -637,7 +640,7 @@ class FeedCell: UICollectionViewCell {
         vsImageView.alpha = 0
         
         if !timesUp {
-            if done {
+            if done && active {
                 addSubview(finishFlag)
                 addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0 / 6))
                 finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
@@ -665,6 +668,10 @@ class FeedCell: UICollectionViewCell {
                 
                 if rejectedByAllAttendance {
                     activeLabel.text = "REJECTED BY ALL PARTICIPANT"
+                } else if waitForApprove {
+                    activeLabel.text = "WAITIN FOR RESULT APPROVE"
+                } else if scoreRejected {
+                    activeLabel.text = "REJECTED BY \(scoreRejectName)"
                 } else {
                     activeLabel.text = "WAITING FOR PARTICIPANTS"
                 }
@@ -684,6 +691,7 @@ class FeedCell: UICollectionViewCell {
                 if !active {
                     untilDateLabel.alpha = 0
                     activeLabel.alpha = 1
+                    vsImageView.alpha = 0
                 }
             }
             
@@ -784,7 +792,7 @@ class FeedCell: UICollectionViewCell {
         middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
         
-        if active {
+        if active || (!active && waitForApprove){
             if !isComeFromSelf {
                 addSubview(supportButton)
                 addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1/18)

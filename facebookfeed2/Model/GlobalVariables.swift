@@ -139,6 +139,8 @@ var getChallengerListURL = defaultURL + "/getChallengerList?challengeId="
 var changeAccountPrivacyURL = defaultURL + "/changeAccountPrivacy?memberId="
 var getFollowerRequestsURL = defaultURL + "/getFollowerRequests?memberId="
 var isRequestedFriendURL = defaultURL + "/isRequestedFriend?memberId="
+var getChallengeApprovesURL = defaultURL + "/getChallengeApproves?memberId="
+var approveVersusURL = defaultURL + "/approveVersus?challengeId="
 
 struct INSTAGRAM_IDS {
     static let INSTAGRAM_AUTHURL = "https://api.instagram.com/oauth/authorize/"

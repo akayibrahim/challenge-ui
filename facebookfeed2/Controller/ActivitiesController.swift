@@ -19,6 +19,7 @@ class ActivitiesController: UITableViewController {
     @objc var nowMoreData: Bool = false
     @objc var goForward: Bool = false
     @objc var newFriendSuggestionCount: Int = 0
+    @objc var challengeApproveCount: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,6 +88,7 @@ class ActivitiesController: UITableViewController {
         fetchChallengeRequest()
         fetchEwFriendSuggestions(url: getSuggestionsForFollowingURL)
         fetchFollowerRequest()
+        fetchChallengeApproves(url: getChallengeApprovesURL)
         self.group.wait()
         self.tableView.showBlurLoader()
         self.loadActivities()
@@ -104,6 +106,22 @@ class ActivitiesController: UITableViewController {
             self.activities = ServiceLocator.getActivitiesFromDummy(jsonFileName: "activities")
             return
         }
+    }
+    
+    @objc func fetchChallengeApproves(url: String) {
+        group.enter()
+        URLSession.shared.dataTask(with: NSURL(string: url + memberID)! as URL, completionHandler: { (data, response, error) -> Void in
+            if error == nil && data != nil {
+                do {
+                    if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
+                        self.challengeApproveCount = postsArray.count
+                    }
+                    self.group.leave()
+                } catch let err {
+                    print(err)
+                }
+            }
+        }).resume()
     }
     
     @objc func fetchEwFriendSuggestions(url: String) {
@@ -215,7 +233,7 @@ class ActivitiesController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -227,6 +245,9 @@ class ActivitiesController: UITableViewController {
         }
         if section == 2 {
             return followerRequestCount != 0 ? 1 : 0
+        }
+        if section == 3 {
+            return challengeApproveCount != 0 ? 1 : 0
         }
         return activities.count
     }
@@ -262,7 +283,17 @@ class ActivitiesController: UITableViewController {
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
             return cell
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 3 && indexPath.row == 0 {
+            let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
+            let attributeText = NSMutableAttributedString(string: "Challenge Approves    ", attributes: nil)
+            if challengeApproveCount != 0 {
+                let followerRequestCountText = NSMutableAttributedString(string: "\u{2022} \(challengeApproveCount) ", attributes: nil)
+                attributeText.append(followerRequestCountText)
+            }
+            attributeText.append(greaterThan)
+            cell.textLabel?.attributedText = attributeText
+            return cell
+        } else if indexPath.section == 4 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ActivityCell
             if activities.count == 0 {
                 return cell
@@ -304,7 +335,7 @@ class ActivitiesController: UITableViewController {
     
     @objc let heighForRow : CGFloat = UIScreen.main.bounds.width * 1 / 10
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if (indexPath.section == 0 || indexPath.section == 1) && indexPath.row == 0 {
+        if (indexPath.section != 4) && indexPath.row == 0 {
             return UIScreen.main.bounds.width * 1.2 / 10
         }
         if activities.count != 0 {
@@ -350,6 +381,8 @@ class ActivitiesController: UITableViewController {
             challengeRequest()
         } else if indexPath.section == 2 && indexPath.row == 0 {
             followerRequest()
+        } else if indexPath.section == 3 && indexPath.row == 0 {
+            challengeApprove()
         } else {
             openBackgroundOfActivity(indexPath: indexPath)
         }
@@ -371,6 +404,8 @@ class ActivitiesController: UITableViewController {
             // nothing
         } else if type == follower {
             // nothing
+        } else if type == "CHALLENGE_APPROVE" {
+            openExplorer(challengeId: activities[indexPath.row].challengeId!)
         }
     }
     
@@ -427,6 +462,14 @@ class ActivitiesController: UITableViewController {
         followerRequest.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(followerRequest, animated: true)
+    }
+    
+    @objc func challengeApprove() {
+        let challengeApproveCont = ChallengeResultApproveController()
+        goForward = true
+        challengeApproveCont.hidesBottomBarWhenPushed = true
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.pushViewController(challengeApproveCont, animated: true)
     }
     
     @objc func openProfile(name: String, memberId: String, memberFbId:String) {

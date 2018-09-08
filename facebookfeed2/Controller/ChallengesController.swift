@@ -64,22 +64,26 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func viewDidLoad() {
         super.viewDidLoad()
         selectedTabIndex = self.tabBarController?.selectedIndex ?? 0
-        if !(selectedTabIndex == profileIndex && !self.profile && !explorer) {
-            reloadChlPage()
-            if let startApp = UserDefaults.standard.object(forKey: "startApp") {
-                let onStartApp = startApp as! Bool
-                if onStartApp {
-                    let splash = SplashScreenController()
-                    splash.hidesBottomBarWhenPushed = true
-                    self.navigationController?.setNavigationBarHidden(true, animated: false)
-                    navigationController?.pushViewController(splash, animated: false)
+        if !explorer && !trend {
+            if selectedTabIndex != profileIndex && !self.profile {
+                reloadChlPage()
+                if let startApp = UserDefaults.standard.object(forKey: "startApp") {
+                    let onStartApp = startApp as! Bool
+                    if onStartApp {
+                        let splash = SplashScreenController()
+                        splash.hidesBottomBarWhenPushed = true
+                        self.navigationController?.setNavigationBarHidden(true, animated: false)
+                        navigationController?.pushViewController(splash, animated: false)
+                    }
                 }
+            } else {
+                reloadSelfPage()
             }
-        } else {
-            reloadSelfPage()
         }
-        let bottomRefreshControl = UIRefreshControl()
-        collectionView?.bottomRefreshControl = bottomRefreshControl
+        if !trend && !explorer {
+            let bottomRefreshControl = UIRefreshControl()
+            collectionView?.bottomRefreshControl = bottomRefreshControl
+        }
         if profile {
         } else if selectedTabIndex == chanllengeIndex && !explorer && !trend {
             navigationItem.title = challengeTitle
@@ -428,7 +432,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         let isTrend = self.trend
         let isChallenge = selectedTabIndex == chanllengeIndex && !profile && !isTrend
-        let isSelf = selectedTabIndex == profileIndex || self.profile
+        let isSelf = (selectedTabIndex == profileIndex || self.profile) && !self.explorer
         let needsFetch = indexPaths.contains { $0.row >= self.posts.count - 1 }
         let needsFetchSelf = indexPaths.contains { $0.row >= self.notDonePosts.count - 1  || $0.row >= self.donePosts.count - 1 }
         if (isChallenge || isTrend) && needsFetch && !nowMoreData && !dummyServiceCall {

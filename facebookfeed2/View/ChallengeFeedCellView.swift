@@ -80,6 +80,7 @@ class FeedCell: UICollectionViewCell {
         self.insertTime.removeFromSuperview()
         self.nameAndStatusLabel.removeFromSuperview()
         self.challengerImageView.image = UIImage()
+        self.challengerImageView.removeFromSuperview()
         self.updateProgress.removeFromSuperview()
         self.updateRefreshLabel.removeFromSuperview()
         self.untilDateLabel.removeFromSuperview()
@@ -531,6 +532,7 @@ class FeedCell: UICollectionViewCell {
                 addHeightAnchor(viewComments, multiplier: 0.7/10)
                 viewComments.titleLabel?.adjustsFontSizeToFitWidth = true
                 
+                addSubview(profileImageView)
                 addBottomAnchor(profileImageView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 0.45 / 10))
                 addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
                 addWidthAnchor(profileImageView, multiplier: 0.6/10)
@@ -669,9 +671,9 @@ class FeedCell: UICollectionViewCell {
                 if rejectedByAllAttendance {
                     activeLabel.text = "REJECTED BY ALL PARTICIPANT"
                 } else if waitForApprove {
-                    activeLabel.text = "WAITIN FOR RESULT APPROVE"
+                    activeLabel.text = "WAITING FOR RESULT APPROVE"
                 } else if scoreRejected {
-                    activeLabel.text = "REJECTED BY \(scoreRejectName)"
+                    activeLabel.text = "RESULTS REJECTED BY \(scoreRejectName)"
                 } else {
                     activeLabel.text = "WAITING FOR PARTICIPANTS"
                 }
@@ -792,7 +794,7 @@ class FeedCell: UICollectionViewCell {
         middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
         
-        if active || (!active && waitForApprove){
+        if active || (!active && waitForApprove) {
             if !isComeFromSelf {
                 addSubview(supportButton)
                 addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 1/18)
@@ -1094,7 +1096,6 @@ class FeedCell: UICollectionViewCell {
     }
     
     @objc func addGeneralSubViews() {
-        addSubview(profileImageView)
         addSubview(nameAndStatusLabel)        
         addSubview(vsImageView)
         addSubview(subjectImageView)

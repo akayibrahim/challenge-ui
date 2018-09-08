@@ -66,7 +66,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 // feedC?.reloadChlPage()
                 if feedC?.posts.count != 0 {
                     let firstChlRow = IndexPath(item: 0, section: 0)
-                    feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+                    feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: false)
                 }
                 return true
             } else if tabBarController.selectedIndex == profileIndex {
@@ -76,7 +76,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 // feedC?.reloadSelfPage()
                 if feedC?.posts.count != 0 {
                     let firstChlRow = IndexPath(item: 0, section: 0)
-                    feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+                    feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: false)
                 }
                 return true
             } else if tabBarController.selectedIndex == trendsIndex {
@@ -86,7 +86,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 // feedC?.reloadSelfPage()
                 if feedC?.trendRequest.count != 0 {
                     let firstChlRow = IndexPath(item: 0, section: 0)
-                    feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+                    feedC?.collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: false)
                 }
                 return true
             } else if tabBarController.selectedIndex == activityIndex {
@@ -96,7 +96,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 // feedC?.reloadSelfPage()
                 if feedC?.activities.count != 0 {
                     let firstChlRow = IndexPath(item: 0, section: 0)
-                    feedC?.tableView?.scrollToRow(at: firstChlRow, at: .top, animated: true)
+                    feedC?.tableView?.scrollToRow(at: firstChlRow, at: .top, animated: false)
                 }
                 return true
             }

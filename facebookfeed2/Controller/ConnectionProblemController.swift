@@ -76,24 +76,26 @@ class ConnectionProblemController: UIViewController {
         let tabToReload = UITapGestureRecognizer(target: self, action: #selector(self.reload))
         self.view.isUserInteractionEnabled = true
         self.view.addGestureRecognizer(tabToReload)
-    }
-    
-    @objc func reload() {
-        self.reloadT.alpha = 0
-        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        
         activityIndicator.center = CGPoint(x: self.view.center.x, y: UIScreen.main.bounds.height * 1.7 / 2)
         activityIndicator.activityIndicatorViewStyle = .white
-        view.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
-            activityIndicator.stopAnimating()
-            activityIndicator.removeFromSuperview()
-            self.still.alpha = 1
-            self.reloadT.alpha = 1
-        })
+        self.view.addSubview(self.activityIndicator)
+    }
+    
+    let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+    @objc func reload() {
+        self.activityIndicator.startAnimating()
+        self.reloadT.alpha = 0
         if Reachability.isConnectedToNetwork() {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.openApp()
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+                self.activityIndicator.stopAnimating()
+                // self.activityIndicator.removeFromSuperview()
+                self.still.alpha = 1
+                self.reloadT.alpha = 1
+            })
         }
     }
 }

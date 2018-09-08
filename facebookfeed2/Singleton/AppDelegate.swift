@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc var splashTimer: Timer?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
         // window?.rootViewController = SplashScreenController()
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()

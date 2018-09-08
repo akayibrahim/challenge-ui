@@ -6,8 +6,11 @@
 //  Copyright © 2018 challenge. All rights reserved.
 //
 
+import UIKit
 import SystemConfiguration
+import Foundation
 
+let groupReachability = DispatchGroup()
 public class Reachability {
     
     class func isConnectedToNetwork() -> Bool {
@@ -39,9 +42,38 @@ public class Reachability {
         // Working for Cellular and WIFI
         let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
         let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
-        let ret = (isReachable && !needsConnection)
+        let ret = (isReachable && !needsConnection) && !testHostConnectivity()
         
         return ret
         
+    }
+    
+    class func testHostConnectivity() -> Bool {
+        groupReachability.enter()
+        var testHostConnectivity = false
+        let jsonURL = URL(string: testHostConnectivityURL)!
+        jsonURL.get { data, response, error in
+            if error != nil {
+                if (error?.isConnectivityError)! {
+                    testHostConnectivity = true
+                }
+            }
+            groupReachability.leave()
+        }
+        let waitResult = groupReachability.wait(timeout: .now() + 10)
+        if waitResult == .timedOut {
+            testHostConnectivity = true
+        }
+        return testHostConnectivity
+    }
+    
+    class func isConnectedToInternet() -> Bool {
+        let hostname = "google.com"
+        //let hostinfo = gethostbyname(hostname)
+        let hostinfo = gethostbyname2(hostname, AF_INET6)//AF_INET6
+        if hostinfo != nil {
+            return true // internet available
+        }
+        return false // no internet
     }
 }

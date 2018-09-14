@@ -11,12 +11,6 @@ import AVKit
 
 class FeedCell: UICollectionViewCell {
     
-    @objc var feedController: FeedController?
-    
-    @objc func animate() {
-        feedController?.animateImageView(proofedMediaView)
-    }
-    
     override func prepareForReuse() {
         // Remove any state in this cell that may be left over from its previous use.
         self.firstOneChlrPeopleImageView.image = UIImage()
@@ -77,7 +71,9 @@ class FeedCell: UICollectionViewCell {
         self.addComments.removeFromSuperview()
         self.addProofs.removeFromSuperview()
         self.joinToChl.removeFromSuperview()
+        self.joinToChl.canJoin = false
         self.insertTime.removeFromSuperview()
+        self.visibilityLabel.removeFromSuperview()
         self.nameAndStatusLabel.removeFromSuperview()
         self.challengerImageView.image = UIImage()
         self.challengerImageView.removeFromSuperview()
@@ -140,6 +136,9 @@ class FeedCell: UICollectionViewCell {
             }
             if let insertTimeText = post?.insertTime {
                 insertTime.text = insertTimeText
+            }
+            if let visibilityText = post?.visibility {
+                visibilityLabel.text = "\(visibilityText == 1 ? "EVERYONE" : (visibilityText == 2 ? "FRIENDS" : "MEMBERS"))"
             }
             setImage(fbID: post?.challengerFBId, imageView: challengerImageView)
             firstOnePeopleImageView.contentMode = .scaleAspectFill
@@ -416,10 +415,10 @@ class FeedCell: UICollectionViewCell {
                 let proofedByChallenger = self.post?.proofedByChallenger, let type = self.post?.type {
                 if type == PUBLIC && proofedByChallenger {
                     if !provedWithImage {
-                        let play = post?.firstRow
-                        proofedVideoView.playerLayer.load(challengeId: id, challengerId: challengerId, play: play!)// indexPath.row == self.getVisibleIndex().row ? true : false)
+                        let play = self.post?.firstRow
+                        self.proofedVideoView.playerLayer.load(challengeId: id, challengerId: challengerId, play: play!)
                     } else {
-                        proofedMediaView.load(challengeId: id, challengerId: challengerId)
+                        self.proofedMediaView.load(challengeId: id, challengerId: challengerId)
                     }
                 }
             }
@@ -448,10 +447,10 @@ class FeedCell: UICollectionViewCell {
     }    
     
     @objc func imageEnable(yes: Bool) {
-        proofedVideoView.alpha = yes ? 0 : 1
+        // proofedVideoView.alpha = yes ? 0 : 1
         volumeUpImageView.alpha = !yes && volume == 1 ? 1 : 0
         volumeDownImageView.alpha = !yes && volume == 0 ? 1 : 0
-        proofedMediaView.alpha = yes ? 1 : 0
+        // proofedMediaView.alpha = yes ? 1 : 0
     }
     
     @objc let screenSize = UIScreen.main.bounds
@@ -474,45 +473,39 @@ class FeedCell: UICollectionViewCell {
         
         if !isComeFromSelf {
             if type == PUBLIC && proofedByChallenger {
-                addSubview(proofedMediaView)
-                addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
-                addWidthAnchor(proofedMediaView, multiplier: 1)
-                addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
-                // setImage(name: "gandhi", imageView: proofedMediaView)
-                proofedMediaView.alpha = 0
-                
-                self.addSubview(self.proofedVideoView)
-                self.addTopAnchor(self.proofedVideoView, anchor: self.dividerLineView1.bottomAnchor, constant: 0)
-                self.addWidthAnchor(self.proofedVideoView, multiplier: 1)
-                self.addHeightAnchor(self.proofedVideoView, multiplier: 1 / 2)
-                proofedVideoView.alpha = 1
-                self.proofedVideoView.layer.masksToBounds = true
-                
-                /*DispatchQueue.main.async {
-                    self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
-                    self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-                    // self.avPlayerLayer.repeatCount = 10
-                    self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
-                }*/
-                
-                addSubview(volumeUpImageView)
-                addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
-                addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
-                addWidthAnchor(volumeUpImageView, multiplier: 0.04)
-                addHeightAnchor(volumeUpImageView, multiplier: 0.04)
-                volumeUpImageView.alpha = 0
-                
-                addSubview(volumeDownImageView)
-                addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
-                addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
-                addWidthAnchor(volumeDownImageView, multiplier: 0.04)
-                addHeightAnchor(volumeDownImageView, multiplier: 0.04)
-                volumeDownImageView.alpha = 0
                 
                 if !provedWithImage {
                     self.imageEnable(yes: false)
+                    self.addSubview(self.proofedVideoView)
+                    self.addTopAnchor(self.proofedVideoView, anchor: self.dividerLineView1.bottomAnchor, constant: 0)
+                    self.addWidthAnchor(self.proofedVideoView, multiplier: 1)
+                    self.addHeightAnchor(self.proofedVideoView, multiplier: 1 / 2)
+                    self.proofedVideoView.layer.masksToBounds = true
+                    
+                    /*DispatchQueue.main.async {
+                     self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
+                     self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+                     // self.avPlayerLayer.repeatCount = 10
+                     self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
+                     }*/
+                    
+                    addSubview(volumeUpImageView)
+                    addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+                    addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+                    addWidthAnchor(volumeUpImageView, multiplier: 0.04)
+                    addHeightAnchor(volumeUpImageView, multiplier: 0.04)
+                    
+                    addSubview(volumeDownImageView)
+                    addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
+                    addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
+                    addWidthAnchor(volumeDownImageView, multiplier: 0.04)
+                    addHeightAnchor(volumeDownImageView, multiplier: 0.04)
                 } else {
-                    self.imageEnable(yes: true)
+                    //self.imageEnable(yes: true)
+                    addSubview(proofedMediaView)
+                    addTopAnchor(proofedMediaView, anchor: dividerLineView1.bottomAnchor, constant: 0)
+                    addWidthAnchor(proofedMediaView, multiplier: 1)
+                    addHeightAnchor(proofedMediaView, multiplier: 1 / 2)
                 }
             }
             
@@ -553,41 +546,32 @@ class FeedCell: UICollectionViewCell {
                     viewProofs.titleLabel?.adjustsFontSizeToFitWidth = true
                     
                     if !done {
-                        addSubview(joinButton)
-                        addLeadingAnchor(joinButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
-                        joinButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-                        addWidthAnchor(joinButton, multiplier: 0.6/10)
-                        addHeightAnchor(joinButton, multiplier: 0.6/10)
-                        joinButton.alpha = 0
-                        
-                        addSubview(proofButton)
-                        addLeadingAnchor(proofButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
-                        proofButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-                        addWidthAnchor(proofButton, multiplier: 0.6/10)
-                        addHeightAnchor(proofButton, multiplier: 0.6/10)
-                        proofButton.alpha = 0
-                        
-                        addSubview(addProofs)
-                        addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                        addLeadingAnchor(addProofs, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
-                        addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
-                        addHeightAnchor(addProofs, multiplier: 0.7/10)
-                        addProofs.alpha = 0
-                        
-                        addSubview(joinToChl)
-                        joinToChl.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-                        addLeadingAnchor(joinToChl, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
-                        joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
-                        addHeightAnchor(joinToChl, multiplier: 0.7/10)
-                        joinToChl.alpha = 0
-                        
                         if joined && !proofed {
-                            addProofs.alpha = 1
-                            proofButton.alpha = 1
+                            addSubview(proofButton)
+                            addLeadingAnchor(proofButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
+                            proofButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+                            addWidthAnchor(proofButton, multiplier: 0.6/10)
+                            addHeightAnchor(proofButton, multiplier: 0.6/10)
+                            
+                            addSubview(addProofs)
+                            addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+                            addLeadingAnchor(addProofs, anchor: proofButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
+                            addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
+                            addHeightAnchor(addProofs, multiplier: 0.7/10)
                         }
                         if canJoin {
-                            joinToChl.alpha = 1
-                            joinButton.alpha = 1
+                            addSubview(joinButton)
+                            addLeadingAnchor(joinButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
+                            joinButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+                            addWidthAnchor(joinButton, multiplier: 0.6/10)
+                            addHeightAnchor(joinButton, multiplier: 0.6/10)
+                            
+                            addSubview(joinToChl)
+                            joinToChl.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+                            addLeadingAnchor(joinToChl, anchor: joinButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
+                            joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
+                            addHeightAnchor(joinToChl, multiplier: 0.7/10)
+                            joinToChl.canJoin = true
                         }
                     }
                 }
@@ -597,6 +581,12 @@ class FeedCell: UICollectionViewCell {
             addBottomAnchor(insertTime, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0.2/10))
             addLeadingAnchor(insertTime, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addHeightAnchor(insertTime, multiplier: 0.6/10)
+            
+            addSubview(visibilityLabel)
+            addBottomAnchor(visibilityLabel, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0.2/10))
+            addTrailingAnchor(visibilityLabel, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
+            addHeightAnchor(visibilityLabel, multiplier: 0.6/10)
+            
         }
     }
     
@@ -649,67 +639,50 @@ class FeedCell: UICollectionViewCell {
                 addWidthAnchor(finishFlag, multiplier: 2 / 6)
                 addHeightAnchor(finishFlag, multiplier: 1 / 6)
                 setImage(name: "finishFlag", imageView: finishFlag)
-                finishFlag.alpha = 1
+                finishFlag.layer.zPosition = 10
                 vsImageView.alpha = 0
                 
-                addSubview(multiplierSign)
+                /* addSubview(multiplierSign)
                 addBottomAnchor(multiplierSign, anchor: middleTopGuide.bottomAnchor, constant: -(screenWidth * 0.3 / 6))
                 multiplierSign.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
                 addWidthAnchor(multiplierSign, multiplier: 2 / 6)
                 addHeightAnchor(multiplierSign, multiplier: 0.5 / 6)
-                multiplierSign.alpha = 0
+                multiplierSign.alpha = 0 */
             } else {
-                vsImageView.alpha = 1
-                
-                addSubview(untilDateLabel)
-                addBottomAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
-                addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
-                untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                addHeightAnchor(untilDateLabel, multiplier: 1/6)
-                untilDateLabel.alpha = 1
-                
-                if rejectedByAllAttendance {
-                    activeLabel.text = "REJECTED BY ALL PARTICIPANT"
-                } else if waitForApprove {
-                    activeLabel.text = "WAITING FOR RESULT APPROVE"
-                } else if scoreRejected {
-                    activeLabel.text = "RESULTS REJECTED BY \(scoreRejectName)"
-                } else {
-                    activeLabel.text = "WAITING FOR PARTICIPANTS"
-                }
-                activeLabel.font = UIFont (name: fontMarkerFelt, size: 23)
-                activeLabel.textAlignment = .center
-                activeLabel.numberOfLines = 2;
-                activeLabel.textColor = UIColor.gray
-                activeLabel.adjustsFontSizeToFitWidth = true
-                
-                addSubview(activeLabel)
-                addBottomAnchor(activeLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
-                addWidthAnchor(activeLabel, multiplier: 0.7/3)
-                activeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-                addHeightAnchor(activeLabel, multiplier: 1/6)
-                activeLabel.alpha = 0
                 
                 if !active {
-                    untilDateLabel.alpha = 0
-                    activeLabel.alpha = 1
                     vsImageView.alpha = 0
+                    
+                    if rejectedByAllAttendance {
+                        activeLabel.text = "REJECTED BY ALL PARTICIPANT"
+                    } else if waitForApprove {
+                        activeLabel.text = "WAITING FOR RESULT APPROVE"
+                    } else if scoreRejected {
+                        activeLabel.text = "RESULTS REJECTED BY \(scoreRejectName)"
+                    } else {
+                        activeLabel.text = "WAITING FOR PARTICIPANTS"
+                    }
+                    activeLabel.font = UIFont (name: fontMarkerFelt, size: 23)
+                    activeLabel.textAlignment = .center
+                    activeLabel.numberOfLines = 2;
+                    activeLabel.textColor = UIColor.gray
+                    activeLabel.adjustsFontSizeToFitWidth = true
+                    
+                    addSubview(activeLabel)
+                    addBottomAnchor(activeLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
+                    addWidthAnchor(activeLabel, multiplier: 0.7/3)
+                    activeLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                    addHeightAnchor(activeLabel, multiplier: 1/6)
+                } else {
+                    vsImageView.alpha = 1
+                    
+                    addSubview(untilDateLabel)
+                    addBottomAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
+                    addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
+                    untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+                    addHeightAnchor(untilDateLabel, multiplier: 1/6)
                 }
             }
-            
-            addSubview(proofText)
-            addTopAnchor(proofText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
-            proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
-            addWidthAnchor(proofText, multiplier: 1.3 / 6)
-            addHeightAnchor(proofText, multiplier: 0.5 / 6)
-            proofText.font = UIFont(name: "MarkerFelt-Thin", size: 40)
-            proofText.backgroundColor = scoreColor
-            proofText.textColor = UIColor.white
-            proofText.layer.cornerRadius = 5
-            proofText.layer.masksToBounds = true
-            // proofText.addBorders(edges: [.top, .bottom], width: 1)
-            proofText.adjustsFontSizeToFitWidth = true
-            proofText.alpha = 0
             
             addSubview(homeScoreText)
             addTopAnchor(homeScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
@@ -758,26 +731,36 @@ class FeedCell: UICollectionViewCell {
             
             if done || isComeFromSelf {
                 if type == PUBLIC {
-                    homeScoreText.alpha = 0
-                    awayScoreText.alpha = 0
-                    scoreText.alpha = 0
+                    var proveOrJoin = false
                     if proofedByChallenger || (proofed && isComeFromSelf) {
                         proofText.text = proofedText
-                        proofText.alpha = 1
+                        proveOrJoin = true
                     } else if joined {
                         proofText.text = "JOINED" // TODO
-                        proofText.alpha = 1
+                        proveOrJoin = true
+                    }
+                    if proveOrJoin {
+                        addSubview(proofText)
+                        addTopAnchor(proofText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+                        proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
+                        addWidthAnchor(proofText, multiplier: 1.3 / 6)
+                        addHeightAnchor(proofText, multiplier: 0.5 / 6)
+                        proofText.font = UIFont(name: "MarkerFelt-Thin", size: 40)
+                        proofText.backgroundColor = scoreColor
+                        proofText.textColor = UIColor.white
+                        proofText.layer.cornerRadius = 5
+                        proofText.layer.masksToBounds = true
+                        // proofText.addBorders(edges: [.top, .bottom], width: 1)
+                        proofText.adjustsFontSizeToFitWidth = true
                     }
                 } else if type == PRIVATE && firstTeamScore != "-1" && secondTeamScore != "-1" {
                     homeScoreText.alpha = 1
                     awayScoreText.alpha = 1
                     scoreText.alpha = 1
-                    proofText.alpha = 0
                 } else if type == SELF && result != "-1" {
                     homeScoreText.alpha = 1
                     awayScoreText.alpha = 1
                     scoreText.alpha = 1
-                    proofText.alpha = 0
                 }
                 vsImageView.alpha = 0
             }
@@ -1121,6 +1104,9 @@ class FeedCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 10)
         label.textAlignment = NSTextAlignment.right;
+        label.isOpaque = true
+        label.layer.shouldRasterize = true
+        label.layer.rasterizationScale = UIScreen.main.scale
         return label
     }()
     
@@ -1134,6 +1120,9 @@ class FeedCell: UICollectionViewCell {
         textView.layer.masksToBounds = true
         textView.isScrollEnabled = false
         textView.isEditable = false
+        textView.isOpaque = true
+        textView.layer.shouldRasterize = true
+        textView.layer.rasterizationScale = UIScreen.main.scale
         return textView
     }()
     
@@ -1142,6 +1131,9 @@ class FeedCell: UICollectionViewCell {
         // imageView.layer.cornerRadius = 15.0
         imageView.roundedImage()
         imageView.clipsToBounds = true
+        imageView.isOpaque = true
+        imageView.layer.shouldRasterize = true
+        imageView.layer.rasterizationScale = UIScreen.main.scale
         return imageView
     }
     
@@ -1155,6 +1147,9 @@ class FeedCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
         imageView.isUserInteractionEnabled = true
+        imageView.isOpaque = true
+        imageView.layer.shouldRasterize = true
+        imageView.layer.rasterizationScale = UIScreen.main.scale
         return imageView
     }()
     
@@ -1162,6 +1157,9 @@ class FeedCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.semanticContentAttribute = .forceRightToLeft
+        imageView.isOpaque = true
+        imageView.layer.shouldRasterize = true
+        imageView.layer.rasterizationScale = UIScreen.main.scale
         return imageView
     }()
     
@@ -1169,6 +1167,9 @@ class FeedCell: UICollectionViewCell {
         let label = UILabel()
         label.numberOfLines = line
         label.font = UIFont.boldSystemFont(ofSize: 10)
+        label.isOpaque = true
+        label.layer.shouldRasterize = true
+        label.layer.rasterizationScale = UIScreen.main.scale
         return label
     }
     
@@ -1182,6 +1183,9 @@ class FeedCell: UICollectionViewCell {
         label.backgroundColor = backColor
         label.layer.cornerRadius = 3
         label.layer.masksToBounds = true
+        label.isOpaque = true
+        label.layer.shouldRasterize = true
+        label.layer.rasterizationScale = UIScreen.main.scale
         return label
     }
     
@@ -1190,12 +1194,16 @@ class FeedCell: UICollectionViewCell {
     @objc let goalLabel: UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
     @objc let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
     @objc let insertTime: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
+    @objc let visibilityLabel: UILabel = FeedCell.labelCreate(7, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
     
     @objc static func label(_ fontSize: CGFloat) -> subclasssedUILabel {
         let label = subclasssedUILabel()
         label.font = UIFont.boldSystemFont(ofSize: fontSize)
         label.textAlignment = .center
         label.textColor = UIColor.darkGray
+        label.isOpaque = true
+        label.layer.shouldRasterize = true
+        label.layer.rasterizationScale = UIScreen.main.scale
         return label
     }
     
@@ -1220,6 +1228,8 @@ class FeedCell: UICollectionViewCell {
         view.layer.masksToBounds = true
         view.layer.borderWidth = 0.1
         view.layer.borderColor = UIColor.gray.cgColor
+        view.layer.shouldRasterize = true
+        view.layer.rasterizationScale = UIScreen.main.scale
         return view
     }
     
@@ -1238,6 +1248,9 @@ class FeedCell: UICollectionViewCell {
         }
         button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        button.isOpaque = true
+        button.layer.shouldRasterize = true
+        button.layer.rasterizationScale = UIScreen.main.scale
         return button
     }
     
@@ -1255,6 +1268,9 @@ class FeedCell: UICollectionViewCell {
         }
         button.titleEdgeInsets = UIEdgeInsetsMake(8, 0, 8, 0)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        button.isOpaque = true
+        button.layer.shouldRasterize = true
+        button.layer.rasterizationScale = UIScreen.main.scale
         return button
     }
     @objc let updateProgress = FeedCell.subClasssButtonForTitle("UPDATE\nPROGRESS", imageName: "")
@@ -1283,7 +1299,9 @@ class FeedCell: UICollectionViewCell {
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 3.0
         button.clipsToBounds = true
-        
+        button.isOpaque = true
+        button.layer.shouldRasterize = true
+        button.layer.rasterizationScale = UIScreen.main.scale
         return button
     }
     
@@ -1302,7 +1320,9 @@ class FeedCell: UICollectionViewCell {
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 3.0
         button.clipsToBounds = true
-        
+        button.isOpaque = true
+        button.layer.shouldRasterize = true
+        button.layer.rasterizationScale = UIScreen.main.scale
         return button
     }
     
@@ -1313,6 +1333,9 @@ class FeedCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 4.0
         imageView.layer.masksToBounds = true
+        imageView.isOpaque = true
+        imageView.layer.shouldRasterize = true
+        imageView.layer.rasterizationScale = UIScreen.main.scale
         return imageView
     }
     
@@ -1342,6 +1365,9 @@ class FeedCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 4.0
         imageView.layer.masksToBounds = true
+        imageView.isOpaque = true
+        imageView.layer.shouldRasterize = true
+        imageView.layer.rasterizationScale = UIScreen.main.scale
         return imageView
     }
     
@@ -1352,6 +1378,9 @@ class FeedCell: UICollectionViewCell {
     @objc static func viewFunc() -> UIView {
         let view = UIView()
         view.backgroundColor=UIColor.white
+        view.isOpaque = true
+        view.layer.shouldRasterize = true
+        view.layer.rasterizationScale = UIScreen.main.scale
         return view
     }
     
@@ -1368,6 +1397,8 @@ class FeedCell: UICollectionViewCell {
         mySegControl.layer.cornerRadius = 5.0
         mySegControl.tintColor = UIColor.black
         // mySegControl.setBackgroundImage(UIImage(named: "hand"), for: UIControlState(), barMetrics: UIBarMetrics.default)
+        mySegControl.layer.shouldRasterize = true
+        mySegControl.layer.rasterizationScale = UIScreen.main.scale
         return mySegControl
     }
     

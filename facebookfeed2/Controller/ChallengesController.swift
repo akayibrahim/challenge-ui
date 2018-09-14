@@ -12,7 +12,6 @@ import AVFoundation
 import RxSwift
 import CCBottomRefreshControl
 
-let cellId = "cellId"
 var chlScrollMoveDown : Bool = false
 var chlScrollMoveUp : Bool = false
 var prflScrollMoveDown : Bool = false
@@ -59,11 +58,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc var challangeCount: String = "0"
     @objc var goForward: Bool = false
     var isFetchingNextPage = false
-    var selectedTabIndex : Int = 0    
+    var selectedTabIndex : Int = 0
+    var viewFramwWidth: CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         selectedTabIndex = self.tabBarController?.selectedIndex ?? 0
+        viewFramwWidth = view.frame.width
         if !explorer && !trend {
             if selectedTabIndex != profileIndex && !self.profile {
                 reloadChlPage()
@@ -99,13 +101,23 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.alwaysBounceVertical = true
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "feedCellId")
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "profile")
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "selfCellId")
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.register(ChallengeHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: "someRandonIdentifierString")
         collectionView?.prefetchDataSource = self
         collectionView?.isPrefetchingEnabled = true
+        NotificationCenter.default.addObserver(self, selector:  #selector(self.appMovedToBackground), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+    }
+    
+    @objc func appMovedToBackground() {
+        if self.tabBarController?.selectedIndex == chanllengeIndex
+            || (self.tabBarController?.selectedIndex == selectedTabIndex && self.explorer)
+            || (self.tabBarController?.selectedIndex == selectedTabIndex && self.explorer)            
+            || (self.tabBarController?.selectedIndex == trendsIndex && self.trend) {
+            self.playVisibleVideo()
+        }
     }
     
     @objc func isTabIndex(_ index: Int) -> Bool {
@@ -176,7 +188,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 getMemberInfo(memberId: memberIdForFriendProfile!)
                 isMyFriend(friendMemberId: memberIdForFriendProfile!)
                 isRequestedFriend(friendMemberId: memberIdForFriendProfile!)
-                group.wait()
                 navigationItem.title = nameForOpenProfile
                 memberNameForFriendProfile = nameForOpenProfile
                 memberFbIdForFriendProfile = facebookIDForOpenProfile
@@ -185,11 +196,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 memberIsPrivateForFriendProfile = friendIsPrivate
                 if self.memberIdForFriendProfile != memberID {
                     self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
-                    group.wait()
                     self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
                 } else if self.memberIdForFriendProfile == memberID {
                     self.fetchChallengeSize(memberId: memberID)
-                    group.wait()
                     self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)
                 }
                 return
@@ -259,28 +268,31 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             if let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
                 self.nowMoreData = postsArray?.count == 0 ? true : false
                 if postsArray?.isEmpty == false {
+                    var indexPaths = [IndexPath]()
                     for postDictionary in postsArray! {
                         let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
                         if profile {
                             self.posts.append(post)
                             if post.done == true {
                                 self.donePosts.append(post)
-                                // self.insertItem(self.donePosts.count - 1, section: 2)
                             } else {
                                 self.notDonePosts.append(post)
-                                // self.insertItem(self.notDonePosts.count - 1, section: 1)
                             }
                         } else {
                             self.posts.append(post)
-                            // self.insertItem(self.posts.count - 1, section: 0)
+                            let iPath = IndexPath(row: self.posts.count - 1, section: 0)
+                            indexPaths.append(iPath)
+                            self.cellSizes[iPath] = self.calculateCellSize(iPath)
                         }
                     }
                     DispatchQueue.main.async {
-                        self.collectionView?.reloadData()
-                        self.collectionView?.bottomRefreshControl?.endRefreshing()
-                    }
-                    if profile { // }&& self.nowMoreData == false {
                         // self.collectionView?.reloadData()
+                        if profile || isLocal { // }&& self.nowMoreData == false {
+                            self.collectionView?.reloadData()
+                        } else {
+                            self.collectionView?.insertItems(at: indexPaths)
+                        }
+                        self.collectionView?.bottomRefreshControl?.endRefreshing()
                     }
                 }
                 self.isFetchingNextPage = false
@@ -372,8 +384,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             } else if forwardChange.forwardScreen == FRWRD_CHNG_PRV {
                 self.posts[forwardChange.index!.row].countOfProofs = forwardChange.viewProofsCount as NSNumber?
                 self.posts[forwardChange.index!.row].proofed = forwardChange.proved
-                self.posts[forwardChange.index!.row].canJoin = forwardChange.joined
-                self.posts[forwardChange.index!.row].joined = !forwardChange.joined!
+                self.posts[forwardChange.index!.row].canJoin = forwardChange.canJoin
+                self.posts[forwardChange.index!.row].joined = forwardChange.joined!
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
             } else if forwardChange.forwardScreen == FRWRD_CHNG_SCR {
                 if self.posts[forwardChange.index!.row].type == SELF {
@@ -462,10 +474,38 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
     }
     
-    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func calculateCellSize(_ indexPath: IndexPath) -> CGSize {
+        if (selectedTabIndex == profileIndex && !explorer) || profile {
+            if indexPath.row == 0 && indexPath.section == 0 {
+                return CGSize(width: view.frame.width, height: screenSize.width * 2.5 / 10)
+            }
+        }
+        var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
+        if posts.count == 0 {
+            return CGSize(width: view.frame.width, height: knownHeight)
+        }
+        if posts[indexPath.item].isComeFromSelf == false {
+            if posts[indexPath.item].active! {
+                knownHeight += (screenSize.width / 5.3)
+            } else {
+                knownHeight += (screenWidth * 0.4 / 10)
+            }
+            if posts[indexPath.item].proofedByChallenger == true {
+                knownHeight += screenWidth / 2
+            }
+            knownHeight += (screenSize.width / 26) + (screenWidth * 0.575 / 10)
+            if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
+                // let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
+                return CGSize(width: viewFramwWidth, height: thinksAboutChallenge.heightOf(withConstrainedWidth: screenWidth * 4 / 5, font: UIFont.systemFont(ofSize: 12)) + knownHeight)
+            }
+        }
+        return CGSize(width: viewFramwWidth, height: knownHeight)
     }
     
     @objc func createProfile() -> ProfileCellView {
+        if profile {
+            group.wait()
+        }
         let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10), memberFbId: (profile ? memberFbIdForFriendProfile! : memberFbID) , name: (profile ? memberNameForFriendProfile! : memberName))
         if profile {
             profileCell.other.alpha = 0
@@ -562,15 +602,26 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    lazy var cellSizes: [IndexPath: CGSize?] = [:]
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        /*if cellSizes[indexPath] == nil {
+         cellSizes[indexPath] = calculateCellSize(indexPath)
+         }
+         if cells[indexPath] == nil {
+            cells[indexPath] = prepareCell(indexPath)
+        }*/
+    }
+    
+    func prepareCell(_ indexPath: IndexPath) -> UICollectionViewCell {
         if (selectedTabIndex == profileIndex && !explorer) || profile  {
             if indexPath.section == 0 && indexPath.row == 0 {
-                let feedCellForProfile = collectionView.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
+                let feedCellForProfile = self.collectionView?.dequeueReusableCell(withReuseIdentifier: "profile", for: indexPath) as! FeedCell
                 feedCellForProfile.addSubview(self.createProfile())
                 return feedCellForProfile
             }
-            let feedCellForSelf = collectionView.dequeueReusableCell(withReuseIdentifier: "selfCellId", for: indexPath) as! FeedCell
-            feedCellForSelf.feedController = self
+            let feedCellForSelf = self.collectionView?.dequeueReusableCell(withReuseIdentifier: "selfCellId", for: indexPath) as! FeedCell
+            feedCellForSelf.layer.shouldRasterize = true
+            feedCellForSelf.layer.rasterizationScale = UIScreen.main.scale
             if indexPath.section == 1 {
                 if  self.notDonePosts.count == 0 {
                     return feedCellForSelf
@@ -601,17 +652,25 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
             return feedCellForSelf
         }
-        let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
+        let feedCell = self.collectionView?.dequeueReusableCell(withReuseIdentifier: "feedCellId", for: indexPath) as! FeedCell
         if  self.posts.count == 0 {
             return feedCell
         }
-        feedCell.feedController = self
         feedCell.layer.shouldRasterize = true
         feedCell.layer.rasterizationScale = UIScreen.main.scale
-        self.posts[indexPath.item].firstRow = indexPath == getVisibleIndex() ? true : false
+        feedCell.isOpaque = true
+        self.posts[indexPath.item].firstRow = indexPath == self.getVisibleIndex() ? true : false
         feedCell.post = self.posts[indexPath.item]
         self.addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
         return feedCell
+    }
+    
+    lazy var cells: [IndexPath: UICollectionViewCell?] = [:]
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        /*if let cells = cells[indexPath] {
+            return cells!
+        }*/
+        return prepareCell(indexPath)
     }
     
     @objc func changeVolume(gesture: UITapGestureRecognizer) {
@@ -620,25 +679,29 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             let defaults = UserDefaults.standard
             defaults.set(volume, forKey: "volume")
             defaults.synchronize()
-            let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
-            let feedCell = self.collectionView?.cellForItem(at: index) as! FeedCell
-            self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
+            for index in (self.collectionView?.indexPathsForVisibleItems)! {
+                // let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
+                let feedCell = self.collectionView?.cellForItem(at: index) as! FeedCell
+                self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
+            }
         }
     }
     
     @objc func changeVolumeOfFeedCell(feedCell : FeedCell, isSilentRing : Bool, silentRingSwitch : Int) {
         DispatchQueue.main.async {
-            if !isSilentRing {
-                if (feedCell.proofedVideoView.playerLayer.player?.volume.isEqual(to: 0))! {
-                    feedCell.proofedVideoView.playerLayer.player?.volume = 1
-                    self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 1)
+            if let player = feedCell.proofedVideoView.playerLayer.player {
+                if !isSilentRing {
+                    if (player.volume.isEqual(to: 0)) {
+                        player.volume = 1
+                        self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 1)
+                    } else {
+                        player.volume = 0
+                        self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0)
+                    }
                 } else {
-                    feedCell.proofedVideoView.playerLayer.player?.volume = 0
-                    self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0)
+                    player.volume = Float(silentRingSwitch)
+                    self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: silentRingSwitch )
                 }
-            } else {
-                feedCell.proofedVideoView.playerLayer.player?.volume = Float(silentRingSwitch)
-                self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: silentRingSwitch )
             }
         }
     }
@@ -682,7 +745,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.viewComments.tag = indexPath.row
         feedCell.viewProofs.challengeId = posts[indexPath.item].id
         feedCell.viewProofs.proofed = posts[indexPath.row].proofed
-        feedCell.viewProofs.canJoin = feedCell.joinToChl.alpha == 1 ? true : false
+        feedCell.viewProofs.canJoin = feedCell.joinToChl.canJoin != nil ? feedCell.joinToChl.canJoin : false
         feedCell.viewProofs.tag = indexPath.row
         feedCell.addComments.challengeId = posts[indexPath.item].id
         feedCell.addComments.memberId = posts[indexPath.item].challengerId
@@ -992,7 +1055,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.done = posts[index].done!
         commentsTable.proofed = posts[index].done! ? false : proofed
         commentsTable.canJoin = posts[index].done! ? false : canJoin
-        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: isTabIndex(profileIndex) && !explorer ? 1 : 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: posts[index].done! ? false : canJoin, proved: posts[index].done! ? false : proofed))
+        commentsTable.joined = posts[index].done! ? false : posts[index].joined!
+        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: isTabIndex(profileIndex) && !explorer ? 1 : 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: posts[index].done! ? false : posts[index].joined!, proved: posts[index].done! ? false : proofed, canJoin: posts[index].done! ? false : canJoin))
         goForward = true
         commentsTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -1145,106 +1209,18 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
     @objc let screenSize = UIScreen.main.bounds
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if (selectedTabIndex == profileIndex && !explorer) || profile {
-            if indexPath.row == 0 && indexPath.section == 0 {
-                return CGSize(width: view.frame.width, height: screenSize.width * 2.5 / 10)
-            }
+        if let size = cellSizes[indexPath] {
+            return size ?? UICollectionViewFlowLayoutAutomaticSize
         }
-        var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
-        if posts.count == 0 {
-            return CGSize(width: view.frame.width, height: knownHeight)
-        }
-        if posts[indexPath.item].isComeFromSelf == false {
-            if posts[indexPath.item].active! {
-                knownHeight += (screenSize.width / 5.3)
-            } else {
-                knownHeight += (screenWidth * 0.4 / 10)
-            }
-            if posts[indexPath.item].proofedByChallenger == true {
-                knownHeight += screenWidth / 2
-            }
-            knownHeight += (screenSize.width / 26) + (screenWidth * 0.575 / 10)
-            if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
-                // let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
-                return CGSize(width: view.frame.width, height: thinksAboutChallenge.heightOf(withConstrainedWidth: screenWidth * 4 / 5, font: UIFont.systemFont(ofSize: 12)) + knownHeight)
-            }
-        }
-        return CGSize(width: view.frame.width, height: knownHeight)
+        return calculateCellSize(indexPath)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        collectionView?.collectionViewLayout.invalidateLayout()
+        // collectionView?.collectionViewLayout.invalidateLayout()
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 8
-    }
-    
-    @objc let zoomImageView = UIImageView()
-    @objc let blackBackgroundView = UIView()
-    @objc let navBarCoverView = UIView()
-    @objc let tabBarCoverView = UIView()
     
     @objc var statusImageView: UIImageView?
-    
-    @objc func animateImageView(_ statusImageView: UIImageView) {
-        self.statusImageView = statusImageView
-        if let startingFrame = statusImageView.superview?.convert(statusImageView.frame, to: nil) {
-            statusImageView.alpha = 0
-            blackBackgroundView.frame = self.view.frame
-            blackBackgroundView.backgroundColor = UIColor.black
-            blackBackgroundView.alpha = 0
-            view.addSubview(blackBackgroundView)
-            navBarCoverView.frame = CGRect(x: 0, y: 0, width: 1000, height: 20 + 44)
-            navBarCoverView.backgroundColor = UIColor.black
-            navBarCoverView.alpha = 0
-            if let keyWindow = UIApplication.shared.keyWindow {
-                keyWindow.addSubview(navBarCoverView)
-                tabBarCoverView.frame = CGRect(x: 0, y: keyWindow.frame.height - 49, width: 1000, height: 49)
-                tabBarCoverView.backgroundColor = UIColor.black
-                tabBarCoverView.alpha = 0
-                keyWindow.addSubview(tabBarCoverView)
-            }
-            zoomImageView.backgroundColor = UIColor.red
-            zoomImageView.frame = startingFrame
-            zoomImageView.isUserInteractionEnabled = true
-            zoomImageView.image = statusImageView.image
-            zoomImageView.contentMode = .scaleAspectFill
-            zoomImageView.clipsToBounds = true
-            view.addSubview(zoomImageView)
-            zoomImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FeedController.zoomOut)))
-            UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: { () -> Void in
-                let height = (self.view.frame.width / startingFrame.width) * startingFrame.height
-                let y = self.view.frame.height / 2 - height / 2
-                self.zoomImageView.frame = CGRect(x: 0, y: y, width: self.view.frame.width, height: height)
-                self.blackBackgroundView.alpha = 1
-                self.navBarCoverView.alpha = 1
-                self.tabBarCoverView.alpha = 1
-                }, completion: nil)
-        }
-    }
-    
-    @objc func zoomOut() {
-        if let startingFrame = statusImageView!.superview?.convert(statusImageView!.frame, to: nil) {
-            
-            UIView.animate(withDuration: 0.75, animations: { () -> Void in
-                self.zoomImageView.frame = startingFrame
-                
-                self.blackBackgroundView.alpha = 0
-                self.navBarCoverView.alpha = 0
-                self.tabBarCoverView.alpha = 0
-                
-                }, completion: { (didComplete) -> Void in
-                    self.zoomImageView.removeFromSuperview()
-                    self.blackBackgroundView.removeFromSuperview()
-                    self.navBarCoverView.removeFromSuperview()
-                    self.tabBarCoverView.removeFromSuperview()
-                    self.statusImageView?.alpha = 1
-            })
-            
-        }
-    }
     
     func getVisibleIndex() -> IndexPath {
         let visibleRect = CGRect(origin: (collectionView?.contentOffset)!, size: (collectionView?.bounds.size)!)
@@ -1254,23 +1230,28 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func playVisibleVideo() {
+        if selectedTabIndex == profileIndex || self.profile {
+            return
+        }
         let indexPath = getVisibleIndex()
         for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
-            if visIndex != indexPath {
-                if let cell = collectionView?.cellForItem(at: visIndex) {
-                    let feedCell = cell as! FeedCell
-                    if let player = feedCell.proofedVideoView.playerLayer.player {
-                        player.pause()
-                    }
-                }
-            } else {
-                if let cell = collectionView?.cellForItem(at: indexPath) {
-                    let feedCell = cell as! FeedCell
-                    let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
-                    if feedCell.proofedVideoView.frame.contains(frameSize) && !self.posts[indexPath.row].provedWithImage! {
+            if posts[visIndex.row].proofedByChallenger! && !posts[visIndex.row].provedWithImage! {
+                if visIndex != indexPath {
+                    if let cell = collectionView?.cellForItem(at: visIndex) {
+                        let feedCell = cell as! FeedCell
                         if let player = feedCell.proofedVideoView.playerLayer.player {
-                            player.volume = volume
-                            player.playImmediately(atRate: 1.0)
+                            player.pause()
+                        }
+                    }
+                } else {
+                    if let cell = collectionView?.cellForItem(at: indexPath) {
+                        let feedCell = cell as! FeedCell
+                        let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
+                        if feedCell.proofedVideoView.frame.contains(frameSize) && !self.posts[indexPath.row].provedWithImage! {
+                            if let player = feedCell.proofedVideoView.playerLayer.player {
+                                player.volume = volume
+                                player.playImmediately(atRate: 1.0)
+                            }
                         }
                     }
                 }

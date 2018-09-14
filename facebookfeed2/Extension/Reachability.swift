@@ -11,12 +11,16 @@ import SystemConfiguration
 import Foundation
 
 let groupReachability = DispatchGroup()
+var connectivityOfHost = false
 public class Reachability {
     
     class func isConnectedToNetwork() -> Bool {
         if isLocal {
             return true
         }
+        connectivityOfHost = false
+        testHostConnectivity()
+        
         var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
         zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
         zeroAddress.sin_family = sa_family_t(AF_INET)
@@ -42,29 +46,27 @@ public class Reachability {
         // Working for Cellular and WIFI
         let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
         let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
-        let ret = (isReachable && !needsConnection) && !testHostConnectivity()
+        let ret = (isReachable && !needsConnection) && !connectivityOfHost
         
         return ret
         
     }
     
-    class func testHostConnectivity() -> Bool {
-        groupReachability.enter()
-        var testHostConnectivity = false
+    class func testHostConnectivity() {
         let jsonURL = URL(string: testHostConnectivityURL)!
         jsonURL.get { data, response, error in
             if error != nil {
                 if (error?.isConnectivityError)! {
-                    testHostConnectivity = true
+                    connectivityOfHost = true
                 }
             }
-            groupReachability.leave()
         }
+        /*
         let waitResult = groupReachability.wait(timeout: .now() + 10)
         if waitResult == .timedOut {
             testHostConnectivity = true
         }
-        return testHostConnectivity
+         */
     }
     
     class func isConnectedToInternet() -> Bool {

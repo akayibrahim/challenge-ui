@@ -140,6 +140,7 @@ class ActivitiesController: UITableViewController {
         }
     }
     
+    lazy var cellSizes: [IndexPath: CGFloat?] = [:]
     @objc func fetchActivities() {
         DispatchQueue.global(qos: .userInitiated).async {
         let jsonURL = URL(string: getActivitiesURL + memberID + "&page=\(self.currentPage)")!
@@ -160,6 +161,10 @@ class ActivitiesController: UITableViewController {
                         let activity = Activities()
                         activity.setValuesForKeys(postDictionary)
                         self.activities.append(activity)
+                        let iPath = IndexPath(row:self.activities.count - 1, section: 4)
+                        DispatchQueue.main.async {
+                            self.cellSizes[iPath] = self.calculateCellSize(iPath)
+                        }
                         //self.insertItem(self.activities.count - 1, section: 2)
                     }
                     DispatchQueue.main.async {
@@ -171,6 +176,19 @@ class ActivitiesController: UITableViewController {
             }
         }
         }
+    }
+    
+    func calculateCellSize(_ indexPath: IndexPath) -> CGFloat {
+        if (indexPath.section != 4) && indexPath.row == 0 {
+            return UIScreen.main.bounds.width * 1.2 / 10
+        }
+        if activities.count != 0 {
+            if  let thinksAboutChallenge = activities[indexPath.row].content {
+                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: activities[indexPath.row].type == "PROOF" ? view.frame.width * 7.6 / 10 : view.frame.width * 9.1 / 10, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)], context: nil)
+                return rect.height + heighForRow
+            }
+        }
+        return heighForRow
     }
     
     func insertItem(_ row:Int, section: Int) {
@@ -295,6 +313,8 @@ class ActivitiesController: UITableViewController {
             return cell
         } else if indexPath.section == 4 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ActivityCell
+            cell.layer.shouldRasterize = true
+            cell.layer.rasterizationScale = UIScreen.main.scale
             if activities.count == 0 {
                 return cell
             }
@@ -335,16 +355,10 @@ class ActivitiesController: UITableViewController {
     
     @objc let heighForRow : CGFloat = UIScreen.main.bounds.width * 1 / 10
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if (indexPath.section != 4) && indexPath.row == 0 {
-            return UIScreen.main.bounds.width * 1.2 / 10
+        if let size = cellSizes[indexPath] {
+            return size!
         }
-        if activities.count != 0 {
-            if  let thinksAboutChallenge = activities[indexPath.row].content {
-                let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: activities[indexPath.row].type == "PROOF" ? view.frame.width * 7.6 / 10 : view.frame.width * 9.1 / 10, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)], context: nil)
-                return rect.height + heighForRow
-            }
-        }
-        return heighForRow
+        return calculateCellSize(indexPath)
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

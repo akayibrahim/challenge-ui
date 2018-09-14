@@ -54,7 +54,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         super.viewDidLoad()
         createAddChallengeInstance()
         navigationItem.title = "Add Challenge"
-        tableView.register(TableViewCellContent.self, forCellReuseIdentifier: cellId)
+        tableView.register(TableViewCellContent.self, forCellReuseIdentifier: "addChlCellId")
         tableView.tableFooterView = UIView()
         self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
         rightButton = UIBarButtonItem(title: "Share", style: UIBarButtonItemStyle.plain, target: self, action: #selector(addChallenge))
@@ -253,7 +253,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         if Util.controlNetwork() {
             return
         }
-        self.navigationItem.rightBarButtonItem?.isEnabled = false
         if switchDateP == true {
             switchDateP = false
             tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
@@ -280,7 +279,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             popupAlert(message: "Result cannot be empty.", willDelay: false)
             return
         }
-        
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        self.navigationItem.leftBarButtonItem?.isEnabled = false
         var json: [String: Any] = ["challengerId": memberID,
                                    "name": memberName,
                                    "challengerFBId": memberFbID,
@@ -383,6 +383,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                         print(responseJSON)
                         if responseJSON["message"] != nil {
                             self.navigationItem.rightBarButtonItem?.isEnabled = true
+                            self.navigationItem.leftBarButtonItem?.isEnabled = true
                             self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
                         }
                     }
@@ -394,6 +395,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     @objc func clear() {
         DispatchQueue.main.async {
             self.navigationItem.rightBarButtonItem?.isEnabled = true
+            self.navigationItem.leftBarButtonItem?.isEnabled = true
             self.createAddChallengeInstance()
             self.cancel()
             self.tableView.reloadData()
@@ -426,6 +428,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                     self.clear()
                 } else {
                     self.navigationItem.rightBarButtonItem?.isEnabled = true
+                    self.navigationItem.leftBarButtonItem?.isEnabled = true
                     let error = ServiceLocator.getErrorMessage(data: data, chlId: "", sUrl: uploadImageURL, inputs: "challengeId:\(result as String), memberID:\(memberID)")
                     self.popupAlert(message: error, willDelay: false)
                 }

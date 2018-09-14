@@ -9,8 +9,9 @@
 import UIKit
 import FBSDKLoginKit
 import FBSDKCoreKit
+import GoogleSignIn
 
-class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
+class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDelegate {
     @objc var imageView : UIImageView!
     @objc var label: UILabel!
     
@@ -32,7 +33,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
                 ServiceLocator.fetchFacebookFriends()
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.window?.rootViewController = SplashScreenController()
-                splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+                splashTimer = Timer.scheduledTimer(timeInterval: 0, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
             }
         }
     }
@@ -49,6 +50,14 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         return true
     }
     
+    func sign(_ signIn: GIDSignIn!, present viewController: UIViewController!) {
+        self.present(viewController, animated: true, completion: nil)
+    }
+    
+    func sign(_ signIn: GIDSignIn!, dismiss viewController: UIViewController!) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = navAndTabColor
@@ -56,6 +65,8 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         if Util.controlNetwork() {
             return
         }
+        
+        GIDSignIn.sharedInstance().uiDelegate = self
         
         label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 60))
         label.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
@@ -98,39 +109,43 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate {
         loginButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.4 / 2, width: view.frame.width - 64, height: 44)
         loginButton.delegate = self
         
+        let signInButton = GIDSignInButton()
+        view.addSubview(signInButton)
+        signInButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.6 / 2, width: view.frame.width - 64, height: 44)
+        
         let akayButton = FeedCell.buttonForTitle("ibrahim akay", imageName: "")
         akayButton.setTitleColor(UIColor.white, for: UIControlState())
-        akayButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.55 / 2, width: 200, height: 30)
+        akayButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.05 / 2, width: 200, height: 30)
         view.addSubview(akayButton)
         akayButton.addTarget(self, action: #selector(self.akay), for: UIControlEvents.touchUpInside)
         
         let aykutButton = FeedCell.buttonForTitle("serkan aykut", imageName: "")
         aykutButton.setTitleColor(UIColor.white, for: UIControlState())
-        aykutButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.65 / 2, width: 200, height: 30)
+        aykutButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.15 / 2, width: 200, height: 30)
         view.addSubview(aykutButton)
         aykutButton.addTarget(self, action: #selector(self.aykut), for: UIControlEvents.touchUpInside)
         
         let melisButton = FeedCell.buttonForTitle("melisa bahçıvan", imageName: "")
         melisButton.setTitleColor(UIColor.white, for: UIControlState())
-        melisButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.75 / 2, width: 200, height: 30)
+        melisButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.25 / 2, width: 200, height: 30)
         view.addSubview(melisButton)
         melisButton.addTarget(self, action: #selector(self.melis), for: UIControlEvents.touchUpInside)
         
         let belkayButton = FeedCell.buttonForTitle("belkay bahçıvan", imageName: "")
         belkayButton.setTitleColor(UIColor.white, for: UIControlState())
-        belkayButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.85 / 2, width: 200, height: 30)
+        melisButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.25 / 2, width: 200, height: 30)
         view.addSubview(belkayButton)
         belkayButton.addTarget(self, action: #selector(self.belkay), for: UIControlEvents.touchUpInside)
         
         let canButton = FeedCell.buttonForTitle("Seher Can", imageName: "")
         canButton.setTitleColor(UIColor.white, for: UIControlState())
-        canButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.55 / 2, width: 200, height: 30)
+        canButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.05 / 2, width: 200, height: 30)
         view.addSubview(canButton)
         canButton.addTarget(self, action: #selector(self.can), for: UIControlEvents.touchUpInside)
         
         let uzunButton = FeedCell.buttonForTitle("Taner Uzun", imageName: "")
         uzunButton.setTitleColor(UIColor.white, for: UIControlState())
-        uzunButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.65 / 2, width: 200, height: 30)
+        uzunButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.15 / 2, width: 200, height: 30)
         view.addSubview(uzunButton)
         uzunButton.addTarget(self, action: #selector(self.uzun), for: UIControlEvents.touchUpInside)
     }

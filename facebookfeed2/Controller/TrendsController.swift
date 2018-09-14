@@ -40,6 +40,13 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         reloadPage()
         
         self.hideKeyboardWhenTappedAround()
+        NotificationCenter.default.addObserver(self, selector:  #selector(self.appMovedToBackground), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+    }
+    
+    @objc func appMovedToBackground() {
+        if self.tabBarController?.selectedIndex == trendsIndex {
+            self.playVisibleVideo()
+        }
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -100,7 +107,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     @objc func onRefesh() {
         self.reloadPage()
-        //self.collectionView?.reloadData()
+        self.collectionView?.reloadData()
         refreshControl.endRefreshing()
     }
     
@@ -135,16 +142,19 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                     do {
                         if let postsArray = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
                             self.nowMoreData = postsArray.count == 0 ? true : false
+                            var indexPaths = [IndexPath]()
                             for postDictionary in postsArray {
                                 let trend = TrendRequest()
                                 trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
                                 trend.setValuesForKeys(postDictionary)
                                 self.trendRequest.append(trend)
+                                indexPaths.append(IndexPath(row: self.trendRequest.count - 1, section: 0))
                             }
                             if self.nowMoreData == false {
                                 DispatchQueue.main.async {
                                     self.collectionView?.removeBluerLoader()
-                                    self.collectionView?.reloadData()
+                                    //self.collectionView?.reloadData()
+                                    self.collectionView?.insertItems(at: indexPaths)
                                 }
                             }
                         }
@@ -188,6 +198,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell =  collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TrendRequestCell
+        cell.layer.shouldRasterize = true
+        cell.layer.rasterizationScale = UIScreen.main.scale
         if trendRequest.count == 0 {
             return cell
         }
@@ -337,6 +349,28 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
             self.group.leave()
             let isMyFriend = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
             self.isProfileFriend = (isMyFriend as String).toBool()
+        }
+    }
+    
+    func getVisibleIndex() -> IndexPath {
+        let visibleRect = CGRect(origin: (collectionView?.contentOffset)!, size: (collectionView?.bounds.size)!)
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        let indexPath = collectionView?.indexPathForItem(at: visiblePoint)
+        return indexPath != nil ? indexPath! : IndexPath(item:0,section:0)
+    }
+    
+    func playVisibleVideo() {
+        for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
+            if !trendRequest[visIndex.row].provedWithImage! {
+                if let cell = collectionView?.cellForItem(at: visIndex) {
+                    let feedCell = cell as! TrendRequestCell
+                    if !self.trendRequest[visIndex.row].provedWithImage! {
+                        if let player = feedCell.avPlayerLayer.player {
+                            player.playImmediately(atRate: 1.0)
+                        }
+                    }
+                }
+            }
         }
     }
 }

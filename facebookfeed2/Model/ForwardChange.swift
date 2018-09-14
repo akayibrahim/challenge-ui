@@ -14,6 +14,7 @@ class ForwardChange: NSObject, NSCoding {
         aCoder.encode(viewCommentsCount, forKey: "viewCommentsCount")
         aCoder.encode(viewProofsCount, forKey: "viewProofsCount")
         aCoder.encode(joined, forKey: "joined")
+        aCoder.encode(canJoin, forKey: "canJoin")
         aCoder.encode(proved, forKey: "proved")
         aCoder.encode(firstTeamScore, forKey: "firstTeamScore")
         aCoder.encode(secondTeamScore, forKey: "secondTeamScore")
@@ -37,12 +38,13 @@ class ForwardChange: NSObject, NSCoding {
         self.viewCommentsCount = viewCommentsCount
     }
     
-    @objc init(index: IndexPath, forwardScreen: String, viewProofsCount: Int, joined: Bool, proved: Bool) {
+    @objc init(index: IndexPath, forwardScreen: String, viewProofsCount: Int, joined: Bool, proved: Bool, canJoin: Bool) {
         self.index = index
         self.forwardScreen = forwardScreen
         self.viewProofsCount = viewProofsCount
         self.joined = joined
         self.proved = proved
+        self.canJoin = canJoin
     }
     
     @objc init(index: IndexPath, forwardScreen: String, homeWinner: Bool, goal: String, result: String) {
@@ -67,6 +69,7 @@ class ForwardChange: NSObject, NSCoding {
         viewCommentsCount = aDecoder.decodeObject(forKey: "viewCommentsCount") as? Int
         viewProofsCount = aDecoder.decodeObject(forKey: "viewProofsCount") as? Int
         joined = aDecoder.decodeObject(forKey: "joined") as? Bool
+        canJoin = aDecoder.decodeObject(forKey: "canJoin") as? Bool
         proved = aDecoder.decodeObject(forKey: "proved") as? Bool
         firstTeamScore = aDecoder.decodeObject(forKey: "firstTeamScore") as? String
         secondTeamScore = aDecoder.decodeObject(forKey: "secondTeamScore") as? String
@@ -83,6 +86,7 @@ class ForwardChange: NSObject, NSCoding {
     var viewCommentsCount: Int?
     var viewProofsCount: Int?
     var joined: Bool?
+    var canJoin: Bool?
     var proved: Bool?
     @objc var firstTeamScore: String?
     @objc var secondTeamScore: String?

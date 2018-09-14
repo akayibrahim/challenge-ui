@@ -52,4 +52,5 @@ class Post: SafeJsonObject {
     var waitForApprove: Bool?
     var scoreRejected: Bool?
     @objc var scoreRejectName: String?
+    @objc var visibility: NSNumber?
 }

@@ -55,6 +55,7 @@ class TrendRequestCell: UICollectionViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
+        label.isOpaque = true
         return label
     }()
     
@@ -63,6 +64,7 @@ class TrendRequestCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         // imageView.backgroundColor = UIColor.blue
         imageView.layer.masksToBounds = true
+        imageView.isOpaque = true
         return imageView
     }()
     

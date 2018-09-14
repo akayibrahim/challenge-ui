@@ -25,10 +25,11 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     @objc var proofed: Bool = false
     @objc var canJoin: Bool = false
     @objc var done: Bool = false
+    @objc var joined: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - (!proofed && !canJoin && !done ? heightOfCommentView : 0)), style: UITableViewStyle.plain)        
+        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - (!proofed && !canJoin && !done && joined ? heightOfCommentView : 0)), style: UITableViewStyle.plain)        
         self.tableView.register(ProofCellView.self, forCellReuseIdentifier: "ProofCell")
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -46,7 +47,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             if canJoin {
                 let joinButton = UIBarButtonItem(title: "Join", style: UIBarButtonItemStyle.plain, target: self, action: #selector(joinChallenge))
                 navigationItem.rightBarButtonItem = joinButton
-            } else if !proofed {
+            } else if joined && !proofed {
                 messageInputContainerView.alpha = 1
                 setupInputComponents()
             }
@@ -60,6 +61,11 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.onRefresh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl)
+        NotificationCenter.default.addObserver(self, selector:  #selector(self.appMovedToBackground), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+    }
+    
+    @objc func appMovedToBackground() {
+        self.playVisibleVideo()
     }
     
     @objc func joinChallenge() {
@@ -94,7 +100,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     self.setupInputComponents()
                     self.navigationItem.rightBarButtonItem = nil
                     let forwardChange = Util.getForwardChange();
-                    Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount!, joined: false, proved: forwardChange.proved!))
+                    Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount!, joined: true, proved: forwardChange.proved!, canJoin: false))
                 }
             }
         }).resume()
@@ -323,7 +329,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     self.reloadPage()
                     let forwardChange = Util.getForwardChange();
                     if forwardChange.forwardScreen == FRWRD_CHNG_PRV {
-                        Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount! + 1, joined: forwardChange.joined!, proved: true))
+                        Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount! + 1, joined: forwardChange.joined!, proved: true, canJoin: false))
                     }
                     self.group.wait()
                     self.popupAlert(message: "ADDED!", willDelay: true)
@@ -362,6 +368,8 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProofCell", for: indexPath as IndexPath) as! ProofCellView
+        cell.layer.shouldRasterize = true
+        cell.layer.rasterizationScale = UIScreen.main.scale
         DispatchQueue.main.async {
             if self.proofs.count != 0 {
                 cell.prepareForReuse()

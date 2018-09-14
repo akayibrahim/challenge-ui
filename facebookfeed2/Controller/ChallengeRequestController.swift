@@ -194,6 +194,7 @@ class ChallengeRequestController: UITableViewController {
         challengeController.explorer = true
         challengeController.explorerCurrentPage = 0
         challengeController.challengIdForTrendAndExplorer = challengeId
+        challengeController.reloadChlPage()
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }

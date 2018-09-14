@@ -11,10 +11,10 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import MediaPlayer
 import AudioToolbox
+import GoogleSignIn
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     var window: UIWindow?
     @objc var isCont: Bool = false
     @objc var splashTimer: Timer?
@@ -31,6 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let vol = UserDefaults.standard.object(forKey: "volume") {
             volume = vol as! Float
         }
+        
+        GIDSignIn.sharedInstance().clientID = "241509157224-n5s4sor778c497hmq3l83ih7jkr0be90.apps.googleusercontent.com"
+        GIDSignIn.sharedInstance().delegate = self
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
@@ -55,12 +58,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     @objc func openApp() {
         let token = FBSDKAccessToken.current()
-        if(token != nil) {
+        if(token != nil || GIDSignIn.sharedInstance().hasAuthInKeychain()) {
             if let memberId = UserDefaults.standard.object(forKey: "memberID") {
                 if dummyServiceCall == false {
-                    ServiceLocator.fetchFacebookFriends()
                     self.getMemberInfo(memberId: memberId as! String)
-                    self.group.wait()
+                    let waitResult = self.group.wait(timeout: .now() + 15)
+                    if waitResult == .timedOut {
+                        window?.rootViewController = ConnectionProblemController()
+                        return
+                    }
+                    ServiceLocator.fetchFacebookFriends()
                 } else {
                     isCont = true
                 }
@@ -74,6 +81,72 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             FBSDKLoginManager().logOut()
             window?.rootViewController = FacebookController()
         }
+    }
+    
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        if let error = error {
+            print("\(error.localizedDescription)")
+        } else {
+            self.group.enter()
+            // let userId = user.userID                  // For client-side use only!
+            // let idToken = user.authentication.idToken // Safe to send to the server
+            // let fullName = user.profile.name
+            let givenName = user.profile.givenName
+            let familyName = user.profile.familyName
+            let email = user.profile.email
+            var imageUrlAbsString : String = ""
+            if user.profile.hasImage {
+                let imageUrl = signIn.currentUser.profile.imageURL(withDimension: 200)
+                imageUrlAbsString = (imageUrl?.absoluteString)!
+                // print(" image url: ", imageUrlAbsString!)
+            }
+            // print("userid:\(userId!), idToken:\(idToken!), fullName:\(fullName!), givenName:\(givenName!), familyName:\(familyName!), email:\(email!)")
+            self.addMember(firstName: givenName!, surname: familyName!, email: email!, facebookID: imageUrlAbsString)
+            group.wait()
+            if GIDSignIn.sharedInstance().hasAuthInKeychain() {
+                window?.rootViewController = CustomTabBarController()
+            }
+        }
+    }
+    
+    @objc func addMember(firstName: String, surname: String, email: String, facebookID: String) {        
+        let json: [String: Any] = ["name": firstName,
+                                   "surname": surname,
+                                   "email": email,
+                                   "facebookID": facebookID,
+                                   "phoneModel":"\(UIDevice().type)",
+            "region": Locale.current.regionCode!,
+            "language":Locale.current.languageCode!
+        ]
+        
+        let url = URL(string: addMemberURL)!
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    self.group.leave()
+                    DispatchQueue.main.async {
+                        let idOfMember = NSString(data: data, encoding: String.Encoding.utf8.rawValue)!
+                        memberID = idOfMember as String
+                        memberFbID = facebookID
+                        memberName = "\(firstName) \(surname)"
+                        let defaults = UserDefaults.standard
+                        defaults.set(memberID, forKey: "memberID")
+                        defaults.synchronize()
+                    }
+                } else {
+                    self.group.leave()
+                    let error = ServiceLocator.getErrorMessage(data: data, chlId: "", sUrl: addMemberURL, inputs: "name:\(firstName), surname: \(surname), email:\(email), facebookID:\(facebookID), phoneModel:\(UIDevice().type), region:\(Locale.current.regionCode!), language:\(Locale.current.languageCode!)")
+                    let alert = UIAlertController(title: "Error", message: error, preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                    self.window?.rootViewController?.present(alert, animated: true, completion: nil)
+                }
+            }
+        }).resume()
     }
     
     @objc func splashScreenToMain() {
@@ -95,9 +168,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         
-        let handled = FBSDKApplicationDelegate.sharedInstance().application(app, open: url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as! String?, annotation: options[UIApplicationOpenURLOptionsKey.annotation])
-        
-        return handled
+        let facebookDidHandle = FBSDKApplicationDelegate.sharedInstance().application(app, open: url, sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as! String?, annotation: options[UIApplicationOpenURLOptionsKey.annotation])
+        let googleDidHandle = GIDSignIn.sharedInstance().handle(url as URL?,
+                                         sourceApplication: options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String,
+                                         annotation: options[UIApplicationOpenURLOptionsKey.annotation])
+        return facebookDidHandle || googleDidHandle
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -136,8 +211,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             if let post = postOfMember {
                 guard let facebookID = post["facebookID"] as? String else {
-                    FBSDKLoginManager().logOut()
-                    self.window?.rootViewController = FacebookController()
+                    //FBSDKLoginManager().logOut()
+                    //self.window?.rootViewController = FacebookController()
                     return
                 }
                 self.isCont = true

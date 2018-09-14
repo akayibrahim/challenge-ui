@@ -84,8 +84,10 @@ class ConnectionProblemController: UIViewController {
     
     let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     @objc func reload() {
-        self.activityIndicator.startAnimating()
-        self.reloadT.alpha = 0
+        DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+            self.activityIndicator.startAnimating()
+            self.reloadT.alpha = 0
+        })
         if Reachability.isConnectedToNetwork() {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.openApp()

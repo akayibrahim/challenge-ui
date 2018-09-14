@@ -8,12 +8,13 @@
 
 import UIKit
 import FBSDKLoginKit
+import GoogleSignIn
 
 class OtherController: UITableViewController {
     @objc static let headerId = "headerId"
     @objc static let cellId = "cellId"
     @objc let screenSize = UIScreen.main.bounds
-    @objc var logoutIndex : Int = 3
+    @objc var logoutIndex : Int = 4
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +33,7 @@ class OtherController: UITableViewController {
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
         let cell = OtherViewCell(frame: frameOfCell, cellRow: indexPath.row)
         cell.imageView?.backgroundColor = UIColor.black
-        if indexPath.row == 2 {
+        if indexPath.row == 3 {
             cell.backgroundColor = pagesBackColor
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
@@ -45,6 +46,8 @@ class OtherController: UITableViewController {
         } else if indexPath.row == 1 {
             support()
         } else if indexPath.row == 2 {
+            shareViaFriend()
+        } else if indexPath.row == 3 {
         } else if indexPath.row == logoutIndex {
             logout()
         }
@@ -55,7 +58,7 @@ class OtherController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 5
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -84,6 +87,7 @@ class OtherController: UITableViewController {
             return
         }
         FBSDKLoginManager().logOut()
+        GIDSignIn.sharedInstance().signOut()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = FacebookController()
     }
@@ -113,6 +117,15 @@ class OtherController: UITableViewController {
     }
     
     @objc func support() {
+    }
+    
+    @objc func shareViaFriend() {
+        let text = "app store id"
+        let textToShare = [ text ]
+        let activity = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        activity.popoverPresentationController?.sourceView = self.view
+        activity.excludedActivityTypes = [] // [UIActivityType.airDrop, UIActivityType.postToFacebook]
+        self.present(activity, animated:  true, completion: nil)
     }
 }
 

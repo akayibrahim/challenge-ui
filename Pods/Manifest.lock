@@ -7,6 +7,9 @@ PODS:
     - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
   - CCBottomRefreshControl (0.5.2)
+  - Crashlytics (3.10.5):
+    - Fabric (~> 1.7.9)
+  - Fabric (1.7.9)
   - FBSDKCoreKit (4.29.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.29.0):
@@ -55,6 +58,8 @@ PODS:
 DEPENDENCIES:
   - Alamofire
   - CCBottomRefreshControl
+  - Crashlytics
+  - Fabric
   - FBSDKCoreKit (= 4.29.0)
   - FBSDKLoginKit (= 4.29.0)
   - GoogleSignIn
@@ -68,6 +73,8 @@ SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   CCBottomRefreshControl: 389780b4488321c91d18f66a6da5ef9606df6de5
+  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
+  Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   FBSDKCoreKit: 6f139173dc63a1deaff4430a55f2fe5bb222d2af
   FBSDKLoginKit: 56a057ca6822535ea0faa25f57a7c41edb697fd4
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
@@ -84,6 +91,6 @@ SPEC CHECKSUMS:
   SteviaLayout: 0d2112caea45707695e8c718262c8ea3dd37ef17
   YPImagePicker: 049aa31e2858c63730ace6b6358bba946178dfe3
 
-PODFILE CHECKSUM: c4e5a64b0f0644e2b5a77f2c8a9abc5e9ce4481b
+PODFILE CHECKSUM: a8bb218bbcfc437ca32c3d7ffffc0a3011c79b27
 
 COCOAPODS: 1.3.1

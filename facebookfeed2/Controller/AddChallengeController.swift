@@ -88,10 +88,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         firstPage = false
         enableDisableCells(disable: false)
         if !isSelf() && !isToWorld() {
-            let addViewCell = getCell(path: addViewIndexPath)
+            // let addViewCell = getCell(path: addViewIndexPath)
             let deadlineCell = getCell(path: deadlineIndexPath)
             let daysBetween = getDayBetweenDates(isSelect: false)
-            addViewCell.addChallenge.untilDateLabel.text = "CHALLENGE TIME is \(daysBetween) DAYS"
             deadlineCell.labelOtherSide.text = "\(daysBetween) Days"
             deadlineCell.label.text = "CHALLENGE TIME"
             deadlineCell.label.font = UIFont.systemFont(ofSize: 13)
@@ -200,8 +199,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             tableView.reloadRows(at: [proofIndexPath], with: .fade)
         }
         if !firstPage {
-            let daysBetween = getDayBetweenDates(isSelect: false)
-            addViewCell.addChallenge.untilDateLabel.text = (!isToWorld() && !isSelf()) ? "CHALLENGE TIME is \(daysBetween) DAYS" : "LAST \(daysBetween) DAYS"
+            _ = getDayBetweenDates(isSelect: false)
         }
     }
     
@@ -455,10 +453,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             selectionTable.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath == deadlineIndexPath {
-            let addViewContent = getCell(path: addViewIndexPath)
+            // let addViewContent = getCell(path: addViewIndexPath)
             if !firstPage {
-                let daysBetween = getDayBetweenDates(isSelect: true)
-                addViewContent.addChallenge.untilDateLabel.text = (!isToWorld() && !isSelf()) ? "CHALLENGE TIME is \(daysBetween) DAYS" : "LAST \(daysBetween) DAYS"
+                _ = getDayBetweenDates(isSelect: true)
             }
         } else if indexPath == resultIndexPath {
             let updateProgress = UpdateProgressController()
@@ -560,15 +557,16 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     @objc func getDayBetweenDates(isSelect : Bool) -> Int {
         let cellContent = getCell(path: calenddarIndexPath)
         let cCellContent = getCell(path: deadlineIndexPath)
+        let addViewContent = getCell(path: addViewIndexPath)
         let formatter = DateFormatter()
         formatter.dateFormat = "dd-MM-yyyy HH:mm"
         let formattedDate = formatter.string(from: cellContent.datePicker.date)
         if isSelect {
             if !isToWorld() && !isSelf() {
                 let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
-                cCellContent.labelOtherSide.text = "\(daysBetween) Days"
                 let minutesBetween : Int = Calendar.current.dateComponents([.minute], from: Date(), to: cellContent.datePicker.date).minute!
                 addChallengeIns[deadlineIndex].resultId = minutesBetween
+                cCellContent.labelOtherSide.text = daysBetween != 0 ? "\(daysBetween) Days" : "\(minutesBetween / 60) Hours"
             } else {
                 cCellContent.labelOtherSide.text = formattedDate
             }
@@ -587,7 +585,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             }
         }
         let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
+        let minutesBetween : Int = Calendar.current.dateComponents([.minute], from: Date(), to: cellContent.datePicker.date).minute!
         addChallengeIns[deadlineIndex].resultText = getDateAsFormatted(date: cellContent.datePicker.date)
+        let text = daysBetween != 0 ? "\(daysBetween) Days" : "\(minutesBetween / 60) Hours"
+        addViewContent.addChallenge.untilDateLabel.text = (!isToWorld() && !isSelf()) ? "CHALLENGE TIME is \(text)" : "LAST \(text)"
         return daysBetween
     }
     
@@ -935,8 +936,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
         if !firstPage {
             if (!isDone()) {
-                let daysBetween = getDayBetweenDates(isSelect: false)
-                addViewContent.addChallenge.untilDateLabel.text = (!isToWorld() && !isSelf()) ? "CHALLENGE TIME is \(daysBetween) DAYS" : "LAST \(daysBetween) DAYS"
+                _ = getDayBetweenDates(isSelect: false)
             } else {
                 addViewContent.addChallenge.untilDateLabel.isHidden = true
                 addViewContent.addChallenge.finishFlag.isHidden = false

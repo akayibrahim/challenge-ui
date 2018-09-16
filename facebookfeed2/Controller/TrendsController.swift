@@ -263,6 +263,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         challengeController.challengIdForTrendAndExplorer = challengeId
         challengeController.trend = true
         challengeController.explorerCurrentPage = 0
+        challengeController.selectedTabIndex = self.tabBarController?.selectedIndex ?? 0
         challengeController.reloadChlPage()
         // challengeController.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)

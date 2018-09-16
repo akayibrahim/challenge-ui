@@ -12,6 +12,8 @@ import FBSDKLoginKit
 import MediaPlayer
 import AudioToolbox
 import GoogleSignIn
+import Fabric
+import Crashlytics
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
@@ -32,10 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             volume = vol as! Float
         }
         
-        GIDSignIn.sharedInstance().clientID = "241509157224-n5s4sor778c497hmq3l83ih7jkr0be90.apps.googleusercontent.com"
-        GIDSignIn.sharedInstance().delegate = self
-        
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        
+        GIDSignIn.sharedInstance().clientID = "241509157224-cbdshgv4f08i9vvo6hclidic4gr94i3r.apps.googleusercontent.com"
+        GIDSignIn.sharedInstance().delegate = self
         
         if !Reachability.isConnectedToNetwork() {
             window?.rootViewController = ConnectionProblemController()
@@ -53,9 +55,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         application.statusBarStyle = .lightContent
         playAudioWithOther()
+        
+        Fabric.with([Crashlytics.self])
+        self.logUser()
+
         return true
     }
     
+    func logUser() {
+        // TODO: Use the current user's information
+        // You can call any combination of these three methods
+        Crashlytics.sharedInstance().setUserEmail("that_see@hotmail.com")
+        // Crashlytics.sharedInstance().setUserIdentifier("12345")
+        // Crashlytics.sharedInstance().setUserName("iakay")
+    }
+
     @objc func openApp() {
         let token = FBSDKAccessToken.current()
         if(token != nil || GIDSignIn.sharedInstance().hasAuthInKeychain()) {
@@ -102,11 +116,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             }
             // print("userid:\(userId!), idToken:\(idToken!), fullName:\(fullName!), givenName:\(givenName!), familyName:\(familyName!), email:\(email!)")
             self.addMember(firstName: givenName!, surname: familyName!, email: email!, facebookID: imageUrlAbsString)
-            group.wait()
             if GIDSignIn.sharedInstance().hasAuthInKeychain() {
-                window?.rootViewController = CustomTabBarController()
+                window?.rootViewController = SplashScreenController()
+                splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
             }
         }
+    }
+    
+    @objc func splashScreenToMain() {
+        group.wait()
+        window?.rootViewController = CustomTabBarController()
     }
     
     @objc func addMember(firstName: String, surname: String, email: String, facebookID: String) {        
@@ -147,10 +166,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                 }
             }
         }).resume()
-    }
-    
-    @objc func splashScreenToMain() {
-        window?.rootViewController = CustomTabBarController()
     }
     
     @objc func playAudioWithOther() {

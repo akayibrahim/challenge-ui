@@ -9,30 +9,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "facebookfeed2/Singleton/AppDelegate.swift"
-            timestampString = "558628622.8295929"
+            filePath = "facebookfeed2/Controller/ChallengesController.swift"
+            timestampString = "558793490.032625"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129"
-            landmarkName = "addMember(firstName:surname:email:facebookID:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "facebookfeed2/Singleton/AppDelegate.swift"
-            timestampString = "558628622.830354"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
-            landmarkName = "addMember(firstName:surname:email:facebookID:)"
-            landmarkType = "7">
+            startingLineNumber = "1323"
+            endingLineNumber = "1323"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

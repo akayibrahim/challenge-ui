@@ -18,5 +18,7 @@ pod 'RxCocoa',    '~> 4.0'
 pod 'RxGesture'
 pod 'CCBottomRefreshControl'
 pod 'GoogleSignIn'
+pod 'Fabric'
+pod 'Crashlytics'
 
 end

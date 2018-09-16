@@ -33,7 +33,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                 ServiceLocator.fetchFacebookFriends()
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.window?.rootViewController = SplashScreenController()
-                splashTimer = Timer.scheduledTimer(timeInterval: 0, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
+                splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
             }
         }
     }
@@ -214,8 +214,12 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
     }
     
     @objc func splashScreenToMain() {
-        group.wait()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let waitResult = self.group.wait(timeout: .now() + 15)
+        if waitResult == .timedOut {
+            appDelegate.window?.rootViewController = ConnectionProblemController()
+            return
+        }
         appDelegate.window?.rootViewController = CustomTabBarController()
     }
     
@@ -229,8 +233,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         
         connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
             if error == nil {
+                print("1")
                 // print(result!)
-                //print("https://graph.facebook.com/10156204749600712/invitable_friends?access_token=\(FBSDKAccessToken.current().tokenString)")
+                // print("https://graph.facebook.com/10156204749600712/invitable_friends?access_token=\(FBSDKAccessToken.current().tokenString)")
                 let data = result as! [String : Any]
                 let first_name = data["first_name"] as? String
                 let last_name = data["last_name"] as? String

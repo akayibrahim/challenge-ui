@@ -88,6 +88,9 @@ class OtherController: UITableViewController {
         }
         FBSDKLoginManager().logOut()
         GIDSignIn.sharedInstance().signOut()
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: "memberID")
+        defaults.synchronize()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = FacebookController()
     }

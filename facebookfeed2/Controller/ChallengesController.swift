@@ -64,7 +64,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        selectedTabIndex = self.tabBarController?.selectedIndex ?? 0
+        selectedTabIndex = self.tabBarController?.selectedIndex ?? selectedTabIndex
         viewFramwWidth = view.frame.width
         if !explorer && !trend {
             if selectedTabIndex != profileIndex && !self.profile {
@@ -114,8 +114,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc func appMovedToBackground() {
         if self.tabBarController?.selectedIndex == chanllengeIndex
             || (self.tabBarController?.selectedIndex == selectedTabIndex && self.explorer)
-            || (self.tabBarController?.selectedIndex == selectedTabIndex && self.explorer)            
-            || (self.tabBarController?.selectedIndex == trendsIndex && self.trend) {
+            || (self.tabBarController?.selectedIndex == selectedTabIndex && self.tabBarController?.selectedIndex == trendsIndex && self.trend) {
             self.playVisibleVideo()
         }
     }
@@ -530,6 +529,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 profileCell.privateLabel.alpha = 1
             }
         }
+        self.group.wait()
         profileCell.other.addTarget(self, action: #selector(self.openOthers), for: UIControlEvents.touchUpInside)
         profileCell.followersCount.text = "\((profile ? memberCountOfFollowerForFriendProfile : countOffollowers)!)"
         let followersCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowersCountTap))
@@ -543,7 +543,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         profileCell.followingLabel.isUserInteractionEnabled = true
         let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleChallengeCountTap))
         profileCell.challangeCount.isUserInteractionEnabled = true
-        self.group.wait()
         profileCell.challangeCount.text = self.challangeCount
         if !profile || (profile && !memberIsPrivateForFriendProfile!) || (profile && memberIsPrivateForFriendProfile! && isProfileFriend) {
             profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
@@ -1230,7 +1229,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func playVisibleVideo() {
-        if selectedTabIndex == profileIndex || self.profile {
+        if !self.explorer && (selectedTabIndex == profileIndex || self.profile) {
             return
         }
         let indexPath = getVisibleIndex()
@@ -1321,6 +1320,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         challengeController.explorer = true
         challengeController.challengIdForTrendAndExplorer = challengeId
         challengeController.explorerCurrentPage = 0
+        challengeController.selectedTabIndex = self.tabBarController?.selectedIndex ?? 0
         challengeController.reloadChlPage()
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)

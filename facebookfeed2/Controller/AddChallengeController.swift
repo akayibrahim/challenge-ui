@@ -883,9 +883,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         let isLeftSide = popIndexPath == leftSideIndex
         let isRightSide = popIndexPath == rightSideIndex        
         if isPublic() {
-            if reset {
+            /* if reset {
                 setChlrPeopleImages(result : result, reset: !reset)
-            }
+            } */
             setPeopleImages(result : result, reset: false)
         } else if isPrivate() || isSelf() {
             if isLeftSide {

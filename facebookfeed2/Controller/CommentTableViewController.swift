@@ -25,7 +25,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height), style: UITableViewStyle.plain)
+        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - (heightOfCommentView + 10)), style: UITableViewStyle.plain)
         self.tableView.register(CommentCellView.self, forCellReuseIdentifier: "LabelCell")
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -200,6 +200,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     @objc func addComment() {
         if textView.text == addComents {
             self.popupAlert(message: "Please enter your comment!", willDelay: false)
+            return
         }
         var json: [String: Any] = ["challengeId": self.challengeId,
                                    "memberId": memberID,
@@ -235,6 +236,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
     
     @objc let heighForRow : CGFloat = UIScreen.main.bounds.width * 0.9 / 10
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if comments.count == 0 {
+            return heighForRow
+        }
         let thinksAboutChl = comments[indexPath.item].comment
         if let thinksAboutChallenge = thinksAboutChl {
             let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)], context: nil)

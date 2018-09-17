@@ -188,11 +188,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 isMyFriend(friendMemberId: memberIdForFriendProfile!)
                 isRequestedFriend(friendMemberId: memberIdForFriendProfile!)
                 navigationItem.title = nameForOpenProfile
-                memberNameForFriendProfile = nameForOpenProfile
-                memberFbIdForFriendProfile = facebookIDForOpenProfile
-                memberCountOfFollowerForFriendProfile = countOfFollowersForOpenProfile
-                memberCountOfFollowingForFriendProfile = countOfFollowingForOpenProfile
-                memberIsPrivateForFriendProfile = friendIsPrivate
                 if self.memberIdForFriendProfile != memberID {
                     self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
                     self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
@@ -504,6 +499,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc func createProfile() -> ProfileCellView {
         if profile {
             group.wait()
+            memberNameForFriendProfile = nameForOpenProfile
+            memberFbIdForFriendProfile = facebookIDForOpenProfile
+            memberCountOfFollowerForFriendProfile = countOfFollowersForOpenProfile
+            memberCountOfFollowingForFriendProfile = countOfFollowingForOpenProfile
+            memberIsPrivateForFriendProfile = friendIsPrivate
         }
         let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10), memberFbId: (profile ? memberFbIdForFriendProfile! : memberFbID) , name: (profile ? memberNameForFriendProfile! : memberName))
         if profile {
@@ -522,11 +522,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 profileCell.unfollow.memberId = memberIdForFriendProfile
                 profileCell.follow.addTarget(self, action: #selector(self.followProfile), for: UIControlEvents.touchUpInside)
                 profileCell.unfollow.addTarget(self, action: #selector(self.unFollowProfile), for: UIControlEvents.touchUpInside)
+                if memberIsPrivateForFriendProfile! && !isProfileFriend {
+                    profileCell.privateLabel.alpha = 1
+                }
             } else {
                 profileCell.other.alpha = 1
-            }
-            if memberIsPrivateForFriendProfile! && !isProfileFriend {
-                profileCell.privateLabel.alpha = 1
             }
         }
         self.group.wait()
@@ -544,7 +544,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let challengeTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleChallengeCountTap))
         profileCell.challangeCount.isUserInteractionEnabled = true
         profileCell.challangeCount.text = self.challangeCount
-        if !profile || (profile && !memberIsPrivateForFriendProfile!) || (profile && memberIsPrivateForFriendProfile! && isProfileFriend) {
+        if  !profile || (profile && !memberIsPrivateForFriendProfile!) || (profile && memberIsPrivateForFriendProfile! && isProfileFriend) ||
+            memberIdForFriendProfile == memberID {
             profileCell.followersCount.addGestureRecognizer(followersCountTapGesture)
             profileCell.followersLabel.addGestureRecognizer(followersLabelTapGesture)
             profileCell.followingCount.addGestureRecognizer(followingCountTapGesture)

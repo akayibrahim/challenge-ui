@@ -114,8 +114,8 @@ class AddChallengeView: UIView {
 
         vsImageView.image = UIImage(named: "vs")
         
-        untilDateLabel.text = "DeadLine"
-        untilDateLabel.font = UIFont (name: "Marker Felt", size: 24)
+        untilDateLabel.text = "Deadline"
+        untilDateLabel.font = UIFont (name: "Marker Felt", size: isModelLessThanSix() ? 22 : 24)
         untilDateLabel.textAlignment = .center
         untilDateLabel.numberOfLines = 2;
         untilDateLabel.textColor = UIColor.gray

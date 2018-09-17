@@ -906,7 +906,7 @@ class FeedCell: UICollectionViewCell {
         middleBottomGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor, constant: screenSize.width * 1/6).isActive = true
         
         addSubview(subjectLabel)
-        addTopAnchor(subjectLabel, anchor: middleBottomGuide.bottomAnchor, constant: 0)
+        addTopAnchor(subjectLabel, anchor: middleBottomGuide.bottomAnchor, constant: 1)
         subjectLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         addHeightAnchor(subjectLabel, multiplier: 1/15)
         subjectLabel.adjustsFontSizeToFitWidth = true
@@ -1192,7 +1192,7 @@ class FeedCell: UICollectionViewCell {
     @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
     @objc let activeLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
     @objc let goalLabel: UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
-    @objc let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor.white, textColor: UIColor.black)
+    @objc let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.black)
     @objc let insertTime: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
     @objc let visibilityLabel: UILabel = FeedCell.labelCreate(7, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.lightGray)
     

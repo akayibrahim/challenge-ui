@@ -133,7 +133,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         
         let belkayButton = FeedCell.buttonForTitle("belkay bahçıvan", imageName: "")
         belkayButton.setTitleColor(UIColor.white, for: UIControlState())
-        melisButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.25 / 2, width: 200, height: 30)
+        belkayButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.25 / 2, width: 200, height: 30)
         view.addSubview(belkayButton)
         belkayButton.addTarget(self, action: #selector(self.belkay), for: UIControlEvents.touchUpInside)
         

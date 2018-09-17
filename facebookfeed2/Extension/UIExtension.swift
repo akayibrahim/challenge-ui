@@ -706,3 +706,7 @@ public extension UIDevice {
         return Model.unrecognized
     }
 }
+
+func isModelLessThanSix() -> Bool {
+    return UIDevice.init().type == Model.iPhone4 || UIDevice.init().type == Model.iPhone5 || UIDevice.init().type == Model.iPhone5S || UIDevice.init().type == Model.iPhone5C
+}

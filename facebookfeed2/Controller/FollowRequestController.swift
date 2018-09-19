@@ -66,7 +66,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
     }
     
     @objc func searchFriends(key: String) {
-        let jsonURL = URL(string: searchFriendsURL + key + "&memberId=\(memberID)")!
+        let jsonURL = URL(string: searchFriendsURL + key.trim().replace(target: " ", withString: ".") + "&memberId=\(memberID)")!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,

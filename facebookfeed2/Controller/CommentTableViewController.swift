@@ -112,7 +112,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
             let isKeyboardShowing = notification.name == NSNotification.Name.UIKeyboardWillShow
             bottomConstraint?.constant = isKeyboardShowing ? -keyboardFrame!.height : 0
-            self.tableView.frame.size.height = (keyboardFrame?.origin.y)! - (self.textView.frame.height + 10)
+            self.tableView.frame.size.height = (keyboardFrame?.origin.y)! - (heightOfCommentView + 10)
             if !isKeyboardShowing {
             }
             tableBottomHeight = (keyboardFrame?.origin.y)!
@@ -255,6 +255,9 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         let cell = tableView.dequeueReusableCell(withIdentifier: "LabelCell", for: indexPath as IndexPath) as! CommentCellView
         // let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: heighForRow)
         // let cell = CommentCellView(frame: frameOfCell, cellRow: indexPath.row)
+        if comments.count == 0 {
+            return cell
+        }
         let fbID = comments[indexPath.item].fbID
         cell.thinksAboutChallengeView.attributedText = getCommentText(indexPath: indexPath)
         setImage(fbID: fbID, imageView: cell.profileImageView)

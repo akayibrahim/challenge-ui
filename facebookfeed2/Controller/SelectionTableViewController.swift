@@ -605,9 +605,9 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                     }
                     return
             }
-            self.group.leave()
             let isMyFriend = NSString(data: returnData, encoding: String.Encoding.utf8.rawValue)!
             self.isProfileFriend = (isMyFriend as String).toBool()
+            self.group.leave()
         }
     }
     

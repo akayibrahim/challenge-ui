@@ -256,7 +256,10 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                                    "facebookID": facebookID,
                                    "phoneModel":"\(UIDevice().type)",
                                    "region": Locale.current.regionCode!,
-                                   "language":Locale.current.languageCode!
+                                   "language":Locale.current.languageCode!,
+                                   "releaseVersion": Bundle.main.releaseVersionNumber!,
+                                   "buildVersion" : Bundle.main.buildVersionNumber!,
+                                   "osVersion": UIDevice.current.systemVersion
                                 ]
         
         let url = URL(string: addMemberURL)!

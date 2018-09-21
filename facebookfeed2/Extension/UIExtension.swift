@@ -508,15 +508,19 @@ extension UIImageView {
 
 // var avPlayer : AVPlayer = AVPlayer()
 extension AVPlayerLayer {
+    @objc func loadWithoutObserver(challengeId: String, challengerId: String, play: Bool) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play, observer: false)
+    }
+    
     @objc func load(challengeId: String, challengerId: String, play: Bool) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play)
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play, observer: true)
     }
     
     @objc func loadWithZeroVolume(challengeId: String, challengerId: String, play: Bool) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, play: play)
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, play: play, observer: true)
     }
     
-    func loadPlayer(challengeId: String, challengerId: String, volume: Float, play: Bool) {
+    func loadPlayer(challengeId: String, challengerId: String, volume: Float, play: Bool, observer: Bool) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
@@ -525,7 +529,9 @@ extension AVPlayerLayer {
                         DispatchQueue.main.async {
                             // let item = AVPlayerItem.init(url: video)
                             let avPlayer = AVPlayer(url: video)
-                            avPlayer.actionAtItemEnd = .none
+                            if observer {
+                                avPlayer.actionAtItemEnd = .none
+                            }
                             avPlayer.volume = volume
                             self.player = avPlayer
                             self.player?.automaticallyWaitsToMinimizeStalling = false
@@ -533,8 +539,10 @@ extension AVPlayerLayer {
                                 self.player?.playImmediately(atRate: 1.0)
                             }
                         }
-                        NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
-                        //NotificationCenter.default.addObserver(self, selector:  #selector(self.resumeDidFinishPlaying), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+                        if observer {
+                            NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
+                            //NotificationCenter.default.addObserver(self, selector:  #selector(self.resumeDidFinishPlaying), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+                        }
                     }
                 })
             }
@@ -709,4 +717,13 @@ public extension UIDevice {
 
 func isModelLessThanSix() -> Bool {
     return UIDevice.init().type == Model.iPhone4 || UIDevice.init().type == Model.iPhone5 || UIDevice.init().type == Model.iPhone5S || UIDevice.init().type == Model.iPhone5C
+}
+
+extension Bundle {
+    var releaseVersionNumber: String? {
+        return infoDictionary?["CFBundleShortVersionString"] as? String
+    }
+    var buildVersionNumber: String? {
+        return infoDictionary?["CFBundleVersion"] as? String
+    }
 }

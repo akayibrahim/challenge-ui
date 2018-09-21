@@ -129,13 +129,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     }
     
     @objc func addMember(firstName: String, surname: String, email: String, facebookID: String) {        
-        let json: [String: Any] = ["name": firstName,
-                                   "surname": surname,
-                                   "email": email,
-                                   "facebookID": facebookID,
-                                   "phoneModel":"\(UIDevice().type)",
-            "region": Locale.current.regionCode!,
-            "language":Locale.current.languageCode!
+        let json: [String: Any] = [ "name": firstName,
+                                    "surname": surname,
+                                    "email": email,
+                                    "facebookID": facebookID,
+                                    "phoneModel":"\(UIDevice().type)",
+                                    "region": Locale.current.regionCode!,
+                                    "language":Locale.current.languageCode!,
+                                    "releaseVersion": Bundle.main.releaseVersionNumber!,
+                                    "buildVersion" : Bundle.main.buildVersionNumber!,
+                                    "osVersion": UIDevice.current.systemVersion
         ]
         
         let url = URL(string: addMemberURL)!

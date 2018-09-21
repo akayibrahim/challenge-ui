@@ -65,6 +65,16 @@ class ProofCellView: UITableViewCell {
             // self.avPlayerLayer.repeatCount = 10            
             self.proofedVideoView.layer.masksToBounds = true
         }
+        
+        setImage(name: "playButton", imageView: playButtonView)
+        addSubview(playButtonView)
+        addTopAnchor(playButtonView, anchor: proofedVideoView.topAnchor, constant: (proofedVideoView.frame.height / 2) - screenWidth * 1.5 / 10 / 2)
+        addLeadingAnchor(playButtonView, anchor: proofedVideoView.leadingAnchor, constant: (proofedVideoView.frame.width / 2) - screenWidth * 1.5 / 10 / 2)
+        addWidthAnchor(playButtonView, multiplier: 1.5 / 10)
+        addHeightAnchor(playButtonView, multiplier: 1.5 / 10)
+        playButtonView.alpha = 0
+        playButtonView.layer.zPosition = 1
+        
         addSubview(volumeUpImageView)
         addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
         addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
@@ -83,11 +93,18 @@ class ProofCellView: UITableViewCell {
         setImage(name: volumeDown, imageView: volumeDownImageView)
     }
 
-    
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
     @objc let thinksAboutChallengeView: UITextView = FeedCell().thinksAboutChallengeView
     
     @objc let proofImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        // imageView.backgroundColor = UIColor.blue
+        imageView.layer.masksToBounds = true
+        return imageView
+    }()
+    
+    @objc let playButtonView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         // imageView.backgroundColor = UIColor.blue

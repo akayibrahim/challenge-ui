@@ -26,6 +26,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     @objc var canJoin: Bool = false
     @objc var done: Bool = false
     @objc var joined: Bool = false
+    @objc var activeIndex: IndexPath = IndexPath(item: 0, section: 0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +66,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     @objc func appMovedToBackground() {
-        self.playVisibleVideo()
+        self.playActiveVideo(false)
     }
     
     @objc func joinChallenge() {
@@ -380,11 +381,16 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 self.setImage(fbID: fbID, imageView: cell.profileImageView)
                 if let proofObjectId = self.proofs[indexPath.item].proofObjectId {
                     if self.proofs[indexPath.item].provedWithImage! {
-                        self.imageEnable(cell, yes: true)
+                        self.imageEnable(cell, yes: true, play: false)
                         cell.proofImageView.loadByObjectId(objectId: proofObjectId)
                     } else {
-                        self.imageEnable(cell, yes: false)
-                        cell.avPlayerLayer.load(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: indexPath.row == 0 ? true : false)
+                        let willPlay = indexPath.row == 0 ? true : false
+                        self.imageEnable(cell, yes: false, play : willPlay)
+                        cell.avPlayerLayer.loadWithoutObserver(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: willPlay)
+                        if willPlay {
+                            cell.playButtonView.alpha = 0
+                            NotificationCenter.default.addObserver(self, selector:  #selector(self.playerFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+                        }
                     }
                 }
             }
@@ -412,8 +418,25 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         return cell
     }
     
-    @objc func imageEnable(_ feedCell: ProofCellView, yes: Bool) {
+    @objc func playerFinishPlaying(note: NSNotification) {
+        tableView.isScrollEnabled = false
+        let newActiveIndex = IndexPath(item: self.activeIndex.row + 1, section: 0)
+        if newActiveIndex.row < self.proofs.count {
+            self.activeIndex = newActiveIndex
+            self.tableView.scrollToRow(at: self.activeIndex, at: .top, animated: true)
+            self.playActiveVideo(false)
+        } else {
+            self.playActiveVideo(true)
+        }
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        tableView.isScrollEnabled = true
+    }
+    
+    @objc func imageEnable(_ feedCell: ProofCellView, yes: Bool, play : Bool) {
         feedCell.proofedVideoView.alpha = yes ? 0 : 1
+        feedCell.playButtonView.alpha = !yes && !play ? 1 : 0
         feedCell.volumeUpImageView.alpha = !yes && volume == 1 ? 1 : 0
         feedCell.volumeDownImageView.alpha = !yes && volume == 0 ? 1 : 0
         feedCell.proofImageView.alpha = yes ? 1 : 0
@@ -421,13 +444,20 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     @objc func changeVolume(gesture: UITapGestureRecognizer) {
         DispatchQueue.main.async {
-            volume = volume.isEqual(to: 0) ? 1 : 0
-            let defaults = UserDefaults.standard
-            defaults.set(volume, forKey: "volume")
-            defaults.synchronize()
             let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
             let feedCell = self.tableView?.cellForRow(at: index) as! ProofCellView
-            self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
+            if let player = feedCell.avPlayerLayer.player {
+                if player.rate > 0 {
+                    volume = volume.isEqual(to: 0) ? 1 : 0
+                    let defaults = UserDefaults.standard
+                    defaults.set(volume, forKey: "volume")
+                    defaults.synchronize()
+                    self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
+                } else {
+                    self.activeIndex = index
+                    self.playActiveVideo(false)
+                }
+            }
         }
     }
     
@@ -458,53 +488,6 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    // var avPlayer : AVPlayer = AVPlayer.init()
-    @objc var isZooming = false
-    var originalImageCenter: CGPoint?
-    @objc func pan(sender: UIPanGestureRecognizer) {
-        if self.isZooming && sender.state == .began {
-            self.originalImageCenter = sender.view?.center
-        } else if self.isZooming && sender.state == .changed {
-            let translation = sender.translation(in: sender.view)
-            // note: 'view' is optional and need to be unwrapped
-            if !((sender.view?.frame.minX)! <= CGFloat(-32) && (sender.view?.frame.maxX)! >= self.view.frame.maxX + 32) {
-            }
-            sender.view!.center = CGPoint(x: sender.view!.center.x + translation.x, y: sender.view!.center.y + translation.y)
-            sender.setTranslation(CGPoint.zero, in: self.view.superview)
-        }
-    }
-    
-    var lastScale:CGFloat!
-    @objc func zoom(sender:UIPinchGestureRecognizer) {
-        let postImage = sender.view as! UIImageView
-        if(sender.state == .began) {
-            // Reset the last scale, necessary if there are multiple objects with different scales
-            lastScale = sender.scale
-            self.tableView?.isScrollEnabled = false
-        } else if (sender.state == .changed) {
-            self.isZooming = true
-            let currentScale = sender.view!.layer.value(forKeyPath:"transform.scale")! as! CGFloat
-            // Constants to adjust the max/min values of zoom
-            let kMaxScale:CGFloat = 2.5
-            let kMinScale:CGFloat = 2.0
-            var newScale = 1 -  (lastScale - sender.scale)
-            newScale = min(newScale, kMaxScale / currentScale)
-            newScale = max(newScale, kMinScale / currentScale)
-            let transform = (sender.view?.transform)!.scaledBy(x: newScale, y: newScale);
-            sender.view?.transform = transform
-            lastScale = sender.scale  // Store the previous scale factor for the next pinch gesture call
-        } else if sender.state == .ended || sender.state == .failed || sender.state == .cancelled {
-            guard let center = self.originalImageCenter else {return}
-            UIView.animate(withDuration: 0.3, animations: {
-                postImage.transform = CGAffineTransform.identity
-                postImage.center = center
-            }, completion: { _ in
-                self.isZooming = false
-            })
-            self.tableView?.isScrollEnabled = true
-        }
-    }
-    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
@@ -523,17 +506,17 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         return 44
     }
     
-    func playVisibleVideo() {
+    func playActiveVideo(_ pauseAll: Bool) {
         for visIndex in (self.tableView?.indexPathsForVisibleRows)! {
-            if self.tableView.isRowCompletelyVisible(at: visIndex) {
+            if activeIndex == visIndex && !pauseAll {
                 if let cell = tableView.cellForRow(at: visIndex) {
                     let feedCell = cell as! ProofCellView
-                    // let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width, y: UIScreen.main.bounds.size.height)
-                    //if feedCell.proofedVideoView.frame.contains(frameSize)  {
                     if let player = feedCell.avPlayerLayer.player { // && !self.proofs[index.row].provedWithImage! {
+                        player.volume = volume
                         player.play()
+                        feedCell.playButtonView.alpha = 0
+                        self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0 )
                     }
-                    //}
                 }
             } else {
                 if let cell = tableView.cellForRow(at: visIndex) {
@@ -541,6 +524,8 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     if let player = feedCell.avPlayerLayer.player {
                         player.volume = volume
                         player.pause()
+                        feedCell.playButtonView.alpha = 1
+                        self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0 )
                     }
                 }
             }
@@ -548,7 +533,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        playVisibleVideo()
+        if tableView.isScrollEnabled {
+            self.playActiveVideo(true)
+        }
     }
     
     @objc func openProfile(name: String, memberId: String, memberFbId:String) {

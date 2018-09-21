@@ -1080,6 +1080,7 @@
 				CODE_SIGN_ENTITLEMENTS = facebookfeed2/facebookfeed2.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = BYSD94TYHS;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = facebookfeed2/Info.plist;

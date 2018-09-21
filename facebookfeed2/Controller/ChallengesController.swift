@@ -11,6 +11,7 @@ import AVKit
 import AVFoundation
 import RxSwift
 import CCBottomRefreshControl
+import Crashlytics
 
 var chlScrollMoveDown : Bool = false
 var chlScrollMoveUp : Bool = false
@@ -63,6 +64,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Crashlytics.sharedInstance().crash()
         
         selectedTabIndex = self.tabBarController?.selectedIndex ?? selectedTabIndex
         viewFramwWidth = view.frame.width
@@ -1056,6 +1058,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.proofed = posts[index].done! ? false : proofed
         commentsTable.canJoin = posts[index].done! ? false : canJoin
         commentsTable.joined = posts[index].done! ? false : posts[index].joined!
+        commentsTable.activeIndex = IndexPath(item: 0, section: 0)
         Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: isTabIndex(profileIndex) && !explorer ? 1 : 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: posts[index].done! ? false : posts[index].joined!, proved: posts[index].done! ? false : proofed, canJoin: posts[index].done! ? false : canJoin))
         goForward = true
         commentsTable.hidesBottomBarWhenPushed = true

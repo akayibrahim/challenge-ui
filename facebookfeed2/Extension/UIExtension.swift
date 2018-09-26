@@ -472,13 +472,6 @@ extension UIImageView {
                     }
                 }
             }
-            /*if let urlOfImage = url {
-             ImageService.getImage(withURL: urlOfImage) { image in
-             if image != nil {
-             self.image = image
-             }
-             }
-             }*/
         }
     }
     
@@ -520,33 +513,42 @@ extension AVPlayerLayer {
         loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, play: play, observer: true)
     }
     
+    @objc func loadByObjectId(objectId: String) {
+        if dummyServiceCall == false {
+            let url = URL(string: downloadProofImageByObjectIdURL + "?objectId=\(objectId)")
+            downloadAndLoadView(url: url!, volume: 0.0, play: true, observer: true)
+        }
+    }
+    
     func loadPlayer(challengeId: String, challengerId: String, volume: Float, play: Bool, observer: Bool) {
         if dummyServiceCall == false {
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
-                VideoService.getVideo(withURL: urlOfImage, completion: { (videoData) in
-                    if let video = videoData {
-                        DispatchQueue.main.async {
-                            // let item = AVPlayerItem.init(url: video)
-                            let avPlayer = AVPlayer(url: video)
-                            if observer {
-                                avPlayer.actionAtItemEnd = .none
-                            }
-                            avPlayer.volume = volume
-                            self.player = avPlayer
-                            self.player?.automaticallyWaitsToMinimizeStalling = false
-                            if play {
-                                self.player?.playImmediately(atRate: 1.0)
-                            }
-                        }
-                        if observer {
-                            NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
-                            //NotificationCenter.default.addObserver(self, selector:  #selector(self.resumeDidFinishPlaying), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
-                        }
-                    }
-                })
+                    downloadAndLoadView(url: urlOfImage, volume: volume, play: play, observer: observer)
             }
         }
+    }
+    
+    func downloadAndLoadView(url: URL, volume: Float, play: Bool, observer: Bool) {
+        VideoService.getVideo(withURL: url, completion: { (videoData) in
+            if let video = videoData {
+                DispatchQueue.main.async {
+                    // let item = AVPlayerItem.init(url: video)
+                    let avPlayer = AVPlayer(url: video)
+                    avPlayer.actionAtItemEnd = .none
+                    avPlayer.volume = volume
+                    self.player = avPlayer
+                    self.player?.automaticallyWaitsToMinimizeStalling = false
+                    if play {
+                        self.player?.playImmediately(atRate: 1.0)
+                    }
+                }
+                if observer {
+                    NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)
+                    //NotificationCenter.default.addObserver(self, selector:  #selector(self.resumeDidFinishPlaying), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+                }
+            }
+        })
     }
     
     @objc func playerDidFinishPlaying(note: NSNotification) {

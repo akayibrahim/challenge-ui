@@ -419,6 +419,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     @objc func playerFinishPlaying(note: NSNotification) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         tableView.isScrollEnabled = false
         let newActiveIndex = IndexPath(item: self.activeIndex.row + 1, section: 0)
         if newActiveIndex.row < self.proofs.count {
@@ -426,6 +427,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             self.tableView.scrollToRow(at: self.activeIndex, at: .top, animated: true)
             self.playActiveVideo(false)
         } else {
+            tableView.isScrollEnabled = true
             self.playActiveVideo(true)
         }
     }
@@ -513,7 +515,9 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     let feedCell = cell as! ProofCellView
                     if let player = feedCell.avPlayerLayer.player { // && !self.proofs[index.row].provedWithImage! {
                         player.volume = volume
+                        player.seek(to: kCMTimeZero)
                         player.play()
+                        NotificationCenter.default.addObserver(self, selector:  #selector(self.playerFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
                         feedCell.playButtonView.alpha = 0
                         self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0 )
                     }

@@ -114,7 +114,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     @objc func appMovedToBackground() {
-        if self.tabBarController?.selectedIndex == chanllengeIndex
+        if  (!goForward && self.tabBarController?.selectedIndex == chanllengeIndex)
             || (self.tabBarController?.selectedIndex == selectedTabIndex && self.explorer)
             || (self.tabBarController?.selectedIndex == selectedTabIndex && self.tabBarController?.selectedIndex == trendsIndex && self.trend) {
             self.playVisibleVideo()
@@ -157,6 +157,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.explorerCurrentPage = 0
         self.posts = [Post]()
         self.collectionView?.reloadData()
+        self.collectionView?.numberOfItems(inSection: 0)
         self.collectionView?.showBlurLoader()
         self.loadChallenges()
     }
@@ -174,6 +175,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.donePosts = [Post]()
         self.notDonePosts = [Post]()
         self.collectionView?.reloadData()
+        self.collectionView?.numberOfItems(inSection: 0)
         self.collectionView?.showBlurLoader()
         self.loadChallenges()
     }
@@ -441,9 +443,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let isTrend = self.trend
         let isChallenge = selectedTabIndex == chanllengeIndex && !profile && !isTrend
         let isSelf = (selectedTabIndex == profileIndex || self.profile) && !self.explorer
-        let needsFetch = indexPaths.contains { $0.row >= self.posts.count - 1 }
-        let needsFetchSelf = indexPaths.contains { $0.row >= self.notDonePosts.count - 1  || $0.row >= self.donePosts.count - 1 }
-        if (isChallenge || isTrend) && needsFetch && !nowMoreData && !dummyServiceCall {
+        let needsFetch = indexPaths.contains { $0.row >= self.posts.count - 9 }
+        let needsFetchSelf = indexPaths.contains { $0.row >= self.notDonePosts.count - 9  || $0.row >= self.donePosts.count - 9 }
+        if (isChallenge || isTrend) && needsFetch && !nowMoreData && !dummyServiceCall && !isFetchingNextPage {
             if isChallenge {
                 currentPage += 1
                 self.loadChallenges()
@@ -456,7 +458,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.loadChallenges()
             }
         }
-        if isSelf && needsFetchSelf && !nowMoreData && !dummyServiceCall {
+        if isSelf && needsFetchSelf && !nowMoreData && !dummyServiceCall && !isFetchingNextPage {
             if isSelf || memberIdForFriendProfile == memberID {
                 selfCurrentPage += 1
                 self.loadChallenges()
@@ -1270,7 +1272,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if nowMoreData {
             self.collectionView?.bottomRefreshControl?.endRefreshing()
         }
-        playVisibleVideo()
         if selectedTabIndex == chanllengeIndex || selectedTabIndex == profileIndex {
             if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
                 // move down
@@ -1303,6 +1304,27 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
             self.lastContentOffSet = scrollView.contentOffset.y
         }
+    }
+    
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if explorer {
+            return
+        }
+        playVisibleVideo()
+    }
+    
+    override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if explorer {
+            return
+        }
+        playVisibleVideo()
+    }
+    
+    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        if explorer {
+            return
+        }
+        playVisibleVideo()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

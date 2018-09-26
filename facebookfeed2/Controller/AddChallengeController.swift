@@ -144,7 +144,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     @objc func enableDisableCells(disable: Bool) {
         closeCalendar()
         let doneCell = getCell(path: doneIndexPath)
-        let addViewCell = getCell(path: addViewIndexPath)
+        // let addViewCell = getCell(path: addViewIndexPath)
         let commentCell = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
         switchType = disable
         tableView.reloadRows(at: [segControlIndexPath], with: .fade)
@@ -578,6 +578,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             if (temp?.contains("Days"))! {
                 let daysBetween = temp?.components(separatedBy: " ").dropLast().joined()
                 let nextWeek = Calendar.current.date(byAdding: .day, value: Int(daysBetween!)! + 1, to: Date())
+                cellContent.datePicker.date = nextWeek!
+            } else if (temp?.contains("Hours"))! {
+                let daysBetween = temp?.components(separatedBy: " ").dropLast().joined()
+                let nextWeek = Calendar.current.date(byAdding: .hour, value: Int(daysBetween!)! + 1, to: Date())
                 cellContent.datePicker.date = nextWeek!
             } else {
                 let date = formatter.date(from: cCellContent.labelOtherSide.text!)

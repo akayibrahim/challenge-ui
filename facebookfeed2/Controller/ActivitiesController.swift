@@ -63,10 +63,20 @@ class ActivitiesController: UITableViewController {
             self.reloadPage()
             goForward = false
         }
+        self.playVisibleVideo()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        let indexPaths = self.tableView.indexPathsForVisibleRows
+        for indexPath in indexPaths! {
+            if indexPath.section > 3 {
+                let cell = self.tableView?.cellForRow(at: indexPath) as! ActivityCell
+                if let player = cell.avPlayerLayer.player {
+                    player.pause()
+                }
+            }
+        }
     }
     
     @objc func onRefesh() {
@@ -81,15 +91,15 @@ class ActivitiesController: UITableViewController {
             return
         }
         currentPage = 0
-        self.activities = [Activities]()
-        if (refreshControl?.isRefreshing)! || goForward {
-            self.tableView.reloadData()
-        }
         fetchChallengeRequest()
         fetchEwFriendSuggestions(url: getSuggestionsForFollowingURL)
         fetchFollowerRequest()
         fetchChallengeApproves(url: getChallengeApprovesURL)
         self.group.wait()
+        self.activities = [Activities]()
+        if (refreshControl?.isRefreshing)! || goForward {
+            self.tableView.reloadData()
+        }
         self.tableView.showBlurLoader()
         self.loadActivities()
     }
@@ -141,40 +151,46 @@ class ActivitiesController: UITableViewController {
     }
     
     lazy var cellSizes: [IndexPath: CGFloat?] = [:]
+    var isFetchingNextPage: Bool = false
     @objc func fetchActivities() {
+        self.isFetchingNextPage = true
         DispatchQueue.global(qos: .userInitiated).async {
-        let jsonURL = URL(string: getActivitiesURL + memberID + "&page=\(self.currentPage)")!
-        jsonURL.get { data, response, error in
-            guard
-                let returnData = data
-                else {
-                    if data != nil {
-                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
-                    }
-                    return
-            }
-            
-                if let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]] {
-                self.nowMoreData = postsArray?.count == 0 ? true : false
-                if let postsArray = postsArray {
-                    for postDictionary in postsArray {
-                        let activity = Activities()
-                        activity.setValuesForKeys(postDictionary)
-                        self.activities.append(activity)
-                        let iPath = IndexPath(row:self.activities.count - 1, section: 4)
-                        DispatchQueue.main.async {
-                            self.cellSizes[iPath] = self.calculateCellSize(iPath)
+            let jsonURL = URL(string: getActivitiesURL + memberID + "&page=\(self.currentPage)")!
+            jsonURL.get { data, response, error in
+                guard
+                    let returnData = data
+                    else {
+                        if data != nil {
+                            self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
                         }
-                        //self.insertItem(self.activities.count - 1, section: 2)
-                    }
-                    DispatchQueue.main.async {
-                        self.tableView.removeBluerLoader()
-                        self.tableView.reloadData()
-                        self.tableView.tableFooterView = UIView()
+                        return
+                }
+                
+                    if let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]] {
+                    self.nowMoreData = postsArray?.count == 0 ? true : false
+                    if let postsArray = postsArray {
+                        var indexPaths = [IndexPath]()
+                        for postDictionary in postsArray {
+                            let activity = Activities()
+                            activity.setValuesForKeys(postDictionary)
+                            activity.provedWithImage = postDictionary["provedWithImage"] as? Bool
+                            self.activities.append(activity)
+                            let iPath = IndexPath(row:self.activities.count - 1, section: 4)
+                            indexPaths.append(iPath)
+                            DispatchQueue.main.async {
+                                self.cellSizes[iPath] = self.calculateCellSize(iPath)
+                            }
+                            //self.insertItem(self.activities.count - 1, section: 2)
+                        }
+                        DispatchQueue.main.async {
+                            self.tableView.removeBluerLoader()
+                            self.tableView.tableFooterView = UIView()
+                            self.tableView?.insertRows(at: indexPaths, with: .fade)
+                            self.isFetchingNextPage = false
+                        }
                     }
                 }
             }
-        }
         }
     }
     
@@ -234,9 +250,9 @@ class ActivitiesController: UITableViewController {
     
     let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let checkPoint = activities.count - 1
-        let shouldLoadMore = checkPoint == indexPath.row
-        if shouldLoadMore && !nowMoreData && !dummyServiceCall {
+        let checkPoint = activities.count > 15 ? activities.count - 15 : 0
+        let shouldLoadMore = indexPath.row >= checkPoint
+        if shouldLoadMore && !nowMoreData && !dummyServiceCall && !isFetchingNextPage {
             currentPage += 1
             self.loadActivities()
             let lastSectionIndex = tableView.numberOfSections - 1
@@ -525,6 +541,19 @@ class ActivitiesController: UITableViewController {
                 self.countOfFollowersForFriend = (post["followerCount"] as? Int)!
                 self.countOfFollowingForFriend = (post["followingCount"] as? Int)!
                 self.friendIsPrivate = (post["privateMember"] as? Bool)!
+            }
+        }
+    }
+    
+    func playVisibleVideo() {
+        for visIndex in (self.tableView.indexPathsForVisibleRows)! {
+            if visIndex.section > 3 {
+                if let cell = tableView?.cellForRow(at: visIndex) {
+                    let feedCell = cell as! ActivityCell
+                    if let player = feedCell.avPlayerLayer.player {
+                        player.playImmediately(atRate: 1.0)
+                    }
+                }
             }
         }
     }

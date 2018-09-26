@@ -102,7 +102,19 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)        
+        super.viewWillAppear(animated)
+        playVisibleVideo()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        let indexPaths = self.collectionView?.indexPathsForVisibleItems
+        for indexPath in indexPaths! {
+            let cell = self.collectionView?.cellForItem(at: indexPath) as! TrendRequestCell
+            if let player = cell.avPlayerLayer.player {
+                player.pause()
+            }
+        }
     }
     
     @objc func onRefesh() {
@@ -212,7 +224,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                 cell.requestImageView.load(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
                 self.imageEnable(cell, yes: true)
             } else {
-                cell.avPlayerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!, play: true)
+                let willPlay = indexPath.row == 0 ? true : false
+                cell.avPlayerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!, play: willPlay)
                 self.imageEnable(cell, yes: false)
             }
         }
@@ -292,6 +305,14 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         self.lastContentOffSet = scrollView.contentOffset.y
     }
     
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        playVisibleVideo()
+    }
+    
+    override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        playVisibleVideo()
+    }
+    
     @objc func openProfile(name: String, memberId: String, memberFbId:String) {
         let profileController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         getMemberInfo(memberId: memberId)
@@ -361,13 +382,26 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     }
     
     func playVisibleVideo() {
+        let indexPath = getVisibleIndex()
         for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
             if !trendRequest[visIndex.row].provedWithImage! {
-                if let cell = collectionView?.cellForItem(at: visIndex) {
-                    let feedCell = cell as! TrendRequestCell
-                    if !self.trendRequest[visIndex.row].provedWithImage! {
-                        if let player = feedCell.avPlayerLayer.player {
-                            player.playImmediately(atRate: 1.0)
+                if visIndex != indexPath {
+                    if let cell = collectionView?.cellForItem(at: visIndex) {
+                        let feedCell = cell as! TrendRequestCell
+                        if !self.trendRequest[visIndex.row].provedWithImage! {
+                            if let player = feedCell.avPlayerLayer.player {
+                                player.pause()
+                            }
+                        }
+                    }
+                } else {
+                    if let cell = collectionView?.cellForItem(at: visIndex) {
+                        let feedCell = cell as! TrendRequestCell
+                        if !self.trendRequest[visIndex.row].provedWithImage! {
+                            if let player = feedCell.avPlayerLayer.player {
+                                player.seek(to: kCMTimeZero)
+                                player.playImmediately(atRate: 1.0)
+                            }
                         }
                     }
                 }

@@ -11,9 +11,10 @@ import FBSDKLoginKit
 import FBSDKCoreKit
 import GoogleSignIn
 
-class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDelegate {
+class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     @objc var imageView : UIImageView!
     @objc var label: UILabel!
+    var myPickerView : UIPickerView!
     
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         if Util.controlNetwork() {
@@ -97,6 +98,11 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         imageView.image = UIImage(named: "AppIconLogin")
         view.addSubview(imageView)
         
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.openPickerView))
+        tapGestureRecognizer.numberOfTapsRequired = 2
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tapGestureRecognizer)
+        
         instagramLogin.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.2 / 2, width: view.frame.width - 64, height: 44)
         // instagramLogin.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
         // view.addSubview(instagramLogin)
@@ -113,6 +119,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         view.addSubview(signInButton)
         signInButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.6 / 2, width: view.frame.width - 64, height: 44)
         
+        /*
         let akayButton = FeedCell.buttonForTitle("ibrahim akay", imageName: "")
         akayButton.setTitleColor(UIColor.white, for: UIControlState())
         akayButton.frame = CGRect(x: view.center.x, y: UIScreen.main.bounds.height * 1.05 / 2, width: 200, height: 30)
@@ -148,6 +155,65 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         uzunButton.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 1.15 / 2, width: 200, height: 30)
         view.addSubview(uzunButton)
         uzunButton.addTarget(self, action: #selector(self.uzun), for: UIControlEvents.touchUpInside)
+ */
+    }
+    
+    @objc func openPickerView() {
+        self.myPickerView = UIPickerView(frame:CGRect(x: 0, y: self.view.frame.size.height - 216, width: self.view.frame.size.width, height: 216))
+        self.myPickerView.delegate = self
+        self.myPickerView.dataSource = self
+        self.myPickerView.backgroundColor = UIColor.white
+        self.myPickerView.showsSelectionIndicator = true
+        view.addSubview(myPickerView)
+        
+        let toolbar = UIToolbar()
+        toolbar.barStyle = UIBarStyle.blackOpaque
+        toolbar.isTranslucent = true
+        toolbar.sizeToFit()
+        
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.pickerDone))
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: self, action: nil)
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(pickerCancel))
+        
+        toolbar.setItems([cancelButton, spaceButton, doneButton], animated: true)
+        toolbar.isUserInteractionEnabled = true
+        // myPickerView.addSubview(toolbar)
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerData[row]
+    }
+    var pickerData = ["İbrahim AKAY" , "Serkan AYKUT" , "Melisa Bahçıvan" , "Berkay Bahçıvan", "Seher CAN", "Taner UZUN"]
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        pickerDone()
+    }
+    
+    @objc func pickerCancel() {
+        myPickerView.removeFromSuperview()
+    }
+    
+    @objc func pickerDone() {
+        let row = myPickerView.selectedRow(inComponent: 0);
+        if row == 0 {
+            akay()
+        } else if row == 1 {
+            aykut()
+        } else if row == 2 {
+            melis()
+        } else if row == 3 {
+            belkay()
+        } else if row == 4 {
+            can()
+        } else if row == 5 {
+            uzun()
+        }
+        myPickerView.removeFromSuperview()
     }
     
     @objc func loginWithInstagram() {

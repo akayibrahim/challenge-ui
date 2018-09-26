@@ -18,4 +18,5 @@ class Activities: SafeJsonObject {
     @objc var type: String?
     @objc var activityTableId: String?
     @objc var mediaObjectId: String?
+    var provedWithImage: Bool?
 }

@@ -8,6 +8,7 @@
 
 import UIKit
 import FBSDKLoginKit
+import AVFoundation
 
 class ActivityCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -18,10 +19,17 @@ class ActivityCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        self.proofImageView.image = UIImage()
+        self.proofImageView.removeFromSuperview()
+        self.profileImageView.removeFromSuperview()
+        self.proofVideoView.removeFromSuperview()
+        super.prepareForReuse()
+    }
+    
     @objc var activity : Activities? {
         didSet {
-            self.profileImageView.removeFromSuperview()
-            self.proofImageView.removeFromSuperview()
+            prepareForReuse()
             if let fbID = activity?.facebookID {
                 setImage(fbID: fbID, imageView: profileImageView)
             }
@@ -32,15 +40,22 @@ class ActivityCell: UITableViewCell {
                 contentText.attributedText = nameAtt
             }
             if let mediaObjectId = activity?.mediaObjectId {
-                self.proofImageView.loadByObjectId(objectId: mediaObjectId)
+                if let proofWithImage = activity?.provedWithImage {
+                    if proofWithImage {
+                        self.proofImageView.loadByObjectId(objectId: mediaObjectId)
+                    } else {
+                        self.avPlayerLayer.loadByObjectId(objectId: mediaObjectId)
+                    }
+                }
             }
             if let type = activity?.type {
-                setupViews(type: type, mediaObjectId: activity?.mediaObjectId ?? "-1")
+                let proofWithImage = activity?.provedWithImage != nil ? activity?.provedWithImage : false
+                setupViews(type: type, mediaObjectId: activity?.mediaObjectId ?? "-1", proofWithImage: proofWithImage!)
             }
         }
     }
     
-    @objc func setupViews(type: String, mediaObjectId: String) {
+    @objc func setupViews(type: String, mediaObjectId: String, proofWithImage: Bool) {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         
@@ -56,18 +71,36 @@ class ActivityCell: UITableViewCell {
         contentText.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
         contentText.isUserInteractionEnabled = false
         addTrailingAnchor(contentText, anchor: contentGuide.trailingAnchor, constant: type == "PROOF" ? -(screenWidth * 1.5/10) : 4)
+        contentText.backgroundColor = UIColor(white: 0.0, alpha: 0.0)
         
         if type == "PROOF" {
-            addSubview(proofImageView)
-            proofImageView.layer.cornerRadius = 0
-            addTrailingAnchor(proofImageView, anchor: contentGuide.trailingAnchor, constant: screenSize.width * 0.1/10)
-            addWidthAnchor(proofImageView, multiplier: 1.5/10)
-            addHeightAnchor(proofImageView, multiplier: 1.5/10/2)
-            proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+            if !proofWithImage {
+                addSubview(proofVideoView)
+                proofVideoView.layer.cornerRadius = 0
+                addTrailingAnchor(proofVideoView, anchor: contentGuide.trailingAnchor, constant: screenSize.width * 0.1/10)
+                addWidthAnchor(proofVideoView, multiplier: 1.5/10)
+                addHeightAnchor(proofVideoView, multiplier: 1.5/10/2)
+                proofVideoView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+                self.proofVideoView.layer.masksToBounds = true
+                DispatchQueue.main.async {
+                    self.proofVideoView.layer.addSublayer(self.avPlayerLayer)
+                    self.avPlayerLayer.frame = self.proofVideoView.layer.bounds
+                    self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+                }
+            } else {
+                addSubview(proofImageView)
+                proofImageView.layer.cornerRadius = 0
+                addTrailingAnchor(proofImageView, anchor: contentGuide.trailingAnchor, constant: screenSize.width * 0.1/10)
+                addWidthAnchor(proofImageView, multiplier: 1.5/10)
+                addHeightAnchor(proofImageView, multiplier: 1.5/10/2)
+                proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+            }
         }
     }
     
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
     @objc let contentText : UITextView = FeedCell().thinksAboutChallengeView
     @objc let proofImageView: UIImageView = FeedCell().profileImageView
+    @objc let proofVideoView: UIImageView = FeedCell().profileImageView
+    @objc var avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

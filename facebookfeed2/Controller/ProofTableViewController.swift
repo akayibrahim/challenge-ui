@@ -386,7 +386,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     } else {
                         let willPlay = indexPath.row == 0 ? true : false
                         self.imageEnable(cell, yes: false, play : willPlay)
-                        cell.avPlayerLayer.loadWithoutObserver(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: willPlay)
+                        cell.proofedVideoView.playerLayer.loadWithoutObserver(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: willPlay)
                         if willPlay {
                             cell.playButtonView.alpha = 0
                             NotificationCenter.default.addObserver(self, selector:  #selector(self.playerFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
@@ -448,7 +448,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         DispatchQueue.main.async {
             let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
             let feedCell = self.tableView?.cellForRow(at: index) as! ProofCellView
-            if let player = feedCell.avPlayerLayer.player {
+            if let player = feedCell.proofedVideoView.playerLayer.player {
                 if player.rate > 0 {
                     volume = volume.isEqual(to: 0) ? 1 : 0
                     let defaults = UserDefaults.standard
@@ -466,22 +466,22 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     @objc func changeVolumeOfFeedCell(feedCell : ProofCellView, isSilentRing : Bool, silentRingSwitch : Int) {
         DispatchQueue.main.async {
             if !isSilentRing {
-                if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 0))! {
-                    feedCell.avPlayerLayer.player?.volume = 1
+                if (feedCell.proofedVideoView.playerLayer.player?.volume.isEqual(to: 0))! {
+                    feedCell.proofedVideoView.playerLayer.player?.volume = 1
                     self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 1)
                 } else {
-                    feedCell.avPlayerLayer.player?.volume = 0
+                    feedCell.proofedVideoView.playerLayer.player?.volume = 0
                     self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: 0)
                 }
             } else {
-                feedCell.avPlayerLayer.player?.volume = Float(silentRingSwitch)
+                feedCell.proofedVideoView.playerLayer.player?.volume = Float(silentRingSwitch)
                 self.changeVolumeUpDownView(feedCell: feedCell, silentRingSwitch: silentRingSwitch )
             }
         }
     }
     
     @objc func changeVolumeUpDownView(feedCell : ProofCellView, silentRingSwitch : Int) {
-        if (feedCell.avPlayerLayer.player?.volume.isEqual(to: 1))! {
+        if (feedCell.proofedVideoView.playerLayer.player?.volume.isEqual(to: 1))! {
             feedCell.volumeUpImageView.alpha = 1
             feedCell.volumeDownImageView.alpha = 0
         } else {
@@ -513,7 +513,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             if activeIndex == visIndex && !pauseAll {
                 if let cell = tableView.cellForRow(at: visIndex) {
                     let feedCell = cell as! ProofCellView
-                    if let player = feedCell.avPlayerLayer.player { // && !self.proofs[index.row].provedWithImage! {
+                    if let player = feedCell.proofedVideoView.playerLayer.player { // && !self.proofs[index.row].provedWithImage! {
                         player.volume = volume
                         player.seek(to: kCMTimeZero)
                         player.play()
@@ -525,7 +525,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             } else {
                 if let cell = tableView.cellForRow(at: visIndex) {
                     let feedCell = cell as! ProofCellView
-                    if let player = feedCell.avPlayerLayer.player {
+                    if let player = feedCell.proofedVideoView.playerLayer.player {
                         player.volume = volume
                         player.pause()
                         feedCell.playButtonView.alpha = 1
@@ -585,7 +585,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let cell = cell as! ProofCellView
-        if let player = cell.avPlayerLayer.player {
+        if let player = cell.proofedVideoView.playerLayer.player {
             player.pause()
         }
     }

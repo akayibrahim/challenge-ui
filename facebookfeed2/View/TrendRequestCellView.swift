@@ -20,7 +20,8 @@ class TrendRequestCell: UICollectionViewCell {
         self.profileImageView.image = UIImage()
         self.nameLabel.removeFromSuperview()
         self.proofedVideoView.removeFromSuperview()
-        self.avPlayerLayer.removeFromSuperlayer()
+        //self.avPlayerLayer.removeFromSuperlayer()
+        self.proofedVideoView.player?.replaceCurrentItem(with: nil)
         super.prepareForReuse()
     }
     
@@ -101,12 +102,12 @@ class TrendRequestCell: UICollectionViewCell {
         addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
         proofedVideoView.alpha = 0
         self.proofedVideoView.layer.masksToBounds = true
-        DispatchQueue.main.async {
+        /*DispatchQueue.main.async {
             self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
             self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
             // self.avPlayerLayer.repeatCount = 10
-        }
+        }*/
         addSubview(volumeUpImageView)
         addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
         addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
@@ -125,8 +126,8 @@ class TrendRequestCell: UICollectionViewCell {
         setImage(name: volumeDown, imageView: volumeDownImageView)
     }
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
-    @objc let proofedVideoView: UIView = FeedCell.viewFunc()
+    @objc let proofedVideoView: PlayerView = PlayerView()
     @objc let volumeUpImageView: UIImageView = FeedCell.circleImageView()
     @objc let volumeDownImageView: UIImageView = FeedCell.circleImageView()
-    @objc var avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
+    // @objc var avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

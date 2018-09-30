@@ -103,6 +103,7 @@ class FeedCell: UICollectionViewCell {
         self.awayWinBase.removeFromSuperview()        
         // self.avPlayerLayer.removeFromSuperlayer()        
         self.timesUpFlag.image = UIImage()
+        self.proofedVideoView.player?.replaceCurrentItem(with: nil)
         self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         super.prepareForReuse()
     }

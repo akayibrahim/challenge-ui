@@ -75,7 +75,7 @@ class ActivitiesController: UITableViewController {
         for indexPath in indexPaths! {
             if indexPath.section > 3 {
                 let cell = self.tableView?.cellForRow(at: indexPath) as! ActivityCell
-                if let player = cell.avPlayerLayer.player {
+                if let player = cell.proofVideoView.playerLayer.player {
                     player.pause()
                 }
             }
@@ -554,7 +554,7 @@ class ActivitiesController: UITableViewController {
             if visIndex.section > 3 {
                 if let cell = tableView?.cellForRow(at: visIndex) {
                     let feedCell = cell as! ActivityCell
-                    if let player = feedCell.avPlayerLayer.player {
+                    if let player = feedCell.proofVideoView.playerLayer.player {
                         player.playImmediately(atRate: 1.0)
                     }
                 }

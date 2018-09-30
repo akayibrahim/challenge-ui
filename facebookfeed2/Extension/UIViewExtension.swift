@@ -16,11 +16,11 @@ final class PlayerManager {
     static let shared = PlayerManager()
     private init() {}
     
-    static var avPlayerView : PlayerView = PlayerView()
+    var avPlayerView : PlayerView = PlayerView()
 }
 
 class PlayerView: UIView {
-    override class var layerClass: AnyClass {
+    override static var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
     

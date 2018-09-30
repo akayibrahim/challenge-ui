@@ -111,7 +111,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let indexPaths = self.collectionView?.indexPathsForVisibleItems
         for indexPath in indexPaths! {
             let cell = self.collectionView?.cellForItem(at: indexPath) as! TrendRequestCell
-            if let player = cell.avPlayerLayer.player {
+            if let player = cell.proofedVideoView.playerLayer.player {
                 player.pause()
             }
         }
@@ -225,7 +225,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                 self.imageEnable(cell, yes: true)
             } else {
                 let willPlay = indexPath.row == 0 ? true : false
-                cell.avPlayerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!, play: willPlay)
+                cell.proofedVideoView.playerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!, play: willPlay)
                 self.imageEnable(cell, yes: false)
             }
         }
@@ -390,7 +390,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                     if let cell = collectionView?.cellForItem(at: visIndex) {
                         let feedCell = cell as! TrendRequestCell
                         if !self.trendRequest[visIndex.row].provedWithImage! {
-                            if let player = feedCell.avPlayerLayer.player {
+                            if let player = feedCell.proofedVideoView.playerLayer.player {
                                 player.seek(to: kCMTimeZero)
                                 player.pause()
                             }
@@ -400,7 +400,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                     if let cell = collectionView?.cellForItem(at: visIndex) {
                         let feedCell = cell as! TrendRequestCell
                         if !self.trendRequest[visIndex.row].provedWithImage! {
-                            if let player = feedCell.avPlayerLayer.player {
+                            if let player = feedCell.proofedVideoView.playerLayer.player {
                                 if player.rate == 0.0 {
                                     player.playImmediately(atRate: 1.0)
                                 }

@@ -24,6 +24,7 @@ class ActivityCell: UITableViewCell {
         self.proofImageView.removeFromSuperview()
         self.profileImageView.removeFromSuperview()
         self.proofVideoView.removeFromSuperview()
+        self.proofVideoView.player?.replaceCurrentItem(with: nil)
         super.prepareForReuse()
     }
     
@@ -44,7 +45,7 @@ class ActivityCell: UITableViewCell {
                     if proofWithImage {
                         self.proofImageView.loadByObjectId(objectId: mediaObjectId)
                     } else {
-                        self.avPlayerLayer.loadByObjectId(objectId: mediaObjectId)
+                        self.proofVideoView.playerLayer.loadByObjectId(objectId: mediaObjectId)
                     }
                 }
             }
@@ -82,11 +83,11 @@ class ActivityCell: UITableViewCell {
                 addHeightAnchor(proofVideoView, multiplier: 1.5/10/2)
                 proofVideoView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
                 self.proofVideoView.layer.masksToBounds = true
-                DispatchQueue.main.async {
+                /*DispatchQueue.main.async {
                     self.proofVideoView.layer.addSublayer(self.avPlayerLayer)
                     self.avPlayerLayer.frame = self.proofVideoView.layer.bounds
                     self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-                }
+                }*/
             } else {
                 addSubview(proofImageView)
                 proofImageView.layer.cornerRadius = 0
@@ -101,6 +102,6 @@ class ActivityCell: UITableViewCell {
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
     @objc let contentText : UITextView = FeedCell().thinksAboutChallengeView
     @objc let proofImageView: UIImageView = FeedCell().profileImageView
-    @objc let proofVideoView: UIImageView = FeedCell().profileImageView
-    @objc var avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
+    @objc let proofVideoView: PlayerView = PlayerView()
+    // @objc var avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

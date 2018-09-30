@@ -25,9 +25,10 @@ class ProofCellView: UITableViewCell {
         self.thinksAboutChallengeView.removeFromSuperview()
         self.profileImageView.removeFromSuperview()
         self.proofedVideoView.removeFromSuperview()
-        self.avPlayerLayer.removeFromSuperlayer()
+        //self.avPlayerLayer.removeFromSuperlayer()
         self.volumeUpImageView.removeFromSuperview()
         self.volumeDownImageView.removeFromSuperview()
+        self.proofedVideoView.player?.replaceCurrentItem(with: nil)
     }
     
     @objc func setup() {
@@ -58,13 +59,13 @@ class ProofCellView: UITableViewCell {
         addWidthAnchor(proofedVideoView, multiplier: 1)
         addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
         proofedVideoView.alpha = 0
-        DispatchQueue.main.async {
+        /*DispatchQueue.main.async {
             self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
             self.avPlayerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
             // self.avPlayerLayer.repeatCount = 10            
             self.proofedVideoView.layer.masksToBounds = true
-        }
+        }*/
         
         setImage(name: "playButton", imageView: playButtonView)
         addSubview(playButtonView)
@@ -112,8 +113,8 @@ class ProofCellView: UITableViewCell {
         return imageView
     }()
     
-    @objc let proofedVideoView: UIView = FeedCell.viewFunc()
+    @objc let proofedVideoView: PlayerView = PlayerView()
     @objc let volumeUpImageView: UIImageView = FeedCell.circleImageView()
     @objc let volumeDownImageView: UIImageView = FeedCell.circleImageView()
-    @objc let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
+    // @objc let avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

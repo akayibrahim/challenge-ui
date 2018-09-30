@@ -39,8 +39,8 @@ class ActivityCell: UITableViewCell {
                 nameAtt.append(contentAtt)
                 contentText.attributedText = nameAtt
             }
-            if let mediaObjectId = activity?.mediaObjectId {
-                if let proofWithImage = activity?.provedWithImage {
+            if let mediaObjectId = self.activity?.mediaObjectId {
+                if let proofWithImage = self.activity?.provedWithImage {
                     if proofWithImage {
                         self.proofImageView.loadByObjectId(objectId: mediaObjectId)
                     } else {

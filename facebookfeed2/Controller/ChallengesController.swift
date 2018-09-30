@@ -208,6 +208,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 return
             } else if selectedTabIndex == profileIndex {
                 FacebookController().getMemberInfo(memberId: memberID)
+                group.notify(queue: DispatchQueue.main, execute: {
+                    self.collectionView?.reloadItems(at: [IndexPath(item: 0, section: 0)])
+                })
                 self.fetchChallengeSize(memberId: memberID)
                 self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)                
                 return
@@ -533,7 +536,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 profileCell.other.alpha = 1
             }
         }
-        self.group.wait()
+        // self.group.wait()
         profileCell.other.addTarget(self, action: #selector(self.openOthers), for: UIControlEvents.touchUpInside)
         profileCell.followersCount.text = "\((profile ? memberCountOfFollowerForFriendProfile : countOffollowers)!)"
         let followersCountTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleFollowersCountTap))
@@ -1245,6 +1248,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     if let cell = collectionView?.cellForItem(at: visIndex) {
                         let feedCell = cell as! FeedCell
                         if let player = feedCell.proofedVideoView.playerLayer.player {
+                            player.seek(to: kCMTimeZero)
                             player.pause()
                         }
                     }
@@ -1254,8 +1258,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
                         if feedCell.proofedVideoView.frame.contains(frameSize) && !self.posts[indexPath.row].provedWithImage! {
                             if let player = feedCell.proofedVideoView.playerLayer.player {
-                                player.volume = volume
-                                player.playImmediately(atRate: 1.0)
+                                if player.rate == 0.0 {
+                                    player.volume = volume
+                                    player.playImmediately(atRate: 1.0)
+                                }
                             }
                         }
                     }
@@ -1304,27 +1310,19 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
             self.lastContentOffSet = scrollView.contentOffset.y
         }
+        playVisibleVideo()
     }
     
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if explorer {
-            return
-        }
-        playVisibleVideo()
+        
     }
     
     override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if explorer {
-            return
-        }
-        playVisibleVideo()
+        
     }
     
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        if explorer {
-            return
-        }
-        playVisibleVideo()
+        
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

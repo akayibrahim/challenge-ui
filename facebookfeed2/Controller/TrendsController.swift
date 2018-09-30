@@ -303,14 +303,15 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
             self.navigationController?.setNavigationBarHidden(false, animated: true)
         }
         self.lastContentOffSet = scrollView.contentOffset.y
+        playVisibleVideo()
     }
     
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        playVisibleVideo()
+        
     }
     
     override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        playVisibleVideo()
+        
     }
     
     @objc func openProfile(name: String, memberId: String, memberFbId:String) {
@@ -385,11 +386,12 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let indexPath = getVisibleIndex()
         for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
             if !trendRequest[visIndex.row].provedWithImage! {
-                if visIndex != indexPath {
+                if visIndex != indexPath && visIndex.row != trendRequest.count - 1 {
                     if let cell = collectionView?.cellForItem(at: visIndex) {
                         let feedCell = cell as! TrendRequestCell
                         if !self.trendRequest[visIndex.row].provedWithImage! {
                             if let player = feedCell.avPlayerLayer.player {
+                                player.seek(to: kCMTimeZero)
                                 player.pause()
                             }
                         }
@@ -399,8 +401,9 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                         let feedCell = cell as! TrendRequestCell
                         if !self.trendRequest[visIndex.row].provedWithImage! {
                             if let player = feedCell.avPlayerLayer.player {
-                                player.seek(to: kCMTimeZero)
-                                player.playImmediately(atRate: 1.0)
+                                if player.rate == 0.0 {
+                                    player.playImmediately(atRate: 1.0)
+                                }
                             }
                         }
                     }

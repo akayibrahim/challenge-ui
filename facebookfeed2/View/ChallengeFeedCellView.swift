@@ -797,6 +797,7 @@ class FeedCell: UICollectionViewCell {
                     supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.35/3)).isActive = true
                     addWidthAnchor(supportButtonMatch, multiplier: 0.3/3)
                     addHeightAnchor(supportButtonMatch, multiplier: 1.8/18)
+                    supportButtonMatch.layer.zPosition = 1
                     
                     addSubview(supportMatchLabel)
                     addBottomAnchor(supportMatchLabel, anchor: supportButtonMatch.topAnchor, constant: 0)

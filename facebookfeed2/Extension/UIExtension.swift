@@ -462,7 +462,9 @@ extension UIImageView {
         if dummyServiceCall == false {
             let url = URL(string: downloadProofImageByObjectIdURL + "?objectId=\(objectId)")
             if ImageService.cached(withURL: url!) {
-                self.image = ImageService.fromCache(withURL: url!)
+                DispatchQueue.main.async {
+                    self.image = ImageService.fromCache(withURL: url!)
+                }
             } else {
                 self.showBlurLoader()
                 self.pin_setImage(from: url!) { (result) in

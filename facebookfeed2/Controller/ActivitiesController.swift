@@ -36,6 +36,9 @@ class ActivitiesController: UITableViewController {
         refreshControl?.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl!)
         
+        tableView.estimatedRowHeight = heighForRow
+        tableView.rowHeight = UITableViewAutomaticDimension
+        
         self.reloadPage()
     }
 
@@ -185,7 +188,8 @@ class ActivitiesController: UITableViewController {
                         DispatchQueue.main.async {
                             self.tableView.removeBluerLoader()
                             self.tableView.tableFooterView = UIView()
-                            self.tableView?.insertRows(at: indexPaths, with: .fade)
+                            // self.tableView?.insertRows(at: indexPaths, with: .fade)
+                            self.tableView?.reloadData()
                             self.isFetchingNextPage = false
                         }
                     }
@@ -334,7 +338,7 @@ class ActivitiesController: UITableViewController {
             if activities.count == 0 {
                 return cell
             }
-            DispatchQueue.main.async {
+            //DispatchQueue.main.async {
                 cell.activity = self.activities[indexPath.row]
                 
                 let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.profileImageTapped(tapGestureRecognizer:)))
@@ -346,7 +350,7 @@ class ActivitiesController: UITableViewController {
                 cell.contentText.tag = indexPath.row
                 cell.contentText.isUserInteractionEnabled = true
                 cell.contentText.addGestureRecognizer(tapGestureRecognizerName)
-            }
+            //}
             
             cell.selectionStyle = UITableViewCellSelectionStyle.none
             return cell

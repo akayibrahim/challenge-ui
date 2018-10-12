@@ -40,12 +40,14 @@ class ActivityCell: UITableViewCell {
                 nameAtt.append(contentAtt)
                 contentText.attributedText = nameAtt
             }
-            if let mediaObjectId = self.activity?.mediaObjectId {
-                if let proofWithImage = self.activity?.provedWithImage {
-                    if proofWithImage {
-                        self.proofImageView.loadByObjectId(objectId: mediaObjectId)
-                    } else {
-                        self.proofVideoView.playerLayer.loadByObjectId(objectId: mediaObjectId)
+            if self.activity?.type == "PROOF" {
+                if let mediaObjectId = self.activity?.mediaObjectId {
+                    if let proofWithImage = self.activity?.provedWithImage {
+                        if proofWithImage {
+                            self.proofImageView.loadByObjectId(objectId: mediaObjectId)
+                        } else {
+                            self.proofVideoView.playerLayer.loadByObjectId(objectId: mediaObjectId)
+                        }
                     }
                 }
             }
@@ -66,6 +68,8 @@ class ActivityCell: UITableViewCell {
         addWidthAnchor(profileImageView, multiplier: 0.9/10)
         addHeightAnchor(profileImageView, multiplier: 0.9/10)
         profileImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+        profileImageView.isOpaque = true
+        profileImageView.layer.shouldRasterize = true
         
         addSubview(contentText)
         addLeadingAnchor(contentText, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.15/10)
@@ -73,6 +77,8 @@ class ActivityCell: UITableViewCell {
         contentText.isUserInteractionEnabled = false
         addTrailingAnchor(contentText, anchor: contentGuide.trailingAnchor, constant: type == "PROOF" ? -(screenWidth * 1.5/10) : 4)
         contentText.backgroundColor = UIColor(white: 0.0, alpha: 0.0)
+        contentText.isOpaque = true
+        contentText.layer.shouldRasterize = true
         
         if type == "PROOF" {
             if !proofWithImage {
@@ -83,6 +89,8 @@ class ActivityCell: UITableViewCell {
                 addHeightAnchor(proofVideoView, multiplier: 1.5/10/2)
                 proofVideoView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
                 self.proofVideoView.layer.masksToBounds = true
+                proofVideoView.isOpaque = true
+                proofVideoView.layer.shouldRasterize = true
                 /*DispatchQueue.main.async {
                     self.proofVideoView.layer.addSublayer(self.avPlayerLayer)
                     self.avPlayerLayer.frame = self.proofVideoView.layer.bounds
@@ -95,6 +103,8 @@ class ActivityCell: UITableViewCell {
                 addWidthAnchor(proofImageView, multiplier: 1.5/10)
                 addHeightAnchor(proofImageView, multiplier: 1.5/10/2)
                 proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
+                proofImageView.isOpaque = true
+                proofImageView.layer.shouldRasterize = true
             }
         }
     }

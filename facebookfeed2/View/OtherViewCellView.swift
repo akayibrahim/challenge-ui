@@ -29,7 +29,7 @@ class OtherViewCell: UITableViewCell {
             settings.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
             settings.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 1 {
-            support.text = "Support"
+            support.text = "Terms of Use"
             support.font = UIFont.preferredFont(forTextStyle: .headline)
             addSubview(support)
             support.translatesAutoresizingMaskIntoConstraints = false

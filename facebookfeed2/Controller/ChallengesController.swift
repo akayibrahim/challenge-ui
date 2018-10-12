@@ -115,8 +115,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func appMovedToBackground() {
         if  (!goForward && self.tabBarController?.selectedIndex == chanllengeIndex)
-            || (self.tabBarController?.selectedIndex == selectedTabIndex && self.explorer)
-            || (self.tabBarController?.selectedIndex == selectedTabIndex && self.tabBarController?.selectedIndex == trendsIndex && self.trend) {
+            || (!goForward && self.tabBarController?.selectedIndex == selectedTabIndex && self.explorer)
+            || (!goForward && self.tabBarController?.selectedIndex == selectedTabIndex && self.tabBarController?.selectedIndex == trendsIndex && self.trend) {
             self.playVisibleVideo()
         }
     }
@@ -174,8 +174,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.posts = [Post]()
         self.donePosts = [Post]()
         self.notDonePosts = [Post]()
-        self.collectionView?.reloadData()
-        self.collectionView?.numberOfItems(inSection: 0)
+        // self.collectionView?.reloadData()
         self.collectionView?.showBlurLoader()
         self.loadChallenges()
     }
@@ -208,9 +207,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 return
             } else if selectedTabIndex == profileIndex {
                 FacebookController().getMemberInfo(memberId: memberID)
-                group.notify(queue: DispatchQueue.main, execute: {
-                    self.collectionView?.reloadItems(at: [IndexPath(item: 0, section: 0)])
-                })
                 self.fetchChallengeSize(memberId: memberID)
                 self.fetchChallenges(url: getChallengesOfMemberURL + memberID  + "&page=\(self.selfCurrentPage)", profile: true)                
                 return
@@ -406,6 +402,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
             }
         }
+        goForward = false
         self.playVisibleVideo()
         if !self.profile {
             if self.selectedTabIndex == chanllengeIndex {
@@ -915,7 +912,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.isMoreAttendance = true
         selectionTable.challengeId = posts[index].id!
         selectionTable.firstTeam = firstTeam
-        selectionTable.hidesBottomBarWhenPushed = true
+        // selectionTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
@@ -940,7 +937,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             selectionTable.supportedMemberId = posts[index].challengerId!
         }
         selectionTable.firstTeam = firstTeam
-        selectionTable.hidesBottomBarWhenPushed = true
+        // selectionTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
@@ -977,7 +974,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.isFollower = true
         selectionTable.profile = profile
         selectionTable.memberIdForFriendProfile = memberIdForFriendProfile
-        selectionTable.hidesBottomBarWhenPushed = true
+        // selectionTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
@@ -989,14 +986,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.isFollowing = true
         selectionTable.profile = profile
         selectionTable.memberIdForFriendProfile = memberIdForFriendProfile
-        selectionTable.hidesBottomBarWhenPushed = true
+        // selectionTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
     @objc func updateProgress(_ sender: subclasssedUIButton) {
         if sender.type == PUBLIC {
-            openProofScreen(challengeId: sender.challengeId!, proofed: sender.proofed!, canJoin: sender.canJoin!, proveCount: sender.count!, index: sender.tag)
+            openProofScreen(challengeId: sender.challengeId!, proofed: sender.proofed!, canJoin: false, proveCount: sender.count!, index: sender.tag)
         } else {
             let updateProgress = UpdateProgressController()
             updateProgress.updateProgress = true
@@ -1013,7 +1010,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 1), forwardScreen: FRWRD_CHNG_SCR, homeWinner: false, goal: sender.goal != nil ? sender.goal! : "-", result: sender.homeScore != nil ? sender.homeScore! : "-"))
             }
             goForward = true
-            updateProgress.hidesBottomBarWhenPushed = true
+            // updateProgress.hidesBottomBarWhenPushed = true
             self.navigationController?.setNavigationBarHidden(false, animated: false)
             self.navigationController?.pushViewController(updateProgress, animated: true)
         }
@@ -1062,7 +1059,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.done = posts[index].done!
         commentsTable.proofed = posts[index].done! ? false : proofed
         commentsTable.canJoin = posts[index].done! ? false : canJoin
-        commentsTable.joined = posts[index].done! ? false : posts[index].joined!
+        if isTabIndex(chanllengeIndex) || self.explorer {
+            commentsTable.joined = posts[index].done! ? false : posts[index].joined!
+        } else if isTabIndex(profileIndex) {
+            commentsTable.joined = notDonePosts[index].done! ? false : notDonePosts[index].joined!
+        }
         commentsTable.activeIndex = IndexPath(item: 0, section: 0)
         Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: isTabIndex(profileIndex) && !explorer ? 1 : 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: posts[index].done! ? false : posts[index].joined!, proved: posts[index].done! ? false : proofed, canJoin: posts[index].done! ? false : canJoin))
         goForward = true

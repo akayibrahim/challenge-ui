@@ -68,6 +68,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         if dummyServiceCall == false {
             currentPage = 0
             self.trendRequest = [TrendRequest]()
+            self.collectionView?.reloadData()
             fetchTrendChallenges(key: searchBar.text!)
             return
         } else {
@@ -119,7 +120,6 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     @objc func onRefesh() {
         self.reloadPage()
-        self.collectionView?.reloadData()
         refreshControl.endRefreshing()
     }
     
@@ -127,6 +127,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         searchBar.text = ""
         currentPage = 0
         self.trendRequest = [TrendRequest]()
+        self.collectionView?.reloadData()
+        self.collectionView?.numberOfItems(inSection: 0)
         self.collectionView?.showBlurLoader()
         self.loadTrends()
     }
@@ -170,6 +172,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                                 }
                             }
                         }
+                        self.collectionView?.removeBluerLoader()
                     } catch let err {
                         print(err)
                     }
@@ -224,7 +227,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                 cell.requestImageView.load(challengeId: self.trendRequest[indexPath.row].challengeId!, challengerId: self.trendRequest[indexPath.row].challengerId!)
                 self.imageEnable(cell, yes: true)
             } else {
-                let willPlay = indexPath.row == 0 ? true : false
+                let willPlay = indexPath.row == 0 || indexPath.row == 1 ? true : false
                 cell.proofedVideoView.playerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!, play: willPlay)
                 self.imageEnable(cell, yes: false)
             }
@@ -386,7 +389,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let indexPath = getVisibleIndex()
         for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
             if !trendRequest[visIndex.row].provedWithImage! {
-                if visIndex != indexPath && visIndex.row != trendRequest.count - 1 {
+                if visIndex != indexPath && visIndex.row != trendRequest.count - 1 && indexPath.row != visIndex.row + 1 {
                     if let cell = collectionView?.cellForItem(at: visIndex) {
                         let feedCell = cell as! TrendRequestCell
                         if !self.trendRequest[visIndex.row].provedWithImage! {

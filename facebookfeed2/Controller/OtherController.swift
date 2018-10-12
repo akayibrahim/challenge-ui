@@ -10,7 +10,7 @@ import UIKit
 import FBSDKLoginKit
 import GoogleSignIn
 
-class OtherController: UITableViewController {
+class OtherController: UITableViewController, UIWebViewDelegate{
     @objc static let headerId = "headerId"
     @objc static let cellId = "cellId"
     @objc let screenSize = UIScreen.main.bounds
@@ -25,6 +25,7 @@ class OtherController: UITableViewController {
         self.view.backgroundColor =  pagesBackColor
         tableView.separatorColor = pagesBackColor
         tableView.sectionHeaderHeight = 26
+        webView.delegate = self
     }
     
     @objc var tableRowHeightHeight: CGFloat = 44
@@ -119,7 +120,24 @@ class OtherController: UITableViewController {
         }
     }
     
+    let webView:UIWebView = UIWebView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
     @objc func support() {
+        do {
+            guard let filePath = Bundle.main.path(forResource: "termsofuse", ofType: "html")
+                else {
+                    // File Error
+                    print ("File reading error")
+                    return
+            }
+            
+            let contents =  try String(contentsOfFile: filePath, encoding: .utf8)
+            let baseUrl = URL(fileURLWithPath: filePath)
+            webView.loadHTMLString(contents as String, baseURL: baseUrl)
+            self.view.addSubview(webView)
+        }
+        catch {
+            print ("File HTML error")
+        }
     }
     
     @objc func shareViaFriend() {

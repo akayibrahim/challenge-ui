@@ -16,6 +16,7 @@
 		A11C823520499DDB0061A33F /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11C823420499DDB0061A33F /* ImageService.swift */; };
 		A11EFC822142D2D100FCD93D /* ChallengeResultApproveController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11EFC812142D2D100FCD93D /* ChallengeResultApproveController.swift */; };
 		A1235D3E20870C3A0028738E /* Prove.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1235D3D20870C3A0028738E /* Prove.swift */; };
+		A1250F8E21653306003911F5 /* termsofuse.html in Resources */ = {isa = PBXBuildFile; fileRef = A1250F8D21653306003911F5 /* termsofuse.html */; };
 		A1274108200F38E60073BFF2 /* FacebookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1274107200F38E60073BFF2 /* FacebookController.swift */; };
 		A1289CA820A555F100CC66B0 /* UIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CA720A555F100CC66B0 /* UIExtension.swift */; };
 		A1289CAA20A5562700CC66B0 /* UINavigationControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */; };
@@ -235,6 +236,7 @@
 		A11C823420499DDB0061A33F /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		A11EFC812142D2D100FCD93D /* ChallengeResultApproveController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChallengeResultApproveController.swift; sourceTree = "<group>"; };
 		A1235D3D20870C3A0028738E /* Prove.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Prove.swift; sourceTree = "<group>"; };
+		A1250F8D21653306003911F5 /* termsofuse.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = termsofuse.html; sourceTree = "<group>"; };
 		A1274107200F38E60073BFF2 /* FacebookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookController.swift; sourceTree = "<group>"; };
 		A1289CA720A555F100CC66B0 /* UIExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIExtension.swift; sourceTree = "<group>"; };
 		A1289CA920A5562700CC66B0 /* UINavigationControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigationControllerExtension.swift; sourceTree = "<group>"; };
@@ -527,6 +529,7 @@
 				C7A85F3A1C78C137007E9A00 /* Assets.xcassets */,
 				C7A85F3C1C78C137007E9A00 /* LaunchScreen.storyboard */,
 				C7A85F3F1C78C137007E9A00 /* Info.plist */,
+				A1250F8D21653306003911F5 /* termsofuse.html */,
 			);
 			name = challenge;
 			path = facebookfeed2;
@@ -755,6 +758,7 @@
 				A15F875F207BBBB70035130D /* friend_request.json in Resources */,
 				A1715F3B20B047A4003E7AFF /* followers.json in Resources */,
 				A187996320AB7A86009FA6B6 /* trend_request_1.json in Resources */,
+				A1250F8E21653306003911F5 /* termsofuse.html in Resources */,
 				A14A996320752F7D00B1418D /* subject.json in Resources */,
 				C7A85F3E1C78C137007E9A00 /* LaunchScreen.storyboard in Resources */,
 				A19A31F6207D1ACD00DDC98C /* comments.json in Resources */,
@@ -855,7 +859,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Fabric/run\" 75e1b4895f215bbb3ed2d3f3877344cb088448eb 0eca099fce3ccc3fed27cdf9f9d94b65a46405ba5cd2ef728c8a9fd4d07e7252";
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 75e1b4895f215bbb3ed2d3f3877344cb088448eb 0eca099fce3ccc3fed27cdf9f9d94b65a46405ba5cd2ef728c8a9fd4d07e7252\n";
 		};
 		E18C5707290AF335173CDFE3 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

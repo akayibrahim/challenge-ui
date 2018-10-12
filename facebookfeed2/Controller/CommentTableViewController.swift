@@ -80,7 +80,7 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
                 let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
                 else {
                     if data != nil {
-                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: self.challengeId, sUrl: url, inputs: "challengeId=\(self.challengeId)"), willDelay: false)
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: self.challengeId, sUrl: url, inputs: "challengeId=\(self.challengeId ?? "")"), willDelay: false)
                     }
                     return
             }

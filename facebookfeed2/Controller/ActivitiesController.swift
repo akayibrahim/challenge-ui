@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ActivitiesController: UITableViewController {
+class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetching {
     @objc let cellId = "cellId"
     @objc let followCellId = "followCellId"
     @objc var activities = [Activities]()
@@ -38,6 +38,8 @@ class ActivitiesController: UITableViewController {
         
         tableView.estimatedRowHeight = heighForRow
         tableView.rowHeight = UITableViewAutomaticDimension
+        
+        tableView.prefetchDataSource = self
         
         self.reloadPage()
     }
@@ -74,9 +76,11 @@ class ActivitiesController: UITableViewController {
         let indexPaths = self.tableView.indexPathsForVisibleRows
         for indexPath in indexPaths! {
             if indexPath.section > 3 {
-                let cell = self.tableView?.cellForRow(at: indexPath) as! ActivityCell
-                if let player = cell.proofVideoView.playerLayer.player {
-                    player.pause()
+                if let cell = self.tableView?.cellForRow(at: indexPath) {
+                    let activityCell = cell as! ActivityCell
+                    if let player = activityCell.proofVideoView.playerLayer.player {
+                        player.pause()
+                    }
                 }
             }
         }
@@ -168,9 +172,13 @@ class ActivitiesController: UITableViewController {
                         }
                         return
                 }
-                
-                    if let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]] {
+                if let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]] {
                     self.nowMoreData = postsArray?.count == 0 ? true : false
+                    if self.nowMoreData {
+                        DispatchQueue.main.async {
+                            self.tableView.tableFooterView = UIView()
+                        }
+                    }
                     if let postsArray = postsArray {
                         var indexPaths = [IndexPath]()
                         for postDictionary in postsArray {
@@ -254,11 +262,7 @@ class ActivitiesController: UITableViewController {
     
     let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let checkPoint = activities.count > 15 ? activities.count - 15 : 0
-        let shouldLoadMore = indexPath.row >= checkPoint
-        if shouldLoadMore && !nowMoreData && !dummyServiceCall && !isFetchingNextPage {
-            currentPage += 1
-            self.loadActivities()
+        if !nowMoreData && !dummyServiceCall && isFetchingNextPage {
             let lastSectionIndex = tableView.numberOfSections - 1
             let lastRowIndex = tableView.numberOfRows(inSection: lastSectionIndex) - 1
             if indexPath.section ==  lastSectionIndex && indexPath.row == lastRowIndex {
@@ -267,6 +271,14 @@ class ActivitiesController: UITableViewController {
                 spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
                 self.tableView.tableFooterView = spinner
             }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {        
+        let shouldLoadMore = indexPaths.contains { $0.row >= self.activities.count - 19 }
+        if shouldLoadMore && !nowMoreData && !dummyServiceCall && !isFetchingNextPage {
+            currentPage += 1
+            self.loadActivities()
         }
     }
     
@@ -335,6 +347,7 @@ class ActivitiesController: UITableViewController {
             let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ActivityCell
             cell.layer.shouldRasterize = true
             cell.layer.rasterizationScale = UIScreen.main.scale
+            cell.isOpaque = true
             if activities.count == 0 {
                 return cell
             }
@@ -479,7 +492,7 @@ class ActivitiesController: UITableViewController {
     
     @objc func followRequest() {
         let followRequest = FollowRequestController()
-        followRequest.hidesBottomBarWhenPushed = true
+        // followRequest.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(followRequest, animated: true)
     }
@@ -487,7 +500,7 @@ class ActivitiesController: UITableViewController {
     @objc func challengeRequest() {
         let challengeRequest = ChallengeRequestController()
         goForward = true
-        challengeRequest.hidesBottomBarWhenPushed = true
+        // challengeRequest.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeRequest, animated: true)
     }
@@ -495,7 +508,7 @@ class ActivitiesController: UITableViewController {
     @objc func followerRequest() {
         let followerRequest = FollowerRequestController()
         goForward = true
-        followerRequest.hidesBottomBarWhenPushed = true
+        // followerRequest.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(followerRequest, animated: true)
     }
@@ -503,7 +516,7 @@ class ActivitiesController: UITableViewController {
     @objc func challengeApprove() {
         let challengeApproveCont = ChallengeResultApproveController()
         goForward = true
-        challengeApproveCont.hidesBottomBarWhenPushed = true
+        // challengeApproveCont.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeApproveCont, animated: true)
     }

@@ -184,12 +184,24 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         return 1
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerData.count
+        if !isLocal {
+            return pickerData.count
+        } else {
+            return oldPickerData.count
+        }
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickerData[row]
+        if !isLocal {
+            return pickerData[row]
+        } else {
+            return oldPickerData[row]
+        }
     }
-    var pickerData = ["İbrahim AKAY" , "Serkan AYKUT" , "Melisa Bahçıvan" , "Berkay Bahçıvan", "Seher CAN", "Taner UZUN"]
+    var pickerData = ["Usain bolt" , "Barcelona" , "Real Madrid" , "Photographer", "Nadal", "Football Fans",
+                      "Tom Jery", "Music Fans", "Roger federer", "Christian pulisic", "Smith", "Childlike",
+                      "Peppa", "Minion", "Simpson", "Tweety", "Ibrahimovic fans", "NBA Fans", "Bart Simpson",
+                      "Lisa Simpson", "Marge Simpson", "Magie Simpson", "Andre De Grasse", "Tasmanian", "Joker"]
+    var oldPickerData = ["Akay", "Aykut", "Melis", "Belkay", "Can", "Uzun"]
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         pickerDone()
     }
@@ -200,18 +212,72 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
     
     @objc func pickerDone() {
         let row = myPickerView.selectedRow(inComponent: 0);
-        if row == 0 {
-            akay()
-        } else if row == 1 {
-            aykut()
-        } else if row == 2 {
-            melis()
-        } else if row == 3 {
-            belkay()
-        } else if row == 4 {
-            can()
-        } else if row == 5 {
-            uzun()
+        if !isLocal {
+            if row == 0 {
+                openMember(id: "5bb71ec9d35c6545e8bdbf1b")
+            } else if row == 1 {
+                openMember(id: "5bb71ee3d35c6545e8bdbf1d")
+            } else if row == 2 {
+                openMember(id: "5bb71efad35c6545e8bdbf1f")
+            } else if row == 3 {
+                openMember(id: "5bb71f20d35c6545e8bdbf22")
+            } else if row == 4 {
+                openMember(id: "5bb71f33d35c6545e8bdbf24")
+            } else if row == 5 {
+                openMember(id: "5bb71f58d35c6545e8bdbf26")
+            } else if row == 6 {
+                openMember(id: "5bb71f80d35c6545e8bdbf28")
+            } else if row == 7 {
+                openMember(id: "5bb71f99d35c6545e8bdbf2a")
+            } else if row == 8 {
+                openMember(id: "5bb71fb2d35c6545e8bdbf2c")
+            } else if row == 9 {
+                openMember(id: "5bb7207ad35c6545e8bdbf2e")
+            } else if row == 10 {
+                openMember(id: "5bb72094d35c6545e8bdbf30")
+            } else if row == 11 {
+                openMember(id: "5bb720b4d35c6545e8bdbf32")
+            } else if row == 12 {
+                openMember(id: "5bb720c6d35c6545e8bdbf34")
+            } else if row == 13 {
+                openMember(id: "5bb720d5d35c6545e8bdbf36")
+            } else if row == 14 {
+                openMember(id: "5bb720e4d35c6545e8bdbf38")
+            } else if row == 15 {
+                openMember(id: "5bbba3c5d35c6545e8bdcf7d")
+            } else if row == 16 {
+                openMember(id: "5bbba3dfd35c6545e8bdcf7f")
+            } else if row == 17 {
+                openMember(id: "5bbba3f7d35c6545e8bdcf81")
+            } else if row == 18 {
+                openMember(id: "5bbba41bd35c6545e8bdcf83")
+            } else if row == 19 {
+                openMember(id: "5bbba437d35c6545e8bdcf85")
+            } else if row == 20 {
+                openMember(id: "5bbba44bd35c6545e8bdcf87")
+            } else if row == 21 {
+                openMember(id: "5bbba461d35c6545e8bdcf89")
+            } else if row == 22 {
+                openMember(id: "5bbba47cd35c6545e8bdcf8b")
+            } else if row == 23 {
+                openMember(id: "5bbba48ed35c6545e8bdcf8d")
+            } else if row == 24 {
+                openMember(id: "5bbba4a2d35c6545e8bdcf8f")
+            }
+        } else {
+            if row == 0 {
+                akay()
+            } else if row == 1 {
+                aykut()
+            } else if row == 2 {
+                melis()
+            } else if row == 3 {
+                belkay()
+            } else if row == 4 {
+                can()
+            } else if row == 5 {
+                uzun()
+            }
         }
         myPickerView.removeFromSuperview()
     }
@@ -292,14 +358,14 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
     @objc func fetchFacebookProfile() {
         self.group.enter()
         //print permissions, such as public_profile
-        let params = ["fields": "id, first_name, last_name, name, email, picture,friends"]
+        let params = ["fields": "id, first_name, last_name, name, email, picture, friends, age_range, gender"]
 
         let graphRequest = FBSDKGraphRequest(graphPath: "me", parameters: params)
         let connection = FBSDKGraphRequestConnection()
         
         connection.add(graphRequest, completionHandler: { (connection, result, error) -> Void in
             if error == nil {
-                print("1")
+                // print("1")
                 // print(result!)
                 // print("https://graph.facebook.com/10156204749600712/invitable_friends?access_token=\(FBSDKAccessToken.current().tokenString)")
                 let data = result as! [String : Any]
@@ -307,7 +373,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                 let last_name = data["last_name"] as? String
                 let email = data["email"] as? String
                 let FBid = data["id"] as? String
-                self.addMember(firstName: first_name!, surname: last_name!, email: email!, facebookID: FBid!)
+                let age_range = data["age_range"] as? String
+                let gender = data["gender"] as? String
+                self.addMember(firstName: first_name!, surname: last_name!, email: email!, facebookID: FBid!, age_range: age_range ?? "", gender: gender!)
             } else {
                 print("Error Getting Friends \(error!)");
             }
@@ -315,7 +383,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         connection.start()
     }
     
-    @objc func addMember(firstName: String, surname: String, email: String, facebookID: String) {
+    @objc func addMember(firstName: String, surname: String, email: String, facebookID: String, age_range: String, gender: String) {
         let json: [String: Any] = ["name": firstName,
                                    "surname": surname,
                                    "email": email,
@@ -325,7 +393,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                                    "language":Locale.current.languageCode!,
                                    "releaseVersion": Bundle.main.releaseVersionNumber!,
                                    "buildVersion" : Bundle.main.buildVersionNumber!,
-                                   "osVersion": UIDevice.current.systemVersion
+                                   "osVersion": UIDevice.current.systemVersion,
+                                   "age_range": age_range,
+                                   "gender": gender
                                 ]
         
         let url = URL(string: addMemberURL)!

@@ -113,9 +113,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                 let imageUrl = signIn.currentUser.profile.imageURL(withDimension: 200)
                 imageUrlAbsString = (imageUrl?.absoluteString)!
                 // print(" image url: ", imageUrlAbsString!)
-            }
+            }            
             // print("userid:\(userId!), idToken:\(idToken!), fullName:\(fullName!), givenName:\(givenName!), familyName:\(familyName!), email:\(email!)")
-            self.addMember(firstName: givenName!, surname: familyName!, email: email!, facebookID: imageUrlAbsString)
+            var gender = ""
+            let idToken = user.authentication.accessToken
+            let url = URL(string: "https://www.googleapis.com/oauth2/v3/userinfo?access_token=\(idToken!)")
+            let session = URLSession.shared
+            session.dataTask(with:  url!, completionHandler:  {(data, response, error) -> Void in
+                do {
+                    let userData = try JSONSerialization.jsonObject(with: data!, options:[]) as? [String:AnyObject]
+                    gender = userData!["gender"] as! String
+                    self.group.leave()
+                    // let locale = userData!["locale"] as! String
+                } catch {
+                    NSLog("Account Information could not be loaded")
+                }
+            }).resume()
+            group.wait()
+            self.addMember(firstName: givenName!, surname: familyName!, email: email!, facebookID: imageUrlAbsString, gender: gender)
             if GIDSignIn.sharedInstance().hasAuthInKeychain() {
                 window?.rootViewController = SplashScreenController()
                 splashTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(splashScreenToMain), userInfo: nil, repeats: false)
@@ -128,7 +143,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         window?.rootViewController = CustomTabBarController()
     }
     
-    @objc func addMember(firstName: String, surname: String, email: String, facebookID: String) {        
+    @objc func addMember(firstName: String, surname: String, email: String, facebookID: String, gender: String) {
+        group.enter()
         let json: [String: Any] = [ "name": firstName,
                                     "surname": surname,
                                     "email": email,
@@ -138,7 +154,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                                     "language":Locale.current.languageCode!,
                                     "releaseVersion": Bundle.main.releaseVersionNumber!,
                                     "buildVersion" : Bundle.main.buildVersionNumber!,
-                                    "osVersion": UIDevice.current.systemVersion
+                                    "osVersion": UIDevice.current.systemVersion,
+                                    "gender": gender
         ]
         
         let url = URL(string: addMemberURL)!

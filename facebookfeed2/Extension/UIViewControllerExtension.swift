@@ -15,6 +15,11 @@ extension UICollectionView {
         let completelyVisible = self.bounds.contains(rect!)
         return completelyVisible
     }
+    
+    func reloadData(completion: @escaping ()->()) {
+        UIView.animate(withDuration: 0, animations: { self.reloadData() })
+        { _ in completion() }
+    }
 }
 
 extension UIViewController

@@ -453,6 +453,10 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
             // nothing
         } else if type == "CHALLENGE_APPROVE" {
             openExplorer(challengeId: activities[indexPath.row].challengeId!)
+        } else if type == "UPCOMING_WARMING" {
+            self.navigationController?.tabBarController?.selectedIndex = profileIndex
+        } else if type == "TIMES_UP" {
+            openExplorer(challengeId: activities[indexPath.row].challengeId!)
         }
     }
     

@@ -98,7 +98,7 @@ class UpdateProgressController : UIViewController {
             if challengeType == SELF {
                 homeScoreLabel.text = "Result"
                 awayScoreLabel.text = "Goal"                
-                awayScoreText.text = goal
+                awayScoreText.text = goal != "-1" ? goal : ""
                 vsImageView.alpha = 0
                 awayWin.alpha = 0
                 middleLabel.text = "of"

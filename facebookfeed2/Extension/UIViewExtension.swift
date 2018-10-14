@@ -39,12 +39,13 @@ class PlayerView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
+        playerLayer.backgroundColor = UIColor(hexString: "0x000000").withAlphaComponent(0.9).cgColor
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
     }
 }
 

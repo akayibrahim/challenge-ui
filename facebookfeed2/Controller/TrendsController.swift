@@ -389,7 +389,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let indexPath = getVisibleIndex()
         for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
             if !trendRequest[visIndex.row].provedWithImage! {
-                if visIndex != indexPath && visIndex.row != trendRequest.count - 1 && indexPath.row != visIndex.row + 1 {
+                if visIndex != indexPath && visIndex.row != trendRequest.count - 1 && indexPath.row + 1 != visIndex.row {
                     if let cell = collectionView?.cellForItem(at: visIndex) {
                         let feedCell = cell as! TrendRequestCell
                         if !self.trendRequest[visIndex.row].provedWithImage! {

@@ -1007,7 +1007,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 1), forwardScreen: FRWRD_CHNG_SCR, homeWinner: false, awayWinner: false, homeScore: sender.homeScore!, awayScore: sender.awayScore!))
             } else {
                 updateProgress.awayScoreText.becomeFirstResponder()
-                Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 1), forwardScreen: FRWRD_CHNG_SCR, homeWinner: false, goal: sender.goal != nil ? sender.goal! : "-", result: sender.homeScore != nil ? sender.homeScore! : "-"))
+                Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 1), forwardScreen: FRWRD_CHNG_SCR, homeWinner: false, goal: sender.goal != nil ? sender.goal! : "-1", result: sender.homeScore != nil ? sender.homeScore! : "-1"))
             }
             goForward = true
             // updateProgress.hidesBottomBarWhenPushed = true

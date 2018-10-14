@@ -15,12 +15,12 @@ var countOffollowers: Int = 0
 var countOffollowing: Int = 0
 var privateAccount = false
 
-var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
-// var defaultURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
+// var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
+var defaultURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
 
 // CONSTANTS
 var dummyServiceCall : Bool = false
-var isLocal: Bool = UIDevice.current.isSimulator
+var isLocal: Bool = false //UIDevice.current.isSimulator
 var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"
@@ -80,8 +80,8 @@ var addChallengeTitle = "Add Challenge"
 
 // BUTTON OR LABEL NAME
 var supportText = "SUPPORT"
-var viewAllComments = "View all 0 comments"
-var viewAllProofs = "View all 0 proofs"
+var viewAllComments = "View all 0 comment(s)"
+var viewAllProofs = "View all 0 proof(s)"
 var addComents = "Add a comment.."
 var addProofsVar = "Add a proof.."
 var joinToChlVar = "Join It"

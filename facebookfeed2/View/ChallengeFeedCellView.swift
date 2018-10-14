@@ -125,12 +125,12 @@ class FeedCell: UICollectionViewCell {
             }
             setImage(fbID: memberFbID, imageView: profileImageView)
             if let countOfComments = post?.countOfComments {
-                viewComments.setTitle("View all \(countOfComments) comments", for: UIControlState())
+                viewComments.setTitle("View all \(countOfComments) comment(s)", for: UIControlState())
                 viewComments.count = Int(truncating: countOfComments)
                 addComments.count = Int(truncating: countOfComments)
             }
             if let countOfProofs = post?.countOfProofs {
-                viewProofs.setTitle("View all \(countOfProofs) proofs", for: UIControlState())
+                viewProofs.setTitle("View all \(countOfProofs) proof(s)", for: UIControlState())
                 viewProofs.count = Int(truncating: countOfProofs)
                 addProofs.count = Int(truncating: countOfProofs)
                 updateProgress.count = Int(truncating: countOfProofs)

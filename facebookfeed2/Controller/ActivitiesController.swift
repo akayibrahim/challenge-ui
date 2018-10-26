@@ -38,7 +38,6 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
         
         tableView.estimatedRowHeight = heighForRow
         tableView.rowHeight = UITableViewAutomaticDimension
-        
         tableView.prefetchDataSource = self
         
         self.reloadPage()
@@ -438,34 +437,35 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
     @objc func openBackgroundOfActivity(indexPath: IndexPath) {
         let type = activities[indexPath.row].type
         if type == comment {
-            viewComments(challengeId: activities[indexPath.row].challengeId!)
+            openExplorer(memberID, challengeId: activities[indexPath.row].challengeId!)
         } else if type == proof {
-            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            openExplorer(activities[indexPath.row].fromMemberId!, challengeId: activities[indexPath.row].challengeId!)
         } else if type == supportType {
-            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            openExplorer(memberID, challengeId: activities[indexPath.row].challengeId!)
         } else if type == join {
-            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            openExplorer(memberID, challengeId: activities[indexPath.row].challengeId!)
         } else if type == accept {
-            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            openExplorer(memberID, challengeId: activities[indexPath.row].challengeId!)
         } else if type == following {
             // nothing
         } else if type == follower {
             // nothing
         } else if type == "CHALLENGE_APPROVE" {
-            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            openExplorer(memberID, challengeId: activities[indexPath.row].challengeId!)
         } else if type == "UPCOMING_WARMING" {
             self.navigationController?.tabBarController?.selectedIndex = profileIndex
         } else if type == "TIMES_UP" {
-            openExplorer(challengeId: activities[indexPath.row].challengeId!)
+            openExplorer(memberID, challengeId: activities[indexPath.row].challengeId!)
         }
     }
     
-    @objc func openExplorer(challengeId: String) {
+    @objc func openExplorer(_ memberId: String, challengeId: String) {
         let challengeController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         challengeController.navigationItem.title = "Explorer"
         challengeController.explorer = true
         challengeController.explorerCurrentPage = 0
         challengeController.challengIdForTrendAndExplorer = challengeId
+        challengeController.memberIdForExplorer = memberId
         challengeController.selectedTabIndex = self.tabBarController?.selectedIndex ?? 0
         challengeController.reloadChlPage()
         self.navigationController?.setNavigationBarHidden(false, animated: true)

@@ -43,6 +43,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc var explorer : Bool = false
     @objc var trend : Bool = false
     @objc var challengIdForTrendAndExplorer: String?
+    @objc var memberIdForExplorer: String?
     @objc var profile: Bool = false
     @objc var memberIdForFriendProfile: String?
     @objc var memberFbIdForFriendProfile: String?
@@ -200,7 +201,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 }
                 return
             } else if self.explorer {
-                self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=false"  + "&page=\(self.explorerCurrentPage)", profile: false)
+                self.fetchChallenges(url: getExplorerChallengesURL + (self.memberIdForExplorer != nil ? self.memberIdForExplorer! : memberID) + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=false"  + "&page=\(self.explorerCurrentPage)", profile: false)
                 return
             } else if self.trend {
                 self.fetchChallenges(url: getExplorerChallengesURL + memberID + "&challengeId=" + self.challengIdForTrendAndExplorer! + "&addSimilarChallenges=true" + "&page=\(self.explorerCurrentPage)", profile: false)
@@ -613,7 +614,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
          }
          if cells[indexPath] == nil {
             cells[indexPath] = prepareCell(indexPath)
-        }*/
+        }*/        
     }
     
     func prepareCell(_ indexPath: IndexPath) -> UICollectionViewCell {
@@ -1177,16 +1178,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc func joinToChallenge(sender: subclasssedUIButton) {
         let index = IndexPath(item: sender.tag, section: 0)
         let feedCell = collectionView?.cellForItem(at: index) as! FeedCell
-        let currentImage = feedCell.joinButton.currentImage
-        if currentImage == UIImage(named: acceptedRed) {
-            feedCell.joinButton.setImage(UIImage(named: acceptedBlack), for: .normal)
-        } else {
-            feedCell.joinButton.setImage(UIImage(named: acceptedRed), for: .normal)
-            joinToChallengeService(challengeId: sender.challengeId!, feedCell: feedCell)
-            self.posts[index.row].joined = true
-            self.posts[index.row].canJoin = false
-            self.collectionView?.reloadItems(at: [index])
-        }
+        joinToChallengeService(challengeId: sender.challengeId!, feedCell: feedCell)
+        self.posts[index.row].joined = true
+        self.posts[index.row].canJoin = false
+        self.collectionView?.reloadItems(at: [index])
     }
     
     @objc func joinToChallengeService(challengeId: String, feedCell: FeedCell) {
@@ -1206,11 +1201,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 print(responseJSON)
                 if responseJSON["message"] != nil {
                     self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
-                }
-            } else {
-                DispatchQueue.main.async { // Correct
-                    feedCell.joinToChl.alpha = 0
-                    feedCell.addProofs.alpha = 1
                 }
             }
         }).resume()

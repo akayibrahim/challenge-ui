@@ -60,7 +60,7 @@ public class Util {
         config.showsCrop = .rectangle(ratio: (Double(screenWidth / (screenWidth / 2))))
         config.wordings.libraryTitle = "Gallery"
         config.hidesStatusBar = true
-        //config.overlayView = myOverlayView
+        // config.overlayView = myOverlayView
         config.library.maxNumberOfItems = 1
         config.library.minNumberOfItems = 1
         config.library.numberOfItemsInRow = 3

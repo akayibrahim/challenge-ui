@@ -15,12 +15,12 @@ var countOffollowers: Int = 0
 var countOffollowing: Int = 0
 var privateAccount = false
 
-// var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
-var defaultURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
+var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
+// var defaultURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
 
 // CONSTANTS
 var dummyServiceCall : Bool = false
-var isLocal: Bool = false //UIDevice.current.isSimulator
+var isLocal: Bool = UIDevice.current.isSimulator
 var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"

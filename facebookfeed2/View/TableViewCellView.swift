@@ -187,6 +187,7 @@ class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
         textView.layer.borderColor = UIColor (red:204.0/255.0, green:204.0/255.0, blue:204.0/255.0, alpha:1.0).cgColor;
         textView.layer.borderWidth = 1.0;
         textView.layer.cornerRadius = 5.0;
+        textView.textContainer.maximumNumberOfLines = 8
         return textView
     }()
 }

@@ -57,12 +57,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.hideKeyboardWhenTappedAround()
-        loadChallenges()
         
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.onRefresh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl)
         NotificationCenter.default.addObserver(self, selector:  #selector(self.appMovedToBackground), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+        
+        reloadPage()
     }
     
     @objc func appMovedToBackground() {

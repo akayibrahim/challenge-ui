@@ -24,6 +24,7 @@ class FeedCell: UICollectionViewCell {
         self.thirdFourChlrPeopleImageView.image = UIImage()
         self.moreFourChlrPeopleImageView.image = UIImage()
         self.firstOnePeopleImageView.image = UIImage()
+        self.firstOnePeopleImageView.gestureRecognizers?.removeAll()
         self.firstTwoPeopleImageView.image = UIImage()
         self.secondTwoPeopleImageView.image = UIImage()
         self.firstThreePeopleImageView.image = UIImage()
@@ -57,7 +58,7 @@ class FeedCell: UICollectionViewCell {
         self.subjectImageView.image = UIImage()
         self.thinksAboutChallengeView.text = nil
         self.goalLabel.removeFromSuperview()
-        self.joinButton.removeFromSuperview()        
+        self.joinButton.removeFromSuperview()
         self.supportButtonMatch.removeFromSuperview()
         self.supportButton.removeFromSuperview()
         self.subjectLabel.removeFromSuperview()
@@ -333,6 +334,8 @@ class FeedCell: UICollectionViewCell {
                     setImage(name: subject.replace(target: " ", withString: "_"), imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.memberId = nil
                     firstOnePeopleImageView.contentMode = .scaleAspectFill
+                    firstOnePeopleImageView.setupZoomPanGesture()
+                    firstOnePeopleImageView.setupZoomPinchGesture()
                 }
                 // goalLabel.text = "GOAL: \(goal)"
                 if let result = post?.result, let goal = post?.goal {
@@ -547,19 +550,6 @@ class FeedCell: UICollectionViewCell {
                     viewProofs.titleLabel?.adjustsFontSizeToFitWidth = true
                     
                     if !done {
-                        if joined && !proofed {
-                            addSubview(proofButton)
-                            addLeadingAnchor(proofButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
-                            proofButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-                            addWidthAnchor(proofButton, multiplier: 0.6/10)
-                            addHeightAnchor(proofButton, multiplier: 0.6/10)
-                            
-                            addSubview(addProofs)
-                            addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                            addLeadingAnchor(addProofs, anchor: proofButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
-                            addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
-                            addHeightAnchor(addProofs, multiplier: 0.7/10)
-                        }
                         if canJoin {
                             addSubview(joinButton)
                             addLeadingAnchor(joinButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
@@ -573,6 +563,18 @@ class FeedCell: UICollectionViewCell {
                             joinToChl.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
                             addHeightAnchor(joinToChl, multiplier: 0.7/10)
                             joinToChl.canJoin = true
+                        } else if joined && !proofed {
+                            addSubview(proofButton)
+                            addLeadingAnchor(proofButton, anchor: viewProofs.leadingAnchor, constant: -(screenSize.width * 0/10))
+                            proofButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+                            addWidthAnchor(proofButton, multiplier: 0.6/10)
+                            addHeightAnchor(proofButton, multiplier: 0.6/10)
+                            
+                            addSubview(addProofs)
+                            addProofs.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+                            addLeadingAnchor(addProofs, anchor: proofButton.trailingAnchor, constant: (screenSize.width * 0.15/10))
+                            addProofs.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 0).isActive = true
+                            addHeightAnchor(addProofs, multiplier: 0.7/10)
                         }
                     }
                 }
@@ -601,7 +603,10 @@ class FeedCell: UICollectionViewCell {
             
             nameAndStatusLabel.centerYAnchor.constraint(equalTo: challengerImageView.centerYAnchor).isActive = true
             addLeadingAnchor(nameAndStatusLabel, anchor: challengerImageView.trailingAnchor, constant: 5)
+            addWidthAnchor(nameAndStatusLabel, multiplier: 9/10)
+            nameAndStatusLabel.adjustsFontSizeToFitWidth = true
             
+            /*
             addSubview(others)
             addTopAnchor(others, anchor: contentGuide.topAnchor, constant: -(screenWidth * 0 / 10))
             addTrailingAnchor(others, anchor: contentGuide.trailingAnchor, constant: -(screenWidth * 0.1 / 10))
@@ -609,6 +614,7 @@ class FeedCell: UICollectionViewCell {
             addHeightAnchor(others, multiplier: 0.5/10)
             others.titleLabel?.font = UIFont.systemFont(ofSize: 10)
             others.alpha = 0
+            */
         }
     }
     

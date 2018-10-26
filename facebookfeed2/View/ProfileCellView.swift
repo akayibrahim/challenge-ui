@@ -46,6 +46,8 @@ class ProfileCellView: UICollectionViewCell {
         addTopAnchor(nameLabel, anchor: profileImageView.topAnchor, constant: screenSize.width * 0.15 / 10)
         addLeadingAnchor(nameLabel, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.5 / 10)
         nameLabel.text = name
+        addWidthAnchor(nameLabel, multiplier: 7/10)
+        nameLabel.adjustsFontSizeToFitWidth = true
         
         addSubview(followersLabel)
         followersLabel.text = "Followers"

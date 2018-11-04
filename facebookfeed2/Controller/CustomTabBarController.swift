@@ -127,7 +127,11 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
             self.navigationController?.setNavigationBarHidden(false, animated: true)
         }*/
         if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
-            status.backgroundColor = navAndTabColor
+            if (tabBarController.selectedIndex == 2 || tabBarController.selectedIndex == 3) {
+                status.backgroundColor = nil
+            } else {
+                status.backgroundColor = navAndTabColor
+            }
         }
         self.navigationController?.setNavigationBarHidden(true, animated: true)
     }

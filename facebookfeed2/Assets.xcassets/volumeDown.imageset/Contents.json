@@ -2,7 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "volume_off.png",
+      "filename" : "mute.png",
       "scale" : "1x"
     },
     {

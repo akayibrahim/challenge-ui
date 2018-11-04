@@ -385,6 +385,8 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
     }
     
     @objc func addMember(firstName: String, surname: String, email: String, facebookID: String, age_range: String, gender: String) {
+        let deviceNotifyToken = UserDefaults.standard.object(forKey: "DeviceToken")
+            
         let json: [String: Any] = ["name": firstName,
                                    "surname": surname,
                                    "email": email,
@@ -396,7 +398,8 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                                    "buildVersion" : Bundle.main.buildVersionNumber!,
                                    "osVersion": UIDevice.current.systemVersion,
                                    "age_range": age_range,
-                                   "gender": gender
+                                   "gender": gender,
+                                   "deviceNotifyToken": deviceNotifyToken!
                                 ]
         
         let url = URL(string: addMemberURL)!

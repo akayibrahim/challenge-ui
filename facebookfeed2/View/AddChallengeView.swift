@@ -27,13 +27,14 @@ class AddChallengeView: UIView {
     @objc var pickerData: [String] = [String]()
 
     @objc func setupViews() {
-        let contentGuide = self.readableContentGuide
+        let contentGuide = self.readableContentGuide        
         addLayoutGuide(middleHeight)
         addLayoutGuide(rightMiddleTopWidth)
         addLayoutGuide(leftMiddleTopWidth)
         addLayoutGuide(rightMiddleBottomWidth)
         addLayoutGuide(leftMiddleBottomWidth)
         
+        challengeView.backgroundColor = feedBackColor
         addSubview(challengeView)
         addTopAnchor(challengeView, anchor: contentGuide.topAnchor, constant: -7)
         challengeView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
@@ -356,7 +357,7 @@ class AddChallengeView: UIView {
     
     @objc let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["AS A TEAM", "TO PEOPLE", "TO MYSELF", "TO WORLD"])    
     
-    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
+    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.white)
     @objc let finishFlag: UIButton = FeedCell.buttonForTitle("", imageName: "finishFlag")
     
     @objc let vsImageView: UIImageView = {

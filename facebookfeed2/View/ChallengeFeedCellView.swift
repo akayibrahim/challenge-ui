@@ -459,7 +459,7 @@ class FeedCell: UICollectionViewCell {
     
     @objc let screenSize = UIScreen.main.bounds
     @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool, provedWithImage: Bool, waitForApprove: Bool, scoreRejected: Bool, scoreRejectName: String) {
-        backgroundColor = UIColor.white
+        backgroundColor = feedBackColor
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
         generateTopView(contentGuide, isComeFromSelf: isComeFromSelf)
@@ -1145,10 +1145,20 @@ class FeedCell: UICollectionViewCell {
         return imageView
     }
     
+    @objc static func rectImageView() -> UIImageView {
+        let imageView = UIImageView()
+        // imageView.layer.cornerRadius = 15.0
+        imageView.clipsToBounds = true
+        imageView.isOpaque = true
+        imageView.layer.shouldRasterize = true
+        imageView.layer.rasterizationScale = UIScreen.main.scale
+        return imageView
+    }
+    
     @objc let profileImageView: UIImageView = FeedCell.circleImageView()
     @objc let challengerImageView: UIImageView = FeedCell.circleImageView()
-    @objc let volumeUpImageView: UIImageView = FeedCell.circleImageView()
-    @objc let volumeDownImageView: UIImageView = FeedCell.circleImageView()
+    @objc let volumeUpImageView: UIImageView = FeedCell.rectImageView()
+    @objc let volumeDownImageView: UIImageView = FeedCell.rectImageView()
     
     @objc let proofedMediaView: UIImageView = {
         let imageView = UIImageView()
@@ -1197,7 +1207,7 @@ class FeedCell: UICollectionViewCell {
         return label
     }
     
-    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
+    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.white)
     @objc let activeLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
     @objc let goalLabel: UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
     @objc let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.black)
@@ -1385,7 +1395,7 @@ class FeedCell: UICollectionViewCell {
     
     @objc static func viewFunc() -> UIView {
         let view = UIView()
-        view.backgroundColor=UIColor.white
+        view.backgroundColor = UIColor.white
         view.isOpaque = true
         view.layer.shouldRasterize = true
         view.layer.rasterizationScale = UIScreen.main.scale

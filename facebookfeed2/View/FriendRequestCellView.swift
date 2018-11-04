@@ -57,6 +57,7 @@ class FriendRequestCell: UITableViewCell {
     
     @objc func setupViews() {
         let contentGuide = self.readableContentGuide
+        backgroundColor = feedBackColor
         addSubview(requestImageView)
         addSubview(nameLabel)
         addSubview(confirmButton)
@@ -67,6 +68,7 @@ class FriendRequestCell: UITableViewCell {
         addWidthAnchor(requestImageView, multiplier: 1.5/10)
         addHeightAnchor(requestImageView, multiplier: 1.5/10)
         
+        nameLabel.backgroundColor = UIColor(white: 1, alpha: 0)
         addTopAnchor(nameLabel, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(nameLabel, anchor: requestImageView.trailingAnchor, constant: 10)
         

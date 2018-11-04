@@ -116,6 +116,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                 player.pause()
             }
         }
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     @objc func onRefesh() {

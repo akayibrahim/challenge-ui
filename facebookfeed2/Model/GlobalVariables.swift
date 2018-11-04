@@ -56,6 +56,7 @@ var FRWRD_CHNG_CMMNT = "CMMNT"
 var FRWRD_CHNG_PRV = "PRV"
 var FRWRD_CHNG_SCR = "SCR"
 var reloadProfile:Bool = false
+var feedBackColor =  UIColor(white: 0.985, alpha: 1) // UIColor.lightText
 
 // Assets Name
 var supported = "supported"

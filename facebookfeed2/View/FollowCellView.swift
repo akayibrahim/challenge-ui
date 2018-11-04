@@ -22,6 +22,7 @@ class FollowCellView: UITableViewCell {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: OtherController.cellId)
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
+        backgroundColor = feedBackColor
         
         addSubview(profileImageView)    
         profileImageView.layer.cornerRadius = screenWidth * 0.9 / 10 / 2

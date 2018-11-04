@@ -34,6 +34,7 @@ class ProofCellView: UITableViewCell {
     @objc func setup() {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
+        backgroundColor = feedBackColor
         
         addSubview(profileImageView)    
         profileImageView.layer.cornerRadius = screenWidth * 0.7 / 10 / 2
@@ -42,6 +43,7 @@ class ProofCellView: UITableViewCell {
         addWidthAnchor(profileImageView, multiplier: 0.7 / 10)
         addHeightAnchor(profileImageView, multiplier: 0.7 / 10)
         
+        thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
         addSubview(thinksAboutChallengeView)
         addLeadingAnchor(thinksAboutChallengeView, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.15/10)
         addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)

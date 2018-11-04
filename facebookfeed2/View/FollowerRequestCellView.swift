@@ -56,6 +56,7 @@ class FollowerRequestCell: UITableViewCell {
     
     @objc func setupViews() {
         let contentGuide = self.readableContentGuide
+        backgroundColor = feedBackColor
         addSubview(requestImageView)
         addSubview(nameLabel)
         addSubview(confirmButton)
@@ -67,6 +68,7 @@ class FollowerRequestCell: UITableViewCell {
         addHeightAnchor(requestImageView, multiplier: 1.8/10)
         // requestImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
         
+        nameLabel.backgroundColor = UIColor(white: 1, alpha: 0)
         addTopAnchor(nameLabel, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(nameLabel, anchor: requestImageView.trailingAnchor, constant: 10)
         addTrailingAnchor(nameLabel, anchor: contentGuide.trailingAnchor, constant: 4)

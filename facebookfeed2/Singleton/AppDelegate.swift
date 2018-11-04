@@ -14,6 +14,7 @@ import AudioToolbox
 import GoogleSignIn
 import Fabric
 import Crashlytics
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
@@ -53,12 +54,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         let barButtonColor  = UIBarButtonItem.appearance()
         barButtonColor.tintColor = UIColor.white
         
-        application.statusBarStyle = .lightContent
+        // application.statusBarStyle = .lightContent
         playAudioWithOther()
+        
+        registerForPushNotifications()
         
         Fabric.with([Crashlytics.self])
         self.logUser()
-
+        
         return true
     }
     
@@ -221,7 +224,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        FBSDKAppEvents.activateApp()
+        FBSDKAppEvents.activateApp()        
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -259,6 +262,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                 self.group.leave()
             }
         }
+    }
+    
+    func registerForPushNotifications() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
+            (granted, error) in
+            print("Permission granted: \(granted)")
+            
+            guard granted else { return }
+            self.getNotificationSettings()
+        }
+    }
+    
+    func getNotificationSettings() {
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            print("Notification settings: \(settings)")
+            guard settings.authorizationStatus == .authorized else { return }
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
+    }
+    
+    func application(_ application: UIApplication,
+                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenParts = deviceToken.map { data -> String in
+            return String(format: "%02.2hhx", data)
+        }
+        
+        let token = tokenParts.joined()
+        let defaults = UserDefaults.standard
+        defaults.set(token, forKey: "DeviceToken")
+        defaults.synchronize()
+        print("Device Token: \(token)")
+    }
+    
+    func application(_ application: UIApplication,
+                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Failed to register: \(error)")
     }
 }
 

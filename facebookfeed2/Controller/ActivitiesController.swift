@@ -31,6 +31,7 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
         tableView.dataSource = self;
         tableView.sectionHeaderHeight = 0
         tableView?.showsVerticalScrollIndicator = false
+        tableView?.backgroundColor = feedBackColor
         
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
@@ -56,6 +57,7 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
             }
             DispatchQueue.main.async {
                 self.navigationController?.tabBarController?.tabBar.items?[3].badgeValue = nil
+                UIApplication.shared.applicationIconBadgeNumber = 0
             }
         }
     }
@@ -311,6 +313,7 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
             }
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
+            cell.backgroundColor = feedBackColor
             return cell
         } else if indexPath.section == 1 && indexPath.row == 0 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
@@ -321,6 +324,7 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
             }
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
+            cell.backgroundColor = feedBackColor
             return cell
         } else if indexPath.section == 2 && indexPath.row == 0 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
@@ -331,6 +335,7 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
             }
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
+            cell.backgroundColor = feedBackColor
             return cell
         } else if indexPath.section == 3 && indexPath.row == 0 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
@@ -341,6 +346,7 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
             }
             attributeText.append(greaterThan)
             cell.textLabel?.attributedText = attributeText
+            cell.backgroundColor = feedBackColor
             return cell
         } else if indexPath.section == 4 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ActivityCell

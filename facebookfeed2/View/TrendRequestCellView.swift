@@ -71,7 +71,7 @@ class TrendRequestCell: UICollectionViewCell {
     
     @objc func setupViews() {
         let contentGuide = self.readableContentGuide
-        backgroundColor = UIColor.white
+        backgroundColor = feedBackColor
         addSubview(requestImageView)
         addSubview(nameLabel)
         addSubview(profileImageView)
@@ -127,7 +127,7 @@ class TrendRequestCell: UICollectionViewCell {
     }
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
     @objc let proofedVideoView: PlayerView = PlayerView()
-    @objc let volumeUpImageView: UIImageView = FeedCell.circleImageView()
-    @objc let volumeDownImageView: UIImageView = FeedCell.circleImageView()
+    @objc let volumeUpImageView: UIImageView = FeedCell.rectImageView()
+    @objc let volumeDownImageView: UIImageView = FeedCell.rectImageView()
     // @objc var avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
 }

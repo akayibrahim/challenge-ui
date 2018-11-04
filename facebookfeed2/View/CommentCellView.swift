@@ -22,6 +22,7 @@ class CommentCellView: UITableViewCell {
     @objc func setups() {        
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
+        backgroundColor = feedBackColor
         
         addSubview(profileImageView)    
         profileImageView.layer.cornerRadius = screenWidth * 0.9 / 10 / 2
@@ -30,6 +31,7 @@ class CommentCellView: UITableViewCell {
         addHeightAnchor(profileImageView, multiplier: 0.9/10)
         profileImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
         
+        thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
         addSubview(thinksAboutChallengeView)
         addLeadingAnchor(thinksAboutChallengeView, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.15/10)
         addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)

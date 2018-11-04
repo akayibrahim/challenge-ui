@@ -24,7 +24,7 @@ class ProfileCellView: UICollectionViewCell {
     
     @objc let screenSize = UIScreen.main.bounds
     @objc func setupViews(memberFbId: String, name: String) {
-        backgroundColor = UIColor.white
+        backgroundColor = feedBackColor
         let contentGuide = self.readableContentGuide
         generateProfile(contentGuide, memberFbId: memberFbId, name: name)
     }
@@ -45,8 +45,8 @@ class ProfileCellView: UICollectionViewCell {
         nameLabel.attributedText = attributedText
         addTopAnchor(nameLabel, anchor: profileImageView.topAnchor, constant: screenSize.width * 0.15 / 10)
         addLeadingAnchor(nameLabel, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.5 / 10)
-        nameLabel.text = name
-        addWidthAnchor(nameLabel, multiplier: 7/10)
+        // nameLabel.text = name
+        addWidthAnchor(nameLabel, multiplier: 4.5/10)
         nameLabel.adjustsFontSizeToFitWidth = true
         
         addSubview(followersLabel)

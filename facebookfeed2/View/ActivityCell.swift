@@ -61,6 +61,7 @@ class ActivityCell: UITableViewCell {
     @objc func setupViews(type: String, mediaObjectId: String, proofWithImage: Bool) {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
+        backgroundColor = feedBackColor
         
         addSubview(profileImageView)
         profileImageView.layer.cornerRadius = screenWidth * 0.9 / 10 / 2

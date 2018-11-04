@@ -56,7 +56,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         navigationItem.title = "Add Challenge"
         tableView.register(TableViewCellContent.self, forCellReuseIdentifier: "addChlCellId")
         tableView.tableFooterView = UIView()
-        self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
+        self.view.backgroundColor =  UIColor(white: 0.95, alpha: 1) // UIColor.rgb(229, green: 231, blue: 235)
         rightButton = UIBarButtonItem(title: "Share", style: UIBarButtonItemStyle.plain, target: self, action: #selector(addChallenge))
         cancelButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.plain, target: self, action: #selector(cancel))
         nextButton = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.plain, target: self, action: #selector(nextPage))

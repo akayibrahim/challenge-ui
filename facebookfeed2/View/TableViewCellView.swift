@@ -79,8 +79,6 @@ class TableViewCellContent: UITableViewCell {
             visibilitySegControl.setTitleTextAttributes([NSAttributedStringKey.font: font], for: .normal)
             if typeIndex == 1 || typeIndex == 3 {
                 visibilitySegControl.selectedSegmentIndex = 2
-            } else if typeIndex == 2 {
-                visibilitySegControl.selectedSegmentIndex = 0
             }
             
         } else if cellRow == doneIndexPath.row {

@@ -51,6 +51,28 @@ class PlayerView: UIView {
 
 extension UIView {
     
+    func showTwoFinger() {
+        DispatchQueue.main.async {
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.extraLight)
+            let blurEffectView = UIVisualEffectView(effect: blurEffect)
+            blurEffectView.frame = self.bounds
+            blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
+            let image = UIImageView(image: UIImage(named: "twofinger"))
+            image.layer.cornerRadius = 0.4            
+            image.layer.masksToBounds = true
+            image.frame = CGRect(x: 0, y: 0, width: screenWidth * 2/5, height: screenWidth * 2/5)
+            blurEffectView.contentView.addSubview(image)
+            image.center = blurEffectView.contentView.center
+            
+            self.addSubview(blurEffectView)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: {
+                self.removeBluerLoader()
+            })
+        }
+    }
+    
     func showBlurLoader(){
         DispatchQueue.main.async {
             let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.extraLight)

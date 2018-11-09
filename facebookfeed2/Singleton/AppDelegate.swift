@@ -47,7 +47,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         }
         
         UINavigationBar.appearance().barTintColor = navAndTabColor
-        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)!, NSAttributedStringKey.foregroundColor: UIColor.white]
+        // UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)!
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.font: UIFont(descriptor: .init(), size: 20), NSAttributedStringKey.foregroundColor: UIColor.white]
         
         UITabBar.appearance().tintColor = navAndTabColor
         
@@ -148,6 +149,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     
     @objc func addMember(firstName: String, surname: String, email: String, facebookID: String, gender: String) {
         group.enter()
+        let deviceNotifyToken = UserDefaults.standard.object(forKey: "DeviceToken")
         let json: [String: Any] = [ "name": firstName,
                                     "surname": surname,
                                     "email": email,
@@ -158,7 +160,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                                     "releaseVersion": Bundle.main.releaseVersionNumber!,
                                     "buildVersion" : Bundle.main.buildVersionNumber!,
                                     "osVersion": UIDevice.current.systemVersion,
-                                    "gender": gender
+                                    "gender": gender,
+                                    "deviceNotifyToken": deviceNotifyToken ?? ""
         ]
         
         let url = URL(string: addMemberURL)!
@@ -289,12 +292,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         let tokenParts = deviceToken.map { data -> String in
             return String(format: "%02.2hhx", data)
         }
-        
-        let token = tokenParts.joined()
-        let defaults = UserDefaults.standard
-        defaults.set(token, forKey: "DeviceToken")
-        defaults.synchronize()
-        print("Device Token: \(token)")
+        if UserDefaults.standard.object(forKey: "DeviceToken") == nil {
+            let token = tokenParts.joined()
+            if let memberId = UserDefaults.standard.object(forKey: "memberID") {
+                let jsonURL = URL(string: updateWithDeviceTokenURL + memberID + "&deviceToken=" + token)!
+                jsonURL.get { data, response, error in
+                    guard
+                        data != nil
+                        else {
+                            if data != nil {
+                                let error = ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: updateWithDeviceTokenURL, inputs: "memberID=\(memberId)")
+                                print(error)
+                            }
+                            return
+                    }
+                }
+            }
+            let defaults = UserDefaults.standard
+            defaults.set(token, forKey: "DeviceToken")
+            defaults.synchronize()
+            print("Device Token: \(token)")
+        }
     }
     
     func application(_ application: UIApplication,

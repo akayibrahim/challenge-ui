@@ -40,7 +40,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>10</string>
 	<key>CLIENT_ID</key>
 	<string>241509157224-cbdshgv4f08i9vvo6hclidic4gr94i3r.apps.googleusercontent.com</string>
 	<key>Fabric</key>
@@ -94,7 +94,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.241509157224-cbdshgv4f08i9vvo6hclidic4gr94i3r</string>
+	<string>com.googleusercontent.apps.241509157224-cbdshgv4f08i9vvo6hclidic4gr94i3r</string>	
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

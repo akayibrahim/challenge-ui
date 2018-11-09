@@ -89,6 +89,8 @@ class FeedCell: UICollectionViewCell {
         self.clapping.removeFromSuperview()
         self.clappingHome.removeFromSuperview()
         self.proofedMediaView.image = UIImage()
+        self.proofedMediaView.gestureRecognizers?.removeAll()
+        self.proofedMediaView.removeFromSuperview()
         self.proofedVideoView.removeFromSuperview()
         self.multiplierSign.removeFromSuperview()
         self.volumeUpImageView.removeFromSuperview()
@@ -113,8 +115,8 @@ class FeedCell: UICollectionViewCell {
         didSet {
             prepareForReuse()
             if let name = post?.name, let status = post?.status {
-                let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 12)])
-                let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)])
+                let attributedText = NSMutableAttributedString(string: "\(name.trim())", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 13)])
+                let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13)])
                 attributedText.append(statusText)
                 nameAndStatusLabel.attributedText = attributedText
             }
@@ -174,6 +176,7 @@ class FeedCell: UICollectionViewCell {
                 if post?.secondTeamCount == "0" {
                     setImage(name: worldImage, imageView: firstOnePeopleImageView)
                     firstOnePeopleImageView.contentMode = .scaleAspectFit
+                    firstOnePeopleImageView.memberId = post?.challengerId
                 }
                 setImage(fbID: post?.challengerFBId, imageView: firstOneChlrPeopleImageView)
                 firstOneChlrPeopleImageView.memberId = post?.challengerId
@@ -332,7 +335,7 @@ class FeedCell: UICollectionViewCell {
                 firstOneChlrPeopleImageView.memberId = post?.challengerId
                 if let subject = post?.subject {
                     setImage(name: subject.replace(target: " ", withString: "_"), imageView: firstOnePeopleImageView)
-                    firstOnePeopleImageView.memberId = nil
+                    firstOnePeopleImageView.memberId = post?.challengerId
                     firstOnePeopleImageView.contentMode = .scaleAspectFill
                     firstOnePeopleImageView.setupZoomPanGesture()
                     firstOnePeopleImageView.setupZoomPinchGesture()
@@ -359,10 +362,11 @@ class FeedCell: UICollectionViewCell {
             }
             if let untilDate = post?.untilDateStr {
                 untilDateLabel.text = "\(untilDate)"
-                untilDateLabel.font = UIFont (name: fontMarkerFelt, size: 23)
+                // untilDateLabel.font = UIFont (name: fontMarkerFelt, size: 23)
+                untilDateLabel.font = untilDateLabel.font.withSize(16)
                 untilDateLabel.textAlignment = .center
                 untilDateLabel.numberOfLines = 2;
-                untilDateLabel.textColor = UIColor.gray
+                // untilDateLabel.textColor = UIColor.gray
                 untilDateLabel.adjustsFontSizeToFitWidth = true
             }
             vsImageView.image = UIImage(named: "vs")
@@ -375,11 +379,13 @@ class FeedCell: UICollectionViewCell {
                 moreFourChlrPeopleImageView.contentMode = .scaleAspectFit
             }
             if let subject = post?.subject {
-                subjectLabel.text = subject
-                subjectLabel.font = UIFont (name: fontMarkerFelt, size: 20)
+                subjectLabel.text = subject.uppercased().contains("CHALLENGE") ? subject : "\(subject) CHALLENGE"
+                // subjectLabel.font = UIFont (name: fontMarkerFelt, size: 20)
+                subjectLabel.font = subjectLabel.font.withSize(15)
                 subjectLabel.textAlignment = .center
                 subjectLabel.numberOfLines = 2;
-                subjectLabel.textColor = UIColor.gray
+                // subjectLabel.textColor = UIColor.gray
+                subjectLabel.adjustsFontSizeToFitWidth = true
             }
             if let supportFirstTeam = post?.supportFirstTeam, let supportSecondTeam = post?.supportSecondTeam {
                 if let firstTeamSupportCount = post?.firstTeamSupportCount {
@@ -465,7 +471,7 @@ class FeedCell: UICollectionViewCell {
         generateTopView(contentGuide, isComeFromSelf: isComeFromSelf)
         
         if !isComeFromSelf {
-            addTopAnchor(dividerLineView, anchor: contentGuide.topAnchor, constant: (screenWidth * 0.675 / 10))
+            addTopAnchor(dividerLineView, anchor: contentGuide.topAnchor, constant: (screenWidth * 0.9 / 10))
         } else {
             addTopAnchor(dividerLineView, anchor: contentGuide.topAnchor, constant: 0)
         }
@@ -515,7 +521,7 @@ class FeedCell: UICollectionViewCell {
             
             if(!thinksAboutChallengeView.text.isEmpty) {
                 addSubview(thinksAboutChallengeView)
-                addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: active ? -(screenSize.width * 1.6 / 10) : -(screenSize.width * 0.2 / 10))
+                addBottomAnchor(thinksAboutChallengeView, anchor: contentGuide.bottomAnchor, constant: active ? -(screenSize.width * 1.85 / 10) : -(screenSize.width * 0.2 / 10))
                 addLeadingAnchor(thinksAboutChallengeView, anchor: contentGuide.leadingAnchor, constant: 0)
                 addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
                 thinksAboutChallengeView.backgroundColor = UIColor(white: 1, alpha: 0)
@@ -524,13 +530,13 @@ class FeedCell: UICollectionViewCell {
             if active {
                 addSubview(viewComments)
                 viewComments.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-                addBottomAnchor(viewComments, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.05 / 10))
+                addBottomAnchor(viewComments, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 1.30 / 10))
                 addLeadingAnchor(viewComments, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
                 addHeightAnchor(viewComments, multiplier: 0.7/10)
                 viewComments.titleLabel?.adjustsFontSizeToFitWidth = true
                 
                 addSubview(profileImageView)
-                addBottomAnchor(profileImageView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 0.45 / 10))
+                addBottomAnchor(profileImageView, anchor: contentGuide.bottomAnchor, constant: -(screenSize.width * 0.65 / 10))
                 addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
                 addWidthAnchor(profileImageView, multiplier: 0.6/10)
                 addHeightAnchor(profileImageView, multiplier: 0.6/10)
@@ -581,22 +587,21 @@ class FeedCell: UICollectionViewCell {
             }
             
             addSubview(insertTime)
-            addBottomAnchor(insertTime, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0.2/10))
+            addBottomAnchor(insertTime, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0/10))
             addLeadingAnchor(insertTime, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addHeightAnchor(insertTime, multiplier: 0.6/10)
             
             addSubview(visibilityLabel)
-            addBottomAnchor(visibilityLabel, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0.2/10))
+            addBottomAnchor(visibilityLabel, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0/10))
             addTrailingAnchor(visibilityLabel, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
-            addHeightAnchor(visibilityLabel, multiplier: 0.6/10)
-            
+            addHeightAnchor(visibilityLabel, multiplier: 0.6/10)            
         }
     }
     
     @objc func generateTopView(_ contentGuide: UILayoutGuide, isComeFromSelf : Bool) {
         if !isComeFromSelf {
             addSubview(challengerImageView)
-            addTopAnchor(challengerImageView, anchor: contentGuide.topAnchor, constant: 0)
+            addTopAnchor(challengerImageView, anchor: contentGuide.topAnchor, constant: 3)
             addLeadingAnchor(challengerImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(challengerImageView, multiplier: 0.6/10)
             addHeightAnchor(challengerImageView, multiplier: 0.6/10)
@@ -669,10 +674,11 @@ class FeedCell: UICollectionViewCell {
                     } else {
                         activeLabel.text = "WAITING FOR PARTICIPANTS"
                     }
-                    activeLabel.font = UIFont (name: fontMarkerFelt, size: 23)
+                    // activeLabel.font = UIFont (name: fontMarkerFelt, size: 23)
+                    activeLabel.font = activeLabel.font.withSize(23)
                     activeLabel.textAlignment = .center
                     activeLabel.numberOfLines = 2;
-                    activeLabel.textColor = UIColor.gray
+                    activeLabel.textColor = UIColor.darkGray
                     activeLabel.adjustsFontSizeToFitWidth = true
                     
                     addSubview(activeLabel)
@@ -752,7 +758,8 @@ class FeedCell: UICollectionViewCell {
                         proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
                         addWidthAnchor(proofText, multiplier: 1.3 / 6)
                         addHeightAnchor(proofText, multiplier: 0.5 / 6)
-                        proofText.font = UIFont(name: "MarkerFelt-Thin", size: 40)
+                        // proofText.font = UIFont(name: "MarkerFelt-Thin", size: 40)
+                        proofText.font = proofText.font.withSize(28)
                         proofText.backgroundColor = scoreColor
                         proofText.textColor = UIColor.white
                         proofText.layer.cornerRadius = 5
@@ -916,14 +923,15 @@ class FeedCell: UICollectionViewCell {
         addSubview(subjectLabel)
         addTopAnchor(subjectLabel, anchor: middleBottomGuide.bottomAnchor, constant: 1)
         subjectLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+        addWidthAnchor(subjectLabel, multiplier: 4.5/5)
         addHeightAnchor(subjectLabel, multiplier: 1/15)
         subjectLabel.adjustsFontSizeToFitWidth = true
         
         if !isComeFromSelf {
-            addTopAnchor(dividerLineView1, anchor: middleBottomGuide.bottomAnchor, constant: (screenSize.width * 1/15)) // CGSIZE
+            addTopAnchor(dividerLineView1, anchor: middleBottomGuide.bottomAnchor, constant: (screenSize.width * 1.4/15)) // CGSIZE
             addLeadingAnchor(dividerLineView1, anchor: contentGuide.leadingAnchor, constant: 1)
             addTrailingAnchor(dividerLineView1, anchor: contentGuide.trailingAnchor, constant: 1)
-            dividerLineView1.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            dividerLineView1.heightAnchor.constraint(equalToConstant: 0).isActive = true
         }
         
         generateSecondTeam(contentGuide, secondTeamCount: secondTeamCount, type: type)
@@ -940,7 +948,7 @@ class FeedCell: UICollectionViewCell {
         middleHeight.heightAnchor.constraint(equalToConstant: screenSize.width * heightOfMiddle).isActive = true
         if firstTeamCount == teamCountOne {
             addSubview(firstOneChlrPeopleImageView)
-            addTopAnchor(firstOneChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 2)
+            addTopAnchor(firstOneChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 3)
             addLeadingAnchor(firstOneChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(firstOneChlrPeopleImageView, multiplier: widthOfImage)
             addHeightAnchor(firstOneChlrPeopleImageView, multiplier: heightOfFullImage)            
@@ -1005,7 +1013,7 @@ class FeedCell: UICollectionViewCell {
             addWidthAnchor(thirdFourChlrPeopleImageView, multiplier: widthOfQuarterImage)
             addHeightAnchor(thirdFourChlrPeopleImageView, multiplier: heightOfHalfImage)
             leftMiddleBottomWidth.trailingAnchor.constraint(equalTo: moreFourChlrPeopleImageView.leadingAnchor)
-            addBottomAnchor(moreFourChlrPeopleImageView, anchor: thirdFourChlrPeopleImageView.bottomAnchor, constant: -2)
+            addBottomAnchor(moreFourChlrPeopleImageView, anchor: thirdFourChlrPeopleImageView.bottomAnchor, constant: 0)
             addLeadingAnchor(moreFourChlrPeopleImageView, anchor: leftMiddleBottomWidth.trailingAnchor, constant: 2)
             addWidthAnchor(moreFourChlrPeopleImageView, multiplier: widthOfQuarterImage)
             addHeightAnchor(moreFourChlrPeopleImageView, multiplier: heightOfHalfImage)
@@ -1078,7 +1086,7 @@ class FeedCell: UICollectionViewCell {
             addWidthAnchor(thirdFourPeopleImageView, multiplier: widthOfQuarterImage)
             addHeightAnchor(thirdFourPeopleImageView, multiplier: heightOfHalfImage)
             rightMiddleBottomWidth.trailingAnchor.constraint(equalTo: moreFourPeopleImageView.leadingAnchor)
-            addBottomAnchor(moreFourPeopleImageView, anchor: thirdFourPeopleImageView.bottomAnchor, constant: -2)
+            addBottomAnchor(moreFourPeopleImageView, anchor: thirdFourPeopleImageView.bottomAnchor, constant: 0)
             addLeadingAnchor(moreFourPeopleImageView, anchor: rightMiddleBottomWidth.trailingAnchor, constant: 2)
             addTrailingAnchor(moreFourPeopleImageView, anchor: contentGuide.trailingAnchor, constant: 0)
             addWidthAnchor(moreFourPeopleImageView, multiplier: widthOfQuarterImage)
@@ -1142,6 +1150,7 @@ class FeedCell: UICollectionViewCell {
         imageView.isOpaque = true
         imageView.layer.shouldRasterize = true
         imageView.layer.rasterizationScale = UIScreen.main.scale
+        imageView.layer.borderWidth = 0.03
         return imageView
     }
     
@@ -1163,11 +1172,14 @@ class FeedCell: UICollectionViewCell {
     @objc let proofedMediaView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 2.0
         imageView.layer.masksToBounds = true
         imageView.isUserInteractionEnabled = true
         imageView.isOpaque = true
         imageView.layer.shouldRasterize = true
         imageView.layer.rasterizationScale = UIScreen.main.scale
+        imageView.layer.borderWidth = 0.03
+        imageView.layer.borderColor = UIColor.black.cgColor
         return imageView
     }()
     
@@ -1207,7 +1219,7 @@ class FeedCell: UICollectionViewCell {
         return label
     }
     
-    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.white)
+    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.black)
     @objc let activeLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor.white, textColor: UIColor.white)
     @objc let goalLabel: UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: navAndTabColor)
     @objc let subjectLabel: UILabel = FeedCell.labelCreate(12, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.black)
@@ -1354,6 +1366,7 @@ class FeedCell: UICollectionViewCell {
         imageView.isOpaque = true
         imageView.layer.shouldRasterize = true
         imageView.layer.rasterizationScale = UIScreen.main.scale
+        imageView.layer.borderWidth = 0.03
         return imageView
     }
     
@@ -1376,7 +1389,7 @@ class FeedCell: UICollectionViewCell {
     @objc let firstFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
     @objc let secondFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
     @objc let thirdFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    @objc let moreFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
+    @objc let moreFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()    
     
     @objc static func imageViewFit() -> UIImageView {
         let imageView = UIImageView()

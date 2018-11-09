@@ -45,6 +45,13 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         
         viewControllers = [navigationController, secondNavigationController, addNavigationController, notifyNavController, profileNavController] //, moreNavController]
         
+        let tabBarTitleOffset = UIOffsetMake(0,50)
+        for controller in (viewControllers)! {
+            controller.tabBarItem.titlePositionAdjustment = tabBarTitleOffset
+            controller.title = ""
+            controller.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+        }
+        
         tabBar.isTranslucent = false
         
         let topBorder = CALayer()
@@ -52,7 +59,16 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         topBorder.backgroundColor = UIColor.rgb(229, green: 231, blue: 235).cgColor
         
         tabBar.layer.addSublayer(topBorder)
-        tabBar.clipsToBounds = true        
+        tabBar.clipsToBounds = true
+    }
+    
+    func removeTabbarItemsText() {
+        if let items = self.tabBarController?.tabBar.items {
+            for item in items {
+                item.title = ""
+                item.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+            }
+        }
     }
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
@@ -125,7 +141,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 status.backgroundColor = nil
             }
             self.navigationController?.setNavigationBarHidden(false, animated: true)
-        }*/
+        }
         if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
             if (tabBarController.selectedIndex == 2 || tabBarController.selectedIndex == 3) {
                 status.backgroundColor = nil
@@ -134,5 +150,16 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
             }
         }
         self.navigationController?.setNavigationBarHidden(true, animated: true)
+     */
+        if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+            status.backgroundColor = nil
+        }
+        let controllers = tabBarController.viewControllers
+        let navFeed = controllers![chlIndex] as! UINavigationController
+        navFeed.setNavigationBarHidden(false, animated: false)
+        let navAct = controllers![activityIndex] as! UINavigationController
+        navAct.setNavigationBarHidden(false, animated: false)
+        let navProfile = controllers![profileIndex] as! UINavigationController
+        navProfile.setNavigationBarHidden(false, animated: false)
     }
 }

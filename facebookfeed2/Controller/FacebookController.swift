@@ -69,16 +69,29 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         
         GIDSignIn.sharedInstance().uiDelegate = self
         
-        label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 60))
-        label.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
-        label.text = "Challenge"
+        imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
+        imageView.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
+        imageView.image = UIImage(named: "AppIconLogin")
+        view.addSubview(imageView)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.openPickerView))
+        tapGestureRecognizer.numberOfTapsRequired = 5
+        //tapGestureRecognizer.numberOfTouchesRequired = 2
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tapGestureRecognizer)
+        
+        label = UILabel(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 60))
+        label.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.6 / 2)
+        label.text = "CHALLENGE"
         label.textAlignment = NSTextAlignment.center
         label.textColor = UIColor.white
-        label.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 44)
+        // label.font = UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 44)
+        label.font = label.font.withSize(36)
+        label.font = UIFont.boldSystemFont(ofSize: label.font.pointSize)
         view.addSubview(label)
         
         let labelSlogan = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
-        labelSlogan.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.7 / 2)
+        labelSlogan.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.97 / 2)
         labelSlogan.text = "Now, It's your time."
         labelSlogan.textAlignment = NSTextAlignment.center
         labelSlogan.textColor = UIColor.white
@@ -86,22 +99,14 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         view.addSubview(labelSlogan)
         
         let labelSlogan2 = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
-        labelSlogan2.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.78 / 2)
+        labelSlogan2.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 1.05 / 2)
         labelSlogan2.text = "Prove yourself!"
         labelSlogan2.textAlignment = NSTextAlignment.center
         labelSlogan2.textColor = UIColor.white
         labelSlogan2.font = UIFont(name: "Copperplate", size: 17)
         view.addSubview(labelSlogan2)
         
-        imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
-        imageView.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.94 / 2)
-        imageView.image = UIImage(named: "AppIconLogin")
-        view.addSubview(imageView)
         
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.openPickerView))
-        tapGestureRecognizer.numberOfTapsRequired = 2
-        imageView.isUserInteractionEnabled = true
-        imageView.addGestureRecognizer(tapGestureRecognizer)
         
         instagramLogin.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.2 / 2, width: view.frame.width - 64, height: 44)
         // instagramLogin.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
@@ -112,12 +117,12 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         loginButton.readPermissions = ["public_profile", "email", "user_friends"]
         view.addSubview(loginButton)
         //frame's are obselete, please use constraints instead because its 2016 after all
-        loginButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.4 / 2, width: view.frame.width - 64, height: 44)
+        loginButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.25 / 2, width: view.frame.width - 64, height: 44)
         loginButton.delegate = self
         
         let signInButton = GIDSignInButton()
         view.addSubview(signInButton)
-        signInButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.6 / 2, width: view.frame.width - 64, height: 44)
+        signInButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.45 / 2, width: view.frame.width - 64, height: 44)
         
         /*
         let akayButton = FeedCell.buttonForTitle("ibrahim akay", imageName: "")
@@ -399,7 +404,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                                    "osVersion": UIDevice.current.systemVersion,
                                    "age_range": age_range,
                                    "gender": gender,
-                                   "deviceNotifyToken": deviceNotifyToken!
+                                   "deviceNotifyToken": deviceNotifyToken ?? ""
                                 ]
         
         let url = URL(string: addMemberURL)!

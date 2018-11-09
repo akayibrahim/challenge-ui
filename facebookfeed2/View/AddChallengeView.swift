@@ -116,10 +116,11 @@ class AddChallengeView: UIView {
         vsImageView.image = UIImage(named: "vs")
         
         untilDateLabel.text = "Deadline"
-        untilDateLabel.font = UIFont (name: "Marker Felt", size: isModelLessThanSix() ? 22 : 24)
+        // untilDateLabel.font = UIFont (name: "Marker Felt", size: isModelLessThanSix() ? 22 : 24)
+        untilDateLabel.font = untilDateLabel.font.withSize(16)
         untilDateLabel.textAlignment = .center
         untilDateLabel.numberOfLines = 2;
-        untilDateLabel.textColor = UIColor.gray
+        // untilDateLabel.textColor = UIColor.gray
         untilDateLabel.adjustsFontSizeToFitWidth = true
         
         challengeView.addSubview(subjectLabel)
@@ -128,10 +129,11 @@ class AddChallengeView: UIView {
         challengeView.addHeightAnchor(subjectLabel, multiplier: 1/15)
         
         subjectLabel.text = "SUBJECT"
-        subjectLabel.font = UIFont (name: "Marker Felt", size: 20)
+        // subjectLabel.font = UIFont (name: "Marker Felt", size: 20)
+        subjectLabel.font = subjectLabel.font.withSize(15)
         subjectLabel.textAlignment = .center
         subjectLabel.numberOfLines = 2;
-        subjectLabel.textColor = UIColor.gray
+        // subjectLabel.textColor = UIColor.gray
         subjectLabel.backgroundColor = UIColor(white: 1, alpha: 0)
     }
     
@@ -357,7 +359,7 @@ class AddChallengeView: UIView {
     
     @objc let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["AS A TEAM", "TO PEOPLE", "TO MYSELF", "TO WORLD"])    
     
-    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.white)
+    @objc let untilDateLabel: UILabel = FeedCell.labelCreate(9, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.black)
     @objc let finishFlag: UIButton = FeedCell.buttonForTitle("", imageName: "finishFlag")
     
     @objc let vsImageView: UIImageView = {

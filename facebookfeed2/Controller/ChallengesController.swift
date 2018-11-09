@@ -101,9 +101,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             selfRefreshControl.addTarget(self, action: #selector(self.onSelfRefesh), for: UIControlEvents.valueChanged)
             collectionView?.addSubview(selfRefreshControl)
         }
-        collectionView?.alwaysBounceVertical = true
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        collectionView?.alwaysBounceVertical = true
+        
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "feedCellId")
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "profile")
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "selfCellId")
@@ -490,12 +491,16 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 knownHeight += (screenWidth * 0.4 / 10)
             }
             if posts[indexPath.item].proofedByChallenger == true {
-                knownHeight += screenWidth / 2
+                knownHeight += screenWidth / 2 + screenSize.width * 0.4/15
             }
-            knownHeight += (screenSize.width / 26) + (screenWidth * 0.575 / 10)
-            if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
+            knownHeight += (screenSize.width / 26) + (screenWidth * 0.9 / 10)
+            if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge, let name = posts[indexPath.item].name {
                 // let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
-                return CGSize(width: viewFramwWidth, height: thinksAboutChallenge.heightOf(withConstrainedWidth: screenWidth * 4 / 5, font: UIFont.systemFont(ofSize: 12)) + knownHeight)
+                if posts[indexPath.item].proofedByChallenger == true {
+                    knownHeight += screenWidth * 0.1 / 10
+                }
+                let thinks = "\(name): \(thinksAboutChallenge)"
+                return CGSize(width: viewFramwWidth, height: thinks.heightOf(withConstrainedWidth: screenWidth * 4.5 / 5, font: UIFont.boldSystemFont(ofSize: 12)) + knownHeight)
             }
         }
         return CGSize(width: viewFramwWidth, height: knownHeight)
@@ -832,7 +837,16 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.proofedMediaView.tag = indexPath.row*/
         feedCell.proofedMediaView.setupZoomPinchGesture()
         feedCell.proofedMediaView.setupZoomPanGesture()
+        /*
+        if feedCell.post?.type == PUBLIC && (feedCell.post?.proofedByChallenger)! {
+            let tapGestureRecognizerTwoFinger = UITapGestureRecognizer(target: self, action: #selector(twoFinger))
+            tapGestureRecognizerTwoFinger.numberOfTapsRequired = 1
+            feedCell.proofedMediaView.isUserInteractionEnabled = true
+            feedCell.proofedMediaView.addGestureRecognizer(tapGestureRecognizerTwoFinger)
+        }
+         */
     }
+    
     
     @objc var isZooming = false
     var originalImageCenter: CGPoint?
@@ -883,17 +897,28 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     @objc func addTargetToImageView(image: subclasssedUIImageView) {
-        let tapGestureRecognizerOpenProfile = UITapGestureRecognizer(target: self, action: #selector(openProfileForImage))
-        tapGestureRecognizerOpenProfile.numberOfTapsRequired = 1
-        image.isUserInteractionEnabled = true
-        image.addGestureRecognizer(tapGestureRecognizerOpenProfile)
+        if image.memberId != nil {
+            let tapGestureRecognizerOpenProfile = UITapGestureRecognizer(target: self, action: #selector(openProfileForImage))
+            tapGestureRecognizerOpenProfile.numberOfTapsRequired = 1
+            image.isUserInteractionEnabled = true
+            image.addGestureRecognizer(tapGestureRecognizerOpenProfile)
+        } else {
+            /*
+            let tapGestureRecognizerOpenProfile = UITapGestureRecognizer(target: self, action: #selector(twoFinger))
+            tapGestureRecognizerOpenProfile.numberOfTapsRequired = 1
+            image.isUserInteractionEnabled = true
+            image.addGestureRecognizer(tapGestureRecognizerOpenProfile)
+             */
+        }
+    }
+    
+    @objc func twoFinger(tapGestureRecognizer: UITapGestureRecognizer) {
+        self.collectionView?.showTwoFinger()        
     }
     
     @objc func openProfileForImage(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! subclasssedUIImageView
-        if tappedImage.memberId != nil {
-            openProfile(memberId: tappedImage.memberId!)
-        }
+        openProfile(memberId: tappedImage.memberId!)
     }
     
     @objc func homeMoreAttendances(tapGestureRecognizer: UITapGestureRecognizer) {
@@ -1060,7 +1085,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.done = posts[index].done!
         commentsTable.proofed = posts[index].done! ? false : proofed
         commentsTable.canJoin = posts[index].done! ? false : canJoin
-        if isTabIndex(chanllengeIndex) || self.explorer {
+        if isTabIndex(chanllengeIndex) || self.explorer || self.trend {
             commentsTable.joined = posts[index].done! ? false : posts[index].joined!
         } else if isTabIndex(profileIndex) {
             commentsTable.joined = notDonePosts[index].done! ? false : notDonePosts[index].joined!

@@ -82,6 +82,7 @@
 		A1DD4E752115E01000772C51 /* VideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DD4E742115E01000772C51 /* VideoService.swift */; };
 		A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */; };
 		A1E45A3E2074996800FD58E6 /* getOwnChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */; };
+		A1F9A96C219F6FBF0047993E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1F9A958219F6FBF0047993E /* CoreTelephony.framework */; };
 		A1FA9B9C211B473600ED741A /* ConnectionProblemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FA9B9B211B473600ED741A /* ConnectionProblemController.swift */; };
 		A1FA9BA6211B48E200ED741A /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FA9BA5211B48E200ED741A /* Reachability.swift */; };
 		C780A7B21C88C582007023FD /* single_post.json in Resources */ = {isa = PBXBuildFile; fileRef = C780A7B11C88C582007023FD /* single_post.json */; };
@@ -116,6 +117,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 9156C62B20BA46C93C40F31487571853;
 			remoteInfo = GTMSessionFetcher;
+		};
+		A1309118219A02B60088E463 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1A06AB42105224600F95875 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7975669ED78B4D751AF58A7F8E174E72;
+			remoteInfo = Siren;
 		};
 		A1539AA3213FBC170015F053 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -304,6 +312,7 @@
 		A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewController.swift; sourceTree = "<group>"; };
 		A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getOwnChallenges.json; sourceTree = "<group>"; };
 		A1ED4B1020404BAE00422544 /* facebookfeed2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = facebookfeed2.entitlements; path = facebookfeed2/facebookfeed2.entitlements; sourceTree = "<group>"; };
+		A1F9A958219F6FBF0047993E /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		A1FA9B9B211B473600ED741A /* ConnectionProblemController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionProblemController.swift; sourceTree = "<group>"; };
 		A1FA9BA5211B48E200ED741A /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		BD7C5B0D0ACCAB6DD1AF9AD7 /* Pods-facebookfeed2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-facebookfeed2.release.xcconfig"; path = "Pods/Target Support Files/Pods-facebookfeed2/Pods-facebookfeed2.release.xcconfig"; sourceTree = "<group>"; };
@@ -324,6 +333,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1F9A96C219F6FBF0047993E /* CoreTelephony.framework in Frameworks */,
 				A1462A7820432CBE00F5EF0F /* ExternalAccessory.framework in Frameworks */,
 				E718FF58D1FB7658EB84EA0A /* Pods_facebookfeed2.framework in Frameworks */,
 			);
@@ -335,6 +345,7 @@
 		6DA0C3576BF138403AFEE3BF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A1F9A958219F6FBF0047993E /* CoreTelephony.framework */,
 				A1462A7720432CBE00F5EF0F /* ExternalAccessory.framework */,
 				16AA53E21C61ACD361F37BB8 /* Pods_facebookfeed2.framework */,
 			);
@@ -480,6 +491,7 @@
 				A189B6C12124609B00F4B879 /* RxCocoa.framework */,
 				A189B6C32124609B00F4B879 /* RxGesture.framework */,
 				A189B6C52124609B00F4B879 /* RxSwift.framework */,
+				A1309119219A02B60088E463 /* Siren.framework */,
 				A19536F8212365A000EA3449 /* Stevia.framework */,
 				A19536FA212365A000EA3449 /* YPImagePicker.framework */,
 			);
@@ -646,6 +658,13 @@
 			remoteRef = A103B439214BE09B006A582C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		A1309119219A02B60088E463 /* Siren.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Siren.framework;
+			remoteRef = A1309118219A02B60088E463 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		A1539AA4213FBC170015F053 /* CCBottomRefreshControl.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -805,6 +824,7 @@
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxGesture/RxGesture.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Siren/Siren.framework",
 				"${BUILT_PRODUCTS_DIR}/SteviaLayout/Stevia.framework",
 				"${BUILT_PRODUCTS_DIR}/YPImagePicker/YPImagePicker.framework",
 			);
@@ -825,6 +845,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxGesture.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Siren.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stevia.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YPImagePicker.framework",
 			);
@@ -1091,7 +1112,7 @@
 				DEVELOPMENT_TEAM = BYSD94TYHS;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = facebookfeed2/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MACH_O_TYPE = mh_execute;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;
@@ -1113,7 +1134,7 @@
 				DEVELOPMENT_TEAM = BYSD94TYHS;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = facebookfeed2/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MACH_O_TYPE = mh_execute;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chl.challenge;

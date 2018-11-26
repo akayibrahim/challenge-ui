@@ -22,7 +22,7 @@ class TableViewCellContent: UITableViewCell {
     @objc var myUIPicker: UIPickerView!
     @objc var isDone: UISwitch = UISwitch(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
     @objc var datePicker: UIDatePicker = UIDatePicker(frame:CGRect(x: 150, y: 300, width: 0, height: 0))
-    @objc var addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.width * 17.5/30) + 22))
+    @objc var addChallenge : AddChallengeView!
     
     @objc let screenSize = UIScreen.main.bounds
     @objc var chlViewHeight: CGFloat = 17.5/30
@@ -50,9 +50,11 @@ class TableViewCellContent: UITableViewCell {
             let font = UIFont.systemFont(ofSize: 11)
             mySegControl.setTitleTextAttributes([NSAttributedStringKey.font: font], for: .normal)
             mySegControl.translatesAutoresizingMaskIntoConstraints = false
+            addWidthAnchor(mySegControl, multiplier: 1.8 / 3)
         }
         
         if cellRow == addViewIndexPath.row {
+            addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.width * 17.5/30) + 22), isPublic: isPublic(typeIndex))
             addChallenge.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
             addSubview(addChallenge)
         } else if cellRow == calenddarIndexPath.row {
@@ -77,7 +79,7 @@ class TableViewCellContent: UITableViewCell {
             addWidthAnchor(visibilitySegControl, multiplier: 2 / 3)
             let font = UIFont.boldSystemFont(ofSize: 10)
             visibilitySegControl.setTitleTextAttributes([NSAttributedStringKey.font: font], for: .normal)
-            if typeIndex == 1 || typeIndex == 3 {
+            if isPublic(typeIndex) {
                 visibilitySegControl.selectedSegmentIndex = 2
             }
             
@@ -102,12 +104,24 @@ class TableViewCellContent: UITableViewCell {
             addTrailingAnchor(labelOtherSide, anchor: contentGuide.trailingAnchor, constant: 0)
             labelOtherSide.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             labelOtherSide.font = UIFont.systemFont(ofSize: 14)
+        } else if cellRow == toPublicPath.row {
+            toPublicControl.selectedSegmentIndex = 1
+            addSubview(toPublicControl)
+            addTrailingAnchor(toPublicControl, anchor: contentGuide.trailingAnchor, constant: 0)
+            toPublicControl.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
+            addWidthAnchor(toPublicControl, multiplier: 1.2 / 3)
+            let font = UIFont.boldSystemFont(ofSize: 10)
+            toPublicControl.setTitleTextAttributes([NSAttributedStringKey.font: font], for: .normal)            
         } else {
             addSubview(labelOtherSide)
             addTrailingAnchor(labelOtherSide, anchor: contentGuide.trailingAnchor, constant: 0)
             labelOtherSide.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             labelOtherSide.font = UIFont.systemFont(ofSize: 14)
         }
+    }
+    
+    func isPublic(_ index: Int) -> Bool {
+        return index == 0
     }
     
     @objc func addNew() {
@@ -134,7 +148,8 @@ class TableViewCellContent: UITableViewCell {
     }()
     
     @objc let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Team Members", "Friends", "Everyone"])
-    @objc let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["TEAM", "FRIENDS", "MYSELF", "EVERYONE"])
+    @objc let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["PUBLIC", "TEAM", "SELF"])
+    @objc let toPublicControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Friends", "Everyone"])
     @objc let deadLines: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["A DAY", "A WEEK", "A MONTH", "A YEAR"])
     @objc let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
     @objc let labelOtherSide: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.gray)

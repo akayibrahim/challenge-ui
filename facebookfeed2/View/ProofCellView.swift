@@ -102,8 +102,10 @@ class ProofCellView: UITableViewCell {
     @objc let proofImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 1.0
         // imageView.backgroundColor = UIColor.blue
         imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 0.03
         return imageView
     }()
     

@@ -387,7 +387,10 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     } else {
                         let willPlay = indexPath.row == 0 ? true : false
                         self.imageEnable(cell, yes: false, play : willPlay)
-                        cell.proofedVideoView.playerLayer.loadWithoutObserver(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: willPlay)
+                        cell.proofedVideoView.showDarkLoader()
+                        cell.proofedVideoView.playerLayer.loadWithoutObserver(challengeId: self.challengeId!, challengerId: self.proofs[indexPath.item].memberId!, play: willPlay, completion: { () in
+                            cell.proofedVideoView.removeBluerLoader()
+                        })
                         if willPlay {
                             cell.playButtonView.alpha = 0
                             NotificationCenter.default.addObserver(self, selector:  #selector(self.playerFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)

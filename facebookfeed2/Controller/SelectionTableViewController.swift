@@ -145,7 +145,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 }
             } else if popIndexPath.row == subjectIndex {
                 if dummyServiceCall == false {
-                    if segmentIndex != 2 {
+                    if !isSelf() {
                         fetchData(url: getSubjectsURL, type: "SUBJECT")
                     } else {
                         fetchData(url: getSelfSubjectsURL, type: "SELF_SUBJECT")
@@ -638,11 +638,11 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     }
     
     @objc func isPrivate() -> Bool {
-        return segmentIndex == 0
+        return segmentIndex == 1
     }
     
     @objc func isPublic() -> Bool {
-        return segmentIndex == 1 || segmentIndex == 3
+        return segmentIndex == 0
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -412,4 +412,36 @@ class ServiceLocator {
             URLSession.shared.dataTask(with: request).resume()
         }
     }
+    
+    @objc static let group = DispatchGroup()
+    @objc static func getParameterValue(_ key: String) -> String {
+        group.enter()
+        var value: String = PARAMETER_DEFAULT
+        let jsonURL = URL(string: getParameterValueURL + key)!
+        jsonURL.get { data, response, error in
+            guard
+                data != nil
+                else {
+                    if data != nil {
+                        ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: getChallengeSizeOfMemberURL, inputs: "memberID=\(memberID)")
+                    }
+                    return
+            }
+            value = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)! as String
+            self.group.leave()
+        }
+        let waitResult = self.group.wait(timeout: .now() + 1.5)
+        if waitResult == .timedOut {
+            return value
+        }
+        return value
+    }
+    
+    @objc static func isParameterOpen(_ key: String) -> Bool {
+        let value = ServiceLocator.getParameterValue(key)
+        if value != PARAMETER_DEFAULT { // C: 0, O: 1
+            return true
+        }
+        return false
+    }
 }

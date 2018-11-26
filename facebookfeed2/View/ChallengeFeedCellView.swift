@@ -116,7 +116,14 @@ class FeedCell: UICollectionViewCell {
             prepareForReuse()
             if let name = post?.name, let status = post?.status {
                 let attributedText = NSMutableAttributedString(string: "\(name.trim())", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 13)])
-                let statusText = NSMutableAttributedString(string: " \(status).", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13)])
+                let statusArr: [String] = status.components(separatedBy: " ")
+                let challengeType = "\(statusArr[statusArr.count - 2]) \(statusArr[statusArr.count - 1])"
+                let statusOfChallenge = status.replace(target: " \(challengeType)", withString: "")
+                let statusText = NSMutableAttributedString(string: " \(statusOfChallenge)", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13)])
+                let challengeText = NSMutableAttributedString(string: " \("\(statusArr[statusArr.count - 2].capitalizingFirstLetter()) \(statusArr[statusArr.count - 1].capitalizingFirstLetter())").", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 13)])
+                let range = ("\(challengeType) " as NSString).range(of: "\(challengeType) ")
+                challengeText.addAttribute(NSAttributedStringKey.foregroundColor, value: post?.type == PUBLIC ? navAndTabColor : ( post?.type == PRIVATE ? UIColor.rgb(0, green: 153, blue: 153) : UIColor.rgb(0, green: 0, blue: 153) ) , range: range)
+                statusText.append(challengeText)
                 attributedText.append(statusText)
                 nameAndStatusLabel.attributedText = attributedText
             }
@@ -426,14 +433,17 @@ class FeedCell: UICollectionViewCell {
                 if type == PUBLIC && proofedByChallenger {
                     if !provedWithImage {
                         let play = self.post?.firstRow
-                        self.proofedVideoView.playerLayer.load(challengeId: id, challengerId: challengerId, play: play!)
+                        self.proofedVideoView.showDarkLoader()
+                        self.proofedVideoView.playerLayer.load(challengeId: id, challengerId: challengerId, play: play!, completion: { () in
+                            self.proofedVideoView.removeBluerLoader()
+                        })
                     } else {
                         self.proofedMediaView.load(challengeId: id, challengerId: challengerId)
                     }
                 }
             }
             
-            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined, let rejectedByAllAttendance = self.post?.rejectedByAllAttendance, let timesUp = self.post?.timesUp, let provedWithImage = self.post?.provedWithImage {
+            if let type = self.post?.type, let firstTeamCount = self.post?.firstTeamCount,  let secondTeamCount = self.post?.secondTeamCount,  let isComeFromSelf = self.post?.isComeFromSelf, let isDone = self.post?.done, let proofed = self.post?.proofed, let active = self.post?.active , let proofedByChallenger = self.post?.proofedByChallenger, let canJoin = self.post?.canJoin, let joined = self.post?.joined, let rejectedByAllAttendance = self.post?.rejectedByAllAttendance, let timesUp = self.post?.timesUp, let provedWithImage = self.post?.provedWithImage, let challengerId = post?.challengerId {
                 let firstTeamScore = self.post?.firstTeamScore != nil ? self.post?.firstTeamScore : "-1"
                 let secondTeamScore = self.post?.secondTeamScore != nil ? self.post?.secondTeamScore : "-1"
                 let result = self.post?.result != nil ? self.post?.result : "-1"
@@ -443,7 +453,7 @@ class FeedCell: UICollectionViewCell {
                 let waitForApprove = self.post?.waitForApprove != nil ? self.post?.waitForApprove : false
                 let scoreRejected = self.post?.scoreRejected != nil ? self.post?.scoreRejected : false
                 let scoreRejectName = self.post?.scoreRejectName != nil ? self.post?.scoreRejectName : ""
-                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp, provedWithImage: provedWithImage, waitForApprove: waitForApprove!, scoreRejected: scoreRejected!, scoreRejectName: scoreRejectName!)
+                self.setupViews(firstTeamCount, secondTeamCount: secondTeamCount, type: type, isComeFromSelf : isComeFromSelf, done: isDone, proofed: proofed, canJoin: canJoin, firstTeamScore: firstTeamScore!, secondTeamScore: secondTeamScore!, active: active, proofedByChallenger: proofedByChallenger, result: result!, goal: goal!, joined: joined, homeWin: homeWin!, awayWin: awayWin!, rejectedByAllAttendance: rejectedByAllAttendance, timesUp: timesUp, provedWithImage: provedWithImage, waitForApprove: waitForApprove!, scoreRejected: scoreRejected!, scoreRejectName: scoreRejectName!, challengerId: challengerId)
             }
         }
     }
@@ -464,7 +474,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     @objc let screenSize = UIScreen.main.bounds
-    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool, provedWithImage: Bool, waitForApprove: Bool, scoreRejected: Bool, scoreRejectName: String) {
+    @objc func setupViews(_ firstTeamCount: String, secondTeamCount: String, type: String, isComeFromSelf : Bool, done : Bool, proofed: Bool, canJoin: Bool, firstTeamScore: String, secondTeamScore: String, active: Bool, proofedByChallenger: Bool, result: String, goal: String, joined: Bool, homeWin: Bool, awayWin: Bool, rejectedByAllAttendance: Bool, timesUp: Bool, provedWithImage: Bool, waitForApprove: Bool, scoreRejected: Bool, scoreRejectName: String, challengerId: String) {
         backgroundColor = feedBackColor
         let contentGuide = self.readableContentGuide
         addGeneralSubViews()
@@ -591,10 +601,12 @@ class FeedCell: UICollectionViewCell {
             addLeadingAnchor(insertTime, anchor: contentGuide.leadingAnchor, constant: screenSize.width * 0.15/10)
             addHeightAnchor(insertTime, multiplier: 0.6/10)
             
-            addSubview(visibilityLabel)
-            addBottomAnchor(visibilityLabel, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0/10))
-            addTrailingAnchor(visibilityLabel, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
-            addHeightAnchor(visibilityLabel, multiplier: 0.6/10)            
+            if challengerId == memberID {
+                addSubview(visibilityLabel)
+                addBottomAnchor(visibilityLabel, anchor: contentGuide.bottomAnchor, constant: (screenSize.width * 0/10))
+                addTrailingAnchor(visibilityLabel, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.15/10))
+                addHeightAnchor(visibilityLabel, multiplier: 0.6/10)
+            }
         }
     }
     
@@ -1393,9 +1405,11 @@ class FeedCell: UICollectionViewCell {
     
     @objc static func imageViewFit() -> UIImageView {
         let imageView = UIImageView()
+        imageView.autoresizingMask = [.flexibleBottomMargin, .flexibleTopMargin, .flexibleHeight, .flexibleLeftMargin, .flexibleRightMargin, .flexibleWidth]
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 4.0
         imageView.layer.masksToBounds = true
+        imageView.clipsToBounds = true
         imageView.isOpaque = true
         imageView.layer.shouldRasterize = true
         imageView.layer.rasterizationScale = UIScreen.main.scale

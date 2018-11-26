@@ -89,9 +89,7 @@ class OtherController: UITableViewController, UIWebViewDelegate{
         }
         FBSDKLoginManager().logOut()
         GIDSignIn.sharedInstance().signOut()
-        let defaults = UserDefaults.standard
-        defaults.removeObject(forKey: "memberID")
-        defaults.synchronize()
+        Util.removeMemberFromDefaults()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = FacebookController()
     }
@@ -141,7 +139,7 @@ class OtherController: UITableViewController, UIWebViewDelegate{
     }
     
     @objc func shareViaFriend() {
-        let text = "app store id"
+        let text = "https://itunes.apple.com/tr/app/challenge/id1441255418?mt=8"
         let textToShare = [ text ]
         let activity = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
         activity.popoverPresentationController?.sourceView = self.view
@@ -149,4 +147,3 @@ class OtherController: UITableViewController, UIWebViewDelegate{
         self.present(activity, animated:  true, completion: nil)
     }
 }
-

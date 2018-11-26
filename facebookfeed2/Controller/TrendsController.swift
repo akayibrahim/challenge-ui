@@ -27,7 +27,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         
         self.navigationItem.titleView = searchBar
         collectionView!.register(TrendRequestCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        collectionView?.backgroundColor = UIColor(white: 0.90, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.prefetchDataSource = self
@@ -229,7 +229,10 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                 self.imageEnable(cell, yes: true)
             } else {
                 let willPlay = indexPath.row == 0 || indexPath.row == 1 ? true : false
-                cell.proofedVideoView.playerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!, play: willPlay)
+                cell.proofedVideoView.showDarkLoader()
+                cell.proofedVideoView.playerLayer.loadWithZeroVolume(challengeId: self.trendRequest[indexPath.item].challengeId!, challengerId: self.trendRequest[indexPath.item].challengerId!, play: willPlay, completion: { () in
+                    cell.proofedVideoView.removeBluerLoader()
+                })
                 self.imageEnable(cell, yes: false)
             }
         }
@@ -390,7 +393,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         let indexPath = getVisibleIndex()
         for visIndex in (self.collectionView?.indexPathsForVisibleItems)! {
             if !trendRequest[visIndex.row].provedWithImage! {
-                if visIndex != indexPath && visIndex.row != trendRequest.count - 1 && indexPath.row + 1 != visIndex.row {
+                if visIndex != indexPath && visIndex.row != trendRequest.count - 1 && indexPath.row + 1 != visIndex.row && indexPath.row - 1 != visIndex.row {
                     if let cell = collectionView?.cellForItem(at: visIndex) {
                         let feedCell = cell as! TrendRequestCell
                         if !self.trendRequest[visIndex.row].provedWithImage! {

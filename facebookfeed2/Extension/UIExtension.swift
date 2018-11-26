@@ -337,6 +337,14 @@ extension URL {
 }
 
 extension String {
+    func capitalizingFirstLetter() -> String {
+        return prefix(1).uppercased() + self.lowercased().dropFirst()
+    }
+    
+    mutating func capitalizeFirstLetter() {
+        self = self.capitalizingFirstLetter()
+    }
+    
     func heightOf(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
         let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: font], context: nil)
@@ -503,35 +511,45 @@ extension UIImageView {
 
 // var avPlayer : AVPlayer = AVPlayer()
 extension AVPlayerLayer {
-    @objc func loadWithoutObserver(challengeId: String, challengerId: String, play: Bool) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play, observer: false)
+    @objc func loadWithoutObserver(challengeId: String, challengerId: String, play: Bool, completion: @escaping ()->()) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play, observer: false, completion: { () in
+            completion()
+        })
     }
     
-    @objc func load(challengeId: String, challengerId: String, play: Bool) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play, observer: true)
+    @objc func load(challengeId: String, challengerId: String, play: Bool, completion: @escaping ()->()) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: volume, play: play, observer: true, completion: { () in
+            completion()
+        })
     }
     
-    @objc func loadWithZeroVolume(challengeId: String, challengerId: String, play: Bool) {
-        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, play: play, observer: true)
+    @objc func loadWithZeroVolume(challengeId: String, challengerId: String, play: Bool, completion: @escaping ()->()) {
+        loadPlayer(challengeId: challengeId, challengerId: challengerId, volume: 0, play: play, observer: true, completion: { () in
+            completion()
+        })
     }
     
     @objc func loadByObjectId(objectId: String) {
         if dummyServiceCall == false {
             let url = URL(string: downloadProofImageByObjectIdURL + "?objectId=\(objectId)")
-            downloadAndLoadView(url: url!, volume: 0.0, play: true, observer: true)
+            downloadAndLoadView(url: url!, volume: 0.0, play: true, observer: true, completion: { () in
+                
+            })
         }
     }
     
-    func loadPlayer(challengeId: String, challengerId: String, volume: Float, play: Bool, observer: Bool) {
-        if dummyServiceCall == false {
+    func loadPlayer(challengeId: String, challengerId: String, volume: Float, play: Bool, observer: Bool, completion: @escaping ()->()) {
+        if dummyServiceCall == false {            
             let url = URL(string: downloadVideoURL + "?challengeId=\(challengeId)&memberId=\(challengerId)")
             if let urlOfImage = url {
-                    downloadAndLoadView(url: urlOfImage, volume: volume, play: play, observer: observer)
+                downloadAndLoadView(url: urlOfImage, volume: volume, play: play, observer: observer, completion: { () in
+                    completion()
+                })
             }
         }
     }
     
-    func downloadAndLoadView(url: URL, volume: Float, play: Bool, observer: Bool) {
+    func downloadAndLoadView(url: URL, volume: Float, play: Bool, observer: Bool, completion: @escaping ()->()) {
         VideoService.getVideo(withURL: url, completion: { (videoData) in
             if let video = videoData {
                 DispatchQueue.main.async {
@@ -544,6 +562,7 @@ extension AVPlayerLayer {
                     if play {
                         self.player?.playImmediately(atRate: 1.0)
                     }
+                    completion()
                 }
                 if observer {
                     NotificationCenter.default.addObserver(self, selector:  #selector(self.playerDidFinishPlaying), name:   NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.player?.currentItem)

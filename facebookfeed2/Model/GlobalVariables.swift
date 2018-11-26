@@ -15,8 +15,10 @@ var countOffollowers: Int = 0
 var countOffollowing: Int = 0
 var privateAccount = false
 
-var defaultURL = UIDevice.current.isSimulator ?  "http://localhost:8080" : "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
-// var defaultURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
+let serverURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
+let localURL = "http://localhost:8080"
+var defaultURL = UIDevice.current.isSimulator ?  localURL : serverURL
+//var defaultURL = "http://ec2-18-233-12-157.compute-1.amazonaws.com:8080"
 
 // CONSTANTS
 var dummyServiceCall : Bool = false
@@ -25,6 +27,7 @@ var SELF = "SELF"
 var PUBLIC = "PUBLIC"
 var PRIVATE = "PRIVATE"
 var pagesBackColor : UIColor = UIColor.rgb(229, green: 231, blue: 235)
+var peachColor : UIColor = UIColor.rgb(255, green: 218, blue: 185)
 var profileIndex : Int = 4
 var chanllengeIndex : Int = 0
 var trendsIndex : Int = 1
@@ -57,6 +60,15 @@ var FRWRD_CHNG_PRV = "PRV"
 var FRWRD_CHNG_SCR = "SCR"
 var reloadProfile:Bool = false
 var feedBackColor =  UIColor.white // UIColor(white: 0.985, alpha: 1)
+var memberIdKey = "memberIdKey"
+var facebookIdKey = "facebookIdKey"
+var nameSurnameKey = "nameSurnameKey"
+
+// PARAMETERS
+let PARAMETER_DEFAULT = "0"
+let DUMMY_USERS = "dummy_users"
+let FORCE_UPDATE = "force_update"
+let SRVR_URL = "url"
 
 // Assets Name
 var supported = "supported"
@@ -144,6 +156,9 @@ var getChallengeApprovesURL = defaultURL + "/getChallengeApproves?memberId="
 var approveVersusURL = defaultURL + "/approveVersus?challengeId="
 var testHostConnectivityURL = defaultURL + "/testHostConnectivity"
 var updateWithDeviceTokenURL = defaultURL + "/updateWithDeviceToken?memberId="
+var getFriendInfoURL = defaultURL + "/getFriendInfo?memberId="
+var getAllActivitiesCountURL = defaultURL + "/getAllActivitiesCount?memberId="
+var getParameterValueURL = defaultURL + "/getParameterValue?key="
 
 struct INSTAGRAM_IDS {
     static let INSTAGRAM_AUTHURL = "https://api.instagram.com/oauth/authorize/"

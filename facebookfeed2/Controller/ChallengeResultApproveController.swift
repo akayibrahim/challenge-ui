@@ -20,7 +20,7 @@ class ChallengeResultApproveController: UITableViewController {
         tableView.separatorColor = UIColor.rgb(229, green: 231, blue: 235)
         tableView.sectionHeaderHeight = 26
         tableView.tableFooterView = UIView()
-        navigationItem.title = "Challenge Requests"
+        navigationItem.title = "Challenge Approves"
         tableView.register(ChallengeRequestCell.self, forCellReuseIdentifier: cellId)
         tableView.register(RequestHeader.self, forHeaderFooterViewReuseIdentifier: headerId)
         
@@ -141,6 +141,7 @@ class ChallengeResultApproveController: UITableViewController {
         challengeController.explorer = true
         challengeController.explorerCurrentPage = 0
         challengeController.challengIdForTrendAndExplorer = challengeId
+        challengeController.reloadChlPage()
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }

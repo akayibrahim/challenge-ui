@@ -74,12 +74,6 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         imageView.image = UIImage(named: "AppIconLogin")
         view.addSubview(imageView)
         
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.openPickerView))
-        tapGestureRecognizer.numberOfTapsRequired = 5
-        //tapGestureRecognizer.numberOfTouchesRequired = 2
-        imageView.isUserInteractionEnabled = true
-        imageView.addGestureRecognizer(tapGestureRecognizer)
-        
         label = UILabel(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 60))
         label.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.6 / 2)
         label.text = "CHALLENGE"
@@ -89,6 +83,14 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         label.font = label.font.withSize(36)
         label.font = UIFont.boldSystemFont(ofSize: label.font.pointSize)
         view.addSubview(label)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.openPickerView))
+        tapGestureRecognizer.numberOfTapsRequired = 5
+        if !UIDevice.current.isSimulator {
+            tapGestureRecognizer.numberOfTouchesRequired = 3
+        }
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tapGestureRecognizer)
         
         let labelSlogan = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 30))
         labelSlogan.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.97 / 2)
@@ -164,6 +166,9 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
     }
     
     @objc func openPickerView() {
+        if !ServiceLocator.isParameterOpen(DUMMY_USERS) {
+            return
+        }
         self.myPickerView = UIPickerView(frame:CGRect(x: 0, y: self.view.frame.size.height - 216, width: self.view.frame.size.width, height: 216))
         self.myPickerView.delegate = self
         self.myPickerView.dataSource = self
@@ -333,6 +338,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                 countOffollowers = (post["followerCount"] as? Int)!
                 countOffollowing = (post["followingCount"] as? Int)!
                 privateAccount = (post["privateMember"] as? Bool)!
+                Util.addMemberToDefaults(memberId: memberID, facebookId: memberFbID, nameSurname: memberName)
             }
         }
     }
@@ -342,9 +348,6 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         if Util.controlNetwork() {
             return
         }
-        let defaults = UserDefaults.standard
-        defaults.set(id, forKey: "memberID")
-        defaults.synchronize()
         getMemberInfo(memberId: id)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window?.rootViewController = SplashScreenController()
@@ -355,8 +358,12 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let waitResult = self.group.wait(timeout: .now() + 15)
         if waitResult == .timedOut {
-            appDelegate.window?.rootViewController = ConnectionProblemController()
-            return
+            //let token = FBSDKAccessToken.current()
+            let memberId = Util.getUserMemberId()
+            if(memberId == nil) { //token == nil &&
+                appDelegate.window?.rootViewController = ConnectionProblemController()
+                return
+            }
         }
         appDelegate.window?.rootViewController = CustomTabBarController()
     }
@@ -381,7 +388,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                 let FBid = data["id"] as? String
                 let age_range = data["age_range"] as? String
                 let gender = data["gender"] as? String
-                self.addMember(firstName: first_name!, surname: last_name!, email: email!, facebookID: FBid!, age_range: age_range ?? "", gender: gender!)
+                self.addMember(firstName: first_name!, surname: last_name!, email: email!, facebookID: FBid!, age_range: age_range ?? "", gender: gender ?? "")
             } else {
                 print("Error Getting Friends \(error!)");
             }
@@ -416,16 +423,14 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
             }
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    self.group.leave()
                     DispatchQueue.main.async {
                         let idOfMember = NSString(data: data, encoding: String.Encoding.utf8.rawValue)!
                         memberID = idOfMember as String
                         memberFbID = facebookID
-                        memberName = "\(firstName) \(surname)"
-                        let defaults = UserDefaults.standard
-                        defaults.set(memberID, forKey: "memberID")
-                        defaults.synchronize()
+                        memberName = "\(firstName) \(surname)"                        
+                        Util.addMemberToDefaults(memberId: memberID, facebookId: memberFbID, nameSurname: memberName)
                     }
+                    self.group.leave()
                 } else {
                     let error = ServiceLocator.getErrorMessage(data: data, chlId: "", sUrl: addMemberURL, inputs: "name:\(firstName), surname: \(surname), email:\(email), facebookID:\(facebookID), phoneModel:\(UIDevice().type), region:\(Locale.current.regionCode!), language:\(Locale.current.languageCode!)")
                     self.popupAlert(message: error, willDelay: false)

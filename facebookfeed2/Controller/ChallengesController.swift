@@ -59,6 +59,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc var nowMoreData: Bool = false
     @objc var challangeCount: String = "0"
     @objc var goForward: Bool = false
+    @objc var goForwardToSelection: Bool = false
     var isFetchingNextPage = false
     var selectedTabIndex : Int = 0
     var viewFramwWidth: CGFloat = 0.0
@@ -102,7 +103,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             collectionView?.addSubview(selfRefreshControl)
         }
         
-        collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        collectionView?.backgroundColor = UIColor(white: 0.90, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "feedCellId")
@@ -189,9 +190,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
             // Asynchronous Http call to your api url, using NSURLSession:
             if self.profile {
-                getMemberInfo(memberId: memberIdForFriendProfile!)
-                isMyFriend(friendMemberId: memberIdForFriendProfile!)
-                isRequestedFriend(friendMemberId: memberIdForFriendProfile!)
+                getFriendInfo(memberIdForFriendProfile!)
                 navigationItem.title = nameForOpenProfile
                 if self.memberIdForFriendProfile != memberID {
                     self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
@@ -432,6 +431,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        goForwardToSelection = false
     }
     
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -938,6 +938,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.isMoreAttendance = true
         selectionTable.challengeId = posts[index].id!
         selectionTable.firstTeam = firstTeam
+        goForwardToSelection = true
         // selectionTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
@@ -963,6 +964,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             selectionTable.supportedMemberId = posts[index].challengerId!
         }
         selectionTable.firstTeam = firstTeam
+        goForwardToSelection = true
         // selectionTable.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
@@ -1288,7 +1290,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if explorer {
+        if explorer || goForwardToSelection {
             return
         }
         if nowMoreData {
@@ -1399,6 +1401,30 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc var facebookIDForOpenProfile = ""
     @objc var friendIsPrivate = false
     @objc let group = DispatchGroup()
+    @objc func getFriendInfo(_ friendMemberId: String) {
+        let jsonURL = URL(string: getFriendInfoURL + memberID + "&friendMemberId=" + friendMemberId)!
+        group.enter()
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postOfMember = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: getMemberInfoURL, inputs: "friendMemberId=\(friendMemberId)")
+                    return
+            }
+            if let post = postOfMember {
+                self.countOfFollowersForOpenProfile = (post["followerCount"] as? Int)!
+                self.countOfFollowingForOpenProfile = (post["followingCount"] as? Int)!
+                self.nameForOpenProfile = "\((post["name"] as? String)!) \((post["surname"] as? String)!)"
+                self.facebookIDForOpenProfile = (post["facebookID"] as? String)!
+                self.friendIsPrivate = (post["privateMember"] as? Bool)!
+                self.isProfileFriend = (post["myFriend"] as? Bool)!
+                self.isProfileRequested = (post["requestFriend"] as? Bool)!
+            }
+            self.group.leave()
+        }
+    }
+    
     @objc func getMemberInfo(memberId: String) {
         let jsonURL = URL(string: getMemberInfoURL + memberId)!
         group.enter()

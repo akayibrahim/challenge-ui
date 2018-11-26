@@ -15,9 +15,10 @@ import GoogleSignIn
 import Fabric
 import Crashlytics
 import UserNotifications
+import Siren
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, UNUserNotificationCenterDelegate {
     var window: UIWindow?
     @objc var isCont: Bool = false
     @objc var splashTimer: Timer?
@@ -40,9 +41,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         GIDSignIn.sharedInstance().clientID = "241509157224-cbdshgv4f08i9vvo6hclidic4gr94i3r.apps.googleusercontent.com"
         GIDSignIn.sharedInstance().delegate = self
         
-        if !Reachability.isConnectedToNetwork() {
-            window?.rootViewController = ConnectionProblemController()
-        } else {
+        if !Util.controlNetwork() {
+            Util.getServerUrl()
             openApp()
         }
         
@@ -60,6 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         
         registerForPushNotifications()
         
+        setupSiren()
+        
         Fabric.with([Crashlytics.self])
         self.logUser()
         
@@ -75,9 +77,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     }
 
     @objc func openApp() {
-        let token = FBSDKAccessToken.current()
-        if(token != nil || GIDSignIn.sharedInstance().hasAuthInKeychain()) {
-            if let memberId = UserDefaults.standard.object(forKey: "memberID") {
+        //let token = FBSDKAccessToken.current()
+        //if(token != nil || GIDSignIn.sharedInstance().hasAuthInKeychain()) {
+        if Util.getUserMemberId() != nil {
+            isCont = true
+            memberID = Util.getUserMemberId() as! String
+            memberFbID = Util.getUserFacebookId() as! String
+            memberName = Util.getUserNameSurname() as! String
+                /*
                 if dummyServiceCall == false {
                     self.getMemberInfo(memberId: memberId as! String)
                     let waitResult = self.group.wait(timeout: .now() + 15)
@@ -89,8 +96,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                 } else {
                     isCont = true
                 }
-            }
+                 */
         }
+        //}
         
         if isCont {
             window?.rootViewController = CustomTabBarController()
@@ -173,16 +181,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             }
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    self.group.leave()
                     DispatchQueue.main.async {
                         let idOfMember = NSString(data: data, encoding: String.Encoding.utf8.rawValue)!
                         memberID = idOfMember as String
                         memberFbID = facebookID
                         memberName = "\(firstName) \(surname)"
-                        let defaults = UserDefaults.standard
-                        defaults.set(memberID, forKey: "memberID")
-                        defaults.synchronize()
+                        Util.addMemberToDefaults(memberId: memberID, facebookId: memberFbID, nameSurname: memberName)
                     }
+                    self.group.leave()
                 } else {
                     self.group.leave()
                     let error = ServiceLocator.getErrorMessage(data: data, chlId: "", sUrl: addMemberURL, inputs: "name:\(firstName), surname: \(surname), email:\(email), facebookID:\(facebookID), phoneModel:\(UIDevice().type), region:\(Locale.current.regionCode!), language:\(Locale.current.languageCode!)")
@@ -223,11 +229,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        Siren.shared.checkVersion(checkType: .immediately)
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        FBSDKAppEvents.activateApp()        
+        FBSDKAppEvents.activateApp()
+        Siren.shared.checkVersion(checkType: .immediately)
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -271,7 +279,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
             (granted, error) in
             print("Permission granted: \(granted)")
-            
+            UNUserNotificationCenter.current().delegate = self
             guard granted else { return }
             self.getNotificationSettings()
         }
@@ -294,7 +302,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         }
         if UserDefaults.standard.object(forKey: "DeviceToken") == nil {
             let token = tokenParts.joined()
-            if let memberId = UserDefaults.standard.object(forKey: "memberID") {
+            if let memberId = Util.getUserMemberId() {
                 let jsonURL = URL(string: updateWithDeviceTokenURL + memberID + "&deviceToken=" + token)!
                 jsonURL.get { data, response, error in
                     guard
@@ -318,6 +326,86 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Failed to register: \(error)")
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .badge, .sound])
+    }
+    
+    func setupSiren() {
+        if ServiceLocator.isParameterOpen(FORCE_UPDATE) {
+            return
+        }
+        let siren = Siren.shared
+        // Optional
+        siren.delegate = self
+        
+        // Optional
+        siren.debugEnabled = true
+        Siren.shared.forceLanguageLocalization = Siren.LanguageType.english
+        // Optional - Change the name of your app. Useful if you have a long app name and want to display a shortened version in the update dialog (e.g., the UIAlertController).
+        //        siren.appName = "Test App Name"
+        // Optional - Change the various UIAlertController and UIAlertAction messaging. One or more values can be changes. If only a subset of values are changed, the defaults with which Siren comes with will be used.
+        //        siren.alertMessaging = SirenAlertMessaging(updateTitle: NSAttributedString(string: "New Fancy Title"),
+        //                                                   updateMessage: NSAttributedString(string: "New message goes here!"),
+        //                                                   updateButtonMessage: NSAttributedString(string: "Update Now, Plz!?"),
+        //                                                   nextTimeButtonMessage: NSAttributedString(string: "OK, next time it is!"),
+        //                                                   skipVersionButtonMessage: NSAttributedString(string: "Please don't push skip, please don't!"))
+        // Optional - Defaults to .Option
+        siren.alertType = .force // or .force, .skip, .none
+        // Optional - Can set differentiated Alerts for Major, Minor, Patch, and Revision Updates (Must be called AFTER siren.alertType, if you are using siren.alertType)
+        siren.majorUpdateAlertType = .force
+        siren.minorUpdateAlertType = .force
+        siren.patchUpdateAlertType = .force
+        siren.revisionUpdateAlertType = .force
+        
+        // Optional - Sets all messages to appear in Russian. Siren supports many other languages, not just English and Russian.
+        //        siren.forceLanguageLocalization = .russian
+        // Optional - Set this variable if your app is not available in the U.S. App Store. List of codes: https://developer.apple.com/library/content/documentation/LanguagesUtilities/Conceptual/iTunesConnect_Guide/Chapters/AppStoreTerritories.html
+        //        siren.countryCode = ""
+        // Optional - Set this variable if you would only like to show an alert if your app has been available on the store for a few days.
+        // This default value is set to 1 to avoid this issue: https://github.com/ArtSabintsev/Siren#words-of-caution
+        // To show the update immediately after Apple has updated their JSON, set this value to 0. Not recommended due to aforementioned reason in https://github.com/ArtSabintsev/Siren#words-of-caution.
+        siren.showAlertAfterCurrentVersionHasBeenReleasedForDays = 0
+        
+        // Optional (Only do this if you don't call checkVersion in didBecomeActive)
+        //        siren.checkVersion(checkType: .immediately)
+    }
+}
+
+extension AppDelegate: SirenDelegate
+{
+    func sirenDidShowUpdateDialog(alertType: Siren.AlertType) {
+        print(#function, alertType)
+    }
+    
+    func sirenUserDidCancel() {
+        print(#function)
+    }
+    
+    func sirenUserDidSkipVersion() {
+        print(#function)
+    }
+    
+    func sirenUserDidLaunchAppStore() {
+        print(#function)
+    }
+    
+    func sirenDidFailVersionCheck(error: Error) {
+        print(#function, error)
+    }
+    
+    func sirenLatestVersionInstalled() {
+        print(#function, "Latest version of app is installed")
+    }
+    
+    func sirenNetworkCallDidReturnWithNewVersionInformation(lookupModel: SirenLookupModel) {
+        print(#function, "\(lookupModel)")
+    }
+    
+    // This delegate method is only hit when alertType is initialized to .none
+    func sirenDidDetectNewVersionWithoutAlert(title: String, message: String, updateType: UpdateType) {
+        print(#function, "\n\(title)\n\(message).\nRelease type: \(updateType.rawValue.capitalized)")
     }
 }
 

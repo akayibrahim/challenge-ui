@@ -9,6 +9,8 @@
 import Foundation
 import AVFoundation
 import YPImagePicker
+import Alamofire
+import CoreTelephony // Make sure to import CoreTelephony
 
 public class Util {
     static func addForwardChange(forwardChange: ForwardChange) {
@@ -70,11 +72,71 @@ public class Util {
     }
     
     static func controlNetwork() -> Bool {
-        if !Reachability.isConnectedToNetwork() {
+        if !isConnectedToNetwork() {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.window?.rootViewController = ConnectionProblemController()
             return true
         }
         return false
+    }
+    
+    static func isConnectedToNetwork() -> Bool {
+        //print("wwan:\(NetworkReachabilityManager()!.isReachableOnWWAN)")
+        //print("wifi:\(NetworkReachabilityManager()!.isReachableOnEthernetOrWiFi)")
+        //print("lte:\(checkConnection())")
+        let reachabilityManager = Alamofire.NetworkReachabilityManager(host: "www.google.com")
+        return NetworkReachabilityManager()!.isReachable && (reachabilityManager?.isReachable)!
+    }
+    
+    let constantValue = 8 // Don't change this
+    static func checkConnection() -> Bool {
+        let telephonyInfo = CTTelephonyNetworkInfo()
+        let currentConnection = telephonyInfo.currentRadioAccessTechnology
+        if (currentConnection == CTRadioAccessTechnologyLTE) { // Connected to LTE
+            return true
+        } else if(currentConnection == CTRadioAccessTechnologyEdge) { // Connected to EDGE
+            return true
+        } else if(currentConnection == CTRadioAccessTechnologyWCDMA){ // Connected to 3G
+            return true
+        }
+        return false
+    }
+    
+    static func addMemberToDefaults(memberId:String, facebookId: String, nameSurname: String) {
+        let defaults = UserDefaults.standard
+        defaults.set(memberId, forKey: memberIdKey)
+        defaults.set(facebookId, forKey: facebookIdKey)
+        defaults.set(nameSurname, forKey: nameSurnameKey)
+        defaults.synchronize()
+    }
+    
+    static func removeMemberFromDefaults() {
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: memberIdKey)
+        defaults.removeObject(forKey: facebookIdKey)
+        defaults.removeObject(forKey: nameSurnameKey)
+        defaults.synchronize()
+    }
+    
+    static func getUserMemberId() -> Any? {
+        let memberId = UserDefaults.standard.object(forKey: memberIdKey)
+        return memberId
+    }
+    
+    static func getUserFacebookId() -> Any? {
+        let facebookId = UserDefaults.standard.object(forKey: facebookIdKey)
+        return facebookId
+    }
+    
+    static func getUserNameSurname() -> Any? {
+        let nameSurname = UserDefaults.standard.object(forKey: nameSurnameKey)
+        return nameSurname
+    }
+    
+    static func getServerUrl() {
+        if !UIDevice.current.isSimulator {
+            let url = ServiceLocator.getParameterValue(SRVR_URL)
+            defaultURL = url != PARAMETER_DEFAULT ? url : serverURL
+        }
     }
 }

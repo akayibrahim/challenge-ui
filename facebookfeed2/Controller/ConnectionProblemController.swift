@@ -90,7 +90,7 @@ class ConnectionProblemController: UIViewController {
             self.activityIndicator.startAnimating()
             self.reloadT.alpha = 0
         })
-        if Reachability.isConnectedToNetwork() {
+        if Util.isConnectedToNetwork() {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.openApp()
         } else {

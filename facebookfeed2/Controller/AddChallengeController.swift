@@ -21,7 +21,8 @@ var doneIndex : Int = 8
 var scoreIndex : Int = 9
 var resultIndex : Int = 10
 var proofIndex : Int = 11
-var commentIndex : Int = 12
+var commentIndex : Int = 13
+var toPublicIndex : Int = 12
 let addViewIndexPath = IndexPath(item: chlIndex, section: 0)
 let segControlIndexPath = IndexPath(item: typeIndex, section: 0)
 let subjectIndexPath = IndexPath(item: subjectIndex, section: 0)
@@ -35,6 +36,7 @@ let scoreIndexPath = IndexPath(item: scoreIndex, section: 0)
 let resultIndexPath = IndexPath(item: resultIndex, section: 0)
 let proofIndexPath = IndexPath(item: proofIndex, section: 0)
 let commentIndexPath = IndexPath(item: commentIndex, section: 0)
+let toPublicPath = IndexPath(item: toPublicIndex, section: 0)
 
 class AddChallengeController: UITableViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     @objc let screenSize = UIScreen.main.bounds
@@ -83,6 +85,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             popupAlert(message: "Please select subject!", willDelay: false)
             return
         }
+        addChallengeIns[subjectIndex].resultText = subjectCell.labelOtherSide.text
         navigationItem.setRightBarButton(rightButton, animated: true)
         navigationItem.leftBarButtonItem = cancelButton
         firstPage = false
@@ -108,13 +111,11 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         let typeCell = getCell(path: segControlIndexPath)
         var type: String = ""
         if typeCell.mySegControl.selectedSegmentIndex == 0 {
-            type = PRIVATE
-        } else if typeCell.mySegControl.selectedSegmentIndex == 1 {
             type = PUBLIC
+        } else if typeCell.mySegControl.selectedSegmentIndex == 1 {
+            type = PRIVATE
         } else if typeCell.mySegControl.selectedSegmentIndex == 2 {
             type = SELF
-        } else if typeCell.mySegControl.selectedSegmentIndex == 3 {
-            type = PUBLIC
         }
         return type
     }
@@ -132,8 +133,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     @objc func isToWorld() -> Bool {
-        let typeCell = getCell(path: segControlIndexPath)
-        return typeCell.mySegControl.selectedSegmentIndex == 3
+        return isPublic() && addChallengeIns[toPublicIndex].resultId == 1
     }
     
     @objc func closeCalendar() {
@@ -159,9 +159,13 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             tableView.reloadRows(at: [resultIndexPath], with: .fade)
             switchScore = false
             tableView.reloadRows(at: [scoreIndexPath], with: .fade)
+            switchtoPublic = isPublic() ? true : false
+            tableView.reloadRows(at: [toPublicPath], with: .fade)
         } else {
             switchDone = disable
             tableView.reloadRows(at: [doneIndexPath], with: .fade)
+            switchtoPublic = false
+            tableView.reloadRows(at: [toPublicPath], with: .fade)
             if !doneCell.isDone.isOn {
                 switchDeadline = !disable
                 tableView.reloadRows(at: [deadlineIndexPath], with: .fade)
@@ -175,29 +179,16 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         switchComment = disable
         addChallengeIns[commentIndex].resultText = commentCell.commentView.text
         tableView.reloadRows(at: [commentIndexPath], with: .fade)
-        if isSelf() {
-            switchResult = !disable
-            tableView.reloadRows(at: [resultIndexPath], with: .fade)
-        }
-        if !isToWorld() {
-            switchProofCell = !disable
-            tableView.reloadRows(at: [visibilityIndexPath], with: .fade)
-        }
-        if isPrivate() {
-            switchLeftPeopleCell = !disable
-            tableView.reloadRows(at: [leftSideIndex], with: .fade)
-        }
-        if isPrivate() || (isPublic() && !isToWorld()) {
-            switchRightPeopleCell = !disable
-            tableView.reloadRows(at: [rightSideIndex], with: .fade)
-        }
-        if firstPage {
-            switchProof = false
-            tableView.reloadRows(at: [proofIndexPath], with: .fade)
-        } else if !firstPage && isPublic() {
-            switchProof = !disable
-            tableView.reloadRows(at: [proofIndexPath], with: .fade)
-        }
+        switchResult = isSelf() ? !disable : false
+        tableView.reloadRows(at: [resultIndexPath], with: .fade)
+        switchProofCell = !isToWorld() ? !disable : false
+        tableView.reloadRows(at: [visibilityIndexPath], with: .fade)
+        switchLeftPeopleCell = isPrivate() ? !disable : false
+        tableView.reloadRows(at: [leftSideIndex], with: .fade)
+        switchRightPeopleCell = isPrivate() || (isPublic() && !isToWorld()) ? !disable : false
+        tableView.reloadRows(at: [rightSideIndex], with: .fade)
+        switchProof = !firstPage && isPublic() ? !disable : false
+        tableView.reloadRows(at: [proofIndexPath], with: .fade)
         if !firstPage {
             _ = getDayBetweenDates(isSelect: false)
         }
@@ -240,6 +231,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns.append(createAddChallenge(labelText: "Winner", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Goal", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Proof", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "To", resultText : "", resultId: 1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
     
@@ -610,12 +602,13 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     @objc var switchProofCell : Bool = false;
     @objc var switchLeftPeopleCell : Bool = false;
     @objc var switchRightPeopleCell : Bool = false;
-    @objc var switchDone : Bool = true;
+    @objc var switchDone : Bool = false;
     @objc var switchScore : Bool = false;
     @objc var switchResult : Bool = false;
     @objc var switchProof : Bool = false;
     @objc var switchSubject : Bool = true;
     @objc var switchComment : Bool = true;
+    @objc var switchtoPublic : Bool = true;
     @objc var zeroHeight : CGFloat = 0
     @objc var commentCellHeight : CGFloat = 44
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -641,6 +634,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             return getHeight(switchOfCell: switchResult)
         } else if indexPath == proofIndexPath {
             return getHeight(switchOfCell: switchProof)
+        } else if indexPath == toPublicPath {
+            return getHeight(switchOfCell: switchtoPublic)
         } else if indexPath == calenddarIndexPath {
             if switchDateP {
                 return 224
@@ -655,7 +650,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 13
+        return 14
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -719,6 +714,11 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             cellComment.isHidden = !switchComment
             cellComment.commentView.delegate = self
             return cellComment
+        } else if indexPath == toPublicPath {
+            cell.label.text = addChallengeIns[toPublicIndex].labelText
+            cell.isHidden = !switchtoPublic
+            cell.toPublicControl.selectedSegmentIndex = addChallengeIns[toPublicIndex].resultId!
+            cell.toPublicControl.addTarget(self, action: #selector(self.toPublicControlChange), for: UIControlEvents.valueChanged)
         }
         return cell
     }
@@ -845,27 +845,36 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    @objc func segControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
-        createAddChallengeInstance()
-        let segControlContent = getCell(path: segControlIndexPath)
+    @objc func toPublicControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
+        let toPublicControlContent = getCell(path: toPublicPath)
+        addChallengeIns[toPublicIndex].resultId = toPublicControlContent.toPublicControl.selectedSegmentIndex
+        prepareViewForSelection(result: getUnknown(), popIndexPath: leftSideIndex, reset: true)
+    }
+    
+    func getUnknown() -> [SelectedItems]{
         var selItems = [SelectedItems]()
         let selItem = SelectedItems()
         selItem.name = "unknown"
         selItems.append(selItem)
+        return selItems
+    }
+    
+    @objc func segControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
+        createAddChallengeInstance()
+        let segControlContent = getCell(path: segControlIndexPath)
         addChallengeIns[typeIndex].resultId = segControlContent.mySegControl.selectedSegmentIndex
         var doneContent : TableViewCellContent!
         if !isNotAction {
             if firstPage {
-                switchDone = true
-                if isPublic() {
-                    switchDone = false
-                }
+                switchDone = isPublic() ? false : true
+                switchtoPublic = isPublic() ? true : false
+                tableView.reloadRows(at: [toPublicPath], with: .fade)
             }
             tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
             doneContent = getCell(path: doneIndexPath)
             doneContent.isDone.setOn(false, animated: false)
             tableView.reloadRows(at: [addViewIndexPath], with: .fade)
-            prepareViewForSelection(result: selItems, popIndexPath: popIndexPath, reset: true)
+            prepareViewForSelection(result: getUnknown(), popIndexPath: popIndexPath, reset: true)
             tableView.reloadRows(at: [subjectIndexPath], with: .fade)
             tableView.reloadRows(at: [leftSideIndex], with: .fade)
             tableView.reloadRows(at: [rightSideIndex], with: .fade)
@@ -949,6 +958,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addViewContent.addChallenge.generateSecondTeam(count: result.count)
         if result.count == 1 {
             setImage(fbID: result[0].fbId, imageView: addViewContent.addChallenge.firstOnePeopleImageView, reset: reset)
+            addViewContent.addChallenge.firstOnePeopleImageView.contentMode = .scaleAspectFill
             if isToWorld() {
                 setImage(name: worldImage, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
                 addViewContent.addChallenge.firstOnePeopleImageView.contentMode = .scaleAspectFit

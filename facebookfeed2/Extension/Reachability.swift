@@ -9,7 +9,7 @@
 import UIKit
 import SystemConfiguration
 import Foundation
-
+/*
 let groupReachability = DispatchGroup()
 var connectivityOfHost = false
 public class Reachability {
@@ -79,3 +79,4 @@ public class Reachability {
         return false // no internet
     }
 }
+*/

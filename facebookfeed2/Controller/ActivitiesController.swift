@@ -99,11 +99,7 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
             return
         }
         currentPage = 0
-        fetchChallengeRequest()
-        fetchEwFriendSuggestions(url: getSuggestionsForFollowingURL)
-        fetchFollowerRequest()
-        fetchChallengeApproves(url: getChallengeApprovesURL)
-        self.group.wait()
+        getAllActivitiesCount()
         self.activities = [Activities]()
         if (refreshControl?.isRefreshing)! || goForward {
             self.tableView.reloadData()
@@ -224,7 +220,30 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
         let indexPath = IndexPath(row:row, section: section)
         self.tableView.insertRows(at: [indexPath], with: .fade)
     }
-        
+    
+    @objc func getAllActivitiesCount() {
+        group.enter()
+        let jsonURL = URL(string: getAllActivitiesCountURL + memberID)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [String: AnyObject]
+                else {
+                    if data != nil {
+                        self.popupAlert(message: ServiceLocator.getErrorMessage(data: data!, chlId: "", sUrl: getActivitiesURL, inputs: "memberID=\(memberID)"), willDelay: false)
+                    }
+                    return
+            }
+            if let post = postsArray {
+                self.challengeRequestCount = (post["challengeRequestCount"] as? Int)!
+                self.followerRequestCount = (post["followerRequestCount"] as? Int)!
+                self.newFriendSuggestionCount = (post["newFriendSuggestionCount"] as? Int)!
+                self.challengeApproveCount = (post["challengeApproveCount"] as? Int)!
+            }
+            self.group.leave()
+        }
+    }
+    
     @objc func fetchChallengeRequest() {
         group.enter()
         let jsonURL = URL(string: getChallengeRequestURL + memberID)!
@@ -304,6 +323,9 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section < 4 {
+            self.group.wait()
+        }
         if indexPath.section == 0 && indexPath.row == 0 {
             let cell =  tableView.dequeueReusableCell(withIdentifier: followCellId, for: indexPath)
             let attributeText = NSMutableAttributedString(string: "Find Friends   ", attributes: nil)

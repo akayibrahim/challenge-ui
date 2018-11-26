@@ -20,5 +20,6 @@ pod 'CCBottomRefreshControl'
 pod 'GoogleSignIn'
 pod 'Fabric'
 pod 'Crashlytics'
+pod 'Siren' # Swift 4.2
 
 end

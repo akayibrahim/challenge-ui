@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.0.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -40,7 +40,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>1</string>
 	<key>CLIENT_ID</key>
 	<string>241509157224-cbdshgv4f08i9vvo6hclidic4gr94i3r.apps.googleusercontent.com</string>
 	<key>Fabric</key>
@@ -76,7 +76,7 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>example.com</key>
+			<key>http://ec2-18-233-12-157.compute-1.amazonaws.com</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
@@ -94,7 +94,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.241509157224-cbdshgv4f08i9vvo6hclidic4gr94i3r</string>	
+	<string>com.googleusercontent.apps.241509157224-cbdshgv4f08i9vvo6hclidic4gr94i3r</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

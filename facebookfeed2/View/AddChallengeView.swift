@@ -10,9 +10,9 @@ import UIKit
 import FBSDKCoreKit
 
 class AddChallengeView: UIView {
-    override init(frame: CGRect) {
+    init(frame: CGRect, isPublic: Bool) {
         super.init(frame: frame)
-        setupViews()
+        setupViews(isPublic)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -26,7 +26,7 @@ class AddChallengeView: UIView {
     @objc var widthOfMiddle: CGFloat = 0.05/6
     @objc var pickerData: [String] = [String]()
 
-    @objc func setupViews() {
+    @objc func setupViews(_ isPublic: Bool) {
         let contentGuide = self.readableContentGuide        
         addLayoutGuide(middleHeight)
         addLayoutGuide(rightMiddleTopWidth)
@@ -111,8 +111,14 @@ class AddChallengeView: UIView {
         addHeightAnchor(firstOnePeopleImageView, multiplier: heightOfFullImage)
         
         setImage(fbID: memberFbID, imageView: firstOneChlrPeopleImageView)
-        firstOnePeopleImageView.image = UIImage(named: "unknown")
-
+        if isPublic {
+            firstOnePeopleImageView.image = UIImage(named: worldImage)
+            firstOnePeopleImageView.contentMode = .scaleAspectFit
+        } else {
+            firstOnePeopleImageView.image = UIImage(named: unknown)
+            firstOnePeopleImageView.contentMode = .scaleAspectFill
+        }
+        
         vsImageView.image = UIImage(named: "vs")
         
         untilDateLabel.text = "Deadline"

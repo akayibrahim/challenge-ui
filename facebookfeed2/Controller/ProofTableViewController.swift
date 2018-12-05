@@ -145,6 +145,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
             for postDictionary in postsArray! {
                 let proof = Prove()
                 proof.provedWithImage = postDictionary["provedWithImage"] as? Bool
+                proof.wide = postDictionary["wide"] as? Bool
                 proof.setValuesForKeys(postDictionary)
                 self.proofs.append(proof)
             }
@@ -359,8 +360,13 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    @objc let heighForRow : CGFloat = (screenWidth * 0.7 / 10) + (screenWidth / 2) + (screenWidth * 0.1 / 2)
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if self.proofs.count == 0 {
+            return CGFloat(0)
+        }
+        let heighForRow : CGFloat = (screenWidth * 0.7 / 10)
+            + (screenWidth * (self.proofs[indexPath.item].wide! ? heightRatioOfWideMedia : heightRatioOfMedia))
+            + (screenWidth * 0.1 / 2)
         return heighForRow
     }
     
@@ -375,7 +381,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         DispatchQueue.main.async {
             if self.proofs.count != 0 {
                 cell.prepareForReuse()
-                cell.setup()
+                cell.setup(self.proofs[indexPath.item].wide!)
                 let nameAtt = NSMutableAttributedString(string: "\(String(describing: self.proofs[indexPath.row].name!))", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
                 cell.thinksAboutChallengeView.attributedText = nameAtt
                 let fbID = self.proofs[indexPath.item].fbID
@@ -401,11 +407,23 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         
+        let volumeChangeGesturePlayBtn : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.playAgain(gesture:)))
+        volumeChangeGesturePlayBtn.numberOfTapsRequired = 1
+        cell.playButtonView.tag = indexPath.row
+        cell.playButtonView.isUserInteractionEnabled = true
+        cell.playButtonView.addGestureRecognizer(volumeChangeGesturePlayBtn)
+        
         let volumeChangeGesture : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.changeVolume))
         volumeChangeGesture.numberOfTapsRequired = 1
-        cell.proofedVideoView.tag = indexPath.row
-        cell.proofedVideoView.isUserInteractionEnabled = true
-        cell.proofedVideoView.addGestureRecognizer(volumeChangeGesture)
+        cell.volumeUpImageView.tag = indexPath.row
+        cell.volumeUpImageView.isUserInteractionEnabled = true
+        cell.volumeUpImageView.addGestureRecognizer(volumeChangeGesture)
+        
+        let volumeChangeGestureDown : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.changeVolume))
+        volumeChangeGestureDown.numberOfTapsRequired = 1
+        cell.volumeDownImageView.tag = indexPath.row
+        cell.volumeDownImageView.isUserInteractionEnabled = true
+        cell.volumeDownImageView.addGestureRecognizer(volumeChangeGestureDown)
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
         cell.profileImageView.tag = indexPath.row
@@ -452,13 +470,20 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         DispatchQueue.main.async {
             let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
             let feedCell = self.tableView?.cellForRow(at: index) as! ProofCellView
+            volume = volume.isEqual(to: 0) ? 1 : 0
+            let defaults = UserDefaults.standard
+            defaults.set(volume, forKey: "volume")
+            defaults.synchronize()
+            self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)            
+        }
+    }
+    
+    @objc func playAgain(gesture: UITapGestureRecognizer) {
+        DispatchQueue.main.async {
+            let index = IndexPath(item: (gesture.view?.tag)!, section : 0)
+            let feedCell = self.tableView?.cellForRow(at: index) as! ProofCellView
             if let player = feedCell.proofedVideoView.playerLayer.player {
                 if player.rate > 0 {
-                    volume = volume.isEqual(to: 0) ? 1 : 0
-                    let defaults = UserDefaults.standard
-                    defaults.set(volume, forKey: "volume")
-                    defaults.synchronize()
-                    self.changeVolumeOfFeedCell(feedCell: feedCell, isSilentRing: false, silentRingSwitch: 0)
                 } else {
                     self.activeIndex = index
                     self.playActiveVideo(false)

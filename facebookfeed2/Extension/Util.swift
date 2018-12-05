@@ -47,19 +47,19 @@ public class Util {
         config.library.onlySquare  = false
         config.onlySquareImagesFromCamera = true
         config.targetImageSize = .original
-        config.usesFrontCamera = true
+        config.usesFrontCamera = false
         config.showsFilters = true
         // config.filters = [YPFilterDescriptor(name: "Normal", filterName: ""),
         //               YPFilterDescriptor(name: "Mono", filterName: "CIPhotoEffectMono")]
         config.shouldSaveNewPicturesToAlbum = false
         config.video.compression =  AVAssetExportPresetMediumQuality
-        config.albumName = "MyGreatAppName"
+        config.albumName = "Challenge"
         config.screens = [.library, .photo, .video]
         config.startOnScreen = .library
         config.video.recordingTimeLimit = 20
         config.video.trimmerMaxDuration = 20
-        config.video.libraryTimeLimit = 600
-        config.showsCrop = .rectangle(ratio: (Double(screenWidth / (screenWidth / 2))))
+        config.video.libraryTimeLimit = 900
+        config.showsCrop = .rectangle(ratio: (Double(screenWidth / (screenWidth * heightRatioOfMedia))))
         config.wordings.libraryTitle = "Gallery"
         config.hidesStatusBar = true
         // config.overlayView = myOverlayView
@@ -67,7 +67,7 @@ public class Util {
         config.library.minNumberOfItems = 1
         config.library.numberOfItemsInRow = 3
         config.library.spacingBetweenItems = 2
-        config.isScrollToChangeModesEnabled = false
+        config.isScrollToChangeModesEnabled = true
         return config
     }
     

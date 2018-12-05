@@ -480,7 +480,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 return CGSize(width: view.frame.width, height: screenSize.width * 2.5 / 10)
             }
         }
-        var knownHeight: CGFloat = (screenSize.width / 2) + (screenSize.width / 15) + (screenSize.width / 26)
+        var knownHeight: CGFloat = (screenWidth * 1 / 3) + (screenSize.width / 15) + (screenSize.width / 26)
         if posts.count == 0 {
             return CGSize(width: view.frame.width, height: knownHeight)
         }
@@ -491,7 +491,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 knownHeight += (screenWidth * 0.4 / 10)
             }
             if posts[indexPath.item].proofedByChallenger == true {
-                knownHeight += screenWidth / 2 + screenSize.width * 0.4/15
+                knownHeight += screenWidth * (posts[indexPath.item].wide! ? heightRatioOfWideMedia : heightRatioOfMedia)
+                    + screenSize.width * 0.4/15
             }
             knownHeight += (screenSize.width / 26) + (screenWidth * 0.9 / 10)
             if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge, let name = posts[indexPath.item].name {
@@ -641,7 +642,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     feedCellForSelf.updateProgress.type = self.notDonePosts[indexPath.row].type
                     feedCellForSelf.updateProgress.challengeId = self.notDonePosts[indexPath.row].id
                     feedCellForSelf.updateProgress.goal = self.notDonePosts[indexPath.row].goal
-                    feedCellForSelf.updateProgress.proofed = self.notDonePosts[indexPath.row].proofed
+                    feedCellForSelf.updateProgress.proofed = self.notDonePosts[indexPath.row].proofedByChallenger
                     feedCellForSelf.updateProgress.canJoin = self.notDonePosts[indexPath.row].canJoin
                     feedCellForSelf.updateProgress.tag = indexPath.row
                     if self.notDonePosts[indexPath.row].type == SELF {
@@ -770,9 +771,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.addProofs.addTarget(self, action: #selector(self.addProofs), for: UIControlEvents.touchUpInside)
         let volumeChangeGesture : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.changeVolume))
         volumeChangeGesture.numberOfTapsRequired = 1
-        feedCell.proofedVideoView.tag = indexPath.row
-        feedCell.proofedVideoView.isUserInteractionEnabled = true
-        feedCell.proofedVideoView.addGestureRecognizer(volumeChangeGesture)
+        feedCell.volumeUpImageView.tag = indexPath.row
+        feedCell.volumeUpImageView.isUserInteractionEnabled = true
+        feedCell.volumeUpImageView.addGestureRecognizer(volumeChangeGesture)
+        let volumeChangeGestureDown : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.changeVolume))
+        volumeChangeGestureDown.numberOfTapsRequired = 1
+        feedCell.volumeDownImageView.tag = indexPath.row
+        feedCell.volumeDownImageView.isUserInteractionEnabled = true
+        feedCell.volumeDownImageView.addGestureRecognizer(volumeChangeGestureDown)
         if explorer {
             feedCell.others.alpha = 1
             feedCell.others.addTarget(self, action: #selector(self.deleteChallenge), for: UIControlEvents.touchUpInside)
@@ -837,16 +843,26 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.proofedMediaView.tag = indexPath.row*/
         feedCell.proofedMediaView.setupZoomPinchGesture()
         feedCell.proofedMediaView.setupZoomPanGesture()
-        /*
+        
         if feedCell.post?.type == PUBLIC && (feedCell.post?.proofedByChallenger)! {
-            let tapGestureRecognizerTwoFinger = UITapGestureRecognizer(target: self, action: #selector(twoFinger))
-            tapGestureRecognizerTwoFinger.numberOfTapsRequired = 1
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openProofsViaMedia))
+            tapGestureRecognizer.numberOfTapsRequired = 1
+            feedCell.proofedMediaView.tag = indexPath.row
             feedCell.proofedMediaView.isUserInteractionEnabled = true
-            feedCell.proofedMediaView.addGestureRecognizer(tapGestureRecognizerTwoFinger)
+            feedCell.proofedMediaView.addGestureRecognizer(tapGestureRecognizer)
+            
+            let tapGestureRecognizerVideo = UITapGestureRecognizer(target: self, action: #selector(openProofsViaMedia))
+            tapGestureRecognizerVideo.numberOfTapsRequired = 1
+            feedCell.proofedVideoView.tag = indexPath.row
+            feedCell.proofedVideoView.isUserInteractionEnabled = true
+            feedCell.proofedVideoView.addGestureRecognizer(tapGestureRecognizerVideo)
         }
-         */
     }
     
+    @objc func openProofsViaMedia(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view
+        openProofScreen(challengeId: posts[tappedImage!.tag].id!, proofed: posts[tappedImage!.tag].proofed!, canJoin: posts[tappedImage!.tag].canJoin!, proveCount: posts[tappedImage!.tag].countOfProofs as! Int, index: tappedImage!.tag)
+    }
     
     @objc var isZooming = false
     var originalImageCenter: CGPoint?

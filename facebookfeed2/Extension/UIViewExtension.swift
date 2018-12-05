@@ -39,17 +39,24 @@ class PlayerView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
-        playerLayer.backgroundColor = UIColor(hexString: "0x000000").withAlphaComponent(0.9).cgColor
+        playerLayer.videoGravity = videoGravityFill
+        playerLayer.backgroundColor = UIColor(hexString: "0x000000").withAlphaComponent(0.9).cgColor // backColorOfMedia.cgColor
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
+        playerLayer.videoGravity = videoGravityFill
     }
 }
 
 extension UIView {
+    
+    func clearConstraints() {
+        for subview in self.subviews {
+            subview.clearConstraints()
+        }
+        self.removeConstraints(self.constraints)
+    }
     
     func showTwoFinger() {
         DispatchQueue.main.async {

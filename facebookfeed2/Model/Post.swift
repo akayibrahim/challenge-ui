@@ -53,4 +53,5 @@ class Post: SafeJsonObject {
     var scoreRejected: Bool?
     @objc var scoreRejectName: String?
     @objc var visibility: NSNumber?
+    var wide: Bool?
 }

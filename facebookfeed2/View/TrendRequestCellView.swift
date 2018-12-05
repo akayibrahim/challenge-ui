@@ -20,6 +20,7 @@ class TrendRequestCell: UICollectionViewCell {
         self.profileImageView.image = UIImage()
         self.nameLabel.removeFromSuperview()
         self.proofedVideoView.removeFromSuperview()
+        self.proofedVideoView.clearConstraints()
         //self.avPlayerLayer.removeFromSuperlayer()
         self.proofedVideoView.player?.replaceCurrentItem(with: nil)
         super.prepareForReuse()
@@ -43,7 +44,7 @@ class TrendRequestCell: UICollectionViewCell {
             if let prooferFBId = trendRequest?.prooferFbID {
                 setImage(fbID: prooferFBId, imageView: profileImageView)
             }
-            setupViews()
+            setupViews((trendRequest?.wide)!)
         }
     }
     
@@ -62,14 +63,15 @@ class TrendRequestCell: UICollectionViewCell {
     
     @objc let requestImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = defaultContentMode
         // imageView.backgroundColor = UIColor.blue
         imageView.layer.masksToBounds = true
         imageView.isOpaque = true
+        imageView.backgroundColor = backColorOfMedia
         return imageView
     }()
     
-    @objc func setupViews() {
+    @objc func setupViews(_ wide: Bool) {
         let contentGuide = self.readableContentGuide
         backgroundColor = feedBackColor
         addSubview(requestImageView)
@@ -95,13 +97,14 @@ class TrendRequestCell: UICollectionViewCell {
         // addLeadingAnchor(requestImageView, anchor: contentGuide.leadingAnchor, constant: 0)
         // addTrailingAnchor(requestImageView, anchor: contentGuide.trailingAnchor, constant: 0)
         addWidthAnchor(requestImageView, multiplier: 1)
-        addHeightAnchor(requestImageView, multiplier: 1 / 2)
+        addHeightAnchor(requestImageView, multiplier: heightRatioOfMedia)
         
         addTopAnchor(proofedVideoView, anchor: profileImageView.bottomAnchor, constant: screenWidth * 0.05 / 2)
         addWidthAnchor(proofedVideoView, multiplier: 1)
-        addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
+        addHeightAnchor(proofedVideoView, multiplier: wide ? heightRatioOfWideMedia : heightRatioOfMedia)
         proofedVideoView.alpha = 0
         self.proofedVideoView.layer.masksToBounds = true
+        proofedVideoView.playerLayer.videoGravity = wide ? videoGravity : videoGravityFill
         /*DispatchQueue.main.async {
             self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds

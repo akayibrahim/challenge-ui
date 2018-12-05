@@ -19,11 +19,11 @@ class AddChallengeView: UIView {
     }
     
     @objc var widthOfImage: CGFloat = 1/3
-    @objc var heightOfFullImage: CGFloat = 1/2
-    @objc var heightOfHalfImage: CGFloat = 0.975/4
-    @objc var widthOfQuarterImage: CGFloat = 0.975/6
-    @objc var heightOfMiddle: CGFloat = 0.05/4
-    @objc var widthOfMiddle: CGFloat = 0.05/6
+    @objc var heightOfFullImage: CGFloat = 1/3
+    @objc var heightOfHalfImage: CGFloat = 0.48/3
+    @objc var widthOfQuarterImage: CGFloat = 0.48/3
+    @objc var heightOfMiddle: CGFloat = 0.04/3
+    @objc var widthOfMiddle: CGFloat = 0.04/3
     @objc var pickerData: [String] = [String]()
 
     @objc func setupViews(_ isPublic: Bool) {
@@ -49,12 +49,12 @@ class AddChallengeView: UIView {
         
         let screenSize = UIScreen.main.bounds
         
-        middleTopGuide.heightAnchor.constraint(equalToConstant: screenWidth * 1 / 6).isActive = true
+        middleTopGuide.heightAnchor.constraint(equalToConstant: screenWidth * 0.6 / 6).isActive = true
         
         middleTopGuide.topAnchor.constraint(equalTo: challengeView.topAnchor, constant: 1).isActive = true
         
         addSubview(finishFlag)
-        addBottomAnchor(finishFlag, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0 / 10))
+        addTopAnchor(finishFlag, anchor: middleTopGuide.topAnchor, constant: -(screenWidth * 0.1 / 10))
         finishFlag.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         addWidthAnchor(finishFlag, multiplier: 2 / 6)
         addHeightAnchor(finishFlag, multiplier: 1 / 6)
@@ -75,28 +75,28 @@ class AddChallengeView: UIView {
         */
         
         addSubview(untilDateLabel)
-        addBottomAnchor(untilDateLabel, anchor: middleTopGuide.bottomAnchor, constant: 0)
+        addTopAnchor(untilDateLabel, anchor: middleTopGuide.topAnchor, constant: 0)
         addWidthAnchor(untilDateLabel, multiplier: 0.7/3)
         untilDateLabel.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        addHeightAnchor(untilDateLabel, multiplier: 1/6)
+        addHeightAnchor(untilDateLabel, multiplier: 0.5/6)
         
         challengeView.addSubview(vsImageView)
-        challengeView.addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: 0)
+        challengeView.addTopAnchor(vsImageView, anchor: middleTopGuide.bottomAnchor, constant: screenWidth * 0.1 / 10)
         vsImageView.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        challengeView.addHeightAnchor(vsImageView, multiplier: 1/6)
+        challengeView.addHeightAnchor(vsImageView, multiplier: 0.8/6)
         
         middleCenterGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0/18).isActive = true
         middleCenterGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor).isActive = true
         
         addSubview(clapping)
-        addTopAnchor(clapping, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.3 / 18)
+        addTopAnchor(clapping, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.25 / 18)
         clapping.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
-        addWidthAnchor(clapping, multiplier: 0.8 / 6)
-        addHeightAnchor(clapping, multiplier: 0.8 / 6)
+        addWidthAnchor(clapping, multiplier: 0.4 / 6)
+        addHeightAnchor(clapping, multiplier: 0.4 / 6)
         clapping.isHidden = true
         
         middleBottomGuide.heightAnchor.constraint(equalToConstant: screenSize.width * 0).isActive = true
-        middleBottomGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor, constant: screenSize.width * 1/6).isActive = true
+        middleBottomGuide.topAnchor.constraint(equalTo: vsImageView.bottomAnchor, constant: screenSize.width * 0.5/6).isActive = true
         
         challengeView.addSubview(firstOneChlrPeopleImageView)
         challengeView.addTopAnchor(firstOneChlrPeopleImageView, anchor: middleTopGuide.topAnchor, constant: 2)

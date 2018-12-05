@@ -161,6 +161,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                             for postDictionary in postsArray {
                                 let trend = TrendRequest()
                                 trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
+                                trend.wide = postDictionary["wide"] as? Bool
                                 trend.setValuesForKeys(postDictionary)
                                 self.trendRequest.append(trend)
                                 indexPaths.append(IndexPath(row: self.trendRequest.count - 1, section: 0))
@@ -205,7 +206,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     @objc var downImage: UIImage?
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width, height: self.view.frame.width * 1.3 / 2)
+        return CGSize(width: self.view.frame.width, height: (screenWidth * 0.3 / 2)
+            + (screenWidth * (self.trendRequest[indexPath.row].wide! ? heightRatioOfWideMedia : heightRatioOfMedia)))
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

@@ -13,7 +13,7 @@ import AVKit
 class ProofCellView: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setup()
+        //setup()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -25,13 +25,16 @@ class ProofCellView: UITableViewCell {
         self.thinksAboutChallengeView.removeFromSuperview()
         self.profileImageView.removeFromSuperview()
         self.proofedVideoView.removeFromSuperview()
+        self.proofedVideoView.clearConstraints()
+        playButtonView.removeFromSuperview()
+        playButtonView.clearConstraints()
         //self.avPlayerLayer.removeFromSuperlayer()
         self.volumeUpImageView.removeFromSuperview()
         self.volumeDownImageView.removeFromSuperview()
         self.proofedVideoView.player?.replaceCurrentItem(with: nil)
     }
     
-    @objc func setup() {
+    @objc func setup(_ wide: Bool) {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         backgroundColor = feedBackColor
@@ -52,15 +55,16 @@ class ProofCellView: UITableViewCell {
         addSubview(proofImageView)
         addTopAnchor(proofImageView, anchor: profileImageView.bottomAnchor, constant: screenWidth * 0.05 / 2)
         addWidthAnchor(proofImageView, multiplier: 1)
-        addHeightAnchor(proofImageView, multiplier: 1 / 2)
+        addHeightAnchor(proofImageView, multiplier: heightRatioOfMedia)
         // setImage(name: unknown, imageView: proofImageView)
         proofImageView.alpha = 0
         
         addSubview(proofedVideoView)
         addTopAnchor(proofedVideoView, anchor: profileImageView.bottomAnchor, constant: screenWidth * 0.05 / 2)
         addWidthAnchor(proofedVideoView, multiplier: 1)
-        addHeightAnchor(proofedVideoView, multiplier: 1 / 2)
+        addHeightAnchor(proofedVideoView, multiplier: wide ? heightRatioOfWideMedia : heightRatioOfMedia)
         proofedVideoView.alpha = 0
+        proofedVideoView.playerLayer.videoGravity = wide ? videoGravity : videoGravityFill
         /*DispatchQueue.main.async {
             self.proofedVideoView.layer.addSublayer(self.avPlayerLayer)
             self.avPlayerLayer.frame = self.proofedVideoView.layer.bounds
@@ -71,8 +75,9 @@ class ProofCellView: UITableViewCell {
         
         setImage(name: "playButton", imageView: playButtonView)
         addSubview(playButtonView)
-        addTopAnchor(playButtonView, anchor: proofedVideoView.topAnchor, constant: (proofedVideoView.frame.height / 2) - screenWidth * 1.5 / 10 / 2)
-        addLeadingAnchor(playButtonView, anchor: proofedVideoView.leadingAnchor, constant: (proofedVideoView.frame.width / 2) - screenWidth * 1.5 / 10 / 2)
+        addBottomAnchor(playButtonView, anchor: proofedVideoView.topAnchor, constant: (screenWidth * (wide ? heightRatioOfWideMedia : heightRatioOfMedia) / 2) + screenWidth * 1.5 / 10 / 2)
+        // addLeadingAnchor(playButtonView, anchor: proofedVideoView.leadingAnchor, constant: (proofedVideoView.frame.width / 2) - screenWidth * 1.5 / 10 / 2)
+        playButtonView.centerXAnchor.constraint(equalTo: proofedVideoView.centerXAnchor, constant: 0).isActive = true
         addWidthAnchor(playButtonView, multiplier: 1.5 / 10)
         addHeightAnchor(playButtonView, multiplier: 1.5 / 10)
         playButtonView.alpha = 0
@@ -81,15 +86,15 @@ class ProofCellView: UITableViewCell {
         addSubview(volumeUpImageView)
         addBottomAnchor(volumeUpImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
         addLeadingAnchor(volumeUpImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
-        addWidthAnchor(volumeUpImageView, multiplier: 0.04)
-        addHeightAnchor(volumeUpImageView, multiplier: 0.04)
+        addWidthAnchor(volumeUpImageView, multiplier: 0.06)
+        addHeightAnchor(volumeUpImageView, multiplier: 0.06)
         volumeUpImageView.alpha = 0
         
         addSubview(volumeDownImageView)
         addBottomAnchor(volumeDownImageView, anchor: proofedVideoView.bottomAnchor, constant: -(screenWidth * 0.2 / 10))
         addLeadingAnchor(volumeDownImageView, anchor: proofedVideoView.leadingAnchor, constant: (screenWidth * 0.2 / 10))
-        addWidthAnchor(volumeDownImageView, multiplier: 0.04)
-        addHeightAnchor(volumeDownImageView, multiplier: 0.04)
+        addWidthAnchor(volumeDownImageView, multiplier: 0.06)
+        addHeightAnchor(volumeDownImageView, multiplier: 0.06)
         volumeDownImageView.alpha = 0
         
         setImage(name: volumeUp, imageView: volumeUpImageView)
@@ -106,12 +111,13 @@ class ProofCellView: UITableViewCell {
         // imageView.backgroundColor = UIColor.blue
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 0.03
+        imageView.backgroundColor = backColorOfMedia
         return imageView
     }()
     
     @objc let playButtonView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = defaultContentMode
         // imageView.backgroundColor = UIColor.blue
         imageView.layer.masksToBounds = true
         return imageView

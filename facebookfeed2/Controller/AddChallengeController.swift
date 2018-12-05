@@ -41,7 +41,7 @@ let toPublicPath = IndexPath(item: toPublicIndex, section: 0)
 class AddChallengeController: UITableViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     @objc let screenSize = UIScreen.main.bounds
     @objc var tableRowHeightHeight: CGFloat = 44
-    @objc var chlViewHeight: CGFloat = 17.5/30
+    @objc var chlViewHeight: CGFloat = 1.3/3
     var leftSide = [SelectedItems]()
     var rightSide = [SelectedItems]()
     @objc var deadLine = Int()
@@ -400,7 +400,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     
     @objc func addMedia(result: NSString) {
         let proofCell = getCell(path: proofIndexPath)
-        let parameters = ["challengeId": result as String, "memberId": memberID as String]
+        let parameters = ["challengeId": result as String, "memberId": memberID as String, "wide": self.isWide as Bool] as [String : Any]
         let urlOfUpload = URL(string: uploadImageURL)!
         var requestOfUpload: URLRequest?
         if self.isImg {
@@ -448,6 +448,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             // let addViewContent = getCell(path: addViewIndexPath)
             if !firstPage {
                 _ = getDayBetweenDates(isSelect: true)
+                switchDateP = !switchDateP
+                tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
+                tableView.scrollToRow(at: calenddarIndexPath, at: .bottom, animated: true)
             }
         } else if indexPath == resultIndexPath {
             let updateProgress = UpdateProgressController()
@@ -494,6 +497,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 case .video(let video):
                     self.videoURL = video.url as NSURL
                     proofCell.proofImageView.image = video.thumbnail
+                    self.isWide = video.thumbnail.size.width > video.thumbnail.size.height ? true : false
                     proofCell.proofImageView.alpha = 1
                     self.isImg = false
                 }
@@ -532,6 +536,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
 
     @objc var videoURL: NSURL?
     @objc var isImg: Bool = true
+    @objc var isWide: Bool = false
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             let proofCell = self.getCell(path: proofIndexPath)
@@ -562,9 +567,6 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             } else {
                 cCellContent.labelOtherSide.text = formattedDate
             }
-            switchDateP = !switchDateP
-            tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
-            tableView.scrollToRow(at: calenddarIndexPath, at: .bottom, animated: true)
         } else {
             let temp = cCellContent.labelOtherSide.text
             if (temp?.contains("Days"))! {
@@ -643,7 +645,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 return zeroHeight
             }
         } else if indexPath == addViewIndexPath {
-            return (screenSize.width * chlViewHeight) + (tableRowHeightHeight / 2)
+            return (screenWidth * chlViewHeight) + (tableRowHeightHeight / 2)
         } else {
             return tableRowHeightHeight
         }
@@ -684,6 +686,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             cell.datePicker.date = nextWeek!
             cell.deadLines.selectedSegmentIndex = 1
             cell.deadLines.addTarget(self, action: #selector(self.deadlinesChanged), for: UIControlEvents.valueChanged)
+            cell.datePicker.addTarget(self, action: #selector(self.pickedDate), for: UIControlEvents.valueChanged)
         } else if indexPath == visibilityIndexPath {
             cell.label.text = addChallengeIns[visibilityIndex].labelText
             // cell.visibilitySegControl.selectedSegmentIndex = addChallengeIns[visibilityIndex].resultId!
@@ -718,6 +721,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             cell.label.text = addChallengeIns[toPublicIndex].labelText
             cell.isHidden = !switchtoPublic
             cell.toPublicControl.selectedSegmentIndex = addChallengeIns[toPublicIndex].resultId!
+            print(cell.toPublicControl.selectedSegmentIndex)
             cell.toPublicControl.addTarget(self, action: #selector(self.toPublicControlChange), for: UIControlEvents.valueChanged)
         }
         return cell
@@ -771,6 +775,11 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         let selectedIndex = calendarContent.deadLines.selectedSegmentIndex
         let day : Int = selectedIndex == 0 ? 1 : (selectedIndex == 1 ? 7 : (selectedIndex == 2 ? 30 : 365) )
         calendarContent.datePicker.date = Calendar.current.date(byAdding: .day, value: day, to: Date())!
+        _ = getDayBetweenDates(isSelect: true)
+    }
+    
+    @objc func pickedDate() {
+        _ = getDayBetweenDates(isSelect: true)
     }
     
     @objc func doneSwitch() {
@@ -860,11 +869,11 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     @objc func segControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
-        createAddChallengeInstance()
         let segControlContent = getCell(path: segControlIndexPath)
-        addChallengeIns[typeIndex].resultId = segControlContent.mySegControl.selectedSegmentIndex
         var doneContent : TableViewCellContent!
         if !isNotAction {
+            createAddChallengeInstance()
+            addChallengeIns[typeIndex].resultId = segControlContent.mySegControl.selectedSegmentIndex
             if firstPage {
                 switchDone = isPublic() ? false : true
                 switchtoPublic = isPublic() ? true : false

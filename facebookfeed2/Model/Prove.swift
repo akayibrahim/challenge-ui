@@ -15,4 +15,5 @@ class Prove: SafeJsonObject {
     @objc var challangeId: String?
     @objc var memberId: String?
     var provedWithImage: Bool?
+    var wide: Bool?
 }

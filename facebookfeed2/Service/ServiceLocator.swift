@@ -262,6 +262,8 @@ class ServiceLocator {
         post.timesUp = postDictionary["timesUp"] as? Bool
         post.waitForApprove = postDictionary["waitForApprove"] as? Bool
         post.scoreRejected = postDictionary["scoreRejected"] as? Bool
+        post.scoreRejected = postDictionary["scoreRejected"] as? Bool
+        post.wide = postDictionary["wide"] as? Bool
         return post
     }
     

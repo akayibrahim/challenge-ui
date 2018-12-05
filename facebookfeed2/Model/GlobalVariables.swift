@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 var memberID = dummyServiceCall ? "5a81b0f0f8b8e43e70325d3d" : ""
 var memberFbID = "" //10156204749600712" // dummy
@@ -63,6 +64,12 @@ var feedBackColor =  UIColor.white // UIColor(white: 0.985, alpha: 1)
 var memberIdKey = "memberIdKey"
 var facebookIdKey = "facebookIdKey"
 var nameSurnameKey = "nameSurnameKey"
+var heightRatioOfMedia : CGFloat = 2 / 2
+var heightRatioOfWideMedia : CGFloat = 1.14 / 2
+var backColorOfMedia : UIColor = UIColor(white: 0.5, alpha: 0.1)
+var defaultContentMode : UIView.ContentMode = UIView.ContentMode.scaleAspectFill
+var videoGravityFill : AVLayerVideoGravity = AVLayerVideoGravity.resizeAspectFill
+var videoGravity : AVLayerVideoGravity = AVLayerVideoGravity.resizeAspect
 
 // PARAMETERS
 let PARAMETER_DEFAULT = "0"

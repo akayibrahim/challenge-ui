@@ -54,7 +54,7 @@ class TableViewCellContent: UITableViewCell {
         }
         
         if cellRow == addViewIndexPath.row {
-            addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.width * 17.5/30) + 22), isPublic: isPublic(typeIndex))
+            addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: (screenWidth * 1.3 / 3) + 22), isPublic: isPublic(typeIndex))
             addChallenge.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
             addSubview(addChallenge)
         } else if cellRow == calenddarIndexPath.row {

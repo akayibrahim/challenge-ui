@@ -86,8 +86,8 @@ class ActivityCell: UITableViewCell {
                 addSubview(proofVideoView)
                 proofVideoView.layer.cornerRadius = 0
                 addTrailingAnchor(proofVideoView, anchor: contentGuide.trailingAnchor, constant: screenSize.width * 0.1/10)
-                addWidthAnchor(proofVideoView, multiplier: 1.5/10)
-                addHeightAnchor(proofVideoView, multiplier: 1.5/10/2)
+                addWidthAnchor(proofVideoView, multiplier: 1.2/10)
+                addHeightAnchor(proofVideoView, multiplier: 1.2/10)
                 proofVideoView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
                 self.proofVideoView.layer.masksToBounds = true
                 proofVideoView.isOpaque = true
@@ -101,11 +101,12 @@ class ActivityCell: UITableViewCell {
                 addSubview(proofImageView)
                 proofImageView.layer.cornerRadius = 0
                 addTrailingAnchor(proofImageView, anchor: contentGuide.trailingAnchor, constant: screenSize.width * 0.1/10)
-                addWidthAnchor(proofImageView, multiplier: 1.5/10)
-                addHeightAnchor(proofImageView, multiplier: 1.5/10/2)
+                addWidthAnchor(proofImageView, multiplier: 1.2/10)
+                addHeightAnchor(proofImageView, multiplier: 1.2/10)
                 proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor).isActive = true
                 proofImageView.isOpaque = true
                 proofImageView.layer.shouldRasterize = true
+                proofImageView.contentMode = defaultContentMode
             }
         }
     }

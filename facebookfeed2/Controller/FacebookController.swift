@@ -85,8 +85,8 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         view.addSubview(label)
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.openPickerView))
-        tapGestureRecognizer.numberOfTapsRequired = 5
         if !UIDevice.current.isSimulator {
+            tapGestureRecognizer.numberOfTapsRequired = 5
             tapGestureRecognizer.numberOfTouchesRequired = 3
         }
         label.isUserInteractionEnabled = true
@@ -169,6 +169,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         if !ServiceLocator.isParameterOpen(DUMMY_USERS) {
             return
         }
+        fetchBots()
         self.myPickerView = UIPickerView(frame:CGRect(x: 0, y: self.view.frame.size.height - 216, width: self.view.frame.size.width, height: 216))
         self.myPickerView.delegate = self
         self.myPickerView.dataSource = self
@@ -199,10 +200,10 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         return 1
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerData.count
+        return bots.count
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickerData[row]
+        return bots.count == 0 ? "" : bots[row].name
     }
     var pickerData = ["Usain bolt" , "Barcelona" , "Real Madrid" , "Photographer", "Nadal", "Football Fans",
                       "Tom Jery", "Music Fans", "Roger federer", "Christian pulisic", "Smith", "Childlike",
@@ -227,6 +228,8 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
     
     @objc func pickerDone() {
         let row = myPickerView.selectedRow(inComponent: 0);
+        openMember(id: bots[row].memberId!)
+        /*
         if row == 0 {
             openMember(id: "5bb71ec9d35c6545e8bdbf1b")
         } else if row == 1 {
@@ -290,6 +293,7 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         } else if row == 30 {
             openMember(id: "5bce3e15d35c653fc4e0ddb5")
         }
+ */
         myPickerView.removeFromSuperview()
     }
     
@@ -339,6 +343,28 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
                 countOffollowing = (post["followingCount"] as? Int)!
                 privateAccount = (post["privateMember"] as? Bool)!
                 Util.addMemberToDefaults(memberId: memberID, facebookId: memberFbID, nameSurname: memberName)
+            }
+        }
+    }
+    
+    var bots = [Bots]()
+    @objc func fetchBots() {
+        let jsonURL = URL(string: fetchBotsURL)!
+        jsonURL.get { data, response, error in
+            guard
+                let returnData = data,
+                let postsArray = try? JSONSerialization.jsonObject(with: returnData, options: .mutableContainers) as? [[String: AnyObject]]
+                else {
+                    if data != nil {
+                        ServiceLocator.logErrorMessage(data: data!, chlId: "", sUrl: fetchBotsURL, inputs: "memberID=\(memberID)")
+                    }
+                    return
+            }
+            self.bots = [Bots]()
+            for postDictionary in postsArray! {
+                let bot = Bots()
+                bot.setValuesForKeys(postDictionary)
+                self.bots.append(bot)
             }
         }
     }

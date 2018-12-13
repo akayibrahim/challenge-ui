@@ -143,7 +143,7 @@ class FollowRequestController: UITableViewController, UISearchBarDelegate {
         cell.nameLabel.text = "\(friendRequest[indexPath.row].name!) \(friendRequest[indexPath.row].surname!)"
         setImage(fbID: friendRequest[indexPath.row].facebookID!, imageView: cell.requestImageView, reset: false)
         cell.imageView?.backgroundColor = UIColor.black
-        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        cell.selectionStyle = UITableViewCellSelectionStyle.none        
         cell.confirmButton.memberId = friendRequest[indexPath.row].id
         cell.deleteButton.memberId = friendRequest[indexPath.row].id
         cell.deleteButton.alpha = search ? 0 : 1

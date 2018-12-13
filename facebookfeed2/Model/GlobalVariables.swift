@@ -70,12 +70,15 @@ var backColorOfMedia : UIColor = UIColor(white: 0.5, alpha: 0.1)
 var defaultContentMode : UIView.ContentMode = UIView.ContentMode.scaleAspectFill
 var videoGravityFill : AVLayerVideoGravity = AVLayerVideoGravity.resizeAspectFill
 var videoGravity : AVLayerVideoGravity = AVLayerVideoGravity.resizeAspect
+var guide: String = "guide"
+var startApp: String = "startApp"
 
 // PARAMETERS
 let PARAMETER_DEFAULT = "0"
 let DUMMY_USERS = "dummy_users"
 let FORCE_UPDATE = "force_update"
 let SRVR_URL = "url"
+var GUIDE_OPEN: String = "guide_open"
 
 // Assets Name
 var supported = "supported"
@@ -166,6 +169,7 @@ var updateWithDeviceTokenURL = defaultURL + "/updateWithDeviceToken?memberId="
 var getFriendInfoURL = defaultURL + "/getFriendInfo?memberId="
 var getAllActivitiesCountURL = defaultURL + "/getAllActivitiesCount?memberId="
 var getParameterValueURL = defaultURL + "/getParameterValue?key="
+var fetchBotsURL = defaultURL + "/fetchBots"
 
 struct INSTAGRAM_IDS {
     static let INSTAGRAM_AUTHURL = "https://api.instagram.com/oauth/authorize/"

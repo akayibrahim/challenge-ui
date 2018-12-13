@@ -440,6 +440,9 @@ class ServiceLocator {
     }
     
     @objc static func isParameterOpen(_ key: String) -> Bool {
+        if isLocal {
+            return true
+        }
         let value = ServiceLocator.getParameterValue(key)
         if value != PARAMETER_DEFAULT { // C: 0, O: 1
             return true

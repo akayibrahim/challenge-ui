@@ -81,6 +81,9 @@ public class Util {
     }
     
     static func isConnectedToNetwork() -> Bool {
+        if isLocal {
+            return true
+        }
         //print("wwan:\(NetworkReachabilityManager()!.isReachableOnWWAN)")
         //print("wifi:\(NetworkReachabilityManager()!.isReachableOnEthernetOrWiFi)")
         //print("lte:\(checkConnection())")
@@ -108,6 +111,22 @@ public class Util {
         defaults.set(facebookId, forKey: facebookIdKey)
         defaults.set(nameSurname, forKey: nameSurnameKey)
         defaults.synchronize()
+    }
+    
+    static func addToDefaults(key:String, value: Any) {
+        let defaults = UserDefaults.standard
+        defaults.set(value, forKey: key)
+        defaults.synchronize()
+    }
+    
+    static func removeFromDefaults(key:String) {
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: key)
+        defaults.synchronize()
+    }
+    
+    static func getFromDefaults(key:String) -> Any? {        
+        return UserDefaults.standard.object(forKey: key)
     }
     
     static func removeMemberFromDefaults() {
@@ -138,5 +157,14 @@ public class Util {
             let url = ServiceLocator.getParameterValue(SRVR_URL)
             defaultURL = url != PARAMETER_DEFAULT ? url : serverURL
         }
+    }
+    
+    static func shareViaFriend(view: UIView) -> UIActivityViewController {
+        let text = "https://itunes.apple.com/tr/app/challenge/id1441255418?mt=8"
+        let textToShare = [ text ]
+        let activity = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        activity.popoverPresentationController?.sourceView = view
+        activity.excludedActivityTypes = [] // [UIActivityType.airDrop, UIActivityType.postToFacebook]
+        return activity
     }
 }

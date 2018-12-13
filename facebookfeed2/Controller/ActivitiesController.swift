@@ -192,15 +192,24 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
                         }
                         DispatchQueue.main.async {
                             self.tableView.removeBluerLoader()
-                            self.tableView.tableFooterView = UIView()
-                            // self.tableView?.insertRows(at: indexPaths, with: .fade)
-                            self.tableView?.reloadData()
                             self.isFetchingNextPage = false
+                            if self.activities.count == 0 {
+                                let inviteButton = self.tableView.setEmptyActivitiesMessage()
+                                inviteButton.addTarget(self, action: #selector(self.inviteFriends), for: UIControlEvents.touchUpInside)
+                            } else {
+                                self.tableView.restore()
+                                // self.tableView?.insertRows(at: indexPaths, with: .fade)
+                                self.tableView?.reloadData()
+                            }
                         }
                     }
                 }
             }
         }
+    }
+    
+    @objc func inviteFriends() {
+        self.present(Util.shareViaFriend(view: self.view), animated:  true, completion: nil)
     }
     
     func calculateCellSize(_ indexPath: IndexPath) -> CGFloat {

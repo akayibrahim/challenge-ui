@@ -730,7 +730,7 @@ class FeedCell: UICollectionViewCell {
             addTopAnchor(scoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.7 / 10))
             scoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0 / 10)).isActive = true
             addWidthAnchor(scoreText, multiplier: 0.2 / 6)
-            addHeightAnchor(scoreText, multiplier: 0.3 / 6)
+            addHeightAnchor(scoreText, multiplier: 0.35 / 6)
             // scoreText.backgroundColor = UIColor.white
             // scoreText.font = UIFont(name: "Optima-ExtraBlack", size: 44)
             scoreText.textColor = scoreColor

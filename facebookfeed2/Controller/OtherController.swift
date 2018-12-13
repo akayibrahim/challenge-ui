@@ -14,7 +14,7 @@ class OtherController: UITableViewController, UIWebViewDelegate{
     @objc static let headerId = "headerId"
     @objc static let cellId = "cellId"
     @objc let screenSize = UIScreen.main.bounds
-    @objc var logoutIndex : Int = 4
+    @objc var logoutIndex : Int = 5
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +34,7 @@ class OtherController: UITableViewController, UIWebViewDelegate{
         let frameOfCell : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
         let cell = OtherViewCell(frame: frameOfCell, cellRow: indexPath.row)
         cell.imageView?.backgroundColor = UIColor.black
-        if indexPath.row == 3 {
+        if indexPath.row == 4 {
             cell.backgroundColor = pagesBackColor
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
@@ -49,6 +49,13 @@ class OtherController: UITableViewController, UIWebViewDelegate{
         } else if indexPath.row == 2 {
             shareViaFriend()
         } else if indexPath.row == 3 {
+            let guideAlert: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+            guideAlert.view.addSubview(guideAlert.view.getGuideView(0))
+            guideAlert.addAction(UIAlertAction(title: "Let's Challenge", style: .default, handler: nil))
+            let height:NSLayoutConstraint = NSLayoutConstraint(item: guideAlert.view, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: self.view.frame.height)
+            guideAlert.view.addConstraint(height);
+            self.present(guideAlert, animated: true, completion: nil)
+        } else if indexPath.row == 4 {
         } else if indexPath.row == logoutIndex {
             logout()
         }
@@ -59,7 +66,7 @@ class OtherController: UITableViewController, UIWebViewDelegate{
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 6
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -139,11 +146,6 @@ class OtherController: UITableViewController, UIWebViewDelegate{
     }
     
     @objc func shareViaFriend() {
-        let text = "https://itunes.apple.com/tr/app/challenge/id1441255418?mt=8"
-        let textToShare = [ text ]
-        let activity = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
-        activity.popoverPresentationController?.sourceView = self.view
-        activity.excludedActivityTypes = [] // [UIActivityType.airDrop, UIActivityType.postToFacebook]
-        self.present(activity, animated:  true, completion: nil)
+        self.present(Util.shareViaFriend(view: self.view), animated:  true, completion: nil)
     }
 }

@@ -43,7 +43,14 @@ class OtherViewCell: UITableViewCell {
             shareViaFriend.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
             shareViaFriend.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 3 {
+            guide.text = "Guide"
+            guide.font = UIFont.preferredFont(forTextStyle: .headline)
+            addSubview(guide)
+            guide.translatesAutoresizingMaskIntoConstraints = false
+            guide.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
+            guide.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 4 {
+        } else if cellRow == 5 {
             logout.text = "Log out"
             logout.font = UIFont.preferredFont(forTextStyle: .headline)
             logout.textColor = UIColor.red
@@ -58,6 +65,7 @@ class OtherViewCell: UITableViewCell {
     @objc let settings: UILabel = FeedCell.labelCreateDef(1)
     @objc let support: UILabel = FeedCell.labelCreateDef(1)
     @objc let shareViaFriend: UILabel = FeedCell.labelCreateDef(1)
+    @objc let guide: UILabel = FeedCell.labelCreateDef(1)
     
     @objc static func button(_ title: String, titleColor: UIColor) -> UIButton {
         let button = UIButton()

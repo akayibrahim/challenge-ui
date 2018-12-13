@@ -739,7 +739,11 @@ public extension UIDevice {
 }
 
 func isModelLessThanSix() -> Bool {
-    return UIDevice.init().type == Model.iPhone4 || UIDevice.init().type == Model.iPhone5 || UIDevice.init().type == Model.iPhone5S || UIDevice.init().type == Model.iPhone5C
+    return UIDevice().type == Model.iPhone4 || UIDevice().type == Model.iPhone5 || UIDevice().type == Model.iPhone5S || UIDevice().type == Model.iPhone5C
+}
+
+func isModelSixSize() -> Bool {
+    return UIDevice().type == Model.iPhone6 || UIDevice().type == Model.iPhone6S || UIDevice().type == Model.iPhone7  || UIDevice().type == Model.iPhone8
 }
 
 extension Bundle {

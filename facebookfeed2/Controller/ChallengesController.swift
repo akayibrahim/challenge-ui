@@ -9,7 +9,6 @@
 import UIKit
 import AVKit
 import AVFoundation
-import RxSwift
 import CCBottomRefreshControl
 import Crashlytics
 
@@ -177,6 +176,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.posts = [Post]()
         self.donePosts = [Post]()
         self.notDonePosts = [Post]()
+        self.collectionView?.restore()
         // self.collectionView?.reloadData()
         self.collectionView?.showBlurLoader()
         self.loadChallenges()
@@ -251,18 +251,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                     return
             }
-            DispatchQueue.main.async {
-                self.collectionView?.removeBluerLoader()
-                if let startApp = UserDefaults.standard.object(forKey: "startApp") {
-                    let onStartApp = startApp as! Bool
-                    if onStartApp {
-                        self.navigationController?.popToRootViewController(animated: false)
-                        let defaults = UserDefaults.standard
-                        defaults.set(false, forKey: "startApp")
-                        defaults.synchronize()
-                    }
-                }
-            }
+            self.startUpAndGuide()
             if let postsArray = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [[String: AnyObject]] {
                 self.nowMoreData = postsArray?.count == 0 ? true : false
                 if postsArray?.isEmpty == false {
@@ -292,11 +281,62 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         }
                         self.collectionView?.bottomRefreshControl?.endRefreshing()
                     }
+                } else {
+                    DispatchQueue.main.async {
+                        if self.posts.count == 0 && self.selectedTabIndex == profileIndex && !self.profile {
+                            self.collectionView?.reloadData()
+                            let buttons = self.collectionView?.setEmptyProfileMessage()
+                            buttons![0].addTarget(self, action: #selector(self.findFriends), for: UIControlEvents.touchUpInside)
+                            buttons![1].addTarget(self, action: #selector(self.inviteFriends), for: UIControlEvents.touchUpInside)
+                        } else if self.posts.count == 0 && self.profile {
+                            self.collectionView?.setEmptyOtherProfileMessage()
+                        }
+                    }
                 }
                 self.isFetchingNextPage = false
             }
         }
         }
+    }
+    
+    @objc func startUpAndGuide() {
+        DispatchQueue.main.async {
+            self.collectionView?.removeBluerLoader()
+            if let startAppFlag = Util.getFromDefaults(key: startApp) {
+                let onStartApp = startAppFlag as! Bool
+                if onStartApp {
+                    self.navigationController?.popToRootViewController(animated: false)
+                    Util.addToDefaults(key: startApp, value: false)
+                    
+                    if let guideFlag = Util.getFromDefaults(key: guide) {
+                        if self.selectedTabIndex == chanllengeIndex && guideFlag as! Bool {
+                            DispatchQueue.main.async {
+                                //let title = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                                let guideAlert: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+                                guideAlert.view.addSubview(guideAlert.view.getGuideView(0))
+                                guideAlert.addAction(UIAlertAction(title: "Let's Challenge", style: .default, handler: nil))
+                                guideAlert.addAction(UIAlertAction(title: "Don't Show Again", style: .default, handler:{(action: UIAlertAction) in
+                                    Util.addToDefaults(key: guide, value: false)
+                                }))
+                                let height:NSLayoutConstraint = NSLayoutConstraint(item: guideAlert.view, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: self.view.frame.height)
+                                guideAlert.view.addConstraint(height);
+                                self.present(guideAlert, animated: true, completion: nil)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    @objc func inviteFriends() {
+        self.present(Util.shareViaFriend(view: self.view), animated:  true, completion: nil)
+    }
+    
+    @objc func findFriends() {
+        let followRequest = FollowRequestController()
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.pushViewController(followRequest, animated: true)
     }
     
     func insertItem(_ row:Int, section: Int) {

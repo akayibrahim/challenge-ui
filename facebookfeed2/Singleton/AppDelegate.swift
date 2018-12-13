@@ -28,11 +28,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, UNUser
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        let defaults = UserDefaults.standard
-        defaults.set(true, forKey: "startApp")
-        defaults.synchronize()
+        if ServiceLocator.isParameterOpen(GUIDE_OPEN) {
+            // Util.removeFromDefaults(key: guide)
+            if Util.getFromDefaults(key: guide) == nil {
+                Util.addToDefaults(key: guide, value: true)
+            }
+        }
+        Util.addToDefaults(key: startApp, value: true)
         
-        if let vol = UserDefaults.standard.object(forKey: "volume") {
+        if let vol = Util.getFromDefaults(key: "volume") {
             volume = vol as! Float
         }
         

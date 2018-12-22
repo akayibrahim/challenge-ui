@@ -17,7 +17,7 @@ extension UITableViewController
             setImage(name: unknown, imageView: imageView)
         } else if let peoplefbID = fbID {            
             let url = URL(string: !peoplefbID.contains("google") ? "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1" : peoplefbID)
-            imageView.load(url: url!)
+            imageView.load(url: url!, focusToFace: false)
         }
     }
     

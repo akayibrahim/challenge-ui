@@ -23,6 +23,7 @@ extension UICollectionView {
     
     func setEmptyProfileMessage() -> [UIButton] {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
+        view.backgroundColor = UIColor.white
         
         let messageLabel = UILabel()
         messageLabel.text = "No Challenges Yet\n\n Tab on the add(+) to share\n your first challenge."
@@ -38,25 +39,27 @@ extension UICollectionView {
         self.addWidthAnchor(messageLabel, multiplier: 1)
         self.addHeightAnchor(messageLabel, multiplier: 1/3)
         
-        let findButton: UIButton = FeedCell.buttonForTitleWithBorder("Find Friends", imageName: "")
-        findButton.layer.backgroundColor = UIColor.blue.cgColor
-        findButton.setTitleColor(UIColor.white, for: UIControlState())
-        findButton.layer.borderWidth = 0
-        view.addSubview(findButton)
-        self.addBottomAnchor(findButton, anchor: view.bottomAnchor, constant: -(screenWidth * 0.1 / 1))
-        self.addCenterXAnchor(findButton, anchor: view.centerXAnchor, constant: -(screenWidth * 0.24 / 1))
-        self.addWidthAnchor(findButton, multiplier: 0.4 / 1)
-        self.addHeightAnchor(findButton, multiplier: 0.1 / 1)
-        
         let inviteButton: UIButton = FeedCell.buttonForTitleWithBorder("Invite Friends", imageName: "")
         inviteButton.layer.backgroundColor = UIColor.red.cgColor
         inviteButton.setTitleColor(UIColor.white, for: UIControlState())
         inviteButton.layer.borderWidth = 0
         view.addSubview(inviteButton)
         self.addBottomAnchor(inviteButton, anchor: view.bottomAnchor, constant: -(screenWidth * 0.1 / 1))
-        self.addCenterXAnchor(inviteButton, anchor: view.centerXAnchor, constant: (screenWidth * 0.24 / 1))
-        self.addWidthAnchor(inviteButton, multiplier: 0.4 / 1)
+        self.addCenterXAnchor(inviteButton, anchor: view.centerXAnchor, constant: 0)
+        self.addWidthAnchor(inviteButton, multiplier: 0.5 / 1)
         self.addHeightAnchor(inviteButton, multiplier: 0.1 / 1)
+        
+        let findButton: UIButton = FeedCell.buttonForTitleWithBorder("Find Friends", imageName: "")
+        findButton.layer.backgroundColor = UIColor.blue.cgColor
+        findButton.setTitleColor(UIColor.white, for: UIControlState())
+        findButton.layer.borderWidth = 0
+        view.addSubview(findButton)
+        self.addBottomAnchor(findButton, anchor: inviteButton.topAnchor, constant: -(screenWidth * 0.05 / 1))
+        self.addCenterXAnchor(findButton, anchor: view.centerXAnchor, constant: 0)
+        self.addWidthAnchor(findButton, multiplier: 0.5 / 1)
+        self.addHeightAnchor(findButton, multiplier: 0.1 / 1)
+        
+        
         
         self.backgroundView = view
         var buttons = [UIButton]()
@@ -102,7 +105,7 @@ extension UIViewController
             setImage(name: unknown, imageView: imageView)
         } else if let peoplefbID = fbID {
             let url = URL(string: !peoplefbID.contains("google") ? "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1" : peoplefbID)
-            imageView.load(url: url!)            
+            imageView.load(url: url!, focusToFace: false)            
         }
     }
     

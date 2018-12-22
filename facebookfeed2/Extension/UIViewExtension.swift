@@ -129,7 +129,16 @@ extension UIView {
             setImage(name: unknown, imageView: imageView)
         } else if let peoplefbID = fbID {
             let url = URL(string: !peoplefbID.contains("google") ? "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1" : peoplefbID)
-            imageView.load(url: url!)
+            imageView.load(url: url!, focusToFace: false)
+        }
+    }
+    
+    @objc func setImage(fbID: String?, imageView: UIImageView, focusToFace: Bool) {
+        if (fbID != nil && fbID == "") || fbID == nil {
+            setImage(name: unknown, imageView: imageView)
+        } else if let peoplefbID = fbID {
+            let url = URL(string: !peoplefbID.contains("google") ? "https://graph.facebook.com/\(peoplefbID)/picture?type=large&return_ssl_resources=1" : peoplefbID)
+            imageView.load(url: url!, focusToFace: focusToFace)
         }
     }
     
@@ -240,6 +249,7 @@ extension UIView {
     }
     
     @objc func getGuideView(_ topbarHeight: CGFloat) -> UIView {
+        let areaBorderWidth: CGFloat = 0 //0.3
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height * 3.2/5))
         
         let chlTypesLabel : UILabel = FeedCell.labelCreate(15, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.black)
@@ -292,7 +302,7 @@ extension UIView {
         let selfChallenger: UIView = FeedCell.lineForDivider()
         view.addSubview(selfChallenger)
         selfChallenger.layer.borderColor = UIColor.black.cgColor
-        selfChallenger.layer.borderWidth = 0.2
+        selfChallenger.layer.borderWidth = areaBorderWidth
         self.addTopAnchor(selfChallenger, anchor: selfLabel.bottomAnchor, constant: screenWidth * 1/5/6)
         self.addTrailingAnchor(selfChallenger, anchor: vsImageView.leadingAnchor, constant: 10)
         self.addWidthAnchor(selfChallenger, multiplier: 1/5)
@@ -319,7 +329,7 @@ extension UIView {
         let selfSubject: UIView = FeedCell.lineForDivider()
         view.addSubview(selfSubject)
         selfSubject.layer.borderColor = UIColor.black.cgColor
-        selfSubject.layer.borderWidth = 0.2
+        selfSubject.layer.borderWidth = areaBorderWidth
         self.addTopAnchor(selfSubject, anchor: selfLabel.bottomAnchor, constant: screenWidth * 1/5/6)
         self.addLeadingAnchor(selfSubject, anchor: vsImageView.trailingAnchor, constant: -10)
         self.addWidthAnchor(selfSubject, multiplier: 1/5)
@@ -384,11 +394,11 @@ extension UIView {
         let teamChallenger: UIView = FeedCell.lineForDivider()
         view.addSubview(teamChallenger)
         teamChallenger.layer.borderColor = UIColor.black.cgColor
-        teamChallenger.layer.borderWidth = 0.2
+        teamChallenger.layer.borderWidth = areaBorderWidth
         self.addTopAnchor(teamChallenger, anchor: teamLabel.bottomAnchor, constant: screenWidth * 1/5/6)
         self.addTrailingAnchor(teamChallenger, anchor: vsImageView1.leadingAnchor, constant: 10)
-        self.addWidthAnchor(teamChallenger, multiplier: 1/5)
-        self.addHeightAnchor(teamChallenger, multiplier: 1/5)
+        self.addWidthAnchor(teamChallenger, multiplier: 0.9/5)
+        self.addHeightAnchor(teamChallenger, multiplier: 0.9/5)
         
         let teamChallengerImg: UIImageView = FeedCell.imageView()
         teamChallengerImg.image = UIImage(named: "unknownmono")
@@ -431,18 +441,18 @@ extension UIView {
         teamChallengerText.sizeToFit()
         
         view.addSubview(teamChallengerText)
-        self.addTopAnchor(teamChallengerText, anchor: teamChallenger.bottomAnchor, constant: 0.5)
+        self.addTopAnchor(teamChallengerText, anchor: teamChallenger.bottomAnchor, constant: screenWidth*0.1/5)
         self.addCenterXAnchor(teamChallengerText, anchor: teamChallenger.centerXAnchor, constant: 0)
         teamChallengerText.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
         let teamChallenger2: UIView = FeedCell.lineForDivider()
         view.addSubview(teamChallenger2)
         teamChallenger2.layer.borderColor = UIColor.black.cgColor
-        teamChallenger2.layer.borderWidth = 0.2
+        teamChallenger2.layer.borderWidth = areaBorderWidth
         self.addTopAnchor(teamChallenger2, anchor: teamLabel.bottomAnchor, constant: screenWidth * 1/5/6)
         self.addLeadingAnchor(teamChallenger2, anchor: vsImageView1.trailingAnchor, constant: -10)
-        self.addWidthAnchor(teamChallenger2, multiplier: 1/5)
-        self.addHeightAnchor(teamChallenger2, multiplier: 1/5)
+        self.addWidthAnchor(teamChallenger2, multiplier: 0.9/5)
+        self.addHeightAnchor(teamChallenger2, multiplier: 0.9/5)
         
         let teamChallenger2Img: UIImageView = FeedCell.imageView()
         teamChallenger2Img.image = UIImage(named: "unknownmono")
@@ -485,7 +495,7 @@ extension UIView {
         teamChallenger2Text.sizeToFit()
         
         view.addSubview(teamChallenger2Text)
-        self.addTopAnchor(teamChallenger2Text, anchor: teamChallenger2.bottomAnchor, constant: 0.5)
+        self.addTopAnchor(teamChallenger2Text, anchor: teamChallenger2.bottomAnchor, constant: screenWidth*0.1/5)
         self.addCenterXAnchor(teamChallenger2Text, anchor: teamChallenger2.centerXAnchor, constant: 0)
         teamChallenger2Text.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
@@ -528,7 +538,7 @@ extension UIView {
         let publicChallenger: UIView = FeedCell.lineForDivider()
         view.addSubview(publicChallenger)
         publicChallenger.layer.borderColor = UIColor.black.cgColor
-        publicChallenger.layer.borderWidth = 0.2
+        publicChallenger.layer.borderWidth = areaBorderWidth
         self.addTopAnchor(publicChallenger, anchor: publicLabel.bottomAnchor, constant: screenWidth * 1/5/6)
         self.addTrailingAnchor(publicChallenger, anchor: vsImageView2.leadingAnchor, constant: 10)
         self.addWidthAnchor(publicChallenger, multiplier: 1/5)
@@ -555,11 +565,11 @@ extension UIView {
         let publicChallenger2: UIView = FeedCell.lineForDivider()
         view.addSubview(publicChallenger2)
         publicChallenger2.layer.borderColor = UIColor.black.cgColor
-        publicChallenger2.layer.borderWidth = 0.2
+        publicChallenger2.layer.borderWidth = areaBorderWidth
         self.addTopAnchor(publicChallenger2, anchor: publicLabel.bottomAnchor, constant: screenWidth * 1/5/6)
         self.addLeadingAnchor(publicChallenger2, anchor: vsImageView1.trailingAnchor, constant: -10)
-        self.addWidthAnchor(publicChallenger2, multiplier: 1/5)
-        self.addHeightAnchor(publicChallenger2, multiplier: 1/5)
+        self.addWidthAnchor(publicChallenger2, multiplier: 0.9/5)
+        self.addHeightAnchor(publicChallenger2, multiplier: 0.9/5)
         
         let publicChallenger2Img: UIImageView = FeedCell.imageView()
         publicChallenger2Img.image = UIImage(named: "unknownmono")
@@ -602,7 +612,7 @@ extension UIView {
         publicChallenger2Text.sizeToFit()
         
         view.addSubview(publicChallenger2Text)
-        self.addTopAnchor(publicChallenger2Text, anchor: publicChallenger2.bottomAnchor, constant: 0.5)
+        self.addTopAnchor(publicChallenger2Text, anchor: publicChallenger2.bottomAnchor, constant: screenWidth*0.1/5)
         self.addCenterXAnchor(publicChallenger2Text, anchor: publicChallenger2.centerXAnchor, constant: 0)
         publicChallenger2Text.heightAnchor.constraint(equalToConstant: 10).isActive = true
         

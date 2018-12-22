@@ -50,108 +50,6 @@ private var originCenter: CGPoint? = nil
  imageView.setupZoomPanGesture().disposed(by: disposeBag)
  ...
  */
-extension UIImageView
-{
-    @discardableResult
-    func setupZoomPanGesture() -> Disposable {
-        self.isUserInteractionEnabled = false
-        return self.rx.panGesture(minimumNumberOfTouches: 2, maximumNumberOfTouches: 2, configuration: { recognizer, delegate in
-            delegate.simultaneousRecognitionPolicy = .custom { gesture, other in
-                return other is UIPinchGestureRecognizer
-            }
-            
-        })
-            .bind { [weak self] gesture in
-                guard let strongSelf = self else { return }
-                if gesture.state == .began {
-                    originCenter = gesture.view?.center
-                } else if isZooming, gesture.state == .changed {
-                    let translation = gesture.translation(in: strongSelf.superview!)
-                    if let view = gesture.view {
-                        view.center = CGPoint(x:view.center.x + translation.x, y:view.center.y + translation.y)
-                    }
-                    if let coverView = zoomPinchCoverView {
-                        coverView.cloneView.center = CGPoint(x:coverView.cloneView.center.x + translation.x, y:coverView.cloneView.center.y + translation.y)
-                    }
-                    gesture.setTranslation(.zero, in: strongSelf.superview)
-                }
-        }
-    }
-    
-    @discardableResult
-    func setupZoomPinchGesture() -> Disposable {
-        self.isUserInteractionEnabled = true
-        return self.rx.pinchGesture(configuration: { recognizer, delegate in
-            delegate.simultaneousRecognitionPolicy = .custom { gesture, other in
-                return false
-            }
-        })
-            .bind { gesture in
-                guard let view = gesture.view as? UIImageView else { return }
-                
-                if gesture.state == .began || gesture.state == .changed {
-                    if gesture.state == .began {
-                        isZooming = true
-                        if let coverView = zoomPinchCoverView {
-                            coverView.removeFromSuperview()
-                        }
-                        if let keyWindow = UIApplication.shared.keyWindow {
-                            let coverFrame = keyWindow.convert(view.frame, from: view.superview!)
-                            let coverView = UIImageView(frame: coverFrame)
-                            coverView.image = view.image
-                            coverView.contentMode = view.contentMode
-                            zoomPinchCoverView = ZoomPinchCoverView(targetView: coverView)
-                            zoomPinchCoverView!.frame = UIScreen.main.bounds
-                            keyWindow.addSubview(zoomPinchCoverView!)
-                        }
-                    }
-                    
-                    let pinchCenter = CGPoint(x: gesture.location(in: view).x - view.bounds.midX, y: gesture.location(in: view).y - view.bounds.midY)
-                    let transform = view.transform.translatedBy(x: pinchCenter.x, y: pinchCenter.y)
-                        .scaledBy(x: gesture.scale, y: gesture.scale)
-                        .translatedBy(x: -pinchCenter.x, y: -pinchCenter.y)
-                    
-                    let currentScale = view.frame.size.width / view.bounds.size.width
-                    let newScale = min(max(currentScale * gesture.scale, 1.0), 3.0)
-                    
-                    if let coverView = zoomPinchCoverView {
-                        if newScale == 1 {
-                            let transform = CGAffineTransform(scaleX: newScale, y: newScale)
-                            view.transform = transform
-                            coverView.cloneView.transform = transform
-                        } else if newScale < 3 {
-                            view.transform = transform
-                            coverView.cloneView.transform = transform
-                        }
-                        gesture.scale = 1
-                        
-                        // If you want to adjust a degree of fading, change a divider 1.3
-                        coverView.bgView.backgroundColor = UIColor(hexString: "0x000000").withAlphaComponent((newScale - 1.0) / 1.3)
-                    }
-                    
-                } else if gesture.state == .ended || gesture.state == .failed || gesture.state == .cancelled {
-                    if let coverView = zoomPinchCoverView {
-                        UIView.animate(withDuration: 0.3, animations: {
-                            view.transform = CGAffineTransform.identity
-                            coverView.cloneView.transform = CGAffineTransform.identity
-                            coverView.bgView.alpha = 0.0
-                            
-                            if let center = originCenter {
-                                view.center = center
-                                coverView.cloneView.center = view.superview!.convert(center, to: coverView)
-                            }
-                            
-                        }, completion: { finished in
-                            coverView.removeFromSuperview()
-                            zoomPinchCoverView = nil
-                            originCenter = nil
-                            isZooming = false
-                        })
-                    }
-                }
-        }
-    }
-}
 
 private class ZoomPinchCoverView: UIView {
     let bgView = UIView()
@@ -433,6 +331,207 @@ extension UILabel {
 
 extension UIImageView {
     
+    public func focusOnFaces() {
+        DispatchQueue.main.async {
+            
+            if self.image == nil {
+                return
+            }
+            
+            var cImage = self.image!.ciImage
+            if cImage == nil {
+                cImage = CIImage(cgImage: self.image!.cgImage!)
+            }
+            
+            let detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy:CIDetectorAccuracyLow])
+            let features = detector!.features(in: cImage!)
+            
+            if features.count > 0 {
+                print("found \(features.count) faces")
+                let imgSize = CGSize(width: Double(self.image!.cgImage!.width), height: (Double(self.image!.cgImage!.height)))
+                self.applyFaceDetection(for: features, size: imgSize)
+            } else {
+                print("No faces found")
+                DispatchQueue.main.async {
+                    self.imageLayer().removeFromSuperlayer()
+                }
+            }
+        }
+        
+    }
+    
+    private func applyFaceDetection(for features: [AnyObject], size: CGSize) {
+        
+        var rect = CGRect.zero
+        var rightBorder = 0.0
+        var bottomBorder = 0.0
+        
+        for feature in features {
+            var oneRect = feature.bounds!
+            oneRect.origin.y = size.height - oneRect.origin.y - oneRect.size.height
+            rect.origin.x = min(oneRect.origin.x, rect.origin.x)
+            rect.origin.y = min(oneRect.origin.y, rect.origin.y)
+            
+            rightBorder = max(Double(oneRect.origin.x + oneRect.size.width), Double(rightBorder))
+            bottomBorder = max(Double(oneRect.origin.y + oneRect.size.height), Double(bottomBorder))
+        }
+        
+        rect.size.width = CGFloat(rightBorder) - rect.origin.x
+        rect.size.height = CGFloat(bottomBorder) - rect.origin.y
+        
+        var center = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+        var offset = CGPoint.zero
+        var finalSize = size
+        
+        if size.width / size.height > bounds.size.width / bounds.size.height {
+            finalSize.height = self.bounds.size.height
+            finalSize.width = size.width/size.height * finalSize.height
+            center.x = finalSize.width / size.width * center.x
+            center.y = finalSize.width / size.width * center.y
+            
+            offset.x = center.x - self.bounds.size.width * 0.5
+            if (offset.x < 0) {
+                offset.x = 0
+            } else if (offset.x + self.bounds.size.width > finalSize.width) {
+                offset.x = finalSize.width - self.bounds.size.width
+            }
+            offset.x = -offset.x
+            
+        } else {
+            finalSize.width = self.bounds.size.width
+            finalSize.height = size.height / size.width * finalSize.width
+            center.x = finalSize.width / size.width * center.x
+            center.y = finalSize.width / size.width * center.y
+            
+            offset.y = center.y - self.bounds.size.height * CGFloat(1-0.818)
+            if offset.y < 0 {
+                offset.y = 0
+            } else if offset.y + self.bounds.size.height > finalSize.height {
+                finalSize.height = self.bounds.size.height
+                offset.y = finalSize.height
+            }
+            offset.y = -offset.y
+        }
+        
+        let layer = self.imageLayer()
+        layer.frame = CGRect(x: offset.x, y: offset.y, width: finalSize.width, height: finalSize.height)
+        layer.contents = self.image!.cgImage
+    }
+    
+    private func imageLayer() -> CALayer {
+        if let sublayers = layer.sublayers {
+            for layer in sublayers {
+                if layer.name == "AspectFillFaceAware" {
+                    return layer
+                }
+            }
+        }
+        let subLayer = CALayer()
+        subLayer.name = "AspectFillFaceAware"
+        subLayer.actions = ["contents":NSNull(), "bounds":NSNull(), "position":NSNull()]
+        layer.addSublayer(subLayer)
+        return subLayer
+    }
+    
+    @discardableResult
+    func setupZoomPanGesture() -> Disposable {
+        self.isUserInteractionEnabled = false
+        return self.rx.panGesture(minimumNumberOfTouches: 2, maximumNumberOfTouches: 2, configuration: { recognizer, delegate in
+            delegate.simultaneousRecognitionPolicy = .custom { gesture, other in
+                return other is UIPinchGestureRecognizer
+            }
+            
+        })
+            .bind { [weak self] gesture in
+                guard let strongSelf = self else { return }
+                if gesture.state == .began {
+                    originCenter = gesture.view?.center
+                } else if isZooming, gesture.state == .changed {
+                    let translation = gesture.translation(in: strongSelf.superview!)
+                    if let view = gesture.view {
+                        view.center = CGPoint(x:view.center.x + translation.x, y:view.center.y + translation.y)
+                    }
+                    if let coverView = zoomPinchCoverView {
+                        coverView.cloneView.center = CGPoint(x:coverView.cloneView.center.x + translation.x, y:coverView.cloneView.center.y + translation.y)
+                    }
+                    gesture.setTranslation(.zero, in: strongSelf.superview)
+                }
+        }
+    }
+    
+    @discardableResult
+    func setupZoomPinchGesture() -> Disposable {
+        self.isUserInteractionEnabled = true
+        return self.rx.pinchGesture(configuration: { recognizer, delegate in
+            delegate.simultaneousRecognitionPolicy = .custom { gesture, other in
+                return false
+            }
+        })
+            .bind { gesture in
+                guard let view = gesture.view as? UIImageView else { return }
+                
+                if gesture.state == .began || gesture.state == .changed {
+                    if gesture.state == .began {
+                        isZooming = true
+                        if let coverView = zoomPinchCoverView {
+                            coverView.removeFromSuperview()
+                        }
+                        if let keyWindow = UIApplication.shared.keyWindow {
+                            let coverFrame = keyWindow.convert(view.frame, from: view.superview!)
+                            let coverView = UIImageView(frame: coverFrame)
+                            coverView.image = view.image
+                            coverView.contentMode = view.contentMode
+                            zoomPinchCoverView = ZoomPinchCoverView(targetView: coverView)
+                            zoomPinchCoverView!.frame = UIScreen.main.bounds
+                            keyWindow.addSubview(zoomPinchCoverView!)
+                        }
+                    }
+                    
+                    let pinchCenter = CGPoint(x: gesture.location(in: view).x - view.bounds.midX, y: gesture.location(in: view).y - view.bounds.midY)
+                    let transform = view.transform.translatedBy(x: pinchCenter.x, y: pinchCenter.y)
+                        .scaledBy(x: gesture.scale, y: gesture.scale)
+                        .translatedBy(x: -pinchCenter.x, y: -pinchCenter.y)
+                    
+                    let currentScale = view.frame.size.width / view.bounds.size.width
+                    let newScale = min(max(currentScale * gesture.scale, 1.0), 3.0)
+                    
+                    if let coverView = zoomPinchCoverView {
+                        if newScale == 1 {
+                            let transform = CGAffineTransform(scaleX: newScale, y: newScale)
+                            view.transform = transform
+                            coverView.cloneView.transform = transform
+                        } else if newScale < 3 {
+                            view.transform = transform
+                            coverView.cloneView.transform = transform
+                        }
+                        gesture.scale = 1
+                        
+                        // If you want to adjust a degree of fading, change a divider 1.3
+                        coverView.bgView.backgroundColor = UIColor(hexString: "0x000000").withAlphaComponent((newScale - 1.0) / 1.3)
+                    }
+                    
+                } else if gesture.state == .ended || gesture.state == .failed || gesture.state == .cancelled {
+                    if let coverView = zoomPinchCoverView {
+                        UIView.animate(withDuration: 0.3, animations: {
+                            view.transform = CGAffineTransform.identity
+                            coverView.cloneView.transform = CGAffineTransform.identity
+                            coverView.bgView.alpha = 0.0
+                            
+                            if let center = originCenter {
+                                view.center = center
+                                coverView.cloneView.center = view.superview!.convert(center, to: coverView)
+                            }
+                            
+                        }, completion: { finished in
+                            coverView.removeFromSuperview()
+                            zoomPinchCoverView = nil
+                            originCenter = nil
+                            isZooming = false
+                        })
+                    }
+                }
+        }
+    }
     @objc func roundedImage() {
         self.layer.cornerRadius = screenWidth * 0.6 / 10 / 2
         self.clipsToBounds = true
@@ -485,26 +584,25 @@ extension UIImageView {
         }
     }
     
-    @objc func load(url: URL) {
+    @objc func load(url: URL, focusToFace: Bool) {
         if dummyServiceCall == false {
             if ImageService.cached(withURL: url) {
                 self.image = ImageService.fromCache(withURL: url)
+                if focusToFace {
+                    self.focusOnFaces()
+                }
             } else {
                 self.showBlurLoader()
                 self.pin_setImage(from: url) { (result) in
                     if let image = self.image {
                         self.removeBluerLoader()
                         ImageService.cache(withURL: url, image: image)
+                        if focusToFace {
+                            self.focusOnFaces()
+                        }
                     }
                 }
             }
-            /*if let urlOfImage = url {
-             ImageService.getImage(withURL: urlOfImage) { image in
-             if image != nil {
-             self.image = image
-             }
-             }
-             }*/
         }
     }
 }

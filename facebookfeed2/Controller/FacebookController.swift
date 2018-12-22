@@ -108,23 +108,27 @@ class FacebookController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInU
         labelSlogan2.font = UIFont(name: "Copperplate", size: 17)
         view.addSubview(labelSlogan2)
         
-        
-        
         instagramLogin.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.2 / 2, width: view.frame.width - 64, height: 44)
         // instagramLogin.center = CGPoint(x: view.center.x, y: UIScreen.main.bounds.height * 0.3 / 2)
         // view.addSubview(instagramLogin)
         instagramLogin.addTarget(self, action: #selector(self.loginWithInstagram), for: UIControlEvents.touchUpInside)
         
         let loginButton = FBSDKLoginButton()
+        loginButton.layer.masksToBounds = true
+        loginButton.layer.cornerRadius = 10
+        loginButton.layer.borderWidth = 0
         loginButton.readPermissions = ["public_profile", "email", "user_friends"]
         view.addSubview(loginButton)
         //frame's are obselete, please use constraints instead because its 2016 after all
-        loginButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.25 / 2, width: view.frame.width - 64, height: 44)
+        loginButton.frame = CGRect(x: view.center.x  - ((view.frame.width * 3.15/5/2)), y: UIScreen.main.bounds.height * 1.435 / 2, width: view.frame.width * 3.15/5, height: 40)
         loginButton.delegate = self
         
         let signInButton = GIDSignInButton()
+        signInButton.layer.masksToBounds = true
+        signInButton.layer.cornerRadius = 20
+        signInButton.style = .wide
         view.addSubview(signInButton)
-        signInButton.frame = CGRect(x: view.center.x  - ((view.frame.width - 64) / 2), y: UIScreen.main.bounds.height * 1.45 / 2, width: view.frame.width - 64, height: 44)
+        signInButton.frame = CGRect(x: view.center.x  - ((view.frame.width * 3.25/5/2)), y: UIScreen.main.bounds.height * 1.25 / 2, width: view.frame.width * 3.25/5, height: 44)
         
         /*
         let akayButton = FeedCell.buttonForTitle("ibrahim akay", imageName: "")

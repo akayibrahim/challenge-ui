@@ -195,7 +195,7 @@ class FeedCell: UICollectionViewCell {
                                 setImage(fbID: join.FacebookID, imageView: firstOnePeopleImageView)
                                 firstOnePeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "2" {
-                                setImage(fbID: join.FacebookID, imageView: firstTwoPeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: firstTwoPeopleImageView, focusToFace: true)
                                 firstTwoPeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: join.FacebookID, imageView: firstThreePeopleImageView)
@@ -207,7 +207,7 @@ class FeedCell: UICollectionViewCell {
                             firstPImg = true
                         } else if !secondPImg {
                             if post?.secondTeamCount == "2" {
-                                setImage(fbID: join.FacebookID, imageView: secondTwoPeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: secondTwoPeopleImageView, focusToFace: true)
                                 secondTwoPeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: join.FacebookID, imageView: secondThreePeopleImageView)
@@ -219,7 +219,7 @@ class FeedCell: UICollectionViewCell {
                             secondPImg = true
                         } else if !thirdPImg {
                             if post?.secondTeamCount == "3" {
-                                setImage(fbID: join.FacebookID, imageView: thirdThreePeopleImageView)
+                                setImage(fbID: join.FacebookID, imageView: thirdThreePeopleImageView, focusToFace: true)
                                 thirdThreePeopleImageView.memberId = join.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: join.FacebookID, imageView: thirdFourPeopleImageView)
@@ -266,7 +266,7 @@ class FeedCell: UICollectionViewCell {
                                 setImage(fbID: versus.FacebookID, imageView: firstOneChlrPeopleImageView)
                                 firstOneChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "2" {
-                                setImage(fbID: versus.FacebookID, imageView: firstTwoChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstTwoChlrPeopleImageView, focusToFace: true)
                                 firstTwoChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: firstThreeChlrPeopleImageView)
@@ -278,7 +278,7 @@ class FeedCell: UICollectionViewCell {
                             firstChlrImg = true
                         } else if !secondChlrImg {
                             if post?.secondTeamCount == "2" {
-                                setImage(fbID: versus.FacebookID, imageView: secondTwoChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: secondTwoChlrPeopleImageView, focusToFace: true)
                                 secondTwoChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: secondThreeChlrPeopleImageView)
@@ -290,7 +290,7 @@ class FeedCell: UICollectionViewCell {
                             secondChlrImg = true
                         } else if !thirdChlrImg {
                             if post?.secondTeamCount == "3" {
-                                setImage(fbID: versus.FacebookID, imageView: thirdThreeChlrPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: thirdThreeChlrPeopleImageView, focusToFace: true)
                                 thirdThreeChlrPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: versus.FacebookID, imageView: thirdFourChlrPeopleImageView)
@@ -304,7 +304,7 @@ class FeedCell: UICollectionViewCell {
                                 setImage(fbID: versus.FacebookID, imageView: firstOnePeopleImageView)
                                 firstOnePeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "2" {
-                                setImage(fbID: versus.FacebookID, imageView: firstTwoPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: firstTwoPeopleImageView, focusToFace: true)
                                 firstTwoPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: firstThreePeopleImageView)
@@ -316,7 +316,7 @@ class FeedCell: UICollectionViewCell {
                             firstImg = true
                         } else if !secondImg {
                             if post?.secondTeamCount == "2" {
-                                setImage(fbID: versus.FacebookID, imageView: secondTwoPeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: secondTwoPeopleImageView, focusToFace: true)
                                 secondTwoPeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "3" {
                                 setImage(fbID: versus.FacebookID, imageView: secondThreePeopleImageView)
@@ -328,7 +328,7 @@ class FeedCell: UICollectionViewCell {
                             secondImg = true
                         } else if !thirdImg {
                             if post?.secondTeamCount == "3" {
-                                setImage(fbID: versus.FacebookID, imageView: thirdThreePeopleImageView)
+                                setImage(fbID: versus.FacebookID, imageView: thirdThreePeopleImageView, focusToFace: true)
                                 thirdThreePeopleImageView.memberId = versus.memberId
                             } else if post?.secondTeamCount == "4" {
                                 setImage(fbID: versus.FacebookID, imageView: thirdFourPeopleImageView)
@@ -401,7 +401,8 @@ class FeedCell: UICollectionViewCell {
                     supportLabel.tag = Int(truncating: firstTeamSupportCount)
                     supportLabel.alpha = 1
                     if supportLabel.tag == 0 {
-                        supportLabel.alpha = 0
+                        //supportLabel.alpha = 0
+                        supportLabel.text = "+\(firstTeamSupportCount.getSuppportCountAsK())"
                     }
                 }
                 if let secondTeamSupportCount = post?.secondTeamSupportCount {
@@ -409,7 +410,8 @@ class FeedCell: UICollectionViewCell {
                     supportMatchLabel.tag = Int(truncating: secondTeamSupportCount)
                     supportMatchLabel.alpha = 1
                     if supportMatchLabel.tag == 0 {
-                        supportMatchLabel.alpha = 0
+                        //supportMatchLabel.alpha = 0
+                        supportMatchLabel.text = "+\(secondTeamSupportCount.getSuppportCountAsK())"
                     }
                 }
                 supportTextLabel.text = supportText
@@ -711,7 +713,7 @@ class FeedCell: UICollectionViewCell {
             }
             
             addSubview(homeScoreText)
-            addTopAnchor(homeScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+            addTopAnchor(homeScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.725 / 10))
             homeScoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.6 / 10)).isActive = true
             addWidthAnchor(homeScoreText, multiplier: 0.3 / 6)
             addHeightAnchor(homeScoreText, multiplier: 0.3 / 6)
@@ -727,7 +729,7 @@ class FeedCell: UICollectionViewCell {
             homeScoreText.alpha = 0
             
             addSubview(scoreText)
-            addTopAnchor(scoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.7 / 10))
+            addTopAnchor(scoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.625 / 10))
             scoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0 / 10)).isActive = true
             addWidthAnchor(scoreText, multiplier: 0.2 / 6)
             addHeightAnchor(scoreText, multiplier: 0.35 / 6)
@@ -741,7 +743,7 @@ class FeedCell: UICollectionViewCell {
             scoreText.alpha = 0
             
             addSubview(awayScoreText)
-            addTopAnchor(awayScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+            addTopAnchor(awayScoreText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.725 / 10))
             awayScoreText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.6 / 10)).isActive = true
             addWidthAnchor(awayScoreText, multiplier: 0.3 / 6)
             addHeightAnchor(awayScoreText, multiplier: 0.3 / 6)
@@ -767,7 +769,7 @@ class FeedCell: UICollectionViewCell {
                     }
                     if proveOrJoin {
                         addSubview(proofText)
-                        addTopAnchor(proofText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.5 / 6))
+                        addTopAnchor(proofText, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.425 / 6))
                         proofText.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0/10)).isActive = true
                         addWidthAnchor(proofText, multiplier: 1.1 / 6)
                         addHeightAnchor(proofText, multiplier: 0.3 / 6)
@@ -808,27 +810,27 @@ class FeedCell: UICollectionViewCell {
             if !isComeFromSelf {
                 addSubview(supportButton)
                 addTopAnchor(supportButton, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
-                supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.35/3)).isActive = true
+                supportButton.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.26/3)).isActive = true
                 addWidthAnchor(supportButton, multiplier: 0.3/3)
                 addHeightAnchor(supportButton, multiplier: 1.8/18)
                 
                 addSubview(supportLabel)
                 addBottomAnchor(supportLabel, anchor: supportButton.topAnchor, constant: 0)
-                addTrailingAnchor(supportLabel, anchor: supportButton.trailingAnchor, constant: screenSize.width * 0/18)
+                addLeadingAnchor(supportLabel, anchor: supportButton.leadingAnchor, constant: -(screenSize.width * 0/18))
                 addWidthAnchor(supportLabel, multiplier: 0.3/3)
                 addHeightAnchor(supportLabel, multiplier: 1/30)
                 
                 if type == PRIVATE {
                     addSubview(supportButtonMatch)
                     addTopAnchor(supportButtonMatch, anchor: middleCenterGuide.bottomAnchor, constant: screenSize.width * 0.5/18)
-                    supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.35/3)).isActive = true
+                    supportButtonMatch.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.27/3)).isActive = true
                     addWidthAnchor(supportButtonMatch, multiplier: 0.3/3)
                     addHeightAnchor(supportButtonMatch, multiplier: 1.8/18)
                     supportButtonMatch.layer.zPosition = 1
                     
                     addSubview(supportMatchLabel)
                     addBottomAnchor(supportMatchLabel, anchor: supportButtonMatch.topAnchor, constant: 0)
-                    addLeadingAnchor(supportMatchLabel, anchor: supportButtonMatch.leadingAnchor, constant: -(screenSize.width * 0/18))
+                    addTrailingAnchor(supportMatchLabel, anchor: supportButtonMatch.trailingAnchor, constant: (screenSize.width * 0/18))
                     addWidthAnchor(supportMatchLabel, multiplier: 0.3/3)
                     addHeightAnchor(supportMatchLabel, multiplier: 1/30)
                 }
@@ -856,7 +858,7 @@ class FeedCell: UICollectionViewCell {
                 }
                 if done {
                     addSubview(homeWinBase)
-                    addTopAnchor(homeWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+                    addTopAnchor(homeWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.775 / 10))
                     homeWinBase.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: -(screenSize.width * 0.6 / 10)).isActive = true
                     addWidthAnchor(homeWinBase, multiplier: 0.3 / 6)
                     addHeightAnchor(homeWinBase, multiplier: 0.08 / 6)
@@ -867,7 +869,7 @@ class FeedCell: UICollectionViewCell {
                     homeWinBase.layer.zPosition = -1
                     
                     addSubview(awayWinBase)
-                    addTopAnchor(awayWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.8 / 10))
+                    addTopAnchor(awayWinBase, anchor: middleTopGuide.bottomAnchor, constant: (screenWidth * 0.775 / 10))
                     awayWinBase.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: (screenSize.width * 0.6 / 10)).isActive = true
                     addWidthAnchor(awayWinBase, multiplier: 0.3 / 6)
                     addHeightAnchor(awayWinBase, multiplier: 0.08 / 6)
@@ -964,7 +966,7 @@ class FeedCell: UICollectionViewCell {
             addTopAnchor(firstOneChlrPeopleImageView, anchor: dividerLineView.bottomAnchor, constant: 3)
             addLeadingAnchor(firstOneChlrPeopleImageView, anchor: contentGuide.leadingAnchor, constant: 2)
             addWidthAnchor(firstOneChlrPeopleImageView, multiplier: widthOfImage)
-            addHeightAnchor(firstOneChlrPeopleImageView, multiplier: heightOfFullImage)            
+            addHeightAnchor(firstOneChlrPeopleImageView, multiplier: heightOfFullImage)
         } else if firstTeamCount == teamCountTwo {
             addSubview(firstTwoChlrPeopleImageView)
             addSubview(secondTwoChlrPeopleImageView)
@@ -1403,7 +1405,7 @@ class FeedCell: UICollectionViewCell {
     @objc let firstFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
     @objc let secondFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
     @objc let thirdFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
-    @objc let moreFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()    
+    @objc let moreFourChlrPeopleImageView: subclasssedUIImageView = FeedCell.imageView()
     
     @objc static func imageViewFit() -> UIImageView {
         let imageView = UIImageView()

@@ -11,16 +11,16 @@ import YPImagePicker
 
 var chlIndex : Int = 0
 var typeIndex : Int = 1
-var subjectIndex : Int = 2
+var subjectIndex : Int = 4
 var homeIndex : Int = 3
-var awayIndex : Int = 4
+var awayIndex : Int = 11
 var deadlineIndex : Int = 5
 var calIndex : Int = 6
 var visibilityIndex : Int = 7
 var doneIndex : Int = 8
 var scoreIndex : Int = 9
 var resultIndex : Int = 10
-var proofIndex : Int = 11
+var proofIndex : Int = 2
 var commentIndex : Int = 13
 var toPublicIndex : Int = 12
 let addViewIndexPath = IndexPath(item: chlIndex, section: 0)
@@ -58,19 +58,20 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         navigationItem.title = "Add Challenge"
         tableView.register(TableViewCellContent.self, forCellReuseIdentifier: "addChlCellId")
         tableView.tableFooterView = UIView()
-        self.view.backgroundColor =  UIColor(white: 0.95, alpha: 1) // UIColor.rgb(229, green: 231, blue: 235)
+        self.view.backgroundColor =  UIColor(white: 1, alpha: 1) // UIColor.rgb(229, green: 231, blue: 235)
         rightButton = UIBarButtonItem(title: "Share", style: UIBarButtonItemStyle.plain, target: self, action: #selector(addChallenge))
         cancelButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.plain, target: self, action: #selector(cancel))
         nextButton = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.plain, target: self, action: #selector(nextPage))
-        navigationItem.rightBarButtonItem = nextButton
-        rightButton?.tintColor = UIColor.white
+        navigationItem.rightBarButtonItem = rightButton
+        rightButton?.tintColor = UIColor.black
         tableView?.showsVerticalScrollIndicator = false
-        
+        tableView.separatorStyle = .none
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         self.hideKeyboardWhenTappedAround()
         self.leftSide.append(getMember())
+        imagePickerForProofUpload()
     }
     
     @objc func nextPage() {
@@ -108,6 +109,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     @objc func getType() -> String {
+        /*
         let typeCell = getCell(path: segControlIndexPath)
         var type: String = ""
         if typeCell.mySegControl.selectedSegmentIndex == 0 {
@@ -117,7 +119,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else if typeCell.mySegControl.selectedSegmentIndex == 2 {
             type = SELF
         }
-        return type
+        */
+        return PUBLIC
     }
     
     @objc func isSelf() -> Bool {
@@ -220,9 +223,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns = [AddChallenge]()
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Type", resultText : "", resultId: 0, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Subject", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan)) //Proof
         addChallengeIns.append(createAddChallenge(labelText: "Home", resultText : memberName, resultId: -1, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Away", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Subject", resultText : selectText, resultId: -1, resultBool: false, labelAtt: greaterThan))
         let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: Date())
         addChallengeIns.append(createAddChallenge(labelText: "Deadline", resultText : getDateAsFormatted(date: nextWeek!), resultId: 10079, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
@@ -230,7 +233,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         addChallengeIns.append(createAddChallenge(labelText: "Done", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Winner", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Goal", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
-        addChallengeIns.append(createAddChallenge(labelText: "Proof", resultText : "", resultId: -1, resultBool: false, labelAtt: greaterThan))
+        addChallengeIns.append(createAddChallenge(labelText: "Restrict", resultText : selectText, resultId: 1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "To", resultText : "", resultId: 1, resultBool: false, labelAtt: greaterThan))
         addChallengeIns.append(createAddChallenge(labelText: "Comment", resultText : "Comment", resultId: -1, resultBool: false, labelAtt: greaterThan))
     }
@@ -248,14 +251,20 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
         }
         let commentCell = tableView.cellForRow(at: commentIndexPath) as! TableViewCommentCellContent
-        let addViewCell = getCell(path: addViewIndexPath)
+        //let addViewCell = getCell(path: addViewIndexPath)
         let deadlineCell = getCell(path: deadlineIndexPath)
         let doneCell = getCell(path: doneIndexPath)
-        let visibilityCell = getCell(path: visibilityIndexPath)
+        //let visibilityCell = getCell(path: visibilityIndexPath)
         let resultCell = getCell(path: resultIndexPath)
         let scoreCell = getCell(path: scoreIndexPath)
         let proofCell = getCell(path: proofIndexPath)
+        let subjectCell = getCell(path: subjectIndexPath)
+        let toPublicCell = getCell(path: toPublicPath)
         
+        if subjectCell.labelOtherSide.text == selectText {
+            popupAlert(message: "Please select subject!", willDelay: false)
+            return
+        }
         let type = isPublic() ? PUBLIC : (isSelf() ? SELF : PRIVATE)
         if ((!isToWorld() && isPublic()) || isPrivate()) && rightSide.count == 0 {
             popupAlert(message: "Away cannot be empty.", willDelay: false)
@@ -274,7 +283,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         var json: [String: Any] = ["challengerId": memberID,
                                    "name": memberName,
                                    "challengerFBId": memberFbID,
-                                   "subject": addViewCell.addChallenge.subjectLabel.text!,
+                                   "subject": subjectCell.labelOtherSide.text!,
                                    "done": doneCell.isDone.isOn
         ]
         if commentCell.commentView.text != "Comment" {
@@ -283,8 +292,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         json["firstTeamCount"] = !isPrivate() ? "1" : leftSide.count
         json["secondTeamCount"] = rightSide.count
         json["type"] = type
-        let index = visibilityCell.visibilitySegControl.selectedSegmentIndex
-        json["visibility"] = index == 0 ? 3 : (index == 1 ? 2 : 1)
+        let index = toPublicCell.toPublicControl.selectedSegmentIndex
+        json["visibility"] = index == 0 ? 3 : 1 //(index == 1 ? 2 : 1)
         
         if doneCell.isDone.isOn == false {
             if !isSelf() && !isToWorld() {
@@ -387,9 +396,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.navigationItem.rightBarButtonItem?.isEnabled = true
             self.navigationItem.leftBarButtonItem?.isEnabled = true
             self.createAddChallengeInstance()
-            self.cancel()
+            //self.cancel()
             self.tableView.reloadData()
-            self.popupAlert(message: "ADDED!", willDelay: true)
+            //self.popupAlert(message: "ADDED!", willDelay: true)
             if self.leftSide.count == 0 {
                 self.leftSide.append(self.getMember())
             }
@@ -427,8 +436,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let segControlContent = getCell(path: segControlIndexPath)
         if indexPath == subjectIndexPath {
+            let segControlContent = getCell(path: segControlIndexPath)
             let selectionTable = SelectionTableViewController()
             selectionTable.tableTitle = "Subjects"
             selectionTable.popIndexPath = indexPath
@@ -436,6 +445,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             selectionTable.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath == leftSideIndex || indexPath == rightSideIndex {
+            let segControlContent = getCell(path: segControlIndexPath)
             let selectionTable = SelectionTableViewController()
             selectionTable.leftSide = leftSide
             selectionTable.rightSide = rightSide
@@ -446,12 +456,12 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             self.navigationController?.pushViewController(selectionTable, animated: true)
         } else if indexPath == deadlineIndexPath {
             // let addViewContent = getCell(path: addViewIndexPath)
-            if !firstPage {
+            //if !firstPage {
                 _ = getDayBetweenDates(isSelect: true)
                 switchDateP = !switchDateP
                 tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
                 tableView.scrollToRow(at: calenddarIndexPath, at: .bottom, animated: true)
-            }
+            //}
         } else if indexPath == resultIndexPath {
             let updateProgress = UpdateProgressController()
             updateProgress.result = true
@@ -503,6 +513,9 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 }
             }
             picker.dismiss(animated: true, completion: nil)
+            if cancelled && proofCell.proofImageView.image == nil {
+                self.navigationController?.tabBarController?.selectedIndex = chlIndex
+            }
         }
         present(picker, animated: true, completion: nil)
         /*
@@ -554,7 +567,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
     @objc func getDayBetweenDates(isSelect : Bool) -> Int {
         let cellContent = getCell(path: calenddarIndexPath)
         let cCellContent = getCell(path: deadlineIndexPath)
-        let addViewContent = getCell(path: addViewIndexPath)
+        //let addViewContent = getCell(path: addViewIndexPath)
         let formatter = DateFormatter()
         formatter.dateFormat = "dd-MM-yyyy HH:mm"
         let formattedDate = formatter.string(from: cellContent.datePicker.date)
@@ -583,10 +596,10 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             }
         }
         let daysBetween : Int = Calendar.current.dateComponents([.day], from: Date(), to: cellContent.datePicker.date).day!
-        let minutesBetween : Int = Calendar.current.dateComponents([.minute], from: Date(), to: cellContent.datePicker.date).minute!
+        //let minutesBetween : Int = Calendar.current.dateComponents([.minute], from: Date(), to: cellContent.datePicker.date).minute!
         addChallengeIns[deadlineIndex].resultText = getDateAsFormatted(date: cellContent.datePicker.date)
-        let text = daysBetween != 0 ? "\(daysBetween) Days" : "\(minutesBetween / 60) Hours"
-        addViewContent.addChallenge.untilDateLabel.text = (!isToWorld() && !isSelf()) ? "CHALLENGE TIME is \(text)" : "LAST \(text)"
+        //let text = daysBetween != 0 ? "\(daysBetween) Days" : "\(minutesBetween / 60) Hours"
+        //addViewContent.addChallenge.untilDateLabel.text = (!isToWorld() && !isSelf()) ? "CHALLENGE TIME is \(text)" : "LAST \(text)"
         return daysBetween
     }
     
@@ -598,21 +611,21 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
     }
     
-    @objc var switchType : Bool = true;
+    @objc var switchType : Bool = false;
     @objc var switchDateP : Bool = false;
-    @objc var switchDeadline : Bool = false;
+    @objc var switchDeadline : Bool = true;
     @objc var switchProofCell : Bool = false;
     @objc var switchLeftPeopleCell : Bool = false;
-    @objc var switchRightPeopleCell : Bool = false;
+    @objc var switchRightPeopleCell : Bool = true;
     @objc var switchDone : Bool = false;
     @objc var switchScore : Bool = false;
     @objc var switchResult : Bool = false;
-    @objc var switchProof : Bool = false;
+    @objc var switchProof : Bool = true;
     @objc var switchSubject : Bool = true;
     @objc var switchComment : Bool = true;
-    @objc var switchtoPublic : Bool = true;
+    @objc var switchtoPublic : Bool = false;
     @objc var zeroHeight : CGFloat = 0
-    @objc var commentCellHeight : CGFloat = 44
+    @objc var commentCellHeight : CGFloat = 44*2.5
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath == leftSideIndex {
             return getHeight(switchOfCell: switchLeftPeopleCell)
@@ -635,7 +648,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else if indexPath == resultIndexPath {
             return getHeight(switchOfCell: switchResult)
         } else if indexPath == proofIndexPath {
-            return getHeight(switchOfCell: switchProof)
+            return screenWidth*0.8+screenWidth*0.1/10 //switchProof ? tableRowHeightHeight*3 : 0
+            //return getHeight(switchOfCell: switchProof)
         } else if indexPath == toPublicPath {
             return getHeight(switchOfCell: switchtoPublic)
         } else if indexPath == calenddarIndexPath {
@@ -645,7 +659,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 return zeroHeight
             }
         } else if indexPath == addViewIndexPath {
-            return (screenWidth * chlViewHeight) + (tableRowHeightHeight / 2)
+            return zeroHeight // (screenWidth * chlViewHeight) + (tableRowHeightHeight / 2)
         } else {
             return tableRowHeightHeight
         }
@@ -707,7 +721,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         } else if indexPath == proofIndexPath {
             cell.label.text = addChallengeIns[proofIndex].labelText
             cell.isHidden = !switchProof
-            cell.labelOtherSide.attributedText = addChallengeIns[proofIndex].labelAtt
+            //cell.labelOtherSide.attributedText = addChallengeIns[proofIndex].labelAtt
         } else if indexPath == commentIndexPath {
             let frameOfCellComment : CGRect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: tableRowHeightHeight)
             let cellComment = TableViewCommentCellContent(frame: frameOfCellComment, cellRow: indexPath.row, typeIndex: addChallengeIns[typeIndex].resultId!)
@@ -755,10 +769,11 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         commentContent.commentView.constraints.forEach{ (constraint) in
             if constraint.firstAttribute == .height {
                 constraint.constant = estimatedSize.height
-                commentCellHeight = estimatedSize.height + 10
+                commentCellHeight = estimatedSize.height + tableRowHeightHeight*1.6
                 if beforeEstimatedSize.height != estimatedSize.height {
                     updateTable()
                 }
+                addChallengeIns[commentIndex].resultText = commentContent.commentView.text
                 tableView.scrollToRow(at: commentIndexPath, at: .bottom, animated: false)
                 beforeEstimatedSize = estimatedSize
             }
@@ -825,17 +840,17 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
         }
         cellContent.labelOtherSide.text = itemsResult.trim()
         addChallengeIns[popIndexPath.row].resultText = itemsResult.trim()        
-        let addViewContent = getCell(path: addViewIndexPath)
-        let subjectContent = getCell(path: subjectIndexPath)
+        // let addViewContent = getCell(path: addViewIndexPath)
+        //let subjectContent = getCell(path: subjectIndexPath)
         if popIndexPath != subjectIndexPath {
             segControlChange(isNotAction : true, popIndexPath : popIndexPath)
-        } else {
+        }/* else {
             addViewContent.addChallenge.subjectLabel.text = subjectContent.labelOtherSide.text
             if isSelf() {
                 let imageName = addViewContent.addChallenge.subjectLabel.text?.replacingOccurrences(of: " ", with: "_")
                 setImage(name: imageName, imageView: addViewContent.addChallenge.firstOnePeopleImageView)
             }
-        }
+        }*/
         if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex {
             if popIndexPath == leftSideIndex {
                 leftSide = result
@@ -845,19 +860,22 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
                 }
             } else if popIndexPath == rightSideIndex {
                 rightSide = result
+                let toPublicCell = getCell(path: toPublicPath)
+                toPublicCell.toPublicControl.selectedSegmentIndex = rightSide.count == 0 ? 1 : 0
+                addChallengeIns[toPublicIndex].resultId = rightSide.count == 0 ? 1 : 0
                 if rightSide.count != leftSide.count {
                     leftSide.removeAll()
                     tableView.reloadRows(at: [leftSideIndex], with: .fade)
                 }
             }
-            prepareViewForSelection(result: result, popIndexPath: popIndexPath, reset: false)
+            //prepareViewForSelection(result: result, popIndexPath: popIndexPath, reset: false)
         }
     }
     
     @objc func toPublicControlChange(isNotAction : Bool, popIndexPath : IndexPath) {
         let toPublicControlContent = getCell(path: toPublicPath)
         addChallengeIns[toPublicIndex].resultId = toPublicControlContent.toPublicControl.selectedSegmentIndex
-        prepareViewForSelection(result: getUnknown(), popIndexPath: leftSideIndex, reset: true)
+        //prepareViewForSelection(result: getUnknown(), popIndexPath: leftSideIndex, reset: true)
     }
     
     func getUnknown() -> [SelectedItems]{
@@ -882,8 +900,8 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             tableView.reloadRows(at: [calenddarIndexPath], with: .fade)
             doneContent = getCell(path: doneIndexPath)
             doneContent.isDone.setOn(false, animated: false)
-            tableView.reloadRows(at: [addViewIndexPath], with: .fade)
-            prepareViewForSelection(result: getUnknown(), popIndexPath: popIndexPath, reset: true)
+            // tableView.reloadRows(at: [addViewIndexPath], with: .fade)
+            //prepareViewForSelection(result: getUnknown(), popIndexPath: popIndexPath, reset: true)
             tableView.reloadRows(at: [subjectIndexPath], with: .fade)
             tableView.reloadRows(at: [leftSideIndex], with: .fade)
             tableView.reloadRows(at: [rightSideIndex], with: .fade)
@@ -897,7 +915,7 @@ class AddChallengeController: UITableViewController, UINavigationControllerDeleg
             leftSide.removeAll()
             rightSide.removeAll()            
         } else if popIndexPath == leftSideIndex || popIndexPath == rightSideIndex || (popIndexPath == subjectIndexPath && isSelf()) {
-            tableView.reloadRows(at: [addViewIndexPath], with: .fade)
+            // tableView.reloadRows(at: [addViewIndexPath], with: .fade)
         }
     }
     

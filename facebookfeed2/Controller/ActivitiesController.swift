@@ -31,6 +31,7 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
         tableView.dataSource = self;
         tableView.sectionHeaderHeight = 0
         tableView?.showsVerticalScrollIndicator = false
+        tableView.separatorStyle = .none
         tableView?.backgroundColor = feedBackColor
         
         refreshControl = UIRefreshControl()
@@ -441,10 +442,13 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
     
     @objc var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        scrollView.statusBarVisibility(navigationController?.isNavigationBarHidden ?? false)
+        /*
         if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
             // move down
             if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
-                status.backgroundColor = navAndTabColor
+                status.backgroundColor = statusBarColor
             }
             self.navigationController?.setNavigationBarHidden(true, animated: true)
         } else {
@@ -452,9 +456,10 @@ class ActivitiesController: UITableViewController, UITableViewDataSourcePrefetch
             if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
                 status.backgroundColor = nil
             }
-            self.navigationController?.setNavigationBarHidden(false, animated: true)
+            //self.navigationController?.setNavigationBarHidden(false, animated: true)
         }
         self.lastContentOffSet = scrollView.contentOffset.y
+        */
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

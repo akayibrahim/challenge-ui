@@ -16,6 +16,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     @objc var refreshControl : UIRefreshControl!
     @objc var currentPage : Int = 0
     @objc var nowMoreData: Bool = false
+    var goForward: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,11 +24,12 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         self.view.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
         searchBar.placeholder = "Search"
         searchBar.delegate = self
-        searchBar.autocapitalizationType = UITextAutocapitalizationType.allCharacters
+        searchBar.autocapitalizationType = UITextAutocapitalizationType.allCharacters                
+        searchBar.setTextFieldColor(color: UIColor.gray.withAlphaComponent(0.1))
         
         self.navigationItem.titleView = searchBar
         collectionView!.register(TrendRequestCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.backgroundColor = UIColor(white: 0.90, alpha: 1)
+        collectionView?.backgroundColor = UIColor(white: 1, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         collectionView?.showsVerticalScrollIndicator = false
         collectionView?.prefetchDataSource = self
@@ -38,9 +40,12 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         collectionView?.addSubview(refreshControl)
         
         reloadPage()
-        
+        self.navigationController?.hidesBarsOnSwipe = true
         self.hideKeyboardWhenTappedAround()
         NotificationCenter.default.addObserver(self, selector:  #selector(self.appMovedToBackground), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+        
+        let layout = collectionView!.collectionViewLayout as? UICollectionViewFlowLayout
+        layout?.minimumLineSpacing = 30
     }
     
     @objc func appMovedToBackground() {
@@ -51,6 +56,8 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         self.searchBar.showsCancelButton = true
+        let cancelButton = searchBar.value(forKeyPath: "cancelButton") as? UIButton
+        cancelButton?.tintColor = UIColor.black
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -104,6 +111,14 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        let forwardChange = Util.getForwardChange()
+        if goForward && forwardChange.forwardScreen != "" {
+            if forwardChange.forwardScreen == FRWRD_CHNG_TREND {
+                self.trendRequest[forwardChange.index!.item].canJoin = false
+                self.collectionView?.reloadItems(at: [forwardChange.index!])
+            }
+        }
+        goForward = false
         playVisibleVideo()
     }
     
@@ -162,6 +177,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                                 let trend = TrendRequest()
                                 trend.provedWithImage = postDictionary["provedWithImage"] as? Bool
                                 trend.wide = postDictionary["wide"] as? Bool
+                                trend.canJoin = postDictionary["canJoin"] as? Bool
                                 trend.setValuesForKeys(postDictionary)
                                 self.trendRequest.append(trend)
                                 indexPaths.append(IndexPath(row: self.trendRequest.count - 1, section: 0))
@@ -246,6 +262,9 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
         cell.nameLabel.tag = indexPath.row
         cell.nameLabel.isUserInteractionEnabled = true
         cell.nameLabel.addGestureRecognizer(tapGestureRecognizerName)
+        cell.joinToChl.tag = indexPath.row
+        cell.joinToChl.challengeId = trendRequest[indexPath.item].challengeId
+        cell.joinToChl.addTarget(self, action: #selector(self.joinToChallenge), for: UIControlEvents.touchUpInside)
         return cell
     }
     
@@ -298,10 +317,12 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
     
     @objc var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollView.statusBarVisibility(navigationController?.isNavigationBarHidden ?? false)
+        /*
         if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
             // move down
             if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
-                status.backgroundColor = navAndTabColor
+                status.backgroundColor = statusBarColor
             }
             self.navigationController?.setNavigationBarHidden(true, animated: true)
         } else {
@@ -312,6 +333,7 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
             self.navigationController?.setNavigationBarHidden(false, animated: true)
         }
         self.lastContentOffSet = scrollView.contentOffset.y
+        */
         playVisibleVideo()
     }
     
@@ -419,5 +441,51 @@ class TrendsController: UICollectionViewController, UICollectionViewDelegateFlow
                 }
             }
         }
+    }
+    
+    @objc func joinToChallenge(sender: subclasssedUIButton) {
+        let index = IndexPath(item: sender.tag, section: 0)
+        let feedCell = collectionView?.cellForItem(at: index) as! TrendRequestCell
+        joinToChallengeService(challengeId: sender.challengeId!, feedCell: feedCell)
+        openProofScreen(challengeId: trendRequest[sender.tag].challengeId!, index: sender.tag)
+    }
+    
+    @objc func joinToChallengeService(challengeId: String, feedCell: TrendRequestCell) {
+        let json: [String: Any] = ["challengeId": challengeId,
+                                   "memberId": memberID,
+                                   "join": true
+        ]
+        let url = URL(string: joinToChallengeURL)!
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                }
+            }
+        }).resume()
+    }
+    
+    @objc func openProofScreen(challengeId: String, index: Int) {
+        let commentsTable = ProofTableViewController()
+        commentsTable.tableTitle = trendRequest[index].subject!
+        commentsTable.challengeId = challengeId
+        let section = 0
+        let screen = FRWRD_CHNG_TREND
+        commentsTable.joined = true
+        commentsTable.proofed = false
+        commentsTable.canJoin = false
+        commentsTable.done = false
+        commentsTable.activeIndex = IndexPath(item: index, section: 0)
+        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: section), forwardScreen: screen, viewProofsCount: 0, joined: commentsTable.joined, proved: commentsTable.proofed, canJoin: commentsTable.canJoin))
+        goForward = true
+        commentsTable.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(commentsTable, animated: true)
     }
 }

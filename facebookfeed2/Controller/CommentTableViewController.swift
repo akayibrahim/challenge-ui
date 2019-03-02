@@ -50,6 +50,11 @@ class CommentTableViewController : UIViewController, UITableViewDelegate, UITabl
         tableView?.addSubview(refreshControl)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
     @objc func loadChallenges() {
         if dummyServiceCall == false {
             if Util.controlNetwork() {

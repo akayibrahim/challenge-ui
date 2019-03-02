@@ -95,14 +95,21 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             refreshControl = UIRefreshControl()
             refreshControl.addTarget(self, action: #selector(self.onRefesh), for: UIControlEvents.valueChanged)
             collectionView?.addSubview(refreshControl)
+            //self.navigationController?.hidesBarsOnSwipe = true
         } else if selectedTabIndex == profileIndex && !explorer {
-            navigationItem.title = profileTitle
+            navigationItem.title = memberName //profileTitle
             selfRefreshControl = UIRefreshControl()
             selfRefreshControl.addTarget(self, action: #selector(self.onSelfRefesh), for: UIControlEvents.valueChanged)
             collectionView?.addSubview(selfRefreshControl)
+            let rightButton:UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "settings"), style: UIBarButtonItemStyle.done, target: self, action: #selector(openOthers(sender:)))
+            navigationItem.rightBarButtonItem = rightButton
+            navigationItem.rightBarButtonItem?.tintColor = UIColor.black
         }
         
-        collectionView?.backgroundColor = UIColor(white: 0.90, alpha: 1)
+        let layout = collectionView!.collectionViewLayout as? UICollectionViewFlowLayout
+        layout?.minimumLineSpacing = 30
+        
+        collectionView?.backgroundColor = UIColor(white: 1, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: "feedCellId")
@@ -191,7 +198,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             // Asynchronous Http call to your api url, using NSURLSession:
             if self.profile {
                 getFriendInfo(memberIdForFriendProfile!)
-                navigationItem.title = nameForOpenProfile
                 if self.memberIdForFriendProfile != memberID {
                     self.fetchChallengeSize(memberId: self.memberIdForFriendProfile!)
                     self.fetchChallenges(url: getChallengesOfFriendURL + memberID + "&friendMemberId=" + self.memberIdForFriendProfile! + "&page=\(self.selfCurrentPage)", profile: true)
@@ -260,10 +266,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         let post = ServiceLocator.mappingOfPost(postDictionary: postDictionary)
                         if profile {
                             self.posts.append(post)
-                            if post.done == true {
-                                self.donePosts.append(post)
-                            } else {
+                            if (post.active! && !post.done! && post.joined! && !post.proofed!) ||
+                                (!post.active! && !post.rejectedByAllAttendance! && !post.scoreRejected!) {
                                 self.notDonePosts.append(post)
+                            } else {
+                                self.donePosts.append(post)
                             }
                         } else {
                             self.posts.append(post)
@@ -283,11 +290,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     }
                 } else {
                     DispatchQueue.main.async {
-                        if self.posts.count == 0 && self.selectedTabIndex == profileIndex && !self.profile {
+                        if self.posts.count == 0 && !self.profile { // && self.selectedTabIndex == profileIndex
                             self.collectionView?.reloadData()
                             let buttons = self.collectionView?.setEmptyProfileMessage()
                             buttons![0].addTarget(self, action: #selector(self.findFriends), for: UIControlEvents.touchUpInside)
-                            buttons![1].addTarget(self, action: #selector(self.inviteFriends), for: UIControlEvents.touchUpInside)
+                            //buttons![1].addTarget(self, action: #selector(self.inviteFriends), for: UIControlEvents.touchUpInside)
                         } else if self.posts.count == 0 && self.profile {
                             self.collectionView?.setEmptyOtherProfileMessage()
                         }
@@ -306,6 +313,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let onStartApp = startAppFlag as! Bool
                 if onStartApp {
                     self.navigationController?.popToRootViewController(animated: false)
+                    self.navigationController?.setNavigationBarHidden(false, animated: false)
                     Util.addToDefaults(key: startApp, value: false)
                     
                     if let guideFlag = Util.getFromDefaults(key: guide) {
@@ -335,7 +343,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func findFriends() {
         let followRequest = FollowRequestController()
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(followRequest, animated: true)
     }
     
@@ -372,6 +379,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     headerView.nameLabel.text = profileFirstHeader
                 } else if indexPath.section == 2 {
                     headerView.nameLabel.text = profileSecondHeader
+                }
+                if indexPath.section == 1 && notDonePosts.count==0 {
+                    headerView.nameLabel.text = ""
+                } else if indexPath.section == 2 && donePosts.count==0 {
+                    headerView.nameLabel.text = ""
                 }
                 reusableView = headerView
             }
@@ -425,6 +437,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 self.posts[forwardChange.index!.row].canJoin = forwardChange.canJoin
                 self.posts[forwardChange.index!.row].joined = forwardChange.joined!
                 self.collectionView?.reloadItems(at: [forwardChange.index!])
+            } else if forwardChange.forwardScreen == FRWRD_CHNG_PRV_PRFL {
+                self.notDonePosts[forwardChange.index!.row].countOfProofs = forwardChange.viewProofsCount as NSNumber?
+                self.notDonePosts[forwardChange.index!.row].proofed = forwardChange.proved
+                self.notDonePosts[forwardChange.index!.row].canJoin = forwardChange.canJoin
+                self.notDonePosts[forwardChange.index!.row].joined = forwardChange.joined!
+                self.collectionView?.reloadItems(at: [forwardChange.index!])
             } else if forwardChange.forwardScreen == FRWRD_CHNG_SCR {
                 if self.posts[forwardChange.index!.row].type == SELF {
                     self.posts[forwardChange.index!.row].homeWin = forwardChange.homeWinner
@@ -448,6 +466,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if !self.profile {
             if self.selectedTabIndex == chanllengeIndex {
                 // self.reloadChlPage()
+                navigationController?.setNavigationBarHidden(true, animated: true)
             } else if self.selectedTabIndex == profileIndex && !self.explorer {
                 // self.reloadSelfPage()
             }
@@ -456,6 +475,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 reloadProfile = false
             }
         }
+        collectionView?.statusBarVisibility(navigationController?.isNavigationBarHidden ?? false)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -520,29 +540,42 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 return CGSize(width: view.frame.width, height: screenSize.width * 2.5 / 10)
             }
         }
-        var knownHeight: CGFloat = (screenWidth * 1 / 3) + (screenSize.width / 15) + (screenSize.width / 26)
+        var knownHeight: CGFloat = (screenWidth * 0.5 / 4) + (screenSize.width / 26) + (screenWidth * 1 / 10)
         if posts.count == 0 {
             return CGSize(width: view.frame.width, height: knownHeight)
         }
+        
         if posts[indexPath.item].isComeFromSelf == false {
             if posts[indexPath.item].active! {
                 knownHeight += (screenSize.width / 5.3)
             } else {
-                knownHeight += (screenWidth * 0.4 / 10)
+                knownHeight += (screenWidth * 0.6 / 10)
             }
             if posts[indexPath.item].proofedByChallenger == true {
                 knownHeight += screenWidth * (posts[indexPath.item].wide! ? heightRatioOfWideMedia : heightRatioOfMedia)
-                    + screenSize.width * 0.4/15
             }
-            knownHeight += (screenSize.width / 26) + (screenWidth * 0.9 / 10)
-            if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge, let name = posts[indexPath.item].name {
-                // let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
-                if posts[indexPath.item].proofedByChallenger == true {
+            if !posts[indexPath.item].done! && ( (posts[indexPath.item].joined! && !posts[indexPath.item].proofed!) || posts[indexPath.item].canJoin! || posts[indexPath.item].isComeFromSelf! || !posts[indexPath.item].active!) {
+                knownHeight += screenWidth * (posts[indexPath.item].proofedByChallenger == true ? 1.1 : 1) / 10
+                if posts[indexPath.item].isComeFromSelf! {
                     knownHeight += screenWidth * 0.1 / 10
+                } else if !posts[indexPath.item].active! {
+                    knownHeight += screenWidth * 0.2 / 10
                 }
-                let thinks = "\(name): \(thinksAboutChallenge)"
-                return CGSize(width: viewFramwWidth, height: thinks.heightOf(withConstrainedWidth: screenWidth * 4.5 / 5, font: UIFont.boldSystemFont(ofSize: 12)) + knownHeight)
             }
+            if UIDevice().type.rawValue.contains("5") {
+                knownHeight += screenWidth*0.2/10
+            }
+            if let thinksAboutChallenge = posts[indexPath.item].thinksAboutChallenge {
+                if thinksAboutChallenge == "" {
+                    return CGSize(width: viewFramwWidth, height: knownHeight)
+                }
+                knownHeight += screenWidth * 0.15 / 10
+                // let rect = NSString(string: thinksAboutChallenge).boundingRect(with: CGSize(width: view.frame.width, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 12)], context: nil)
+                let thinks = "\(thinksAboutChallenge.trim())"
+                return CGSize(width: viewFramwWidth, height: thinks.heightOf(withConstrainedWidth: screenWidth * 4.4 / 5, font: UIFont.systemFont(ofSize: 13)) + knownHeight)
+            }
+        } else {
+            knownHeight += (screenWidth * 1.15 / 10)
         }
         return CGSize(width: viewFramwWidth, height: knownHeight)
     }
@@ -550,6 +583,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc func createProfile() -> ProfileCellView {
         if profile {
             group.wait()
+            navigationItem.title = nameForOpenProfile
             memberNameForFriendProfile = nameForOpenProfile
             memberFbIdForFriendProfile = facebookIDForOpenProfile
             memberCountOfFollowerForFriendProfile = countOfFollowersForOpenProfile
@@ -559,6 +593,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let profileCell : ProfileCellView = ProfileCellView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 2.5 / 10), memberFbId: (profile ? memberFbIdForFriendProfile! : memberFbID) , name: (profile ? memberNameForFriendProfile! : memberName))
         if profile {
             profileCell.other.alpha = 0
+            profileCell.inviteFriends.alpha = 0
             if memberIdForFriendProfile != memberID {
                 if isProfileFriend {
                     profileCell.unfollow.alpha = 1
@@ -578,8 +613,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 }
             } else {
                 profileCell.other.alpha = 1
+                profileCell.inviteFriends.alpha = 1
             }
         }
+        profileCell.inviteFriends.addTarget(self, action: #selector(self.inviteFriend), for: UIControlEvents.touchUpInside)
         // self.group.wait()
         profileCell.other.addTarget(self, action: #selector(self.openOthers), for: UIControlEvents.touchUpInside)
         profileCell.followersCount.text = "\((profile ? memberCountOfFollowerForFriendProfile : countOffollowers)!)"
@@ -613,6 +650,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return profileCell
     }
     
+    @objc func inviteFriend() {
+        self.present(Util.shareViaFriend(view: self.view), animated:  true, completion: nil)
+    }
+    
     @objc func unFollowProfile(sender: subclasssedUIButton) {
         let url = followingFriendURL + "?memberId=" + memberID + "&friendMemberId=" + sender.memberId! + "&follow=false"
         followOrUnfollowFriend(url: url, isRemove: true)
@@ -640,14 +681,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             self.group.leave()
             if self.memberIsPrivateForFriendProfile! && !isRemove {
                 self.isProfileFriend = false
-                self.popupAlert(message: "Requested!", willDelay: true)
+                //self.popupAlert(message: "Requested!", willDelay: true)
             } else {
                 if !isRemove {
                     self.isProfileFriend = true
-                    self.popupAlert(message: "Now Following!", willDelay: true)
+                    //self.popupAlert(message: "Now Following!", willDelay: true)
                 } else {
                     self.isProfileFriend = false
-                    self.popupAlert(message: "Stop Following!", willDelay: true)
+                    //self.popupAlert(message: "Stop Following!", willDelay: true)
                 }
             }
         }
@@ -679,28 +720,26 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 }
                 feedCellForSelf.post = self.notDonePosts[indexPath.row]
                 if !self.profile {
-                    feedCellForSelf.updateProgress.type = self.notDonePosts[indexPath.row].type
-                    feedCellForSelf.updateProgress.challengeId = self.notDonePosts[indexPath.row].id
-                    feedCellForSelf.updateProgress.goal = self.notDonePosts[indexPath.row].goal
-                    feedCellForSelf.updateProgress.proofed = self.notDonePosts[indexPath.row].proofedByChallenger
-                    feedCellForSelf.updateProgress.canJoin = self.notDonePosts[indexPath.row].canJoin
-                    feedCellForSelf.updateProgress.tag = indexPath.row
-                    if self.notDonePosts[indexPath.row].type == SELF {
-                        feedCellForSelf.updateProgress.homeScore = self.notDonePosts[indexPath.row].result
-                    } else if self.notDonePosts[indexPath.row].type == PRIVATE {
-                        feedCellForSelf.updateProgress.homeScore = self.notDonePosts[indexPath.row].firstTeamScore
-                        feedCellForSelf.updateProgress.awayScore = self.notDonePosts[indexPath.row].secondTeamScore
-                    }
-                    feedCellForSelf.updateProgress.addTarget(self, action: #selector(self.updateProgress), for: UIControlEvents.touchUpInside)
+                    feedCellForSelf.addProofs.type = self.notDonePosts[indexPath.row].type
+                    feedCellForSelf.addProofs.challengeId = self.notDonePosts[indexPath.row].id
+                    feedCellForSelf.addProofs.goal = self.notDonePosts[indexPath.row].goal
+                    feedCellForSelf.addProofs.proofed = self.notDonePosts[indexPath.row].proofed
+                    feedCellForSelf.addProofs.canJoin = self.notDonePosts[indexPath.row].canJoin
+                    feedCellForSelf.addProofs.tag = indexPath.row
+                    feedCellForSelf.addProofs.addTarget(self, action: #selector(self.updateProgress), for: UIControlEvents.touchUpInside)
                 } else {
-                    feedCellForSelf.updateProgress.alpha = 0
+                    feedCellForSelf.addProofs.alpha = 0
                 }
+                feedCellForSelf.updateProgress.challengeId = self.notDonePosts[indexPath.row].id
             } else if indexPath.section == 2 {
                 if  self.donePosts.count == 0 {
                     return feedCellForSelf
                 }
+                feedCellForSelf.addProofs.alpha = self.profile ? 0 : 1
                 feedCellForSelf.post = self.donePosts[indexPath.row]
+                feedCellForSelf.updateProgress.challengeId = self.donePosts[indexPath.row].id
             }
+            feedCellForSelf.updateProgress.addTarget(self, action: #selector(self.openExplorerViaDetails), for: UIControlEvents.touchUpInside)
             return feedCellForSelf
         }
         let feedCell = self.collectionView?.dequeueReusableCell(withReuseIdentifier: "feedCellId", for: indexPath) as! FeedCell
@@ -714,6 +753,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.post = self.posts[indexPath.item]
         self.addTargetToFeedCell(feedCell: feedCell, indexPath: indexPath)
         return feedCell
+    }
+    
+    @objc func openExplorerViaDetails(sender: subclasssedUIButton) {
+        openExplorer(challengeId: sender.challengeId!)
     }
     
     lazy var cells: [IndexPath: UICollectionViewCell?] = [:]
@@ -819,11 +862,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.volumeDownImageView.tag = indexPath.row
         feedCell.volumeDownImageView.isUserInteractionEnabled = true
         feedCell.volumeDownImageView.addGestureRecognizer(volumeChangeGestureDown)
-        if explorer {
-            feedCell.others.alpha = 1
-            feedCell.others.addTarget(self, action: #selector(self.deleteChallenge), for: UIControlEvents.touchUpInside)
-            feedCell.others.challengeId = posts[indexPath.item].id
-        }
+        feedCell.others.addTarget(self, action: #selector(self.challengeProbs), for: UIControlEvents.touchUpInside)
+        feedCell.others.index = indexPath
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped(tapGestureRecognizer:)))
         feedCell.challengerImageView.tag = indexPath.row
         feedCell.challengerImageView.isUserInteractionEnabled = true
@@ -974,7 +1014,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func openProfileForImage(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! subclasssedUIImageView
-        openProfile(memberId: tappedImage.memberId!)
+        if let memberId = tappedImage.memberId {
+            openProfile(memberId: memberId)
+        }
     }
     
     @objc func homeMoreAttendances(tapGestureRecognizer: UITapGestureRecognizer) {
@@ -995,8 +1037,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.challengeId = posts[index].id!
         selectionTable.firstTeam = firstTeam
         goForwardToSelection = true
-        // selectionTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
@@ -1021,8 +1061,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         selectionTable.firstTeam = firstTeam
         goForwardToSelection = true
-        // selectionTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
@@ -1046,9 +1084,47 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }).resume()
     }
     
-    @objc func handleChallengeCountTap(sender:UILabel){
-        let firstChlRow = IndexPath(item: 0, section: 1)
-        collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+    @objc func challengeProbs(_ sender: subclasssedUIButton) {
+        let actionsheet = UIAlertController(title: nil, message: nil, preferredStyle :.actionSheet)
+        actionsheet.addAction(UIAlertAction(title: "Save", style: .default, handler: {(action: UIAlertAction) in
+            let cell = self.collectionView?.cellForItem(at: sender.index!) as! FeedCell
+            let post = self.posts[(sender.index?.row)!]
+            if !post.provedWithImage! {
+                cell.proofedVideoView.backgroundColor = UIColor(patternImage: self.generateThumbnail((cell.proofedVideoView.player?.currentItem?.asset)!)!)
+            }
+            UIImageWriteToSavedPhotosAlbum(cell.image(post.wide!)!, self, nil, nil)
+        }))
+        actionsheet.addAction(UIAlertAction(title: "Share To Instagram", style: .default, handler: {(action: UIAlertAction) in
+            let cell = self.collectionView?.cellForItem(at: sender.index!) as! FeedCell
+            let post = self.posts[(sender.index?.row)!]
+            if !post.provedWithImage! {
+                cell.proofedVideoView.backgroundColor = UIColor(patternImage: self.generateThumbnail((cell.proofedVideoView.player?.currentItem?.asset)!)!)
+            }
+            InstagramManager.sharedManager.postImageToInstagramWithCaption(imageInstagram: cell.image(post.wide!)!, instagramCaption: "", view: self.view)
+            //cell.shareScreenshotToInstagram(cell.image(post.wide!)!)
+        }))
+        actionsheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(actionsheet, animated: true, completion: nil)
+    }
+    
+    func generateThumbnail(_ asset: AVAsset) -> UIImage? {
+        do {
+            let imgGenerator = AVAssetImageGenerator(asset: asset)
+            imgGenerator.appliesPreferredTrackTransform = true
+            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
+            let thumbnail = UIImage(cgImage: cgImage)
+            return thumbnail
+        } catch let error {
+            print("*** Error generating thumbnail: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    @objc func handleChallengeCountTap(sender:UILabel) {
+        if posts.count > 0 {
+            let firstChlRow = IndexPath(item: 0, section: 1)
+            collectionView?.scrollToItem(at: firstChlRow, at: .top, animated: true)
+        }
     }
     
     @objc func handleFollowersCountTap(sender:UILabel){
@@ -1058,8 +1134,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.isFollower = true
         selectionTable.profile = profile
         selectionTable.memberIdForFriendProfile = memberIdForFriendProfile
-        // selectionTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
@@ -1070,8 +1144,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         selectionTable.isFollowing = true
         selectionTable.profile = profile
         selectionTable.memberIdForFriendProfile = memberIdForFriendProfile
-        // selectionTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(selectionTable, animated: true)
     }
     
@@ -1094,8 +1166,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 1), forwardScreen: FRWRD_CHNG_SCR, homeWinner: false, goal: sender.goal != nil ? sender.goal! : "-1", result: sender.homeScore != nil ? sender.homeScore! : "-1"))
             }
             goForward = true
-            // updateProgress.hidesBottomBarWhenPushed = true
-            self.navigationController?.setNavigationBarHidden(false, animated: false)
             self.navigationController?.pushViewController(updateProgress, animated: true)
         }
     }
@@ -1115,7 +1185,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         goForward = true
         commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
@@ -1127,8 +1196,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         commentsTable.commentedMemberId = sender.memberId
         Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:sender.tag ,section: 0), forwardScreen: FRWRD_CHNG_CMMNT, viewCommentsCount: sender.count!))
         goForward = true
+        commentsTable.textView.becomeFirstResponder()
         commentsTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
@@ -1138,21 +1207,27 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func openProofScreen(challengeId: String, proofed: Bool, canJoin: Bool, proveCount: Int, index: Int) {
         let commentsTable = ProofTableViewController()
-        commentsTable.tableTitle = proofsTableTitle
+        commentsTable.tableTitle = posts[index].subject! //proofsTableTitle
         commentsTable.challengeId = challengeId
-        commentsTable.done = posts[index].done!
-        commentsTable.proofed = posts[index].done! ? false : proofed
-        commentsTable.canJoin = posts[index].done! ? false : canJoin
+        var section = 0
+        var screen = FRWRD_CHNG_PRV
         if isTabIndex(chanllengeIndex) || self.explorer || self.trend {
             commentsTable.joined = posts[index].done! ? false : posts[index].joined!
+            commentsTable.proofed = posts[index].done! ? false : proofed
+            commentsTable.canJoin = posts[index].done! ? false : canJoin
+            commentsTable.done = posts[index].done!
         } else if isTabIndex(profileIndex) {
             commentsTable.joined = notDonePosts[index].done! ? false : notDonePosts[index].joined!
+            commentsTable.proofed = notDonePosts[index].done! ? false : proofed
+            commentsTable.canJoin = notDonePosts[index].done! ? false : canJoin
+            commentsTable.done = notDonePosts[index].done!
+            section = 1
+            screen = FRWRD_CHNG_PRV_PRFL
         }
         commentsTable.activeIndex = IndexPath(item: 0, section: 0)
-        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: isTabIndex(profileIndex) && !explorer ? 1 : 0), forwardScreen: FRWRD_CHNG_PRV, viewProofsCount: proveCount, joined: posts[index].done! ? false : posts[index].joined!, proved: posts[index].done! ? false : proofed, canJoin: posts[index].done! ? false : canJoin))
+        Util.addForwardChange(forwardChange: ForwardChange(index: IndexPath(item:index ,section: section), forwardScreen: screen, viewProofsCount: proveCount, joined: commentsTable.joined, proved: commentsTable.proofed, canJoin: commentsTable.canJoin))
         goForward = true
         commentsTable.hidesBottomBarWhenPushed = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(commentsTable, animated: true)
     }
     
@@ -1265,6 +1340,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.posts[index.row].joined = true
         self.posts[index.row].canJoin = false
         self.collectionView?.reloadItems(at: [index])
+        openProofScreen(challengeId: posts[sender.tag].id!, proofed: posts[sender.tag].proofed!, canJoin: posts[sender.tag].canJoin!, proveCount: posts[sender.tag].countOfProofs as! Int, index: sender.tag)
     }
     
     @objc func joinToChallengeService(challengeId: String, feedCell: FeedCell) {
@@ -1329,8 +1405,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 } else {
                     if let cell = collectionView?.cellForItem(at: indexPath) {
                         let feedCell = cell as! FeedCell
-                        let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
-                        if feedCell.proofedVideoView.frame.contains(frameSize) && !self.posts[indexPath.row].provedWithImage! {
+                        //let frameSize: CGPoint = CGPoint(x: UIScreen.main.bounds.size.width * 0.5,y: UIScreen.main.bounds.size.height * 0.5)
+                        if !self.posts[indexPath.row].provedWithImage! { //} && feedCell.proofedVideoView.frame.contains(frameSize) {
                             if let player = feedCell.proofedVideoView.playerLayer.player {
                                 if player.rate == 0.0 {
                                     player.volume = volume
@@ -1346,12 +1422,18 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc var lastContentOffSet : CGFloat = 0
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if selectedTabIndex == chanllengeIndex && !explorer && !trend && !profile {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        } else {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
         if explorer || goForwardToSelection {
             return
         }
         if nowMoreData {
             self.collectionView?.bottomRefreshControl?.endRefreshing()
         }
+        scrollView.statusBarVisibility(navigationController?.isNavigationBarHidden ?? false)
         if selectedTabIndex == chanllengeIndex || selectedTabIndex == profileIndex {
             if (scrollView.contentOffset.y >= 0 && self.lastContentOffSet < scrollView.contentOffset.y) || (scrollView.contentOffset.y > 0 && scrollView.isAtBottom) {
                 // move down
@@ -1363,10 +1445,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     prflScrollMoveDown = true
                     prflScrollMoveUp = false
                 }
+                /*
                 if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
                     status.backgroundColor = navAndTabColor
                 }
                 self.navigationController?.setNavigationBarHidden(true, animated: true)
+                */
             } else {
                 // move up
                 if selectedTabIndex == chanllengeIndex {
@@ -1377,10 +1461,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     prflScrollMoveDown = false
                     prflScrollMoveUp = true
                 }
+                /*
                 if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
                     status.backgroundColor = nil
                 }
                 self.navigationController?.setNavigationBarHidden(false, animated: true)
+                */
             }
             self.lastContentOffSet = scrollView.contentOffset.y
         }
@@ -1420,7 +1506,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         challengeController.explorerCurrentPage = 0
         challengeController.selectedTabIndex = self.tabBarController?.selectedIndex ?? 0
         challengeController.reloadChlPage()
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.pushViewController(challengeController, animated: true)
     }
     
@@ -1447,7 +1532,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         profileController.isProfileFriend = false
         profileController.memberIdForFriendProfile = memberId
         profileController.profile = true
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(profileController, animated: true)
     }
     
@@ -1550,14 +1634,14 @@ class ChallengeHeader: UICollectionReusableView {
     @objc let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "FRIEND REQUESTS"
-        label.font = UIFont.systemFont(ofSize: 10)
-        label.textColor = UIColor(white: 0.4, alpha: 1)
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.textColor = UIColor.black
         return label
     }()
     
     @objc let bottomBorderView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.rgb(229, green: 231, blue: 235)
+        view.backgroundColor = UIColor.lightText
         return view
     }()
     
@@ -1569,10 +1653,11 @@ class ChallengeHeader: UICollectionReusableView {
         
         addTopAnchor(nameLabel, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(nameLabel, anchor: contentGuide.leadingAnchor, constant: 0)
+        //addCenterXAnchor(nameLabel, anchor: contentGuide.centerXAnchor, constant: 0)
         
         addTopAnchor(bottomBorderView, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(bottomBorderView, anchor: contentGuide.leadingAnchor, constant: 0)
-        addHeightAnchor(bottomBorderView, multiplier: 0.5/10)
+        addHeightAnchor(bottomBorderView, multiplier: 0.8/10)
     }
     
 }

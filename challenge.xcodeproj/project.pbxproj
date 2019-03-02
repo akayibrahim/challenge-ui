@@ -100,6 +100,7 @@
 		A1DC3418207E402300F21232 /* ProfileCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DC3417207E402300F21232 /* ProfileCellView.swift */; };
 		A1DD4E752115E01000772C51 /* VideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DD4E742115E01000772C51 /* VideoService.swift */; };
 		A1DF0B71207C7A3600C34286 /* CommentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */; };
+		A1E355FE222AAE1700CF5436 /* InstagramManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E355FD222AAE1700CF5436 /* InstagramManager.swift */; };
 		A1E45A3E2074996800FD58E6 /* getOwnChallenges.json in Resources */ = {isa = PBXBuildFile; fileRef = A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */; };
 		A1F9A96C219F6FBF0047993E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1F9A958219F6FBF0047993E /* CoreTelephony.framework */; };
 		A1FA9B9C211B473600ED741A /* ConnectionProblemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FA9B9B211B473600ED741A /* ConnectionProblemController.swift */; };
@@ -330,6 +331,7 @@
 		A1DC3417207E402300F21232 /* ProfileCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCellView.swift; sourceTree = "<group>"; };
 		A1DD4E742115E01000772C51 /* VideoService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoService.swift; sourceTree = "<group>"; };
 		A1DF0B70207C7A3600C34286 /* CommentTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableViewController.swift; sourceTree = "<group>"; };
+		A1E355FD222AAE1700CF5436 /* InstagramManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramManager.swift; sourceTree = "<group>"; };
 		A1E45A3D2074996800FD58E6 /* getOwnChallenges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = getOwnChallenges.json; sourceTree = "<group>"; };
 		A1ED4B1020404BAE00422544 /* facebookfeed2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = facebookfeed2.entitlements; path = facebookfeed2/facebookfeed2.entitlements; sourceTree = "<group>"; };
 		A1F9A958219F6FBF0047993E /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -402,6 +404,7 @@
 				A18BE7D0210F742700306540 /* LoadingOverlay.swift */,
 				A18BE7D221101E7B00306540 /* Util.swift */,
 				A1FA9BA5211B48E200ED741A /* Reachability.swift */,
+				A1E355FD222AAE1700CF5436 /* InstagramManager.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -983,6 +986,7 @@
 				A1B27B04209A2F8D00263E48 /* ActivitiesController.swift in Sources */,
 				A18D947A20E0AB9000FA1679 /* ProofTableViewController.swift in Sources */,
 				C7D879AE1C828B36008766AE /* FollowRequestController.swift in Sources */,
+				A1E355FE222AAE1700CF5436 /* InstagramManager.swift in Sources */,
 				A138F390204D9CD100142231 /* VersusAttendance.swift in Sources */,
 				A14A996B207530F500B1418D /* Subject.swift in Sources */,
 				A11C823520499DDB0061A33F /* ImageService.swift in Sources */,

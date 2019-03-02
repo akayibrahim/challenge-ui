@@ -33,7 +33,9 @@ var profileIndex : Int = 4
 var chanllengeIndex : Int = 0
 var trendsIndex : Int = 1
 var activityIndex : Int = 3
+var addChallengeIndex : Int = 2
 var navAndTabColor : UIColor = UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1)
+var statusBarColor : UIColor = UIColor.white
 var scoreColor : UIColor = UIColor(red: 194/255, green: 25/255, blue: 28/255, alpha: 1)
 var blueColor : UIColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
 // UIColor(red: 244/255, green: 0/255, blue: 9/255, alpha: 1) coca-cola red
@@ -58,6 +60,8 @@ var accept = "ACCEPT"
 var commentCharacterLimit : Int = 400
 var FRWRD_CHNG_CMMNT = "CMMNT"
 var FRWRD_CHNG_PRV = "PRV"
+var FRWRD_CHNG_TREND = "TREND"
+var FRWRD_CHNG_PRV_PRFL = "PRV_PRFL"
 var FRWRD_CHNG_SCR = "SCR"
 var reloadProfile:Bool = false
 var feedBackColor =  UIColor.white // UIColor(white: 0.985, alpha: 1)
@@ -93,21 +97,21 @@ var volumeDown = "volumeDown"
 var unknownImage = "unknownImage"
 
 // TITLES
-var challengeTitle = "Feeds"
+var challengeTitle = "Home"
 var profileTitle = "Profile"
-var profileFirstHeader = "YOUR ACTIVE CHALLENGES"
-var profileSecondHeader = "YOUR PAST CHALLENGES"
+var profileFirstHeader = "ACTIVE CHALLENGES"
+var profileSecondHeader = "COMPLETED CHALLENGES"
 var commentsTableTitle = "Comments"
 var proofsTableTitle = "Proofs"
 var addChallengeTitle = "Add Challenge"
 
 // BUTTON OR LABEL NAME
 var supportText = "SUPPORT"
-var viewAllComments = "View all 0 comment(s)"
-var viewAllProofs = "View all 0 proof(s)"
+var viewAllComments = "Comment"
+var viewAllProofs = "All Proofs"
 var addComents = "Add a comment.."
-var addProofsVar = "Add a proof.."
-var joinToChlVar = "Join It"
+var addProofsVar = "Prove Challenge"
+var joinToChlVar = "Join Challenge"
 var justMe = "Just Me"
 var selectText = "Select"
 var followButtonText = "Follow"

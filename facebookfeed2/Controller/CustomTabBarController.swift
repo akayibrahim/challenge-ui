@@ -16,7 +16,7 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
         
         let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let navigationController = UINavigationController(rootViewController: feedController)
-        navigationController.title = "Feeds"
+        navigationController.title = "Home"
         navigationController.tabBarItem.image = UIImage(named: "news_feed_icon")
         // navigationController.hidesBarsOnSwipe = true
         
@@ -117,6 +117,17 @@ class CustomTabBarController: UITabBarController, UITabBarControllerDelegate {
                 return true
             }
             return false
+        } else {
+            let controllers = tabBarController.viewControllers
+            let navC = controllers![addChallengeIndex] as! UINavigationController
+            if viewController == navC {
+                let feedC = navC.viewController(class: AddChallengeController.self)
+                let proofCell = feedC?.getCell(path: proofIndexPath)
+                if proofCell?.proofImageView.image == nil {
+                    feedC?.imagePickerForProofUpload()
+                }
+                return true
+            }
         }
         
         UIView.transition(from: fromView, to: toView, duration: 0.3, options: UIViewAnimationOptions.transitionCrossDissolve) { (finished:Bool) in

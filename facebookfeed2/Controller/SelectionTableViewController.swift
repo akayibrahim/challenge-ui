@@ -78,6 +78,11 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
         reload()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
     func prepareCustomSubjectView() {
         customeSubjectText.removeFromSuperview()
         saveButton.removeFromSuperview()
@@ -133,7 +138,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
                 tableView.allowsMultipleSelection = true
                 navigationItem.rightBarButtonItem = self.editButtonItem
                 let rightButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(self.showEditing))
-                rightButton.tintColor = UIColor.white
+                rightButton.tintColor = UIColor.black
                 navigationItem.rightBarButtonItem = rightButton
                 if dummyServiceCall == false {
                     fetchData(url: getFollowingListURL + memberID, type: "FRIENDS")
@@ -521,7 +526,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if !listMode {
-            if popIndexPath.row == 2 {
+            if popIndexPath.row == subjectIndex {
                 /*if (indexPath.row == (items.count + 2)) {
                     // nothing
                 } else if (indexPath.row == (items.count + 1)) {
@@ -733,7 +738,7 @@ class SelectionTableViewController : UIViewController, UITableViewDelegate, UITa
             }
             DispatchQueue.main.async {
                 self.reload()
-                self.popupAlert(message: "Now Following!", willDelay: true)
+                //self.popupAlert(message: "Now Following!", willDelay: true)
             }
         }
     }

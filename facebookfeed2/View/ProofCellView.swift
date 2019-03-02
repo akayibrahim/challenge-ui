@@ -32,12 +32,15 @@ class ProofCellView: UITableViewCell {
         self.volumeUpImageView.removeFromSuperview()
         self.volumeDownImageView.removeFromSuperview()
         self.proofedVideoView.player?.replaceCurrentItem(with: nil)
+        self.supportButton.removeFromSuperview()
+        self.supportButton.setImage(UIImage(named: support), for: .normal)
     }
     
-    @objc func setup(_ wide: Bool) {
+    @objc func setup(_ wide: Bool, supportFlag: Bool) {
         let contentGuide = self.readableContentGuide
         let screenSize = UIScreen.main.bounds
         backgroundColor = feedBackColor
+        prepareForReuse()
         
         addSubview(profileImageView)    
         profileImageView.layer.cornerRadius = screenWidth * 0.7 / 10 / 2
@@ -52,6 +55,15 @@ class ProofCellView: UITableViewCell {
         addTrailingAnchor(thinksAboutChallengeView, anchor: contentGuide.trailingAnchor, constant: 4)
         thinksAboutChallengeView.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         
+        addSubview(supportButton)
+        addTopAnchor(supportButton, anchor: contentGuide.topAnchor, constant: 0)
+        addTrailingAnchor(supportButton, anchor: contentGuide.trailingAnchor, constant: 0)
+        addWidthAnchor(supportButton, multiplier: 0.7/10)
+        addHeightAnchor(supportButton, multiplier: 0.7/10)
+        if supportFlag {
+            supportButton.setImage(UIImage(named: supported), for: .normal)
+        }
+            
         addSubview(proofImageView)
         addTopAnchor(proofImageView, anchor: profileImageView.bottomAnchor, constant: screenWidth * 0.05 / 2)
         addWidthAnchor(proofImageView, multiplier: 1)
@@ -101,6 +113,7 @@ class ProofCellView: UITableViewCell {
         setImage(name: volumeDown, imageView: volumeDownImageView)
     }
 
+    @objc let supportButton = FeedCell.subClasssButtonForTitle("", imageName: support)
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
     @objc let thinksAboutChallengeView: UITextView = FeedCell().thinksAboutChallengeView
     

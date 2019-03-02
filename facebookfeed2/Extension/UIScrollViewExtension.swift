@@ -31,4 +31,15 @@ extension UIScrollView {
         return scrollViewBottomOffset
     }
     
+    func statusBarVisibility(_ navBarHidden: Bool) {
+        if navBarHidden {
+            if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+                status.backgroundColor = statusBarColor
+            }
+        } else {
+            if let status = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+                status.backgroundColor = nil
+            }
+        }
+    }
 }

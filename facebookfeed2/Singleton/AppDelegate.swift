@@ -50,14 +50,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, UNUser
             openApp()
         }
         
-        UINavigationBar.appearance().barTintColor = navAndTabColor
+        UINavigationBar.appearance().barTintColor = UIColor.white // navAndTabColor
         // UIFont(name: "BodoniSvtyTwoITCTT-Bold", size: 24)!
-        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.font: UIFont(descriptor: .init(), size: 20), NSAttributedStringKey.foregroundColor: UIColor.white]
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 20, weight: .bold), NSAttributedStringKey.foregroundColor: UIColor.black]
         
         UITabBar.appearance().tintColor = navAndTabColor
         
         let barButtonColor  = UIBarButtonItem.appearance()
-        barButtonColor.tintColor = UIColor.white
+        barButtonColor.tintColor = UIColor.black // UIColor.white
         
         // application.statusBarStyle = .lightContent
         playAudioWithOther()

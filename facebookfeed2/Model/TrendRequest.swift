@@ -17,4 +17,5 @@ class TrendRequest: SafeJsonObject {
     @objc var challengerId : String?
     var provedWithImage: Bool?
     var wide: Bool?
+    var canJoin: Bool?
 }

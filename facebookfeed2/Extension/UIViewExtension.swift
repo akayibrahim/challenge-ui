@@ -636,4 +636,40 @@ extension UIView {
         
         return view
     }
+    
+    class func image(view: UIView, subview: UIView? = nil, isWide: Bool) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: view.frame.size.width, height: view.frame.size.height*(isWide ? 8.6 : 9.1)/10), true, 0)
+        view.drawHierarchy(in: view.frame, afterScreenUpdates: true)
+        var image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        if(subview != nil){
+            var rect = (subview?.frame)!
+            rect.size.height *= image.scale  //MOST IMPORTANT
+            rect.size.width *= image.scale    //TOOK ME DAYS TO FIGURE THIS OUT
+            let imageRef = image.cgImage!.cropping(to: rect)
+            image = UIImage(cgImage: imageRef!, scale: image.scale, orientation: image.imageOrientation)
+        }
+        return image
+    }
+    
+    func image(_ isWide: Bool) -> UIImage? {
+        return UIView.image(view: self, isWide: isWide)
+    }
+    
+    func image(_ withSubview: UIView, isWide: Bool) -> UIImage? {
+        return UIView.image(view: self, subview: withSubview, isWide: isWide)
+    }
+    
+    func shareScreenshotToInstagram(_ image: UIImage) {
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
+        let checkValidation = FileManager.default
+        let getImagePath = paths.appending("image.igo")
+        try?  checkValidation.removeItem(atPath: getImagePath)
+        let imageData =  UIImageJPEGRepresentation(image, 1.0)
+        try? imageData?.write(to: URL.init(fileURLWithPath: getImagePath), options: .atomicWrite)
+        var documentController : UIDocumentInteractionController!
+        documentController = UIDocumentInteractionController.init(url: URL.init(fileURLWithPath: getImagePath))
+        documentController.uti = "com.instagram.exclusivegram"
+        documentController.presentOptionsMenu(from: self.frame, in: self, animated: true)
+    }
 }

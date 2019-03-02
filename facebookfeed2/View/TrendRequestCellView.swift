@@ -23,6 +23,7 @@ class TrendRequestCell: UICollectionViewCell {
         self.proofedVideoView.clearConstraints()
         //self.avPlayerLayer.removeFromSuperlayer()
         self.proofedVideoView.player?.replaceCurrentItem(with: nil)
+        self.joinToChl.removeFromSuperview()
         super.prepareForReuse()
     }
     
@@ -44,7 +45,7 @@ class TrendRequestCell: UICollectionViewCell {
             if let prooferFBId = trendRequest?.prooferFbID {
                 setImage(fbID: prooferFBId, imageView: profileImageView)
             }
-            setupViews((trendRequest?.wide)!)
+            setupViews((trendRequest?.wide)!, canJoin: (trendRequest?.canJoin)!)
         }
     }
     
@@ -71,7 +72,7 @@ class TrendRequestCell: UICollectionViewCell {
         return imageView
     }()
     
-    @objc func setupViews(_ wide: Bool) {
+    @objc func setupViews(_ wide: Bool, canJoin: Bool) {
         let contentGuide = self.readableContentGuide
         backgroundColor = feedBackColor
         addSubview(requestImageView)
@@ -127,10 +128,24 @@ class TrendRequestCell: UICollectionViewCell {
         
         setImage(name: volumeUp, imageView: volumeUpImageView)
         setImage(name: volumeDown, imageView: volumeDownImageView)
+        
+        if canJoin {
+            addSubview(joinToChl)
+            joinToChl.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+            addBottomAnchor(joinToChl, anchor: contentGuide.bottomAnchor, constant: -(screenWidth*0.3/10))
+            addTrailingAnchor(joinToChl, anchor: contentGuide.trailingAnchor, constant:  -(screenWidth*0.5/10))
+            addHeightAnchor(joinToChl, multiplier: 0.7/10)
+            addWidthAnchor(joinToChl, multiplier: 0.5/3)
+            joinToChl.setTitleColor(UIColor.white, for: .normal)
+            joinToChl.layer.cornerRadius = 6.0
+            joinToChl.layer.borderWidth = 0
+            joinToChl.backgroundColor = navAndTabColor //.withAlphaComponent(0.75)
+        }
     }
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
     @objc let proofedVideoView: PlayerView = PlayerView()
     @objc let volumeUpImageView: UIImageView = FeedCell.rectImageView()
     @objc let volumeDownImageView: UIImageView = FeedCell.rectImageView()
     // @objc var avPlayerLayer : AVPlayerLayer = AVPlayerLayer.init()
+    @objc let joinToChl = FeedCell.subClassbuttonForTitleWithBorder("JOIN", imageName: "")
 }

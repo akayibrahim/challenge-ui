@@ -33,13 +33,14 @@ class ProfileCellView: UICollectionViewCell {
         addSubview(profileImageView)
         addTopAnchor(profileImageView, anchor: contentGuide.topAnchor, constant: 0)
         addLeadingAnchor(profileImageView, anchor: contentGuide.leadingAnchor, constant: 0)
-        addWidthAnchor(profileImageView, multiplier: 1.7/10)
+        addWidthAnchor(profileImageView, multiplier: 2/10)
         addHeightAnchor(profileImageView, multiplier: 2/10)                
         setImage(fbID: memberFbId, imageView: profileImageView)
         profileImageView.layer.cornerRadius = 4.0
         profileImageView.layer.masksToBounds = true
         profileImageView.contentMode = .scaleAspectFill
         
+        /*
         addSubview(nameLabel)
         let attributedText = NSMutableAttributedString(string: "\(name)", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 18)])
         nameLabel.attributedText = attributedText
@@ -48,74 +49,86 @@ class ProfileCellView: UICollectionViewCell {
         // nameLabel.text = name
         addWidthAnchor(nameLabel, multiplier: 4.5/10)
         nameLabel.adjustsFontSizeToFitWidth = true
-        
+        */
         addSubview(followersLabel)
-        followersLabel.text = "Followers"
-        followersLabel.font = UIFont.boldSystemFont(ofSize: 11)
-        addBottomAnchor(followersLabel, anchor: profileImageView.bottomAnchor, constant: -(screenSize.width * 0.1 / 10))
-        addLeadingAnchor(followersLabel, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.5 / 10)
-        
-        addSubview(followersCount)        
+        addSubview(followersCount)
         followersCount.font = UIFont.boldSystemFont(ofSize: 14)
-        addBottomAnchor(followersCount, anchor: followersLabel.topAnchor, constant: 0)
+        addTopAnchor(followersCount, anchor: profileImageView.topAnchor, constant: screenWidth * 0.25 / 10)
         followersCount.centerXAnchor.constraint(equalTo: followersLabel.centerXAnchor).isActive = true
         
-        addSubview(followingLabel)
-        followingLabel.text = "Following"
-        followingLabel.font = UIFont.boldSystemFont(ofSize: 11)
-        addBottomAnchor(followingLabel, anchor: followersLabel.bottomAnchor, constant: 0)
-        addLeadingAnchor(followingLabel, anchor: followersLabel.trailingAnchor, constant: screenSize.width * 0.3 / 10)
+        followersLabel.text = "Followers"
+        followersLabel.font = UIFont.boldSystemFont(ofSize: 11)
+        addTopAnchor(followersLabel, anchor: followersCount.bottomAnchor, constant: 0)
+        //addLeadingAnchor(followersLabel, anchor: profileImageView.trailingAnchor, constant: screenSize.width * 0.5 / 10)
+        addCenterXAnchor(followersLabel, anchor: contentGuide.centerXAnchor, constant: -(screenWidth*1.25/10))
         
+        addSubview(followingLabel)
         addSubview(followingCount)
         followingCount.text = "0"
         followingCount.font = UIFont.boldSystemFont(ofSize: 14)
-        addBottomAnchor(followingCount, anchor: followingLabel.topAnchor, constant: 0)
+        addTopAnchor(followingCount, anchor: profileImageView.topAnchor, constant: screenWidth * 0.25 / 10)
         followingCount.centerXAnchor.constraint(equalTo: followingLabel.centerXAnchor).isActive = true
         
-        addSubview(challangeLabel)
-        challangeLabel.text = "Challange"
-        challangeLabel.font = UIFont.boldSystemFont(ofSize: 11)
-        addBottomAnchor(challangeLabel, anchor: followingLabel.bottomAnchor, constant: 0)
-        addLeadingAnchor(challangeLabel, anchor: followingLabel.trailingAnchor, constant: screenSize.width * 0.3 / 10)
+        followingLabel.text = "Following"
+        followingLabel.font = UIFont.boldSystemFont(ofSize: 11)
+        addTopAnchor(followingLabel, anchor: followingCount.bottomAnchor, constant: 0)
+        addLeadingAnchor(followingLabel, anchor: followersLabel.trailingAnchor, constant: screenSize.width * 0.9 / 10)
         
+        addSubview(challangeLabel)
         addSubview(challangeCount)
         challangeCount.text = "0"
         challangeCount.font = UIFont.boldSystemFont(ofSize: 14)
-        addBottomAnchor(challangeCount, anchor: challangeLabel.topAnchor, constant: 0)
+        addTopAnchor(challangeCount, anchor: profileImageView.topAnchor, constant: screenWidth * 0.25 / 10)
         challangeCount.centerXAnchor.constraint(equalTo: challangeLabel.centerXAnchor).isActive = true
         
+        challangeLabel.text = "Challange"
+        challangeLabel.font = UIFont.boldSystemFont(ofSize: 11)
+        addTopAnchor(challangeLabel, anchor: challangeCount.bottomAnchor, constant: 0)
+        addLeadingAnchor(challangeLabel, anchor: followingLabel.trailingAnchor, constant: screenSize.width * 0.9 / 10)
+        
+        /*
         addSubview(other)
         other.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         addTrailingAnchor(other, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.05 / 10))
         addHeightAnchor(other, multiplier: 0.7 / 10)
         addWidthAnchor(other, multiplier: 0.7 / 10)
+        */
         
         addSubview(follow)
-        addTopAnchor(follow, anchor: profileImageView.topAnchor, constant: 0)
-        addTrailingAnchor(follow, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.2 / 10))
-        addWidthAnchor(follow, multiplier: 2.4 / 10)
+        addBottomAnchor(follow, anchor: profileImageView.bottomAnchor, constant: 0)
+        addCenterXAnchor(follow, anchor: followingLabel.centerXAnchor, constant: 0)
+        addWidthAnchor(follow, multiplier: 5.5 / 10)
         addHeightAnchor(follow, multiplier: 0.8 / 10)
         follow.alpha = 0
         
         addSubview(unfollow)
-        addTopAnchor(unfollow, anchor: profileImageView.topAnchor, constant: 0)
-        addTrailingAnchor(unfollow, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.2 / 10))
-        addWidthAnchor(unfollow, multiplier: 2.4 / 10)
+        addBottomAnchor(unfollow, anchor: profileImageView.bottomAnchor, constant: 0)
+        addCenterXAnchor(unfollow, anchor: followingLabel.centerXAnchor, constant: 0)
+        addWidthAnchor(unfollow, multiplier: 5.5 / 10)
         addHeightAnchor(unfollow, multiplier: 0.8 / 10)
         unfollow.alpha = 0
         
         addSubview(requested)
-        addTopAnchor(requested, anchor: profileImageView.topAnchor, constant: 0)
-        addTrailingAnchor(requested, anchor: contentGuide.trailingAnchor, constant: -(screenSize.width * 0.2 / 10))
-        addWidthAnchor(requested, multiplier: 2.4 / 10)
+        addBottomAnchor(requested, anchor: profileImageView.bottomAnchor, constant: 0)
+        addCenterXAnchor(requested, anchor: followingLabel.centerXAnchor, constant: 0)
+        addWidthAnchor(requested, multiplier: 5.5 / 10)
         addHeightAnchor(requested, multiplier: 0.8 / 10)
         requested.isEnabled = false
         requested.alpha = 0
         
+        addSubview(inviteFriends)
+        addBottomAnchor(inviteFriends, anchor: profileImageView.bottomAnchor, constant: 0)
+        addCenterXAnchor(inviteFriends, anchor: followingLabel.centerXAnchor, constant: 0)
+        addWidthAnchor(inviteFriends, multiplier: 5.5 / 10)
+        addHeightAnchor(inviteFriends, multiplier: 0.8 / 10)
+        inviteFriends.backgroundColor = UIColor.red
+        
         addSubview(privateLabel)
         privateLabel.text = "(Private Account)"
-        addTopAnchor(privateLabel, anchor: nameLabel.bottomAnchor, constant: screenSize.width * 0.0 / 10)
-        addLeadingAnchor(privateLabel, anchor: nameLabel.leadingAnchor, constant: -(screenSize.width * 0.0 / 10))
+        privateLabel.numberOfLines = 1
+        addTopAnchor(privateLabel, anchor: profileImageView.bottomAnchor, constant: (screenWidth * 0.05 / 10))
+        addCenterXAnchor(privateLabel, anchor: profileImageView.centerXAnchor, constant: 0)
+        privateLabel.font = UIFont.boldSystemFont(ofSize: 8)
         privateLabel.alpha = 0
         
         /*
@@ -143,12 +156,14 @@ class ProfileCellView: UICollectionViewCell {
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.backgroundColor = UIColor.rgb(87, green: 143, blue: 255)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-        button.layer.cornerRadius = 2
+        button.layer.cornerRadius = 3.0
+        button.clipsToBounds = true
         return button
     }
     
     @objc let follow: subclasssedUIButton = ProfileCellView.followButton(text: followButtonText)
     @objc let unfollow: subclasssedUIButton = ProfileCellView.followButton(text: "Unfollow")
     @objc let requested: subclasssedUIButton = ProfileCellView.followButton(text: "Requested")
+    @objc let inviteFriends: subclasssedUIButton = ProfileCellView.followButton(text: "Invite Friends")
     @objc let privateLabel : UILabel = FeedCell.labelCreate(10, backColor: UIColor(white: 1, alpha: 0), textColor: UIColor.red)
 }

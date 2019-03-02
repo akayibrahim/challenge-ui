@@ -12,8 +12,9 @@ class Prove: SafeJsonObject {
     @objc var name: String?
     @objc var fbID: String?
     @objc var proofObjectId: String?
-    @objc var challangeId: String?
+    @objc var challengeId: String?
     @objc var memberId: String?
     var provedWithImage: Bool?
     var wide: Bool?
+    var supported: Bool?
 }

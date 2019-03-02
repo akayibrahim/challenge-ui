@@ -20,43 +20,35 @@ class OtherViewCell: UITableViewCell {
     @objc init(frame: CGRect, cellRow : Int) {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: OtherController.cellId)
         let contentGuide = self.readableContentGuide
-        let screenSize = UIScreen.main.bounds
         if cellRow == 0 {
             settings.text = "Settings & Privacy"
             settings.font = UIFont.preferredFont(forTextStyle: .headline)
             addSubview(settings)
             settings.translatesAutoresizingMaskIntoConstraints = false
-            settings.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
-            settings.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
+            settings.heightAnchor.constraint(equalToConstant: globalHeight).isActive = true
+            settings.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true            
         } else if cellRow == 1 {
             support.text = "Terms of Use"
             support.font = UIFont.preferredFont(forTextStyle: .headline)
             addSubview(support)
             support.translatesAutoresizingMaskIntoConstraints = false
-            support.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
+            support.heightAnchor.constraint(equalToConstant: globalHeight).isActive = true
             support.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 2 {
             shareViaFriend.text = "Share With Friends"
             shareViaFriend.font = UIFont.preferredFont(forTextStyle: .headline)
             addSubview(shareViaFriend)
             shareViaFriend.translatesAutoresizingMaskIntoConstraints = false
-            shareViaFriend.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
+            shareViaFriend.heightAnchor.constraint(equalToConstant: globalHeight).isActive = true
             shareViaFriend.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 3 {
-            guide.text = "Guide"
-            guide.font = UIFont.preferredFont(forTextStyle: .headline)
-            addSubview(guide)
-            guide.translatesAutoresizingMaskIntoConstraints = false
-            guide.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
-            guide.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         } else if cellRow == 4 {
-        } else if cellRow == 5 {
             logout.text = "Log out"
             logout.font = UIFont.preferredFont(forTextStyle: .headline)
             logout.textColor = UIColor.red
             addSubview(logout)
             logout.translatesAutoresizingMaskIntoConstraints = false
-            logout.heightAnchor.constraint(equalToConstant: screenSize.width * 1 / 10).isActive = true
+            logout.heightAnchor.constraint(equalToConstant: globalHeight).isActive = true
             logout.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor).isActive = true
         }
     }

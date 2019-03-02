@@ -14,6 +14,30 @@ import RxSwift
 import RxCocoa
 import RxGesture
 
+extension UISearchBar {
+    
+    private func getViewElement<T>(type: T.Type) -> T? {
+        
+        let svs = subviews.flatMap { $0.subviews }
+        guard let element = (svs.filter { $0 is T }).first as? T else { return nil }
+        return element
+    }
+    
+    func setTextFieldColor(color: UIColor) {
+        
+        if let textField = getViewElement(type: UITextField.self) {
+            switch searchBarStyle {
+            case .minimal:
+                textField.layer.backgroundColor = color.cgColor
+                textField.layer.cornerRadius = 6
+                
+            case .prominent, .default:
+                textField.backgroundColor = color
+            }
+        }
+    }
+}
+
 extension Error {
     
     var isConnectivityError: Bool {
@@ -327,6 +351,13 @@ extension UILabel {
             font = UIFont(name: currentFont.fontName, size: dynamicFontSize)
         }
     }
+    
+    func textDropShadow() {
+        self.layer.masksToBounds = false
+        self.layer.shadowRadius = 2.0
+        self.layer.shadowOpacity = 0.4
+        self.layer.shadowOffset = CGSize(width: 1, height: 2)
+    }
 }
 
 extension UIImageView {
@@ -403,7 +434,7 @@ extension UIImageView {
             center.x = finalSize.width / size.width * center.x
             center.y = finalSize.width / size.width * center.y
             
-            offset.y = center.y - self.bounds.size.height * CGFloat(1-0.818)
+            offset.y = center.y - self.bounds.size.height * CGFloat(1-0.668)
             if offset.y < 0 {
                 offset.y = 0
             } else if offset.y + self.bounds.size.height > finalSize.height {

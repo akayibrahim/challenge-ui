@@ -41,7 +41,7 @@ class TableViewCellContent: UITableViewCell {
             addLeadingAnchor(label, anchor: contentGuide.leadingAnchor, constant: 6)
             label.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
             label.font = UIFont.systemFont(ofSize: 16)
-            label.textColor = UIColor.gray
+            //label.textColor = UIColor.gray
         } else {
             addSubview(mySegControl)
             mySegControl.centerXAnchor.constraint(equalTo: contentGuide.centerXAnchor, constant: 0).isActive = true
@@ -52,12 +52,14 @@ class TableViewCellContent: UITableViewCell {
             mySegControl.translatesAutoresizingMaskIntoConstraints = false
             addWidthAnchor(mySegControl, multiplier: 1.8 / 3)
         }
-        
+        /*
         if cellRow == addViewIndexPath.row {
             addChallenge = AddChallengeView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: (screenWidth * 1.3 / 3) + 22), isPublic: isPublic(typeIndex))
-            addChallenge.backgroundColor =  UIColor.rgb(229, green: 231, blue: 235)
+            addChallenge.backgroundColor = UIColor.white // UIColor.rgb(229, green: 231, blue: 235)
             addSubview(addChallenge)
-        } else if cellRow == calenddarIndexPath.row {
+        } else
+        */
+        if cellRow == calenddarIndexPath.row {
             addSubview(deadLines)
             deadLines.selectedSegmentIndex = 1
             addTopAnchor(deadLines, anchor: contentGuide.topAnchor, constant: (screenWidth * 0 / 10))
@@ -89,11 +91,30 @@ class TableViewCellContent: UITableViewCell {
             isDone.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
         } else if cellRow == proofIndexPath.row {
             addSubview(proofImageView)
-            addTrailingAnchor(proofImageView, anchor: contentGuide.trailingAnchor, constant: -(screenWidth * 0.3 / 10))
-            addWidthAnchor(proofImageView, multiplier: 2 / 10)
-            addHeightAnchor(proofImageView, multiplier: 1 / 10)
-            proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
-            proofImageView.alpha = 0
+            //addTrailingAnchor(proofImageView, anchor: contentGuide.trailingAnchor, constant: -(screenWidth * 0.3 / 10))
+            addCenterXAnchor(proofImageView, anchor: contentGuide.centerXAnchor, constant: 0)
+            addWidthAnchor(proofImageView, multiplier: 0.8)
+            addHeightAnchor(proofImageView, multiplier: 0.8)
+            proofImageView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: screenWidth*0.1/10).isActive = true
+            //proofImageView.alpha = 0
+            proofImageView.contentMode = .scaleAspectFill
+            
+            addSubview(plusImageView)
+            addCenterXAnchor(plusImageView, anchor: proofImageView.centerXAnchor, constant: 0)
+            addCenterYAnchor(plusImageView, anchor: proofImageView.centerYAnchor, constant: screenWidth*0.3/10)
+            addWidthAnchor(plusImageView, multiplier: 1 / 10)
+            addHeightAnchor(plusImageView, multiplier: 1 / 10)
+            plusImageView.image = UIImage(named: "add_icon")
+            plusImageView.layer.borderWidth = 0
+            plusImageView.layer.zPosition = -1
+            
+            addSubview(addYourProofLabel)
+            addBottomAnchor(addYourProofLabel, anchor: plusImageView.topAnchor, constant: -(screenWidth*0.3/10))
+            addCenterXAnchor(addYourProofLabel, anchor: plusImageView.centerXAnchor, constant: 0)
+            addWidthAnchor(addYourProofLabel, multiplier: 4 / 10)
+            addYourProofLabel.text = "Add Your Proof"
+            addYourProofLabel.adjustsFontSizeToFitWidth = true
+            addYourProofLabel.layer.zPosition = -1
             
             addSubview(labelOtherSide)
             addTrailingAnchor(labelOtherSide, anchor: contentGuide.trailingAnchor, constant: 0)
@@ -140,12 +161,21 @@ class TableViewCellContent: UITableViewCell {
         return 1
     }
     
-    @objc let proofImageView: UIImageView = {
+    @objc let proofImageView: UIImageView = imageView()
+    @objc let plusImageView: UIImageView = imageView()
+    
+    @objc static func imageView() -> UIImageView {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.semanticContentAttribute = .forceRightToLeft
+        imageView.layer.cornerRadius = 4.0
+        imageView.layer.masksToBounds = true
+        imageView.isOpaque = true
+        //imageView.layer.shouldRasterize = true
+        imageView.layer.rasterizationScale = UIScreen.main.scale
+        imageView.layer.borderWidth = 0.1
         return imageView
-    }()
+    }
     
     @objc let visibilitySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["Team Members", "Friends", "Everyone"])
     @objc let mySegControl: UISegmentedControl = AddChallengeView.segmentedControl(myArray: ["PUBLIC", "TEAM", "SELF"])
@@ -155,6 +185,7 @@ class TableViewCellContent: UITableViewCell {
     @objc let labelOtherSide: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.gray)
     @objc let homeScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
     @objc let awayScoreLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
+    @objc let addYourProofLabel: UILabel = FeedCell.labelCreate(14, backColor: UIColor.white, textColor: UIColor.gray)
 }
 
 class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
@@ -182,8 +213,8 @@ class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
         addSubview(commentView)
         commentView.centerYAnchor.constraint(equalTo: contentGuide.centerYAnchor, constant: 0).isActive = true
         addLeadingAnchor(commentView, anchor: contentGuide.leadingAnchor, constant: 0)
-        addWidthAnchor(commentView, multiplier: 0.93)
-        commentView.heightAnchor.constraint(equalToConstant: globalHeight - 10).isActive = true
+        addWidthAnchor(commentView, multiplier: 0.91)
+        commentView.heightAnchor.constraint(equalToConstant: globalHeight*2.5).isActive = true
     }
     
     @objc let label: UILabel = FeedCell.labelCreate(18, backColor: UIColor.white, textColor: UIColor.black)
@@ -200,7 +231,7 @@ class TableViewCommentCellContent: UITableViewCell, UITextViewDelegate {
         textView.layer.borderColor = UIColor (red:204.0/255.0, green:204.0/255.0, blue:204.0/255.0, alpha:1.0).cgColor;
         textView.layer.borderWidth = 1.0;
         textView.layer.cornerRadius = 5.0;
-        textView.textContainer.maximumNumberOfLines = 8
+        textView.textContainer.maximumNumberOfLines = 5
         return textView
     }()
 }

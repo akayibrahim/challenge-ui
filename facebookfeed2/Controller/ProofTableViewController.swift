@@ -62,8 +62,18 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         refreshControl.addTarget(self, action: #selector(self.onRefresh), for: UIControlEvents.valueChanged)
         tableView?.addSubview(refreshControl)
         NotificationCenter.default.addObserver(self, selector:  #selector(self.appMovedToBackground), name:   Notification.Name.UIApplicationWillEnterForeground, object: nil)
+        tableView.showsVerticalScrollIndicator = false
         
         reloadPage()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
     }
     
     @objc func appMovedToBackground() {
@@ -132,7 +142,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }
     
     @objc func fetchData(url: String) {
-        let jsonURL = URL(string: url + self.challengeId + "&page=\(currentPage)")!
+        let jsonURL = URL(string: url + self.challengeId + "&memberId=\(Util.getUserMemberId()!)" + "&page=\(currentPage)")!
         jsonURL.get { data, response, error in
             guard
                 let returnData = data,
@@ -146,6 +156,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                 let proof = Prove()
                 proof.provedWithImage = postDictionary["provedWithImage"] as? Bool
                 proof.wide = postDictionary["wide"] as? Bool
+                proof.supported = postDictionary["supported"] as? Bool
                 proof.setValuesForKeys(postDictionary)
                 self.proofs.append(proof)
             }
@@ -204,7 +215,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
     }()
     
     @objc let profileImageView: UIImageView = FeedCell().profileImageView
-    @objc let addProofBtn = FeedCell.subClasssButtonForTitle("Add your proof..", imageName: "")
+    @objc let addProofBtn = FeedCell.subClasssButtonForTitle("ADD PROVE", imageName: "")
     
     private func setupInputComponents() {
         let topBorderView = UIView()
@@ -331,11 +342,11 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                     }
                     self.reloadPage()
                     let forwardChange = Util.getForwardChange();
-                    if forwardChange.forwardScreen == FRWRD_CHNG_PRV {
+                    if forwardChange.forwardScreen == FRWRD_CHNG_PRV || forwardChange.forwardScreen == FRWRD_CHNG_PRV_PRFL {
                         Util.addForwardChange(forwardChange: ForwardChange(index: forwardChange.index!, forwardScreen: forwardChange.forwardScreen!, viewProofsCount: forwardChange.viewProofsCount! + 1, joined: forwardChange.joined!, proved: true, canJoin: false))
                     }
                     self.group.wait()
-                    self.popupAlert(message: "ADDED!", willDelay: true)
+                    //self.popupAlert(message: "ADDED!", willDelay: true)
                 } else {
                     let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
                     if let responseJSON = responseJSON as? [String: Any] {
@@ -380,8 +391,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         cell.layer.rasterizationScale = UIScreen.main.scale
         DispatchQueue.main.async {
             if self.proofs.count != 0 {
-                cell.prepareForReuse()
-                cell.setup(self.proofs[indexPath.item].wide!)
+                cell.setup(self.proofs[indexPath.item].wide!, supportFlag: self.proofs[indexPath.item].supported!)
                 let nameAtt = NSMutableAttributedString(string: "\(String(describing: self.proofs[indexPath.row].name!))", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
                 cell.thinksAboutChallengeView.attributedText = nameAtt
                 let fbID = self.proofs[indexPath.item].fbID
@@ -403,6 +413,8 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
                         }
                     }
                 }
+                cell.supportButton.tag = indexPath.row
+                cell.supportButton.challengeId = self.proofs[indexPath.item].challengeId
             }
         }
         cell.selectionStyle = UITableViewCellSelectionStyle.none
@@ -434,6 +446,20 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         cell.thinksAboutChallengeView.tag = indexPath.row
         cell.thinksAboutChallengeView.isUserInteractionEnabled = true
         cell.thinksAboutChallengeView.addGestureRecognizer(tapGestureRecognizerName)
+        
+        let tapGestureRecognizerDoubleTabSupport = UITapGestureRecognizer(target: self, action: #selector(supportViaDoubleTapped(tapGestureRecognizer:)))
+        tapGestureRecognizerDoubleTabSupport.numberOfTapsRequired = 2
+        cell.proofImageView.tag = indexPath.row
+        cell.proofImageView.isUserInteractionEnabled = true
+        cell.proofImageView.addGestureRecognizer(tapGestureRecognizerDoubleTabSupport)
+        
+        let tapGestureRecognizerDoubleTabSupportVideo = UITapGestureRecognizer(target: self, action: #selector(supportViaDoubleTapped(tapGestureRecognizer:)))
+        tapGestureRecognizerDoubleTabSupportVideo.numberOfTapsRequired = 2
+        cell.proofedVideoView.tag = indexPath.row
+        cell.proofedVideoView.isUserInteractionEnabled = true
+        cell.proofedVideoView.addGestureRecognizer(tapGestureRecognizerDoubleTabSupportVideo)
+        
+        cell.supportButton.addTarget(self, action: #selector(self.supportChallenge), for: UIControlEvents.touchUpInside)
         
         cell.proofImageView.setupZoomPinchGesture()
         cell.proofImageView.setupZoomPanGesture()
@@ -569,6 +595,7 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         if tableView.isScrollEnabled {
             self.playActiveVideo(true)
         }
+        scrollView.statusBarVisibility(navigationController?.isNavigationBarHidden ?? false)
     }
     
     @objc func openProfile(name: String, memberId: String, memberFbId:String) {
@@ -617,5 +644,53 @@ class ProofTableViewController : UIViewController, UITableViewDelegate, UITableV
         if let player = cell.proofedVideoView.playerLayer.player {
             player.pause()
         }
+    }
+    
+    @objc func supportChallenge(sender: subclasssedUIButton) {
+        supportChallenger(sender.tag, chlId: sender.challengeId!)
+    }
+    
+    @objc func supportChallenger(_ indx: Int, chlId: String) {
+        let index = IndexPath(item: indx, section: 0)
+        let feedCell = tableView.cellForRow(at: index) as! ProofCellView
+        let currentImage = feedCell.supportButton.currentImage
+        if currentImage == UIImage(named:support) {
+            feedCell.supportButton.setImage(UIImage(named: supported), for: .normal)
+            supportChallengeService(support: true, challengeId: chlId, feedCell: feedCell, isHome: true, index: index)
+            self.proofs[index.item].supported = true
+        } else {
+            feedCell.supportButton.setImage(UIImage(named: support), for: .normal)
+            supportChallengeService(support: false, challengeId: chlId, feedCell: feedCell, isHome: true, index: index)
+            self.proofs[index.item].supported = false
+        }
+    }
+    
+    @objc func supportViaDoubleTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let tappedImage = tapGestureRecognizer.view!
+        supportChallenger(tappedImage.tag, chlId: proofs[tappedImage.tag].challengeId!)
+    }
+    
+    @objc func supportChallengeService(support:Bool, challengeId: String, feedCell: ProofCellView, isHome: Bool, index: IndexPath) {
+        var json: [String: Any] = ["challengeId": challengeId,
+                                   "memberId": memberID
+        ]
+        json["supportedMemberId"] = proofs[index.row].memberId
+        json["supportFirstTeam"] = isHome ? support : false
+        json["supportSecondTeam"] = !isHome ? support : false
+        let url = URL(string: supportChallengeURL)!
+        let request = ServiceLocator.prepareRequest(url: url, json: json)
+        URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+                if responseJSON["message"] != nil {
+                    self.popupAlert(message: responseJSON["message"] as! String, willDelay: false)
+                }
+            }
+        }).resume()
     }
 }

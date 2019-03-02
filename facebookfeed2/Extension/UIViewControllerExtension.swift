@@ -39,6 +39,7 @@ extension UICollectionView {
         self.addWidthAnchor(messageLabel, multiplier: 1)
         self.addHeightAnchor(messageLabel, multiplier: 1/3)
         
+        /*
         let inviteButton: UIButton = FeedCell.buttonForTitleWithBorder("Invite Friends", imageName: "")
         inviteButton.layer.backgroundColor = UIColor.red.cgColor
         inviteButton.setTitleColor(UIColor.white, for: UIControlState())
@@ -48,13 +49,14 @@ extension UICollectionView {
         self.addCenterXAnchor(inviteButton, anchor: view.centerXAnchor, constant: 0)
         self.addWidthAnchor(inviteButton, multiplier: 0.5 / 1)
         self.addHeightAnchor(inviteButton, multiplier: 0.1 / 1)
+        */
         
         let findButton: UIButton = FeedCell.buttonForTitleWithBorder("Find Friends", imageName: "")
-        findButton.layer.backgroundColor = UIColor.blue.cgColor
+        findButton.layer.backgroundColor = blueColor.cgColor // UIColor.blue.cgColor
         findButton.setTitleColor(UIColor.white, for: UIControlState())
         findButton.layer.borderWidth = 0
         view.addSubview(findButton)
-        self.addBottomAnchor(findButton, anchor: inviteButton.topAnchor, constant: -(screenWidth * 0.05 / 1))
+        self.addBottomAnchor(findButton, anchor: view.bottomAnchor, constant: -(screenWidth * 0.14 / 1))
         self.addCenterXAnchor(findButton, anchor: view.centerXAnchor, constant: 0)
         self.addWidthAnchor(findButton, multiplier: 0.5 / 1)
         self.addHeightAnchor(findButton, multiplier: 0.1 / 1)
@@ -64,7 +66,7 @@ extension UICollectionView {
         self.backgroundView = view
         var buttons = [UIButton]()
         buttons.append(findButton)
-        buttons.append(inviteButton)
+        //buttons.append(inviteButton)
         return buttons
     }
     
